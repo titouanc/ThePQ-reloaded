@@ -20,6 +20,7 @@ public:
 	};
 	
 protected:
+	Socket();
 	virtual Status create();
 	void close();
 	
