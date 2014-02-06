@@ -81,6 +81,14 @@ TEST(json_list_mixed)
 	}
 ENDTEST()
 
+TEST(json_list_repr)
+	JSON::List l;
+	ASSERT(l.dumps() == "[]");
+	l.append(JSON::Integer(2));
+	l.append(JSON::Float(42.125));
+	ASSERT(l.dumps() == "[2, 42.125000]");
+ENDTEST()
+
 int main(int argc, const char **argv)
 {
 	TestFunc testSuite[] = {
@@ -89,7 +97,9 @@ int main(int argc, const char **argv)
 		ADDTEST(json_float),
 		ADDTEST(json_str),
 		ADDTEST(json_list),
-		ADDTEST(json_list_append)
+		ADDTEST(json_list_append),
+		ADDTEST(json_list_mixed),
+		ADDTEST(json_list_repr)
 	};
 
 	return RUN(testSuite);

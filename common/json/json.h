@@ -5,6 +5,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <vector>
+#include <sstream>
 
 #define CLONE_METHOD(type) Value * clone(void) const {return new type(value());}
 
@@ -80,7 +81,16 @@ namespace JSON {
             List() : _content() {};
             Type type(void) const {return List_t;}
             Value * clone(void) const {return NULL;}
-            std::string dumps(void) const {return "Hello";}
+            std::string dumps(void) const {
+                std::stringstream res;
+                res << "[";
+                for (size_t i=0; i<len(); i++){
+                    if (i > 0) res << ", ";
+                    res << _content[i]->dumps();
+                }
+                res << "]";
+                return res.str();
+            }
             const Value * operator[](size_t index){return _content[index];}
             void append(Value const & obj){_content.push_back(obj.clone());}
             size_t len(void) const {return _content.size();}
