@@ -1,0 +1,136 @@
+\documentclass[a4paper,11pt]{article}
+\usepackage[latin1]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[francais]{babel}
+\usepackage{lmodern}
+\title{\textbf{Description use case OverviewStadium}}
+\author{jeromeboss69}
+\date{\today}
+
+
+\begin{document}
+\maketitle
+\newpage
+%--------------------
+\subsection{Aperçu de l'équipe}
+
+\subsubsection{Aperçu de l'équipe}
+\label{UC:squadView}
+\paragraph{Relations avec d'autres "use case"}
+Étendu par \ref{UC:selectMember}.
+\paragraph{Pré-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{L'utilisateur est authentifié.}
+\end{list}
+\paragraph{Post-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{Une liste de membres de l'équipe, englobant ainsi les joueurs et les coaches, est affichée.}
+\end{list}
+\paragraph{Cas général}
+L'utilisateur décide d'obtenir un rapide aperçu de son effectif, et clique sur l'icône correspondant à "aperçu d'équipe", ce qui a pour effet d'afficher une liste de membres de l'équipe, avec laquelle il peut interagir pour obtenir des informations concernant lesdits membres.
+\paragraph{Cas exceptionnels}
+Néant.
+
+\subsubsection{Sélectionner un membre}
+\label{UC:selectMember}
+\paragraph{Relations avec d'autres "use case"}
+Généralise \ref{UC:selectCoach} et \ref{UC:selectPlayer}.\\
+Étend \ref{UC:squadView}.
+\paragraph{Pré-condition}
+L'utilisateur a précédemment choisi "aperçu d'équipe".
+\paragraph{Post-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{Un membre est sélectionné, ce membre peut être soit un coach, soit un joueur, de nouvelles actions par rapport audit membre sont disponibles.}
+\end{list}
+\paragraph{Cas général}
+L'utilisateur clique sur un des noms de la liste affichée après avoir choisi "aperçu d'équipe", et obtient de plus ample informations sur ce membre. 
+\paragraph{Cas exceptionnels}
+Néant.
+
+\subsubsection{Sélectionner un coach}
+\label{UC:selectCoach}
+\paragraph{Relations avec d'autres "use case"}
+Spécialise \ref{UC:selectMember}.\\
+Étendu par \ref{UC:seeAptitudes} et \ref{UC:fire}. 
+\paragraph{Pré-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{L'utilisateur a sélectionné un membre, il s'agit d'un coach.}
+\end{list}
+\paragraph{Post-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{De plus amples informations sont affichées concernant le coach sélectionné (âge, nom, salaire).}
+\item{Nouvelles actions disponibles.}
+\end{list}
+\paragraph{Cas général}
+Voir "use case" \ref{UC:selectMember}.
+\paragraph{Cas exceptionnels}
+Néant.
+
+\subsubsection{Sélectionner un joueur}
+\label{UC:selectPlayer}
+\paragraph{Relations avec d'autres "use case"}
+Spécialise \ref{UC:selectMember}.\\
+Étendu par \ref{UC:seeAptitudes}, \ref{UC:fire} et \ref{UC:choosePosition}. 
+\paragraph{Pré-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{L'utilisateur a sélectionné un membre, il s'agit d'un joueur.}
+\end{list}
+\paragraph{Post-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{De plus amples informations sont affichées concernant le joueur sélectionné (âge, nom salaire).}
+\item{Nouvelles actions disponibles.}
+\end{list}
+\paragraph{Cas général}
+Voir "use case" \ref{UC:selectMember}.
+\paragraph{Cas exceptionnels}
+Néant.
+
+\subsubsection{Voir les aptitudes}
+\label{UC:seeAptitudes}
+\paragraph{Relations avec d'autres "use case"}
+Étend \ref{UC:selectCoach} et \ref{UC:selectPlayer}.
+\paragraph{Pré-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{L'utilisateur a sélectionné un membre.}
+\end{list}
+\paragraph{Post-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{Les aptitudes spécifiques au membre sélectionné sont affichées.}
+\end{list}
+\paragraph{Cas général}
+Après avoir sélectionné un membre, l'utilisateur choisit d'afficher les aptitudes concernant ledit membre, en cliquant simplement sur une icône. 
+\paragraph{Cas exceptionnels}
+Néant.
+
+\subsubsection{Licencier}
+\label{UC:fire}
+\paragraph{Relations avec d'autres "use case"}
+Étend \ref{UC:selectCoach} et \ref{UC:selectPlayer}.
+\paragraph{Pré-condition}
+L'utilisateur a sélectionné un membre.
+\paragraph{Post-condition}
+Le membre choisi est licencié de l'équipe, il ne fait donc plus partie de l'équipe, cette action est irréversible.
+\paragraph{Cas général}
+Après avoir sélectionné un membre, l'utilisateur choisit de licencier ce membre en cliquant simplement sur une icône. Une petite fenêtre de confirmation apparait, signalant que cette action est irréversible. 
+\paragraph{Cas exceptionnels}
+Néant.
+
+\subsubsection{Choisir la position pour le prochain match}
+\label{UC:choosePosition}
+\paragraph{Relations avec d'autres "use case"}
+Étend \ref{UC:selectPlayer}.
+\paragraph{Pré-conditions}
+L'utilisateur a sélectionné un joueur.
+\paragraph{Post-condition}
+Le joueur sélectionné est mis à la position choisie par l'utilisateur pour le prochain match. Cette action est réversible jusqu'audit match.
+\paragraph{Cas général}
+La position choisie par l'utilisateur pour le joueur sélectionné n'est pas encore attribuée, c'est donc ce joueur qui remplira cette fonction tant qu'aucune modification n'est apportée par l'utilisateur.
+\paragraph{Cas exceptionnels}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{La position est déjà attribuée, dans ce cas l'utilisateur en est averti et peut décider de remplacer le joueur actuel par le joueur sélectionné.}
+\item{L'utilisateur met la position à "NULL" ce qui signifie que, jusqu'à modification ultérieure, le joueur sélectionné ne jouera pas le prochain match.}
+\end{list}
+%------------------
+\end{document}
+
+

@@ -1,0 +1,72 @@
+Voici l’énoncé de la phase 1 du projet.
+
+Une rencontre sera organisée lors de la semaine du 10 décembre afin de vous permettre de rencontrer vos clients et de leur poser vos questions. Cette rencontre durera entre 30 et 60 minutes.
+
+Pour cette phase, nous vous demandons de produire un SRD reprenant les différents points décrit plus bas. Aucun code ne vous est demandé. Néanmoins un squelette de code (classes, méthodes (vide), ...) vous est demandé ainsi que le diagramme de classe qui va avec.
+
+Document de spécification des besoins (software requirements document):
+———————————————————————————————————-
+
+1 Introduction
+
+1.1 But du projet
+
+Texte (d’une demi-page approximativement) décrivant les tenants
+et aboutissants du projet, et énumérant les différents types de
+personnes qui vont bénéficier de la réalisation du projet.
+
+1.2 Glossaire
+
+Définition des termes, des acronymes et des abréviations
+utilisés dans le présent document.
+
+1.3 Historique du document
+
+Tableau reprenant tous les changements effectués sur le
+document. Chaque ligne de celui-ci contiendra les champs
+suivants : numéro de version, auteur et date de la modification,
+description des changements. Le tableau sera trié de manière
+décroissante sur le numéro de version.
+
+2 Besoins de l’utilisateur
+
+Cette deuxième section reprend les services que le système doit
+fournir aux utilisateurs, ainsi que les contraintes de
+fonctionnement du système. Elle doit être complète et consistante,
+et il faut qu’elle soit rédigée dans un langage spécialement
+compréhensible pour le client, c’est-à-dire en évitant entre autres
+tout terme ou détail techniques.
+
+2.1 Exigences fonctionnelles
+
+Ce type d’exigences sera décrit en utilisant des diagrammes use
+case et en fournissant une description pour chacun d’entre eux
+(comme vu au cours théorique et aux exercices).
+
+2.2 Exigences non fonctionnelles
+
+2.3 Exigences de domaine
+
+3 Besoins du systme
+
+Cette troisième section décrit en détail les fonctionnalités du
+système (à partir de celles décrites à la section précédente), sans
+aborder (dans la mesure du possible) *comment* elles doivent être
+réalisées.
+
+3.1 Exigences fonctionnelles
+
+Ce type d’exigences sera décrit en utilisant des diagrammes use
+case et en fournissant une description *plus détaillée* pour
+chacun d’entre eux (comme vu au cours théorique et aux exercices).
+
+3.2 Exigences non fonctionnelles
+
+3.3 Design et fonctionnement du systme
+
+Cette partie sera décrite à l’aide des différents diagrammes UML
+vus au cours théorique et aux exercices.
+
+4 Index des termes utilisés
+
+Contiendra, au moins, toutes les entrées du glossaire.

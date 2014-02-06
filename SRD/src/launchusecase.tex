@@ -1,0 +1,38 @@
+\subsection{\'Ecran de démarrage}
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.7\textwidth]{figures/Launcher.eps}
+    \caption{\label{fig:UC:launcher} Cas d'utilisation: écran de démarrage}
+\end{figure}
+
+\subsubsection{Connexion}
+    \label{UC:login}
+    \paragraph{Précondition} Le programme est lancé.
+    \paragraph{Cas général} Deux champs de textes sont présentés à l'\gls{utilisateur}. Il y entre son nom et son mot de passe. Quand les deux champs contiennent du texte, un bouton "envoi" apparaît. L'utilisateur clique dessus et le contenu des champs est envoyé au serveur de jeu.
+    \paragraph{Cas exceptionnel} Un message d'erreur est affiché à l'utilisateur.
+    \paragraph{Postcondition} L'utilisateur est connecté et arrive sur le dashboard.
+
+\subsubsection{Créer un compte}
+    \paragraph{Cas général} \'Etend le cas d'utilisation \ref{UC:login}.
+    \paragraph{Postcondition} Le compte est créé.
+
+\subsection{Dashboard}
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=\textwidth]{figures/dashboard.eps}
+    \caption{\label{fig:UC:dashboard} Cas d'utilisation: dashboard}
+\end{figure}
+
+\subsubsection{Cas d'utilisation par défaut}
+    \label{UC:dashboard}
+    \paragraph{Précondition} L'\gls{utilisateur} est connecté.
+    \paragraph{Cas général} L'utilisateur clique sur un bouton, qui l'emmène dans une autre rubrique du jeu, dont il pourra éventuellement revenir à l'aide d'un bouton "retour".
+
+\subsubsection{Voir les notifications}
+    \'Etend le use-case \ref{UC:dashboard}
+    \paragraph{Cas général} Une zone de notifications est affichée à l'utilisateur, avec les récents changements qui le concernent. S'il doit jouer un match, un bouton lui permet d'entrer dans le match.
+    \paragraph{Postcondition} L'utilisateur arrive au cas d'utilisation de la phase de jeu.
+
+\subsubsection{Autres}
+    \paragraph{Postcondition} L'utilisateur arrive dans le cas d'utilisation décrit sur la figure \ref{fig:UC:dashboard}.
+

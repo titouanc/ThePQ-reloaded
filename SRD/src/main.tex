@@ -1,0 +1,283 @@
+\documentclass[a4paper, 11pt]{report}
+
+\usepackage[utf8]{inputenc}
+\usepackage[french]{babel}
+
+\usepackage{fullpage}
+\usepackage{graphicx}
+%\usepackage{wrapfig}
+\usepackage[nonewpage]{imakeidx}
+\usepackage{hyperref}
+\usepackage[nonumberlist]{glossaries}
+\usepackage{rotating}
+\makeglossaries
+\makeindex
+
+\usepackage{xcolor}
+\usepackage{titlesec}
+\usepackage{tipa}
+
+\titleformat{\section}
+{\normalfont\Large\bfseries}
+{\thesection\hskip 9pt\textpipe}
+{1em}
+{}
+
+\titleformat{\subsection}
+{\normalfont\large\bfseries}
+{\thesubsection\hskip 9pt\textpipe}
+{1em}
+{}
+
+\titleformat{\subsubsection}
+{\normalfont\bfseries\itshape}
+{\thesubsubsection}
+{1em}
+{}
+
+\definecolor{paragraph-gray}{gray}{0.35}
+\titleformat{\paragraph}
+{\normalfont\bfseries\color{paragraph-gray}}
+{}
+{1em}
+{}
+
+\DeclareRobustCommand{\gloss}[1]{\it{#1}\index{\glslabel}}
+\renewcommand{\glsdisplay}[4]{\gloss{#1#4}}
+\renewcommand{\glsdisplayfirst}[4]{\gloss{#1#4}}
+
+%===================
+\newglossaryentry{utilisateur}{
+    name=utilisateur,
+    description={Personne utilisant un des programmes du projet The Pro Quidditch Manager}
+}
+\newglossaryentry{monde}{
+    name=monde,
+    description={Environnement virtuel du jeu. Il comprend, sans s'y limiter, 
+    les équipes des \gls{utilisateur}s déconnectés, le marché des joueurs et des
+    accessoires, la programmation des tournois et championnats}
+}
+\newglossaryentry{joueur}{
+    name=joueur,
+    description={Un joueur est un personnage du jeu membre d'une \gls{equipe}. Il participe aux matches de Quidditch selon ses caractéristiques et possède des \gls{equipement}s}
+}
+\newglossaryentry{coach}{
+	name=coach,
+	description={Un coach est un personnage de jeu membre d'une \gls{equipe}, intervenant dans le cadre des \gls{entrainement}s. Il possède une série de caractéristiques, tout comme les \gls{joueur}s. La valeur de ces caractéristiques influencera sur l'efficacité et l'apport d'un entrainement. Il n'intervient par contre aucunement dans un match de Quidditch}
+}
+
+\newglossaryentry{membre}{
+	name=membre,
+	description={Désigne un joueur ou un coach d'une équipe}
+}
+
+\newglossaryentry{equipe}{
+    name=équipe,
+    description={Un ensemble de \gls{joueur}s et de \gls{coach}s géré par un \gls{manager}}
+}
+\newglossaryentry{manager}{
+    name=manager,
+    description={Personnage incarné par l'utilisateur dans le jeu. 
+    Il possède une \gls{equipe}}
+}
+\newglossaryentry{stade}{
+    name=stade,
+    description={Ensemble des installations appartenant à un \gls{manager}}
+}
+\newglossaryentry{installation}{
+    name=installation,
+    description={Bâtiment/structure que peut posséder le stade d'une équipe}
+}
+\newglossaryentry{attrapeur}{
+    name=attrapeur,
+    description={Joueur qui peut attraper le \gls{vif d'or}}
+}
+\newglossaryentry{gardien}{
+    name=gardien,
+    description={Joueur qui doit rester dans la zone des buts et qui peut 
+    attraper ou dévier le \gls{souaffle}}
+}
+\newglossaryentry{batteur}{
+    name=batteur,
+    description={Joueur possédant une batte qui peut taper les cognards}
+}
+\newglossaryentry{poursuiveur}{
+    name=poursuiveur,
+    description={Joueur pouvant attraper le \gls{souaffle} et le lancer}
+}
+\newglossaryentry{tour}{
+    name=tour,
+    description={Ensemble de \gls{coup}s qu'effectuent les \gls{joueur}s d'un \gls{utilisateur} en une unité de temps}
+}
+\newglossaryentry{coup}{
+    name=coup,
+    description={Action qu'effectue un joueur. Il peut s'agir d'un mouvement (constitué de plusieurs déplacements), d'un sort, d'une interception de balle ou d'une frappe de la balle}
+}
+\newglossaryentry{souaffle}{
+    name=souaffle,
+    description={Balle de Quidditch qui peut être attrapée, passée et lancée dans les goals par les \gls{poursuiveur}s au cours d'un match}
+}
+\newglossaryentry{cognard}{
+    name=cognard,
+    description={Balle de Quidditch qui peut être frappée par un \gls{batteur}, pouvant éventuellement heurter les autres joueurs au cours d'un match}
+}
+\newglossaryentry{vif d'or}{
+    name={vif d'or},
+    description={Une petite balle dorée qui vole de son propre gré aléatoirement sur tout le terrain. S'il est attrapé par un \gls{attrapeur} le match prend fin}
+}
+\newglossaryentry{sponsor}{
+    name=sponsor,
+    description={Mécène qui accepte de financer une \gls{equipe} sous certaines conditions}
+}
+\newglossaryentry{cas d'utilisation}{
+	name={cas d'utilisation},
+	description={Décrit les fonctionnalités du système du point de vue de l’\gls{utilisateur} de ce système}
+}
+
+\newglossaryentry{entrainement}{
+	name=entrainement,
+	description={Action déclenchée par l'\gls{utilisateur} permettant d'améliorer les \gls{aptitude}s des joueurs. Un entrainement est divisé en groupes d'entrainements, spécifiés par l'\gls{utilisateur}. Lancer un entrainement entraine une augmentation de la fatigue des joueurs}
+}
+\newglossaryentry{groupe d'entrainement}{
+	name={groupe d'entrainement},
+	description={Ensemble de \gls{joueur}s, d'\gls{aptitude}s et de \gls{coach}s qui intervient lors du déclenchement d'un \gls{entrainement}. Cet ensemble détermine le degré d'amélioration des \gls{aptitude}s}
+}
+
+\newglossaryentry{equipement}{
+	name=équipement,
+	description={Objet porté par les \gls{joueur}s pendant les matches de Quidditch, influençant leurs aptitudes}
+}
+
+\newglossaryentry{aptitude}{
+	name=aptitude,
+	description={Valeur numérique entre 0 et 20 qui représente une caractéristique spécifique d'un membre}
+}
+
+\newglossaryentry{selection}{
+	name=sélection d'équipe,
+	description={L'ensemble des \gls{joueur}s qui jouent sur le terrain (correspond à \textit{squad} dans les diagrammes)}
+}
+
+\newglossaryentry{serveur}{
+	name=serveur,
+	description={Programme qui exécute le \gls{monde}. Il accepte les connexions des \gls{client}s et gère les matches et l'organisation des championnats}
+}
+
+\newglossaryentry{client}{
+	name=client,
+	description={Programme installé sur la machine de l'utilisateur qui lui permet de se connecter au monde merveilleux de \textbf{The Pro Quidditch Manager}}
+}
+
+%===================
+
+
+\author{
+- Groupe 3 -\\
+Anthony \bsc{Caccia} \texttt{acaccia@ulb.ac.be},\\
+Antoine \bsc{Carpentier} \texttt{antcarpe@ulb.ac.be},\\
+Titouan \bsc{Christophe} \texttt{tichrist@ulb.ac.be},\\
+Jerôme \bsc{Hellinckx} \texttt{jerhelli@ulb.ac.be},\\
+Florentin \bsc{Hennecker} \texttt{fhenneck@ulb.ac.be},\\
+Mircea \bsc{Mudura} \texttt{mmudura@ulb.ac.be}\\
+}
+
+\title{The Pro Quidditch Manager\\Software Requirements Document}
+\date{\today}
+
+
+
+\begin{document}
+\maketitle
+\tableofcontents
+
+\chapter{Introduction}
+
+\section{But du projet}
+Le projet de jeu électronique \textbf{The Pro Quidditch Manager} est né des besoins de la formation
+en sciences informatique à l'ULB (en deuxième année de bachelier). Ce projet regroupe 6 étudiants et leur fixe pour objectif de créer un jeu révolutionnaire sur le thème du Quidditch. Ce projet permet
+de mettre en oeuvre les concepts théoriques rencontrés dans les autres cours de 
+BA2 sciences informatiques, et permet en outre d'approcher les problématiques de 
+gestion de groupe et de maintien de projet sur le long terme.
+
+\subsection{Concept}
+Dans ce jeu, vous affronterez d'autres \gls{manager}s en ligne dans une course ensorcelée
+vers la gloire et la richesse. Vous prendrez des décisions stratégiques pour votre
+équipe en recrutant des coaches, en achetant, revendant et entrainant des joueurs, et en faisant prospérer votre stade. 
+Sur \textbf{The Pro Quidditch Manager} Vous bâtissez votre propre \textit{dreamteam} de Quidditch !
+
+\subsection{Le Quidditch}
+Selon le souhait du client, les règles utilisées dans le jeu seront, autant que possible, proches des règles décrites sur Wikipédia\footnote{\url{http://en.wikipedia.org/wiki/Quidditch}, dernière consultation le 18/12/2013}.
+
+\section{Historique du document}
+\begin{figure}[h!]
+\centering
+\begin{tabular}{| r | c | l |}
+\hline
+\textbf{Version} & \textbf{Date} & \textbf{Commentaire} \\
+\hline
+1.0 & 19/12/2013 & Cas d'utilisations, classes, description générale\\
+\hline
+\end{tabular}
+\end{figure}
+
+\renewcommand*{\glossaryname}{\section{Glossaire}}
+\deftranslation{Glossary}{Glossaire}
+%\addcontentsline{toc}{section}{Glossaire}
+\glsaddall
+\printglossaries
+
+\chapter{Besoins de l'utilisateur}
+
+\section{Exigences fonctionnelles}
+Cette section traite des exigences fonctionnelles du jeu. Elle est divisée en 
+plusieurs sous-sections : la gestion de l'\gls{equipe}, la gestion du 
+stade, la gestion des entrainements, la gestion des transferts, le management de l'équipe, l'inscription aux championnats et aux matches amicaux et le jeu sur le terrain.
+
+\subsection{En bref}
+Ce jeu permettra à des utilisateurs du monde entier de créer une équipe de 
+Quidditch et de la faire évoluer lors d'entrainements, de matches et de 
+championnats en réseau. Chaque utilisateur démarrera avec une équipe basique et 
+un simple terrain dans son stade, et aura la possibilité d'ajouter des 
+installations.
+Le jeu fournira un monde virtuel permettant d'engager des \gls{coach}s, d'acheter et de vendre des \gls{joueur}s, 
+et de gagner des équipements et de l'argent, notamment avec les 
+installations du stade.
+Les matchs seront joués en tour par tour, en suivant les règles officielles 
+du Quidditch.
+Pour participer à un championnat, l'utilisateur devra s'y inscrire et 
+jouera ensuite des matches fixés à une date prévue à l'avance.
+
+Pour décrire plus particulièrement ces exigences fonctionnelles, nous utiliserons des diagrammes de \gls{cas d'utilisation}. Notons que dans les cas d'utilisation qui vont suivre, les rubriques non spécifiées sont à prendre comme \textit{Néant}.
+
+% Numerotation des sous-sous-sections
+\setcounter{secnumdepth}{3}
+\input{launchusecase.tex}
+\input{gestionusecase.tex}
+\input{championnatusecase.tex}
+\input{gameusecase.tex}
+
+\section{Exigences non fonctionnelles}
+
+\input{utilisateur-exigences.tex}
+
+\section{Exigences de domaine}
+\input{utilisateur-domaine.tex}
+
+\chapter{Besoins du système}
+\section{Exigences fonctionnelles}
+Cette section décrira ce que le système doit être capable de faire. À nouveau, nous emploierons des cas d'utilisations pour décrire particulièrement les caractéristiques du système.
+\input{serverusecase.tex}
+\input{DescriptionUseCaseChampionshipServer.tex}
+
+\section{Exigences non fonctionnelles}
+\input{systeme-exigences.tex}
+
+\section{Design et fonctionnement du système}
+\input{systeme-design.tex}
+\input{terrain.tex}
+
+\appendix
+\printindex
+\listoffigures
+
+\end{document}

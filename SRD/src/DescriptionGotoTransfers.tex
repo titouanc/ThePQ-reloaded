@@ -1,0 +1,188 @@
+\documentclass[a4paper,11pt]{article}
+\usepackage[latin1]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[francais]{babel}
+\usepackage{lmodern}
+\title{\textbf{Description use case gestion : gotoTransfers}}
+\author{Chuck Norris}
+\begin{document}
+\maketitle
+\newpage
+
+%----------------
+\subsubsection{Aller aux Transferts}
+\label{UC:gotoTransfers}
+\paragraph{Relations avec d'autres "use case"}
+Étendu par \ref{UC:transfersHistory} et \ref{UC:seeMarket}.
+\paragraph{Pré-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{L'utilisateur est authentifié.}
+\end{list}
+\paragraph{Post-conditions}
+Néant.
+\paragraph{Cas général}
+L'utilisateur clique sur l'icône "Aller aux Transferts", et a ensuite la possibilité de voir son historique de transferts ou de voir le marché des transferts.
+\paragraph{Cas exceptionnels}
+Néant.
+
+\subsubsection{Voir l'historique des transferts}
+\label{UC:transfersHistory}
+\paragraph{Relations avec d'autres "use case"}
+Étend \ref{UC:gotoTransfers}.
+\paragraph{Pré-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{L'utilisateur se situe dans "aller aux transferts".}
+\end{list}
+\paragraph{Post-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{Affichage de l'historique de transferts de l'équipe de l'utilisateur.}
+\end{list}
+\paragraph{Cas général}
+L'utilisateur clique sur l'icône "voir l'historique des transferts" pour afficher l'historique de ses transferts. Cette historique renseigne, pour chaque transfert :
+\begin{itemize}
+\item{Sa date;}
+\item{S'il s'agit d'une vente ou d'un achat;}
+\item{Les gains/pertes;}
+\item{Les informations relatives au membre (âge, nom, aptitudes entre autres).}
+\end{itemize}
+\paragraph{Cas exceptionnels}
+Aucun joueur n'a encore été vendu, rien ne s'affiche tout simplement. 
+
+\subsubsection{Voir le marché des transferts}
+\label{UC:seeMarket}
+\paragraph{Relations avec d'autres "use case"}
+Étend \ref{UC:gotoTransfers}.\\
+Généralise \ref{UC:seeCoachmarket} et \ref{UC:seePlayerMarket}.
+\paragraph{Pré-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{L'utilisateur se situe dans "aller aux transferts"}.
+\end{list}
+\paragraph{Post-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{Une liste de l'ensemble des membres en vente apparait. }
+\end{list}
+\paragraph{Cas général}
+L'utilisateur choisit de voir le marché des transferts du jeu, qui se présente sous la forme d'une longue liste de membres (coach ou joueur donc) disponibles à l'achat/engagement.
+\paragraph{Cas exceptionnels}
+Néant.
+
+\subsubsection{Voir le marché des transferts des joueurs}
+\label{UC:seePlayerMarket}
+\paragraph{Relations avec d'autres "use case"}
+Spécialise \ref{UC:seeMarket}.\\
+Étendu par \ref{UC:putPlayerOnSale}, \ref{UC:buyPlayer} et \ref{UC:setFilter}.
+\paragraph{Pré-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{L'utilisateur a choisi de voir le marché des transfers.}
+\end{list}
+\paragraph{Post-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{L'utilisateur voit le marché des transfers concernant les joueurs.}
+\end{list}
+\paragraph{Cas général}
+L'utilisateur choisit de voir le marché de transfers des joueurs, qui apparait sous la forme d'une longue liste (l'ordre d'apparition par défaut dans la liste étant déterminé par la date d'expiration de la mise en vente; plus cette date est proche, plus haut dans la liste sera le joueur en vente, cet ordre peut être modifié par \ref{UC:setFilter}).\\
+Cette liste de joueurs mentionne évidemment les caractéristiques capitales d'un joueur : son âge, son nom, ses aptitudes, son salaire.
+\paragraph{Cas exceptionnels}
+Si aucun joueur n'est disponible à l'achat, rien n'apparait. 
+
+\subsubsection{Voir le marché des transferts des coaches}
+\label{UC:seeCoachMarket}
+\paragraph{Relations avec d'autres "use case"}
+Spécialise \ref{UC:seeMarket}.\\
+Étendu par \ref{UC:hireCoach}.
+\paragraph{Pré-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{L'utilisateur a choisi de voir le marché des transfers.}
+\end{list}
+\paragraph{Post-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{L'utilisateur voit le marché des transferts concernant les coaches. }
+\end{list}
+\paragraph{Cas général}
+L'utilisateur choisit de voir le marché de transferts des coaches, qui apparait sous forme de longue liste, l'ordre et la manière d'apparition sont expliqués en \ref{UC:seePlayerMarket}.
+\paragraph{Cas exceptionnels}
+Si aucun coach n'est disponible à l'engagement, rien n'apparait
+
+\subsubsection{Engager un coach}
+\label{UC:hireCoach}
+\paragraph{Relations avec d'autres "use case"}
+Étend \ref{UC:seeCoachMarket}.
+\paragraph{Pré-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{L'utilisateur se situe dans le marché des coaches.}
+\item{L'utilisateur a sélectionné un coach.}
+\item{L'équipe de l'utilisateur ne possède pas encore 5 coaches (= maximum).}
+\end{list}
+\paragraph{Post-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{L'équipe de l'utilisateur a engagé un coach supplémentaire.}
+\end{list}
+\paragraph{Cas général}
+En recherchant un coach dans le marché des coaches, l'utilisateur peut décider à tout moment d'engager un coach en cliquant sur une icône située sur la ligne d'apparition du coach voulu dans la liste des coaches disponibles. Notons donc qu'il ne s'agit pas d'un achat, il n'y a pas d'argent impliqué dans l'exécution de cette action. 
+\paragraph{Cas exceptionnels}
+Néant.
+
+\subsubsection{Modifier les filtres et l'ordre d'apparition.}
+\label{UC:setFilter}
+\paragraph{Relations avec d'autres "use case"}
+Étend \ref{UC:seeCoachMarket} et \ref{UC:seePlayerMarket}.
+\paragraph{Pré-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{Le filtre par défaut est : aucun}
+\item{L'ordre par défaut est : date d'expiration la plus proche.}
+\end{list}
+\paragraph{Post-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{La liste de membres (joueur ou coach rappelons-le) est actualisée pour correspondre au filtre et ordre voulus.}
+\end{list}
+\paragraph{Cas général}
+L'utilisateur se trouve dans le marché des transferts, peu importe que ce marché concerne les coaches ou les joueurs, et il peut à tout moment changer l'ordre d'apparitions des membres, en exigeant par exemple que les plus jeunes soient montrés en premiers, ou changer le filtre, décidant par exemple que seul les membres de moins de 30 ans soient visibles. Les exigences effectuées, la liste s'actualise (en fonction des exigences). 
+\paragraph{Cas exceptionnels}
+Aucun membre ne correspond à la combinaison d'exigences requise : rien n'apparait. 
+
+\subsubsection{Acheter/mettre une offre sur un joueur}
+\label{UC:buyPlayer}
+\paragraph{Relations avec d'autres "use case"}
+\paragraph{Pré-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{L'utilisateur se situe dans le marché des transfers des joueurs.}
+\item{Un joueur est sélectionné.}
+\item{L'équipe de l'utilisateur ne possède pas déjà le nombre maximal de joueurs que peut posséder une équipe.}
+\item{L'équipe de l'utilisateur possède les fonds nécessaires.}
+\item{Si enchère : l'utilisateur rentre l'enchère désirée qui doit être plus élevée que l'actuelle.}
+\end{list}
+\paragraph{Post-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{Si achat direct : l'équipe de l'utilisateur est constituée d'un joueur supplémentaire.}
+\item{Si vente "à l'enchère" : le nom de l'équipe de l'utilisateur est indiquée sur le joueur dans la liste du marché des transfers, signalant qu'il s'agit de l'équipe la plus offrande actuellement, et qui "remportera" le joueur si aucune autre enchère n'est mise avant la date d'expiration.}
+\end{list}
+\paragraph{Cas général}
+En recherchant des joueurs dans le marché des transferts des joueurs, l'utilisateur peut acheter ou mettre une enchère sur un joueur, dépendant du type d'achat qu'il s'agit (type déterminé par l'équipe vendeuse lors de la mise en vente, voir \ref{UC:putOnSale}). Si l'achat est un succès, le joueur est retiré du marché des transferts et ajouté à l'équipe de l'utilisateur. Si l'enchère est un succès, l'utilisateur remporte le joueur jusqu'à nouvelle enchère mise sur le joueur (notons que l'utilisateur ne peut enchérir sur un joueur sur lequel il a déjà enchéri). 
+\paragraph{Cas exceptionnels}
+Néant.
+
+\subsubsection{Mettre un joueur en vente}
+\label{UC:putPlayerOnSale}
+\paragraph{Relations avec d'autres "use case"}
+Étend \ref{UC:seePlayerMarket}.
+\paragraph{Pré-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{L'utilisateur se situe sur le marché des transferts.}
+\item{L'utilisateur sélectionne un joueur.}
+\item{L'utilisateur choisit le type de transfert : enchère ou vente directe.}
+\item{Dans les deux cas l'utilisateur indique le prix (de base/de vente).}
+\item{L'utilisateur a au moins 7 joueurs dans son équipe qui ne sont pas en vente.}
+\end{list}
+\paragraph{Post-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{Le joueur choisit est mis en vente avec les critères de l'utilisateur (type et prix).}
+\item{Ce joueur apparait dans le marché de transferts des joueurs. Le temps qu'il y reste est à déterminer.}
+\end{list}
+\paragraph{Cas général}
+L'utilisateur, situé dans le marché de transferts des joueurs, choisit l'option de mettre un joueur en vente. Il sélectionne le joueur parmi tous les joueurs de son équipe, et indique le type de vente ainsi que le prix. Le joueur mis en vente apparait alors dans le marché des transferts.
+\paragraph{Cas exceptionnels}
+Néant.
+%----------------
+
+\end{document}
+

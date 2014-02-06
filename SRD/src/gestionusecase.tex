@@ -1,0 +1,692 @@
+
+
+%--------------------
+\subsection{Gestion d'équipe}
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=\textwidth]{figures/UC-SquadView.eps}
+  \caption{\label{fig:UC:SquadView} Cas d'utilisation: gestion d'équipe}
+\end{figure}
+
+\subsubsection{Gestion d'équipe}
+\label{UC:squadView}
+\paragraph{Relations avec d'autres \gls{cas d'utilisation}s}
+Étendu par \ref{UC:selectMember}.
+\paragraph{Pré-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{L'\gls{utilisateur} est authentifié.}
+\end{list}
+\paragraph{Cas général}
+L'utilisateur décide d'obtenir un rapide aperçu de son effectif, et clique sur l'icône correspondant à "gestion d'équipe", ce qui a pour effet d'afficher une liste de membres de l'équipe, avec laquelle il peut interagir pour obtenir des informations concernant lesdits membres.
+\paragraph{Postconditions} Une liste de membres de l'équipe, englobant ainsi 
+les joueurs et les coaches, est affichée.
+
+\subsubsection{Sélectionner un membre}
+\label{UC:selectMember}
+\paragraph{Relations avec d'autres cas d'utilisations}
+Généralise les cas d'utilisation \ref{UC:selectCoach} et \ref{UC:selectPlayer}.
+\paragraph{Préconditions}
+\begin{itemize}
+	\item L'utilisateur vient du cas d'utilisation "gestion d'équipe".
+		  (\ref{UC:squadView}).
+	\item Et il clique sur un des membres de son équipe.
+\end{itemize}
+\paragraph{Cas général}
+L'utilisateur clique sur un des noms de la liste affichée après avoir choisi "gestion d'équipe", et obtient de plus amples informations sur ce membre. 
+\paragraph{Postcondition}
+Un membre est sélectionné, ce membre peut être soit un coach, soit un joueur, 
+et de nouvelles actions pour ce membre sont disponibles.
+
+\subsubsection{Sélectionner un coach}
+\label{UC:selectCoach}
+\paragraph{Relations avec d'autres cas d'utilisations}
+Spécialise \ref{UC:selectMember}.\\
+Étendu par \ref{UC:seeAptitudes} et \ref{UC:fire}. 
+\paragraph{Pré-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{L'utilisateur a sélectionné un membre, il s'agit d'un coach.}
+\end{list}
+\paragraph{Cas général}
+Voir cas d'utilisations \ref{UC:selectMember}.
+\paragraph{Post-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{De plus amples informations sont affichées concernant le coach sélectionné (âge, nom, salaire).}
+\item{Nouvelles actions disponibles.}
+\end{list}
+
+\subsubsection{Sélectionner un joueur}
+\label{UC:selectPlayer}
+\paragraph{Relations avec d'autres cas d'utilisations}
+Spécialise \ref{UC:selectMember}.\\
+Étendu par \ref{UC:seeAptitudes}, \ref{UC:fire} et \ref{UC:choosePosition}. 
+\paragraph{Pré-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{L'utilisateur a sélectionné un membre, il s'agit d'un joueur.}
+\end{list}
+\paragraph{Cas général}
+Voir cas d'utilisations \ref{UC:selectMember}.
+\paragraph{Post-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{De plus amples informations sont affichées concernant le joueur sélectionné (âge, nom salaire).}
+\item{Nouvelles actions disponibles.}
+\end{list}
+
+\subsubsection{Voir les aptitudes}
+\label{UC:seeAptitudes}
+\paragraph{Relations avec d'autres cas d'utilisations}
+Étend \ref{UC:selectCoach} et \ref{UC:selectPlayer}.
+\paragraph{Pré-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{L'utilisateur a sélectionné un membre.}
+\end{list}
+\paragraph{Cas général}
+Après avoir sélectionné un membre, l'utilisateur choisit d'afficher les aptitudes concernant ledit membre, en cliquant simplement sur une icône.
+\paragraph{Post-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{Les aptitudes spécifiques au membre sélectionné sont affichées.}
+\end{list} 
+
+\subsubsection{Licencier}
+\label{UC:fire}
+\paragraph{Relations avec d'autres cas d'utilisations}
+Étend \ref{UC:selectCoach} et \ref{UC:selectPlayer}.
+\paragraph{Pré-condition}
+L'utilisateur a sélectionné un membre.
+\paragraph{Cas général}
+Après avoir sélectionné un membre, l'utilisateur choisit de licencier ce membre en cliquant simplement sur une icône. Une petite fenêtre de confirmation apparaît, signalant que cette action est irréversible. 
+\paragraph{Post-condition}
+Le membre choisi est licencié de l'équipe, il ne fait donc plus partie de l'équipe, cette action est irréversible.
+
+\subsubsection{Choisir la position pour le prochain match}
+\label{UC:choosePosition}
+\paragraph{Relations avec d'autres cas d'utilisations}
+Étend \ref{UC:selectPlayer}.
+\paragraph{Pré-conditions}
+L'utilisateur a sélectionné un joueur.
+\paragraph{Cas général}
+La position choisie par l'utilisateur pour le joueur sélectionné n'est pas encore attribuée, c'est donc ce joueur qui remplira cette fonction tant qu'aucune modification n'est apportée par l'utilisateur.
+\paragraph{Cas exceptionnels}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{La position est déjà attribuée, dans ce cas l'utilisateur en est averti et peut décider de remplacer le joueur actuel par le joueur sélectionné.}
+\item{L'utilisateur met la position à "NULL" ce qui signifie que, jusqu'à modification ultérieure, le joueur sélectionné ne jouera pas le prochain match.}
+\end{list}
+\paragraph{Post-condition}
+Le joueur sélectionné est mis à la position choisie par l'utilisateur pour le prochain match. Cette action est réversible jusqu'audit match.
+%------------------
+
+\subsection{Gestion du stade}
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=\textwidth]{figures/UseCaseOverviewStadium.eps}
+  \caption{\label{fig:UC:stadiumManagement} Cas d'utilisation: gestion du stade}
+\end{figure}
+
+\subsubsection{Gestion du stade}
+\label{UC:stadiumView}
+\paragraph{Relations avec d'autres cas d'utilisations}
+Étendu par \ref{UC:selectSpot}.
+\paragraph{Pré-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{Le joueur est authentifié.}
+\end{list}
+\paragraph{Cas général}
+L'utilisateur clique sur l'icône "gestion du stade", ce qui affiche une liste d'endroits chacun spécifique à une installation, avec laquelle il peut interagir. 
+\paragraph{Post-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{Une liste d'endroits spécifiques à une installation est affichée.}
+\end{list}
+
+\subsubsection{Sélectionner un endroit}
+\label{UC:selectSpot}
+\paragraph{Relations avec d'autres cas d'utilisations}
+Étend \ref{UC:stadiumView}.\\
+Étendu par \ref{UC:upgrade}, \ref{UC:downgrade}, \ref{UC:setArticlePrice}, \ref{UC:setFoodPrice}, \ref{UC:curePlayer} et \ref{UC:setTicketPrice}.
+\paragraph{Pré-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{L'utilisateur a auparavant choisi "gestion du stade".}
+\item{L'équipe de l'utilisateur possède l'installation sélectionnée.}
+\end{list}
+\paragraph{Cas général}
+L'utilisateur choisit, parmi une liste d'endroits, un endroit particulier en cliquant sur un nom d'installation relié à cet endroit. Il aura alors la possibilité d'effectuer une série d'actions concernant l'installation relative à l'endroit. 
+\paragraph{Post-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{Un endroit est sélectionné, il s'agit d'un endroit supposé contenir soit un fanshop, soit un centre médical, soit un service d'alimentation, soit des tribunes.}
+\item{Si le fanshop est sélectionné : affiche le prix des articles.}
+\item{Si le service d'alimentation est sélectionné : affiche le prix des plats.}
+\item{Si la tribune est sélectionnée : affiche le nombre de place ainsi que le prix d'un ticket.}
+\item{En fonction de l'installation, des nouvelles actions sont disponibles.} 
+\end{list}
+N.B.: cette liste d'installations est sujette à des modifications ultérieures.
+
+\subsubsection{Améliorer / monter d'un niveau}
+\label{UC:upgrade}
+\paragraph{Relations avec d'autres cas d'utilisations}
+Étend \ref{UC:selectSpot}.
+\paragraph{Pré-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{Un endroit est sélectionné (peu importe lequel).}
+\item{Le niveau maximum de l'installation relative à l'endroit n'est pas atteint (à déterminer).}
+\item{L'équipe possède les fonds nécessaires.}
+\end{list}
+\paragraph{Cas général}
+L'utilisateur souhaite améliorer une installation, après avoir sélectionné l'endroit relatif à cette installation, il clique alors sur une icône "améliorer" ce qui augmente le niveau de l'installation de 1, et augmente ses bienfaits (argent gagné pour les services d'alimentations, fanshop; nombre de places pour les tribunes; soins prodigués pour le centre médical).
+\paragraph{Post-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{L'installation gagne un niveau (meilleures stats mais coûts d'entretiens plus élevés).}
+\end{list}
+
+\subsubsection{Diminuer d'un niveau}
+\label{UC:downgrade}
+\paragraph{Relations avec d'autres cas d'utilisations}
+Étend \ref{UC:selectSpot}.
+\paragraph{Pré-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{Un endroit est sélectionné.}
+\item{Le niveau de l'installation est plus grand que 0.}
+\end{list}
+\paragraph{Cas général}
+L'utilisateur souhaite diminuer le niveau de son installation (pour mauvaise situation financière par exemple), il clique alors sur l'icône "dégrader", ce qui diminue le niveau de l'installation de 1. 
+\paragraph{Post-conditions}
+Diminue le niveau de l'installation de 1 (équipe gagne un pourcentage des fonds déversés pour avoir atteint ce niveau, les coûts d'entretien diminuent, mais les stats baissent).
+
+
+\subsubsection{Choisir le prix des articles}
+\label{UC:setArticlePrice}
+\paragraph{Relations avec d'autres cas d'utilisations}
+Étend \ref{UC:selectSpot}.
+\paragraph{Pré-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{Le fanshop est sélectionné.}
+\item{Le prix actuel des articles est affiché.}
+\end{list}
+\paragraph{Cas général}
+L'utilisateur souhaite modifier le prix des articles de son fanshop, il clique donc sur l'icône "choisir le prix des articles" et rentre un entier (qui sera sans doute limité). 
+\paragraph{Cas exceptionnels}
+L'utilisateur rentre 0 : c'est la banqueroute. 
+\paragraph{Post-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{Le prix des articles est mis à jour selon ce que l'utilisateur a choisi.}
+\end{list}
+
+
+\subsubsection{Soigner un joueur}
+\label{UC:curePlayer}
+\paragraph{Relations avec d'autres cas d'utilisations}
+Étend \ref{UC:selectSpot}.
+\paragraph{Pré-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{Un joueur au moins est blessé.}
+\item{Le \gls{manager} possède un centre médical}
+\item{Le centre médical est sélectionné.}
+\end{list}
+\paragraph{Cas général}
+L'utilisateur souhaite soigner un joueur blessé, après avoir sélectionné le centre médical il clique donc sur l'icône "soigner joueur", il choisit un joueur blessé parmi une liste de joueurs, ce qui a pour effet de le guérir (c'est magique).
+\paragraph{Post-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{Le joueur est soigné.}
+\end{list}
+
+\subsubsection{Choisir le prix des plats}
+\label{UC:setFoodPrice}
+\paragraph{Relations avec d'autres cas d'utilisations}
+Étend \ref{UC:selectSpot}.
+\paragraph{Pré-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{Le service d'alimentation est sélectionné.}
+\item{Le prix actuel des plats est affiché.}
+\end{list}
+\paragraph{Cas général}
+L'utilisateur souhaite modifier le prix des plats de son service d'alimentation, il clique donc sur l'icône "choisir le prix des plats" et rentre un entier.
+\paragraph{Cas exceptionnels}
+L'utilisateur rentre 0 : les fans deviennent obèses. 
+\paragraph{Post-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{Le prix des plats est mis à jour selon ce que l'utilisateur a choisi.}
+\end{list}
+
+\subsubsection{Choisir le prix des tickets}
+\label{UC:setTicketPrice}
+\paragraph{Relations avec d'autres cas d'utilisations}
+Étend \ref{UC:selectSpot}.
+\paragraph{Pré-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{La tribune est sélectionnée.}
+\item{Le prix actuel tickets est affiché.}
+\item{Le nombre de places est affiché.}
+\end{list}
+\paragraph{Cas général}
+L'utilisateur souhaite modifier le prix des tickets de ses tribunes, il clique donc sur l'icône "choisir le prix des tickets" et rentre un entier.
+\paragraph{Post-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{Le prix des tickets est mis à jour selon ce que l'utilisateur a choisi.}
+\end{list}
+%--------------
+
+\subsection{Gestion des entrainements}
+\label{UC:trainingManagement}
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=\textwidth]{figures/UC-Training.eps}
+   \caption{\label{fig:UC:trainingManagement} Cas d'utilisation: gestion des entrainements}
+\end{figure}
+
+\subsubsection{Gestion des entrainements}
+\label{UC:trainingManagement}
+\paragraph{Relations avec d'autres cas d'utilisations}
+Étendu par \ref{UC:createTraining}, \ref{UC:addPlayerToGroup}, \ref{UC:TrainingHistory} et \ref{UC:selectTrainingGroup}.
+\paragraph{Pré-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{Le joueur est authentifié.}
+\end{list}
+\paragraph{Cas général}
+L'utilisateur souhaite gérer ses entrainements, il clique donc sur "gestion des entrainements", ce qui lui permet de voir s'afficher d'une part les informations concernant ses groupes d'entrainement, c'est-à-dire les aptitudes que ce groupe améliore, le coach qui dirige l'entrainement, ainsi que les joueurs qu'il a précédemment assignés à ce groupe; et d'autre part les joueurs qu'il n'a encore assigné à aucun groupe. A partir de là, l'utilisateur peut ajouter des joueurs à un groupe d'entrainements, sélectionner un groupe d'entrainement et créer un nouveau groupe d'entrainement. 
+\paragraph{Cas exceptionnels}
+Aucun groupe d'entrainement n'a encore été créé, ne s'affiche en conséquence que l'icône permettant de créer un groupe d'entrainement. 
+\paragraph{Post-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{Affichage d'informations relatives à la gestion des entrainements (les groupes d'entrainements, les joueurs non assignés à un groupe).}
+\end{list}
+
+\subsubsection{Créer un groupe d'entrainement}
+\label{UC:createTraining}
+\paragraph{Relations avec d'autres cas d'utilisations}
+Étend \ref{UC:trainingManagement}.\\
+Inclut \ref{UC:chooseTrainingCoach}, \ref{UC:chooseAptitudesTrained} et \ref{UC:addPlayerToGroup}.
+\paragraph{Pré-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{L'utilisateur à précédemment choisit "gestion des entrainements".}
+\item{Il y a moins de 3 groupes d'entrainements déjà créés.}
+\end{list}
+\paragraph{Cas général}
+Après avoir sélectionner "gestion des entrainements", si l'utilisateur choisit de créer un nouveau groupe d'entrainement, il indique les informations nécessaires à la création de ce nouveau groupe, à savoir le coach, les joueurs et les aptitudes entrainées. Si ni le coach choisi, ni les joueurs assignés, ne sont déjà assignés à un groupe, le groupe est créé normalement.
+\paragraph{Cas exceptionnels}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{Si le coach choisi est déjà assigné à un autre groupe, l'utilisateur devra d'abord indiquer un autre coach pour l'autre groupe, si cela fonctionne, le coach voulu est assigné au nouvel entrainement. }
+\item{Si, par contre, l'utilisateur ne choisit pas un coach pour remplacer le coach voulu pour l'autre groupe, la création d'un nouveau groupe d'entrainement échoue et le joueur revient à "aperçu des entraînements". }
+\item{Si un jouer sélectionné est déjà assigné à un autre groupe, le système l'indique à l'utilisateur, et lui demande de confirmer. La confirmation impliquera que le joueur sera assigné à ce nouveau groupe, et plus à l'ancien. }
+\item{L'utilisateur peut décider de n'ajouter aucun joueur à ce groupe, il lui suffira dès lors d'assigner des joueurs plus tard, via "ajouter des joueurs à un groupe" depuis "aperçu des entraînements" ou depuis "sélectionner un groupe d'entrainement". }
+\end{list}
+\paragraph{Post-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{L'utilisateur a créé un nouveau groupe d'entrainement, dont il a spécifié le coach, les joueurs assignés et les aptitudes entrainées.}
+\end{list}
+
+\subsubsection{Choisir les joueurs d'un groupe d'entrainement}
+\label{UC:addPlayerToGroup}
+\paragraph{Relations avec d'autres cas d'utilisations}
+Étend \ref{UC:trainingManagement}.\\
+Est inclus par \ref{UC:createTraining}.
+\paragraph{Pré-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{L'utilisateur se situe dans "gestion des entrainements" ou "créer un groupe d'entrainement ou "sélectionner un groupe".}
+\end{list}
+\paragraph{Cas général}
+L'utilisateur sélectionne un joueur parmi sa liste de joueurs, et ajoute ce joueur au groupe spécifié, si ce joueur n'est pas assigné à un autre groupe. Sinon, voir "cas exceptionnels". 
+\paragraph{Cas exceptionnels}
+Voir les cas exceptionnels pour "créer un groupe d'entrainement" (\ref{UC:createTraining}) dans le cas des joueurs sélectionnés.
+\paragraph{Post-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{Le joueur sélectionné est assigné au nouveau groupe d'entrainement choisi par l'utilisateur.}
+\end{list}
+
+\subsubsection{Voir l'historique des rapports}
+\label{UC:TrainingHistory}
+\paragraph{Relations avec d'autres cas d'utilisations}
+Étend \ref{UC:trainingManagement}
+\paragraph{Pré-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{L'utilisateur se situe dans "gestion des entrainements".}
+\item{Au moins un entrainement a déjà été donné.}
+\end{list}
+\paragraph{Cas général}
+L'utilisateur souhaite s'informer sur l'efficacité des groupes d'entraînements qu'il a créé, il lui suffit donc de cliquer sur l'icône "voir l'historique des rapports" depuis "gestion des entrainements" pour obtenir des informations sur les précédents entraînements donnés. Lesdites informations renseignent entre autres sur les aptitudes gagnées des joueurs, des coaches, les joueurs éventuellement blessés, et la rentabilité globale d'un groupe d'entrainement. 
+\paragraph{Post-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{Affiche l'historiques des rapports des précédents entrainements.}
+\end{list}
+
+\subsubsection{Sélectionner un groupe d'entrainement}
+\label{UC:selectTrainingGroup}
+\paragraph{Relations avec d'autres cas d'utilisations}
+Étend \ref{UC:trainingManagement}.\\
+Étendu par \ref{UC:chooseTrainingCoach}, \ref{UC:chooseAptitudesTrained}.
+\paragraph{Pré-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{L'utilisateur se situe dans "gestion des entrainements."}
+\item{Au moins un groupe d'entrainement à déjà été créé. Si ce n'est pas le cas, cette action est impossible.}
+\end{list}
+\paragraph{Cas général}
+L'utilisateur sélectionne un groupe d'entrainement parmi une liste des groupes qu'il a précédemment créés. Il peut ensuite effectuer une série de nouvelles actions relatives à ce groupe d'entrainement (modifier le coach, les aptitudes entrainées).
+\paragraph{Post-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{Un groupe d'entrainement est sélectionné, l'utilisateur peut interagir avec ce groupe.}
+\end{list}
+
+\subsubsection{Choisir les aptitudes entrainées}
+\label{UC:chooseAptitudesTrained}
+\paragraph{Relations avec d'autres cas d'utilisations}
+Étend \ref{UC:createTraining}, \ref{UC:selectTrainingGroup}.
+\paragraph{Pré-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{L'utilisateur crée un groupe d'entrainement ou a sélectionné un groupe d'entrainement.}
+\end{list}
+\paragraph{Cas général}
+L'utilisateur sélectionne un nombre d'aptitudes (à déterminer) parmi toutes les aptitudes relatives aux joueurs (exceptés l'expérience et le potentiel) qu'un groupe entraine et valide la combinaison. 
+\paragraph{Post-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{Le groupe d'entrainement dont il s'agit entraine dorénavant les aptitudes choisies par l'utilisateur.}
+\end{list}
+
+\subsubsection{Choisir le coach}
+\label{UC:chooseTrainingCoach}
+\paragraph{Relations avec d'autres cas d'utilisations}
+Étend \ref{UC:createTraining}, \ref{UC:selectTrainingGroup}.
+\paragraph{Pré-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{L'utilisateur a sélectionné un groupe d'entrainement ou crée un nouveau groupe.}
+\end{list}
+\paragraph{Cas général}
+L'utilisateur clique sur l'icône "modifier le coach" après avoir sélectionné un groupe d'entrainement (ou dans le cas de la création d'un entrainement, se voit obligé de choisir un coach). Il choisit ensuite un nouveau coach parmi une liste des coaches de son équipe. Un nouveau coach est donc assigné au groupe si "tout se passe bien".
+\paragraph{Cas exceptionnels}
+Il faut effectivement préciser si "tout se passe bien" en post-condition, car il se peut que cela soit impossible de modifier le coach. Voir les cas d'exceptions pour "créer un groupe d'entraînement" (\ref{UC:createTraining}).
+\paragraph{Post-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{Un nouveau coach est assigné au groupe d'entrainement si "tout se passe bien".}
+\end{list}
+
+%----------------
+
+\subsubsection{Aller aux Transferts}
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=\textwidth]{figures/UseCaseGotoTransfers.eps}
+   \caption{\label{fig:UC:gotoTransfers} Cas d'utilisation: aller aux transferts}
+\end{figure}
+
+\label{UC:gotoTransfers}
+\paragraph{Relations avec d'autres cas d'utilisations}
+Étendu par \ref{UC:transfersHistory} et \ref{UC:seeMarket}.
+\paragraph{Pré-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{L'utilisateur est authentifié.}
+\end{list}
+\paragraph{Cas général}
+L'utilisateur clique sur l'icône "Aller aux Transferts", et a ensuite la possibilité de voir son historique de transferts ou de voir le marché des transferts.
+
+\subsubsection{Voir l'historique des transferts}
+\label{UC:transfersHistory}
+\paragraph{Relations avec d'autres cas d'utilisations}
+Étend \ref{UC:gotoTransfers}.
+\paragraph{Pré-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{L'utilisateur se situe dans "aller aux transferts".}
+\end{list}
+\paragraph{Cas général}
+L'utilisateur clique sur l'icône "voir l'historique des transferts" pour afficher l'historique de ses transferts. Cet historique renseigne, pour chaque transfert :
+\begin{itemize}
+\item{Sa date;}
+\item{S'il s'agit d'une vente ou d'un achat;}
+\item{Les gains/pertes;}
+\item{Les informations relatives au membre (âge, nom, aptitudes entre autres).}
+\end{itemize}
+\paragraph{Cas exceptionnels}
+Aucun joueur n'a encore été vendu, rien ne s'affiche tout simplement. 
+\paragraph{Post-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{Affichage de l'historique de transferts de l'équipe de l'utilisateur.}
+\end{list}
+
+\subsubsection{Voir le marché des transferts}
+\label{UC:seeMarket}
+\paragraph{Relations avec d'autres cas d'utilisations}
+Étend \ref{UC:gotoTransfers}.\\
+Généralise \ref{UC:seeCoachMarket} et \ref{UC:seePlayerMarket}.
+\paragraph{Pré-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{L'utilisateur se situe dans "aller aux transferts"}.
+\end{list}
+\paragraph{Cas général}
+L'utilisateur choisit de voir le marché des transferts du jeu, qui se présente sous la forme d'une longue liste de membres (coach ou joueur donc) disponibles à l'achat/engagement.
+\paragraph{Post-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{Une liste de l'ensemble des membres en vente apparaît. }
+\end{list}
+
+\subsubsection{Voir le marché des transferts des joueurs}
+\label{UC:seePlayerMarket}
+\paragraph{Relations avec d'autres cas d'utilisations}
+Spécialise \ref{UC:seeMarket}.\\
+Étendu par \ref{UC:putPlayerOnSale}, \ref{UC:buyPlayer} et \ref{UC:setFilter}.
+\paragraph{Pré-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{L'utilisateur a choisi de voir le marché des transferts.}
+\end{list}
+\paragraph{Cas général}
+L'utilisateur choisit de voir le marché de transferts des joueurs, qui apparaît sous la forme d'une longue liste (l'ordre d'apparition par défaut dans la liste étant déterminé par la date d'expiration de la mise en vente; plus cette date est proche, plus haut dans la liste sera le joueur en vente, cet ordre peut être modifié par \ref{UC:setFilter}).\\
+Cette liste de joueurs mentionne évidemment les caractéristiques capitales d'un joueur : son âge, son nom, ses aptitudes, son salaire.
+\paragraph{Cas exceptionnels}
+Si aucun joueur n'est disponible à l'achat, rien n'apparaît. 
+\paragraph{Post-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{L'utilisateur voit le marché des transferts concernant les joueurs.}
+\end{list}
+
+\subsubsection{Voir le marché des transferts des coaches}
+\label{UC:seeCoachMarket}
+\paragraph{Relations avec d'autres cas d'utilisations}
+Spécialise \ref{UC:seeMarket}.\\
+Étendu par \ref{UC:hireCoach}.
+\paragraph{Pré-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{L'utilisateur a choisi de voir le marché des transferts}
+\end{list}
+\paragraph{Cas général}
+L'utilisateur choisit de voir le marché de transferts des coaches, qui apparaît sous forme de longue liste, l'ordre et la manière d'apparition sont expliqués en \ref{UC:seePlayerMarket}.
+\paragraph{Cas exceptionnels}
+Si aucun coach n'est disponible à l'engagement, rien n'apparaît.
+\paragraph{Post-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{L'utilisateur voit le marché des transferts concernant les coaches. }
+\end{list}
+
+\subsubsection{Engager un coach}
+\label{UC:hireCoach}
+\paragraph{Relations avec d'autres cas d'utilisations}
+Étend \ref{UC:seeCoachMarket}.
+\paragraph{Pré-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{L'utilisateur se situe dans le marché des coachs.}
+\item{L'utilisateur a sélectionné un coach.}
+\item{L'équipe de l'utilisateur ne possède pas encore 5 coachs (= maximum).}
+\end{list}
+\paragraph{Cas général}
+En recherchant un coach dans le marché des coachs, l'utilisateur peut décider à tout moment d'engager un coach en cliquant sur une icône située sur la ligne d'apparition du coach voulu dans la liste des coaches disponibles. Notons donc qu'il ne s'agit pas d'un achat, il n'y a pas d'argent impliqué dans l'exécution de cette action. 
+\paragraph{Post-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{L'équipe de l'utilisateur a engagé un coach supplémentaire.}
+\end{list}
+
+\subsubsection{Modifier les filtres et l'ordre d'apparition.}
+\label{UC:setFilter}
+\paragraph{Relations avec d'autres cas d'utilisations}
+Étend \ref{UC:seeCoachMarket} et \ref{UC:seePlayerMarket}.
+\paragraph{Pré-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{Le filtre par défaut est : aucun}
+\item{L'ordre par défaut est : date d'expiration la plus proche.}
+\end{list}
+\paragraph{Cas général}
+L'utilisateur se trouve dans le marché des transferts, peu importe que ce marché concerne les coachs ou les joueurs, et il peut à tout moment changer l'ordre d'apparition des membres, en exigeant par exemple que les plus jeunes soient montrés en premier, ou changer le filtre, décidant par exemple que seuls les membres de moins de 30 ans soient visibles. Les exigences effectuées, la liste s'actualise (en fonction des exigences). 
+\paragraph{Cas exceptionnels}
+Aucun membre ne correspond à la combinaison d'exigences requise : rien n'apparaît. 
+\paragraph{Post-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{La liste de membres (joueur ou coach rappelons-le) est actualisée pour correspondre au filtre et ordre voulus.}
+\end{list}
+
+\subsubsection{Acheter/mettre une offre sur un joueur}
+\label{UC:buyPlayer}
+\paragraph{Relations avec d'autres cas d'utilisations}
+\paragraph{Pré-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{L'utilisateur se situe dans le marché des transferts des joueurs.}
+\item{Un joueur est sélectionné.}
+\item{L'équipe de l'utilisateur ne possède pas déjà le nombre maximal de joueurs que peut posséder une équipe.}
+\item{L'équipe de l'utilisateur possède les fonds nécessaires.}
+\item{Si enchère : l'utilisateur rentre l'enchère désirée qui doit être plus élevée que l'actuelle.}
+\end{list}
+\paragraph{Cas général}
+En recherchant des joueurs dans le marché des transferts des joueurs, l'utilisateur peut acheter ou mettre une enchère sur un joueur, dépendant du type d'achat qu'il s'agit (type déterminé par l'équipe vendeuse lors de la mise en vente, voir \ref{UC:putPlayerOnSale}). Si l'achat est un succès, le joueur est retiré du marché des transferts et ajouté à l'équipe de l'utilisateur. Si l'enchère est un succès, l'utilisateur remporte le joueur jusqu'à nouvelle enchère mise sur le joueur (notons que l'utilisateur ne peut enchérir sur un joueur sur lequel il a déjà enchéri). 
+\paragraph{Post-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{Si achat direct : l'équipe de l'utilisateur est constituée d'un joueur supplémentaire.}
+\item{Si vente "à l'enchère" : le nom de l'équipe de l'utilisateur est indiquée sur le joueur dans la liste du marché des transferts, signalant qu'il s'agit de l'équipe la plus offrante actuellement, et qui "remportera" le joueur si aucune autre enchère n'est mise avant la date d'expiration.}
+\end{list}
+
+\subsubsection{Mettre un joueur en vente}
+\label{UC:putPlayerOnSale}
+\paragraph{Relations avec d'autres cas d'utilisations}
+Étend \ref{UC:seePlayerMarket}.
+\paragraph{Pré-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{L'utilisateur se situe sur le marché des transferts.}
+\item{L'utilisateur sélectionne un joueur.}
+\item{L'utilisateur choisit le type de transfert : enchère ou vente directe.}
+\item{Dans les deux cas l'utilisateur indique le prix (de base/de vente).}
+\item{L'utilisateur a au moins 7 joueurs dans son équipe qui ne sont pas en vente.}
+\end{list}
+\paragraph{Cas général}
+L'utilisateur, situé dans le marché de transferts des joueurs, choisit l'option de mettre un joueur en vente. Il sélectionne le joueur parmi tous les joueurs de son équipe, et indique le type de vente ainsi que le prix. Le joueur mis en vente apparaît alors dans le marché des transferts.
+\paragraph{Post-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{Le joueur choisi est mis en vente avec les critères de l'utilisateur (type et prix).}
+\item{Ce joueur apparaît dans le marché de transferts des joueurs. Le temps qu'il y reste est à déterminer.}
+\end{list}
+
+%----------------
+\subsection{Management de l'équipe}
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=\textwidth]{figures/UseCaseGotoSquadManagement.eps}
+   \caption{\label{fig:UC:gotoManagement} Cas d'utilisation: management de l'équipe}
+\end{figure}
+
+\subsubsection{Aller au Management de l'équipe}
+\label{UC:gotoManagement}
+\paragraph{Relations avec d'autres cas d'utilisations}
+Étendu par \ref{UC:gotoFunds}, \ref{UC:gotoSponsor} et \ref{UC:gotoGear}.
+\paragraph{Pré-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{L'utilisateur est authentifié.}
+\end{list}
+\paragraph{Cas général}
+Depuis l'écran d'accueil, l'utilisateur clique sur l'icône "aller au Management de l'équipe", ce qui a pour effet d'afficher de nouvelles actions disponibles : "aller au Sponsor Management", "aller au Management de l'équipement", "aller aux finances".
+\paragraph{Post-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{L'utilisateur a de nouvelles actions : "aller au Sponsor Management", "aller au Management de l'équipement", "aller aux finances".}
+\end{list}
+
+\subsubsection{Aller au Sponsor Management}
+\label{UC:gotoSponsor}
+\paragraph{Relations avec d'autres cas d'utilisations}
+Étend \ref{UC:gotoManagement}.\\
+Étendu par \ref{UC:getNewSponsor}.
+\paragraph{Pré-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{L'utilisateur se situe dans le Management de l'équipe.}
+\end{list}
+\paragraph{Cas général}
+L'utilisateur, à partir de l'accueil du Management de l'équipe, choisit d'aller au Management des sponsors, ce qui a pour effet d'afficher le sponsor actuel, et de permettre à l'utilisateur d'obtenir de nouveaux sponsors. 
+\paragraph{Cas exceptionnels}
+L'équipe de l'utilisateur n'a aucun sponsor : rien n'est affiché. 
+\paragraph{Post-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{Affichage du(des) sponsor(s) actuel(s).}
+\item{L'utilisateur a une nouvelle action : obtenir un nouveau sponsor.}
+\end{list}
+
+\subsubsection{Obtenir un nouveau sponsor}
+\label{UC:getNewSponsor}
+\paragraph{Relations avec d'autres cas d'utilisations}
+Étend \ref{UC:gotoSponsor}
+\paragraph{Pré-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{L'utilisateur se situe dans le Sponsor Management.}
+\end{list}
+\paragraph{Cas général}
+L'utilisateur choisit d'obtenir un nouveau sponsor à partir de "Sponsor Management". Si l'équipe de l'utilisateur remplit les conditions nécessaires requises par le sponsor souhaité, l'équipe de l'utilisateur obtient un nouveau sponsor. 
+\paragraph{Cas exceptionnels}
+L'équipe ne remplit pas les conditions nécessaires, elle ne peut en conséquence pas acquérir le sponsor. 
+\paragraph{Post-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{Une liste de sponsors disponibles s'affiche, chacun requérant des critères qui lui sont propres pour qu'il accepte de sponsoriser une équipe (une sponsorisation revenant à une entrée de revenus hebdomadaire).}
+\item{L'utilisateur obtient un nouveau sponsor uniquement si l'équipe dudit utilisateur remplit les critères du sponsor (popularité, niveau d'une installation, etc.).}
+\end{list}
+
+\subsubsection{Aller au Management de l'équipement}
+\label{UC:gotoGear}
+\paragraph{Relations avec d'autres cas d'utilisations}
+Étend \ref{UC:gotoManagement}\\
+Étendu par \ref{UC:selectGear}.
+\paragraph{Pré-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{L'utilisateur se situe dans le Management de l'équipe.}
+\end{list}
+\paragraph{Cas général}
+À partir du Management de l'équipe, l'utilisateur choisit de gérer les équipements de son équipe, et voit s'afficher une liste d'équipements possibles. Ces équipements sont pour l'instant limités à une robe-maillot, un balai, et une batte. Ces équipements sont donc des classes d'équipements, l'utilisateur peut acheter de nouveaux types de ces classes, et améliorer les aptitudes de ses joueurs, l'aptitude vitesse par exemple ne dépend que des balais des joueurs, et en achetant un type de balai de qualité plus élevée (donc plus cher) la vitesse est directement augmentée !
+\paragraph{Post-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{Affichage d'une liste de type d'équipements.}
+\end{list}
+
+ \subsubsection{Sélectionner un équipement}
+\label{UC:selectGear}
+\paragraph{Relations avec d'autres cas d'utilisations}
+Étend \ref{UC:gotoGear}.\\
+Étendu par \ref{UC:buyGear}.
+\paragraph{Pré-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{L'utilisateur se situe dans le management des équipements, et voit donc une liste de classe d'équipements.}
+\end{list}
+\paragraph{Cas général}
+L'utilisateur sélectionne une classe d'équipement parmi la liste affichée dans l'accueil du management de l'équipement.
+\paragraph{Post-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{L'utilisateur a sélectionné une classe d'équipement (robe-maillot, balais ou batte).}
+\item{Affichage des caractéristiques du type de la classe d'équipement actuel (aptitudes influencées, prix, durée de vie, etc.). Une même équipe ne peut donc posséder qu'un seul type d'équipement par classe.}
+\end{list}
+
+\subsubsection{Acheter un nouveau type d'équipement.}
+\label{UC:buyGear}
+\paragraph{Relations avec d'autres cas d'utilisations}
+Étend \ref{UC:selectGear}.
+\paragraph{Pré-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{L'utilisateur a sélectionné une classe d'équipement.}
+\end{list}
+\paragraph{Cas général}
+L'utilisateur achète un nouveau type d'équipement (correspondant donc à la classe sélectionnée précédemment) parmi la liste de type d'équipements montrée. L'équipement acheté remplace l'équipement courant. 
+\paragraph{Post-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{Affichage de tous les types d'équipements disponibles à l'achat correspondant à la classe choisie.}
+\item{L'utilisateur choisit s'il le souhaite un type d'équipement et effectue l'achat.}
+\item{Si un nouveau type d'une classe d'équipement est achetée, détruit l'ancien type possédé.}
+\end{list}
+
+\subsubsection{Aller aux finances}
+\label{UC:gotoFunds}
+\paragraph{Relations avec d'autres cas d'utilisations}
+Étend \ref{UC:gotoManagement}.
+\paragraph{Pré-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{L'utilisateur se situe dans le management de l'équipe.}
+\end{list}
+\paragraph{Cas général}
+L'utilisateur choisit de se rendre aux finances de son équipe, et voit s'afficher une série d'informations concernant le budget de son équipe.
+\paragraph{Post-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{Affichage de plusieurs informations relatives aux finances de l'équipe : les entrées/payements récents (vente/achat de joueurs, achat d'équipements, salaires payés, entretiens d'installations, etc.) et la balance budgétaire de l'équipe.}
+\end{list}
+

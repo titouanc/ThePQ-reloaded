@@ -1,0 +1,144 @@
+\documentclass[a4paper,11pt]{article}
+\usepackage[latin1]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[francais]{babel}
+\usepackage{lmodern}
+\title{\textbf{Description use case gestion : gotoTransfers}}
+\author{Chuck Norris}
+\begin{document}
+\maketitle
+\newpage
+
+%----------------
+\subsection{Management de l'équipe}
+
+\subsubsection{Aller au Management de l'équipe}
+\label{UC:gotoManagement}
+\paragraph{Relations avec d'autres "use case"}
+Étendu par \ref{UC:gotoFunds}, \ref{UC:gotoSponsor} et \ref{UC:gotoGear}.
+\paragraph{Pré-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{L'utilisateur est authentifié.}
+\end{list}
+\paragraph{Post-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{L'utilisateur a de nouvelles actions : "aller au Sponsor Management", "aller au Management de l'équipement", "aller aux finances".}
+\end{list}
+\paragraph{Cas général}
+Depuis l'écran d'accueil, l'utilisateur clique sur l'icône "aller au Management de l'équipe", ce qui a pour effet d'afficher de nouvelles actions disponibles : "aller au Sponsor Management", "aller au Management de l'équipement", "aller aux finances".
+\paragraph{Cas exceptionnels}
+Néant.
+
+\subsubsection{Aller au Sponsor Management}
+\label{UC:gotoSponsor}
+\paragraph{Relations avec d'autres "use case"}
+Étend \ref{UC:gotoManagement}.\\
+Étendu par \ref{UC:getNewSponsor}.
+\paragraph{Pré-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{L'utilisateur se situe dans le Management de l'équipe.}
+\end{list}
+\paragraph{Post-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{Affichage du(des) sponsor(s) actuel(s).}
+\item{L'utilisateur a une nouvelle action : obtenir un nouveau sponsor.}
+\end{list}
+\paragraph{Cas général}
+L'utilisateur, à partir de l'accueil du Management de l'équipe, choisit d'aller au Management des sponsors, ce qui a pour effet d'afficher le sponsor actuel, et de permettre à l'utilisateur d'obtenir de nouveaux sponsors. 
+\paragraph{Cas exceptionnels}
+L'équipe de l'utilisateur n'a aucun sponsor : rien n'est affiché. 
+
+\subsubsection{Obtenir un nouveau sponsor}
+\label{UC:getNewSponsor}
+\paragraph{Relations avec d'autres "use case"}
+Étend \ref{UC:gotoSponsor}
+\paragraph{Pré-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{L'utilisateur se situe dans le Sponsor Management.}
+\end{list}
+\paragraph{Post-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{Une liste de sponsors disponibles s'affiche, chacun requérant des critères qui lui sont propres pour qu'il accepte de sponsoriser une équipe (une sponsorisation revenant à une entrée de revenus hebdomadaire).}
+\item{L'utilisateur obtient un nouveau sponsor uniquement si l'équipe dudit utilisateur rempli les critères du sponsor (popularité, niveau d'une installation, etc.).}
+\end{list}
+\paragraph{Cas général}
+L'utilisateur choisit d'obtenir un nouveau sponsor à partir de "Sponsor Management". Si l'équipe de l'utilisateur rempli les conditions nécessaires requises par le sponsor souhaité, l'équipe de l'utilisateur obtient un nouveau sponsor. 
+\paragraph{Cas exceptionnels}
+L'équipe ne rempli pas les conditions nécessaires, elle ne peut en conséquence pas acquérir le sponsor. 
+
+\subsubsection{Aller au Management de l'équipement}
+\label{UC:gotoGear}
+\paragraph{Relations avec d'autres "use case"}
+Étend \ref{UC:gotoManagement}\\
+Étendu par \ref{UC:selectGear}.
+\paragraph{Pré-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{L'utilisateur se situe dans le Management de l'équipe.}
+\end{list}
+\paragraph{Post-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{Affichage d'une liste de type d'équipements.}
+\end{list}
+\paragraph{Cas général}
+À partir du Management de l'équipe, l'utilisateur choisit de gérer les équipements de son équipe, et voit s'afficher une liste d'équipements possibles. Ces équipements sont pour l'instant limités à une robe-maillot, un balais, et une batte. Ces équipements sont donc des classes d'équipements, l'utilisateur peut acheter de nouveaux type de ces classes, et améliorer les aptitudes de ses joueurs, l'aptitude vitesse par exemple ne dépend que du balais des joueurs, et en achetant un type de balais de qualité plus élevée (donc plus cher) la vitesse est directement augmentée !
+\paragraph{Cas exceptionnels}
+Néant.
+
+ \subsubsection{Sélectionner un équipement}
+\label{UC:selectGear}
+\paragraph{Relations avec d'autres "use case"}
+Étend \ref{UC:gotoGear}.\\
+Étendu par \ref{UC:buyGear}.
+\paragraph{Pré-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{L'utilisateur se situe dans le management des équipements, et voit donc une liste de classe d'équipements.}
+\end{list}
+\paragraph{Post-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{L'utilisateur a sélectionné une classe d'équipement (robe-maillot, balais ou batte).}
+\item{Affichage des caractéristiques du type de la classe d'équipement actuel (aptitudes influencées, prix, durée de vie, etc.). Une même équipe ne peut donc posséder qu'un seul type d'équipement par classe.}
+\end{list}
+\paragraph{Cas général}
+L'utilisateur sélectionne une classe d'équipement parmi la liste affichée dans l'accueil du management de l'équipement.
+\paragraph{Cas exceptionnels}
+Néant.
+
+\subsubsection{Acheter un nouveau type d'équipement.}
+\label{UC:buyGear}
+\paragraph{Relations avec d'autres "use case"}
+Étend \ref{UC:selectGear}.
+\paragraph{Pré-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{L'utilisateur a sélectionné une classe d'équipement.}
+\end{list}
+\paragraph{Post-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{Affichage de tous les types d'équipements disponibles à l'achat correspondant à la classe choisie.}
+\item{L'utilisateur choisit s'il le souhaite un type d'équipement et effectue l'achat.}
+\item{Si un nouveau type d'une classe d'équipement est achetée, détruit l'ancien type possédé.}
+\end{list}
+\paragraph{Cas général}
+L'utilisateur achète un nouveau type d'équipement (correspondant donc à la classe sélectionnée précédemment) parmi la liste de type d'équipements montrée. L'équipement acheté remplace l'équipement courant. 
+\paragraph{Cas exceptionnels}
+Néant.
+
+\subsubsection{Aller aux finances}
+\label{UC:gotoFunds}
+\paragraph{Relations avec d'autres "use case"}
+Étend \ref{UC:gotoManagement}.
+\paragraph{Pré-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{L'utilisateur se situe dans le management de l'équipe.}
+\end{list}
+\paragraph{Post-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{Affichage de plusieurs informations relatives aux finances de l'équipe : les entrées/payements récents (vente/achat de joueurs, achat d'équipements, salaires payés, entretiens d'installations, etc.) et la balance budgétaire de l'équipe.}
+\end{list}
+\paragraph{Cas général}
+L'utilisateur choisit de se rendre aux finances de son équipe, et voit s'afficher une série d'informations concernant le budget de son équipe.
+\paragraph{Cas exceptionnels}
+Néant.
+
+\end{document}
+%----------------
+

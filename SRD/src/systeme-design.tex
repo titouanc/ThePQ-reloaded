@@ -1,0 +1,142 @@
+Le système fonctionne selon le paradigme \gls{client}-\gls{serveur}.
+Lorsqu'un client essaie de se connecter au serveur, celui-ci crée un fil d'exécution 
+spécifique au client. Le client se connecte et entre dans la partie gestion de 
+l'application. Lorsqu'un match démarre pour le client, le serveur crée un 
+nouveau processus pour le match séparé en trois fils d'exécution, un pour 
+chaque client jouant le match et un pour la gestion du match. A la fin du 
+match, ce processus est tué et les résultats du match sont renvoyés au 
+processus principal.
+Le système sera programmé en C++, avec l'aide de la bibliothèque standard et 
+d'une bibliothèque pour la partie graphique. Ce dernier point doit encore 
+être discuté avec les clients et l'équipe technique.
+
+\subsection{Composants}
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=\textwidth]{figures/Components.eps}
+  \caption{\label{fig:Components} Composants}
+\end{figure}
+Les différents use cases présentés antérieurement seront implémentés grâces aux composants décrits à la figure \ref{fig:Components}
+
+\subsection{Envoi des messages}
+Pour l'envoi de données sur le réseau et la persistance des données, nous 
+avons envisagé une seule et même solution : la sérialisation d'objets JSON (illustrée à la figure \ref{fig:Class:JSON})
+(JavaScript Object Notation). A l'aide d'un outil de sérialisation/désérialisation JSON de notre 
+cru, nous allons transformer les objets à envoyer ou stocker en objets JSON. 
+Ces objets JSON possèderont une méthode \textit{toString} pour en faire une 
+chaine de caractères stockable dans un fichier texte ou envoyable sur le 
+réseau.
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.7\textwidth]{figures/JSON-Class.eps}
+  \caption{\label{fig:Class:JSON} Classes: outil de sérialisation JSON}
+\end{figure}
+
+\subsection{Phase de jeu}
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.7\textwidth]{figures/Game-Sequence.eps}
+  \caption{\label{fig:Sequence:Game} Séquence : le jeu}
+\end{figure}
+La figure \ref{fig:Sequence:Game} illustre les messages envoyés entre le \gls{client} et le \gls{serveur} 
+lors d'une phase de jeu. 
+Le serveur possède un processus dédié pour chaque match en cours. C'est de 
+ce processus qu'il est question dans cette section.
+Le client indique d'abord qu'il est présent, ce qui permet au serveur de 
+savoir si une résolution automatique doit avoir lieu. 
+Ensuite le serveur envoie les informations du match au client. Dans le cas 
+d'une résolution automatique, le serveur envoie les résultats du match.
+Quand le client a chargé le match, il indique qu'il est prêt et le jeu commence.
+Lors de chaque tour, le client envoie les coups joués par l'utilisateur et le 
+serveur renvoie aux deux clients les mises à jour de l'état de la partie.
+Un message spécial du serveur lors de la mise à jour indique que la partie
+est terminée et le serveur envoie alors les résultats du match dans un autre 
+message. Quand le client les a reçues, il le signifie au serveur qui ferme 
+alors la connexion.
+
+\subsubsection{Le gestionnaire de match}
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.7\textwidth]{figures/Game-Class_3_MatchManager.eps}
+  \caption{\label{fig:Class:MatchManager} Classes: le gestionnaire de match}
+\end{figure}
+
+Le gestionnaire de match comprend les quatre balles, les deux équipes et les coups du 
+tour actuel. Il gère tout ce qui concerne le match. Il s'occupe de l'échange 
+des messages préliminaires et des résultats. Lors de chaque tour : côté 
+client, il récolte les coups pour les deux équipes et puis les envoie au 
+\gls{serveur}, côté serveur, il résout les coups simultanément et renvoie le résultat 
+au \gls{client}.
+
+\subsubsection{Les objets déplaçables du match}
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=\textwidth]{figures/Game-Class_1_Moveables.eps}
+  \caption{\label{fig:Class:GameMoveables} Classes: les objets déplaçables du match}
+\end{figure}
+
+Tous les objets déplaçables dans un match (joueurs et balles) proviennent d'une 
+même interface \textbf{Moveable}. Les \textbf{Moveable} possèdent une vitesse 
+et une position. La vitesse correspond au nombre de cases parcourables en un tour 
+et la position est un couple $(x,y)$ dans un repère cartésien. Les directions sont des vecteurs constants représentant un déplacement d'1 pied dans une des directions possibles.
+
+\subsubsection{Les actions des joueurs}
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.7\textwidth]{figures/Game-Class_2_Stroke.eps}
+  \caption{\label{fig:Class:Stroke} Classes: les actions des joueurs}
+\end{figure}
+
+Les actions sont au nombre de quatre : déplacement, coup de batte, sort et lancer 
+du Souafle. On peut vérifier si une action est logique. Chaque action correspond 
+à un coup qui est envoyé au \gls{serveur} et qui peut être décomposé pour permettre la 
+"simultanéité" des événements.
+
+\subsection{Phase de gestion}
+\begin{sidewaysfigure}
+  \centering
+  \includegraphics[width=\textwidth]{figures/Gestion-Class.eps}
+  \caption{\label{fig:Class:Management} Classes: la gestion de l'équipe}
+\end{sidewaysfigure}
+
+Un \gls{manager} contrôle une \gls{equipe}, c'est-à-dire des \gls{membre}s 
+(\gls{joueur}s et 
+\gls{coach}), des \gls{installation}s dans son \gls{stade} et des 
+\gls{sponsor}s. Chaque équipe a également des 
+fonds, une réputation, un nombre matchs gagné et un nombre de matchs total.
+Les sponsors rapportent de l'argent à chaque match et nécessitent un minimum 
+de réputation de l'équipe pour y être liée. Les installations coûtent 
+de l'argent à chaque intervalle de temps et rapporte de l'argent lors de 
+chaque match.
+Les membres ont un salaire, qui est déduit à chaque intervalle de temps des 
+fonds de l'équipe et un prix d'achat sur le marché des transferts.
+Les joueurs possèdent une barre de vie qui diminue lors de blessures en match 
+et une barre de mana qui diminue en lançant des sorts. Ils ont également des 
+aptitudes qui varient selon leur position de jeu favorite.
+Les coachs possèdent des aptitudes qui permettent d'améliorer les aptitudes 
+des joueurs.
+
+\subsubsection{Les championnats}
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.7\textwidth]{figures/Championship-Class.eps}
+  \caption{\label{fig:Class:Championship} Classes: les championnats}
+\end{figure}
+Le championnat se joue avec un système de "poule" de huit équipes. Chaque 
+\gls{selection} joue un 
+match aller-retour contre toutes les autres équipes. Une victoire rapporte 
+trois 
+points à l'équipe victorieuse, un match nul un point pour les deux équipes et une défaite 
+ne rapporte aucun point. Au terme du championnat, nous obtenons un classement général
+en fonction des points de toutes les équipes (cfr. classe Ranking). Si on se trouve face
+à un cas d'égalité, on départage les équipes en fonction du goal average. 
+
+
+Une fois que le championnat commence, le serveur envoie la grille de matches à toutes 
+les équipes. Cette grille de matches est gérée par la classe Schedule qui connaît tous les
+matches à jouer et les matches joués, y compris leur score.
+
+
+
+

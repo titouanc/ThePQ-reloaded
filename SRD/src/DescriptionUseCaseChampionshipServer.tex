@@ -1,0 +1,110 @@
+
+\subsection{Cas d'utilisation du championnat}
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=\textwidth]{figures/UseCaseChampionshipServer.eps}
+  \caption{\label{fig:UCS:championshipManagement}Cas d'utilisation: Système - championnat}
+\end{figure}
+
+\subsubsection{Recevoir une inscription}
+\label{UCS:receiveInscription}
+\paragraph{Relations avec d'autres cas d'utilisation}
+Reçoit un message de \ref{UCS:sendInscription}.\\
+Inclut \ref{UCS:searchChampionship}.
+\paragraph{Pré-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{Le serveur est allumé.}
+\end{list}
+\paragraph{Cas général}
+Le serveur reçoit une demande d'inscription à un championnat, cette demande venant d'un client (utilisateur).
+\paragraph{Post-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{Une demande d'inscription doit être traitée.}
+\end{list}
+
+\subsubsection{Envoyer une requête d'inscription.}
+\label{UCS:sendInscription}
+\paragraph{Relations avec d'autres cas d'utilisation}
+Envoie un message à \ref{UCS:receiveInscription}.
+\paragraph{Cas général}
+\paragraph{Post-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{Une requête d'inscription à un championnat est envoyée au serveur.}
+\end{list}
+
+\subsubsection{Rechercher un championnat approprié}
+\label{UCS:searchChampionship}
+\paragraph{Relations avec d'autres cas d'utilisation}
+Inclus par \ref{UCS:receiveInscription}.\\
+Inclut \ref{UCS:createChampionship} et \ref{UCS:addTeam}.
+\paragraph{Pré-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{Une demande d'inscription a été reçue.}
+\end{list}
+\paragraph{Cas général}
+Le serveur effectue une recherche parmi tous les championnats dont le niveau est plus ou moins équivalent à celui de l'équipe de l'utilisateur effectuant la demande.
+
+\subsubsection{Créer un nouveau championnat}
+\label{UCS:createChampionship}
+\paragraph{Relations avec d'autres cas d'utilisation}
+Inclus par \ref{UCS:searchChampionship}.\\
+Inclut \ref{UCS:addTeam}.
+\paragraph{Pré-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{Un championnat adéquat a été recherché.}
+\item{Aucun championnat adéquat libre (qui n'est pas plein donc). }
+\end{list}
+\paragraph{Cas général}
+Le serveur n'a pas trouvé de championnat correspondant au niveau de l'équipe effectuant la demande d'inscription, il en crée donc un ayant ce niveau.
+\paragraph{Post-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{Un nouveau championnat dont le niveau est mis à celui de l'équipe effectuant la demande d'inscription est créé.}
+\end{list}
+
+\subsubsection{Ajouter l'équipe dans le championnat}
+\label{UCS:addTeam}
+\paragraph{Relations avec d'autres cas d'utilisation}
+Est inclus par \ref{UCS:searchChampionship} et \ref{UCS:createChampionship}.\\
+Inclut \ref{UCS:startChampionship}.
+\paragraph{Pré-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{Un championnat a été trouvé ou créé.}
+\end{list}
+\paragraph{Cas général}
+L'équipe recherchant un championnat adéquat est ajouté au championnat trouvé. 
+\paragraph{Post-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{Le championnat trouvé possède une équipe en plus.}
+\end{list}
+
+\subsubsection{Démarrer le championnat}
+\label{UCS:startChampionship}
+\paragraph{Relations avec d'autres cas d'utilisation}
+Est inclus par \ref{UCS:addTeam}.\\
+Inclut \ref{UCS:createST}.
+\paragraph{Pré-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{L'équipe précédemment ajoutée au championnat a complété ce dernier (le championnat est donc plein).}
+\end{list}
+\paragraph{Cas général}
+L'équipe qui recherchait un championnat adéquat est ajouté à celui-ci. Si cette équipe remplit le dernier emplacement libre de ce championnat, le championnat peut démarrer.
+\paragraph{Post-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{Le championnat est démarré.}
+\end{list}
+
+\subsubsection{Créer programme des matches et le classement}
+\label{UCS:createST}
+\paragraph{Relations avec d'autres cas d'utilisation}
+Inclus par \ref{UCS:startChampionship}.
+\paragraph{Pré-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{Un nouveau championnat démarre.}
+\end{list}
+\paragraph{Cas général}
+Lors du démarrage d'un nouveau championnat, le serveur crée un programme des matches (dates, adversaires) et un classement regroupant les équipes du championnat et leurs points respectifs.
+\paragraph{Post-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{Un programme des matches et un classement est créé pour le championnat.}
+\end{list}

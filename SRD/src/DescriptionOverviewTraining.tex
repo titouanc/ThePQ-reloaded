@@ -1,0 +1,147 @@
+\documentclass[a4paper,11pt]{article}
+\usepackage[latin1]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[francais]{babel}
+\usepackage{lmodern}
+\title{\textbf{Description use case gestion : trainingView}}
+\author{La vachette d'interville}
+\begin{document}
+\maketitle
+\newpage
+
+%------------
+\subsection{Aperçu des entrainements}
+
+\subsubsection{Aperçu des entrainements}
+\label{UC:trainingView}
+\paragraph{Relations avec d'autres "use case"}
+Étendu par \ref{UC:createTraining}, \ref{UC:addPlayerToGroup}, \ref{UC:TrainingHistory} et \ref{UC:selectTrainingGroup}.
+\paragraph{Pré-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{Le joueur est authentifié.}
+\end{list}
+\paragraph{Post-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{Affichage d'informations relatives à la gestion des entrainements (les groupes d'entrainements, les joueurs non assignés à un groupe).}
+\end{list}
+\paragraph{Cas général}
+L'utilisateur souhaite gérer ses entrainements, il clique donc sur "aperçu des entrainements" ce qui lui permet de voir s'afficher d'une part les informations concernant ses groupes d'entrainement, c'est-à-dire les aptitudes que ce groupe améliore, le coach qui dirige l'entrainement, ainsi que les joueurs qu'il a précédemment assignés à ce groupe et d'autre part les joueurs qu'il n'a encore assigné à aucun groupe. A partir de là, l'utilisateur peut ajouter des joueurs à un groupe d'entrainements, sélectionner un groupe d'entrainement et créer un nouveau groupe d'entrainement. 
+\paragraph{Cas exceptionnels}
+Aucun groupe d'entrainement n'a encore été créé, ne s'affiche en conséquence que l'icône permettant de créer un groupe d'entrainement. 
+
+\subsubsection{Créer un groupe d'entrainement}
+\label{UC:createTraining}
+\paragraph{Relations avec d'autres "use case"}
+Étend \ref{UC:trainingView}.\\
+Inclut \ref{UC:chooseTrainingCoach}, \ref{UC:chooseAptitudesTrained} et \ref{UC:addPlayerToGroup}.
+\paragraph{Pré-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{L'utilisateur à précédemment choisit "aperçu des entrainements".}
+\item{Il y a moins de 3 groupes d'entrainements déjà créés.}
+\end{list}
+\paragraph{Post-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{L'utilisateur a créé un nouveau groupe d'entrainement, dont il a spécifié le coach, les joueurs assignés et les aptitudes entrainées.}
+\end{list}
+\paragraph{Cas général}
+Après avoir sélectionner "aperçu des entrainements", si l'utilisateur choisit de créer un nouveau groupe d'entrainement, il indique les informations nécessaires à la création de ce nouveau groupe, à savoir le coach, les joueurs et les aptitudes entrainées. Si ni le coach choisi, ni les joueurs assignés, ne sont déjà assignés à un groupe, le groupe est créé normalement.
+\paragraph{Cas exceptionnels}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{Si le coach choisi est déjà assigné à un autre groupe, l'utilisateur devra d'abord indiquer un autre coach pour l'autre groupe, si cela fonctionne, le coach voulu est assigné au nouvel entrainement. }
+\item{Si, par contre, l'utilisateur ne choisit pas un coach pour remplacer le coach voulu pour l'autre groupe, la création d'un nouveau groupe d'entrainement échoue et le joueur revient à "aperçu des entraînements". }
+\item{Si un jouer sélectionné est déjà assigné à un autre groupe, le système l'indique à l'utilisateur, et lui demande de confirmer. La confirmation impliquera que le joueur sera assigné à ce nouveau groupe, et plus à l'ancien. }
+\item{L'utilisateur peut décider de n'ajouter aucun joueur à ce groupe, il lui suffira dès lors d'assigner des joueurs plus tard, via "ajouter des joueurs à un groupe" depuis "aperçu des entraînements" ou depuis "sélectionner un groupe d'entrainement". }
+\end{list}
+
+\subsubsection{Choisir les joueurs d'un groupe d'entrainement}
+\label{UC:addPlayerToGroup}
+\paragraph{Relations avec d'autres "use case"}
+Étend \ref{UC:trainingView}.\\
+Est inclus par \ref{UC:createTraining}.
+\paragraph{Pré-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{L'utilisateur se situe dans "aperçu des entrainements" ou "créer un groupe d'entrainement ou "sélectionner un groupe".}
+\end{list}
+\paragraph{Post-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{Le joueur sélectionné est assigné au nouveau groupe d'entrainement choisit par l'utilisateur.}
+\end{list}
+\paragraph{Cas général}
+L'utilisateur sélectionne un joueur parmi sa liste de joueurs, et ajoute ce joueur au groupe spécifié, si ce joueur n'est pas assigné à un autre groupe. Sinon, voir "cas exceptionnels". 
+\paragraph{Cas exceptionnels}
+Voir les cas exceptionnels pour "créer un groupe d'entrainement" (\ref{UC:createTraining}) dans le cas des joueurs sélectionnés.
+
+\subsubsection{Voir l'historique des rapports}
+\label{UC:TrainingHistory}
+\paragraph{Relations avec d'autres "use case"}
+Étend \ref{UC:trainingView}
+\paragraph{Pré-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{L'utilisateur se situe dans "aperçu des entrainements".}
+\item{Au moins un entrainement a déjà été donné.}
+\end{list}
+\paragraph{Post-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{Affiche l'historiques des rapports des précédents entrainements.}
+\end{list}
+\paragraph{Cas général}
+L'utilisateur souhaite s'informer sur l'efficacité des groupes d'entraînements qu'il a créé, il lui suffit donc de cliquer sur l'icône "voir l'historique des rapports" depuis "aperçu des entrainements" pour obtenir des informations sur les précédents entraînements donnés. Lesdites informations renseignent entre autres sur les aptitudes gagnées des joueurs, des coaches, les joueurs éventuellement blessés, et la rentabilité globale d'un groupe d'entrainement. 
+\paragraph{Cas exceptionnels}
+Néant.
+
+\subsubsection{Sélectionner un groupe d'entrainement}
+\label{UC:selectTrainingGroup}
+\paragraph{Relations avec d'autres "use case"}
+Étend \ref{UC:trainingView}.\\
+Étendu par \ref{UC:chooseTrainingCoach}, \ref{UC:chooseAptitudesTrained}.
+\paragraph{Pré-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{L'utilisateur se situe dans "aperçu des entrainements."}
+\item{Au moins un groupe d'entrainement à déjà été créé. Si ce n'est pas le cas, cette action est impossible.}
+\end{list}
+\paragraph{Post-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{Un groupe d'entrainement est sélectionné, l'utilisateur peut interagir avec ce groupe.}
+\end{list}
+\paragraph{Cas général}
+L'utilisateur sélectionne un groupe d'entrainement parmi une liste des groupes qu'il a précédemment créés. Il peut ensuite effectuer une série de nouvelles actions relatives à ce groupe d'entrainement (modifier le coach, les aptitudes entrainées).
+\paragraph{Cas exceptionnels}
+Néant.
+
+\subsubsection{Choisir les aptitudes entrainées}
+\label{UC:chooseAptitudesTrained}
+\paragraph{Relations avec d'autres "use case"}
+Étend \ref{UC:createTraining}, \ref{UC:selectTrainingGroup}.
+\paragraph{Pré-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{L'utilisateur crée un groupe d'entrainement ou a sélectionné un groupe d'entrainement.}
+\end{list}
+\paragraph{Post-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{Le groupe d'entrainement dont il s'agit entraine dorénavant les aptitudes choisies par l'utilisateur.}
+\end{list}
+\paragraph{Cas général}
+L'utilisateur sélectionne un nombre d'aptitudes (à déterminer) parmi toutes les aptitudes relatives aux joueurs (exceptés l'expérience et le potentiel) qu'un groupe entraine et valide la combinaison. 
+\paragraph{Cas exceptionnels}
+Néant.
+
+\subsubsection{Choisir le coach}
+\label{UC:chooseTrainingCoach}
+\paragraph{Relations avec d'autres "use case"}
+Étend \ref{UC:createTraining}, \ref{UC:selectTrainingGroup}.
+\paragraph{Pré-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{L'utilisateur a sélectionné un groupe d'entrainement ou crée un nouveau groupe.}
+\end{list}
+\paragraph{Post-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{Un nouveau coach est assigné au groupe d'entrainement si "tout se passe bien".}
+\end{list}
+\paragraph{Cas général}
+L'utilisateur clique sur l'icône "modifier le coach" après avoir sélectionné un groupe d'entrainement (ou dans le cas de la création d'un entrainement, se voit obligé de choisir un coach). Il choisit ensuite un nouveau coach parmi une liste des coaches de son équipe. Un nouveau coach est donc assigné au groupe si "tout se passe bien".
+\paragraph{Cas exceptionnels}
+Il faut effectivement préciser si "tout se passe bien" en post-condition, car il se peut que cela soit impossible de modifier le coach. Voir les cas d'exceptions pour "créer un groupe d'entraînement" (\ref{UC:createTraining}).
+
+%----------------
+
+\end{document}

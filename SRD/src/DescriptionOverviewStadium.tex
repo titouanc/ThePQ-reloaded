@@ -1,0 +1,166 @@
+\documentclass[a4paper,11pt]{article}
+\usepackage[latin1]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[francais]{babel}
+\usepackage{lmodern}
+\title{\textbf{Description use case gestion : overviewStadium}}
+\author{salut ça farte}
+\begin{document}
+\maketitle
+\newpage
+%-------------------
+\subsection{Aperçu du stade}
+
+\subsubsection{Aperçu du stade}
+\label{UC:stadiumView}
+\paragraph{Relations avec d'autres "use case"}
+Étendu par \ref{UC:selectSpot}.
+\paragraph{Pré-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{Le joueur est authentifié.}
+\end{list}
+\paragraph{Post-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{Une liste d'endroits spécifiques à une installation est affichée.}
+\end{list}
+\paragraph{Cas général}
+L'utilisateur clique sur l'icône "aperçu du stade", ce qui affiche une liste d'endroits chacun spécifique à une installation, avec laquelle il peut interagir. 
+\paragraph{Cas exceptionnels}
+Néant.
+
+\subsubsection{Sélectionner un endroit}
+\label{UC:selectSpot}
+\paragraph{Relations avec d'autres "use case"}
+Étend \ref{UC:stadiumView}.\\
+Étendu par \ref{UC:upgrade}, \ref{UC:downgrade}, \ref{UC:setArticlePrice}, \ref{UC:setFoodPrice}, \ref{UC:curePlayer} et \ref{UC:setTicketPrice}.
+\paragraph{Pré-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{L'utilisateur a auparavant choisi "aperçu du stade".}
+\end{list}
+\paragraph{Post-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{Un endroit est sélectionné, il s'agit d'un endroit supposé contenir soit un fanshop, soit un centre médical, soit un service d'alimentation, soit des tribunes.}
+\item{Si le fanshop est sélectionné : affiche le prix des articles.}
+\item{Si le service d'alimentation est sélectionné : affiche le prix des plats.}
+\item{Si la tribune est sélectionnée : affiche le nombre de place ainsi que le prix d'un ticket.}
+\item{En fonction de l'installation, des nouvelles actions sont disponibles.} 
+\end{list}
+N.B.: cette liste d'installations est sujette à des modifications ultérieures.
+\paragraph{Cas général}
+L'utilisateur choisi, parmi une liste d'endroits, un endroit particulier en cliquant sur un nom d'installation relié à cet endroit. Il aura alors la possibilité d'effectuer une série d'actions concernant l'installation relative à l'endroit. 
+\paragraph{Cas exceptionnels}
+Néant.
+
+\subsubsection{Améliorer / monter d'un niveau}
+\label{UC:upgrade}
+\paragraph{Relations avec d'autres "use case"}
+Étend \ref{UC:selectSpot}.
+\paragraph{Pré-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{Un endroit est sélectionné (peu importe lequel).}
+\item{Le niveau maximum de l'installation relative à l'endroit n'est pas atteint (à déterminer).}
+\item{L'équipe possède les fonds nécessaires.}
+\end{list}
+\paragraph{Post-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{L'installation gagne un niveau (meilleures stats mais coûts d'entretiens plus élevés).}
+\end{list}
+\paragraph{Cas général}
+L'utilisateur souhaite améliorer une installation, après avoir sélectionné l'endroit relatif à cette installation, il clique alors sur une icône "améliorer" ce qui augmente le niveau de l'installation de 1, et augmente ses bienfaits (argent gagné pour les services d'alimentations, fanshop; nombre de places pour les tribunes; soins prodigués pour le centre médical).
+\paragraph{Cas exceptionnels}
+Néant.
+
+\subsubsection{Diminuer d'un niveau}
+\label{UC:downgrade}
+\paragraph{Relations avec d'autres "use case"}
+Étend \ref{UC:selectSpot}.
+\paragraph{Pré-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{Un endroit est sélectionné.}
+\item{Le niveau de l'installation est plus grand que 0.}
+\end{list}
+\paragraph{Post-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{Diminue le niveau de l'installation de 1 (équipe gagne un pourcentage des fonds déversés pour avoir atteint ce niveau, les coûts d'entretiens diminuent, mais les stats baissent).}
+\end{list}
+\paragraph{Cas général}
+L'utilisateur souhaite diminuer le niveau de son installation (pour mauvaise situation financière par exemple), il clique alors sur l'icône "dégrader", ce qui diminue le niveau de l'installation de 1. 
+\paragraph{Cas exceptionnels}
+Néant.
+
+\subsubsection{Choisir le prix des articles}
+\label{UC:setArticlePrice}
+\paragraph{Relations avec d'autres "use case"}
+Étend \ref{UC:selectSpot}.
+\paragraph{Pré-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{Le fanshop est sélectionné.}
+\item{Le prix actuel des articles est affiché.}
+\end{list}
+\paragraph{Post-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{Le prix des articles est mis à jour selon ce que l'utilisateur a choisi.}
+\end{list}
+\paragraph{Cas général}
+L'utilisateur souhaite modifier le prix des articles de son fanshop, il clique donc sur l'icône "choisir le prix des articles" et rentre un entier (qui sera sans doute limité). 
+\paragraph{Cas exceptionnels}
+L'utilisateur rentre 0 : c'est la banqueroute. 
+
+
+\subsubsection{Soigner un joueur}
+\label{UC:curePlayer}
+\paragraph{Relations avec d'autres "use case"}
+Étend \ref{UC:selectSpot}.
+\paragraph{Pré-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{Un joueur au moins est blessé.}
+\item{Le centre médical est sélectionné.}
+\end{list}
+\paragraph{Post-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{Le joueur est soigné.}
+\end{list}
+\paragraph{Cas général}
+L'utilisateur souhaite soigner un joueur blessé, après avoir sélectionner le centre médical il clique donc sur l'icône "soigner joueur", il choisit un joueur blessé parmi une liste de joueurs, ce qui a pour effet de le guérir (c'est magique).
+\paragraph{Cas exceptionnels}
+Néant. 
+
+\subsubsection{Choisir le prix des plats}
+\label{UC:setFoodPrice}
+\paragraph{Relations avec d'autres "use case"}
+Étend \ref{UC:selectSpot}.
+\paragraph{Pré-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{Le service d'alimentation est sélectionné.}
+\item{Le prix actuel des plats est affiché.}
+\end{list}
+\paragraph{Post-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{Le prix des plats est mis à jour selon ce que l'utilisateur a choisi.}
+\end{list}
+\paragraph{Cas général}
+L'utilisateur souhaite modifier le prix des plats de son service d'alimentation, il clique donc sur l'icône "choisir le prix des plats" et rentre un entier.
+\paragraph{Cas exceptionnels}
+L'utilisateur rentre 0 : les fans deviennent obèses. 
+
+\subsubsection{Choisir le prix des tickets}
+\label{UC:setTicketPrice}
+\paragraph{Relations avec d'autres "use case"}
+Étend \ref{UC:selectSpot}.
+\paragraph{Pré-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{La tribune est sélectionnée.}
+\item{Le prix actuel tickets est affiché.}
+\item{Le nombre de places est affiché.}
+\end{list}
+\paragraph{Post-conditions}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{Le prix des tickets est mis à jour selon ce que l'utilisateur a choisi.}
+\end{list}
+\paragraph{Cas général}
+L'utilisateur souhaite modifier le prix des tickets de ses tribunes, il clique donc sur l'icône "choisir le prix des tickets" et rentre un entier.
+\paragraph{Cas exceptionnels}
+Néant.
+%--------------
+
+\end{document}
