@@ -1,6 +1,6 @@
 SRC = $(wildcard *.cpp)
 OBJ = $(SRC:.cpp=.o)
-MAIN = unitTestsNetwork
+MAIN = unitTests.app
 LIBNETWORK = ../build/libnetwork.a
 
 CXX = g++
@@ -13,8 +13,8 @@ all: ${MAIN}
 ${MAIN}: ${OBJ} ${LIBNETWORK}
 	${CXX} ${LDFLAGS} -o $@ $^
 
-${LIBNETWORK}: ../src/*
-	cd .. && make lib
+${LIBNETWORK}: 
+	cd ../src && make all
 
 $(OBJ): $(SRC)
 	${CXX} ${CXXFLAGS} -c -o $@ $<
