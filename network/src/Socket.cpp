@@ -1,11 +1,10 @@
 #include "Socket.hpp"
 
-Socket::Status Socket::create()
+bool Socket::create()
 {
 	/* Initialization */
     _sockfd = socket(AF_INET, SOCK_STREAM, 0);
-    if (_sockfd < 0)
-        return Status::ERROR;	
+    return _sockfd >= 0; // Socket created
 }
 
 void Socket::close()

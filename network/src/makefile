@@ -1,6 +1,6 @@
-SRC = $(wildcard *.cpp)
-OBJ = $(SRC:.cpp=.o)
-LIBNETWORK = ../build/libnetwork.a
+SRC=$(wildcard *.cpp)
+OBJ=$(SRC:.cpp=.o)
+LIBNETWORK=../build/libnetwork.a
 
 CXX = g++
 CXXFLAGS = -std=c++11 -pedantic -Wall -Wextra
@@ -8,7 +8,7 @@ LDFLAGS =
 
 all: ${LIBNETWORK}
 
-$(OBJ): $(SRC)
+%.o: %.cpp
 	${CXX} ${CXXFLAGS} -c -o $@ $<
 
 ${LIBNETWORK}: ${OBJ}

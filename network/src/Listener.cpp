@@ -3,7 +3,8 @@
 Socket::Status Listener::listen(int portNo)
 {
 	close();
-	create();
+	if (! create())
+		return Status::ERROR;
     /* BINDING */
     _servAddr.sin_family = AF_INET;
     _servAddr.sin_addr.s_addr = INADDR_ANY;
@@ -20,11 +21,13 @@ Socket::Status Listener::listen(int portNo)
 
 Socket::Status Listener::accept(TcpSocket &sock)
 {
-	if (_sockfd < 0)
+	if (! isConnected())
 		return Status::ERROR;
 		
 	socklen_t clilen = sizeof(_cliAddr);
 	sock._sockfd = ::accept(_sockfd, (struct sockaddr*) &_cliAddr, &clilen);
+	sock._servAddr = this->_servAddr;
+	sock._cliAddr = this->_cliAddr;
 	if (sock._sockfd < 0)
 		return Status::ERROR;
 	

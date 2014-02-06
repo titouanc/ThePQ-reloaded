@@ -1,11 +1,9 @@
 #ifndef __SOCKET_HPP
 #define __SOCKET_HPP
 
-//~ #include <stdlib.h>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
-//~ #include <netdb.h>
 #include <unistd.h>
 
 class Socket
@@ -21,8 +19,9 @@ public:
 	
 protected:
 	Socket();
-	virtual Status create();
+	bool create();
 	void close();
+	bool isConnected() { return _sockfd >= 0; };
 	
 	int _sockfd;
     struct sockaddr_in _servAddr;
