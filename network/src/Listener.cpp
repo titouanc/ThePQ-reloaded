@@ -26,10 +26,10 @@ Socket::Status Listener::accept(TcpSocket &sock)
 		
 	socklen_t clilen = sizeof(_cliAddr);
 	sock._sockfd = ::accept(_sockfd, (struct sockaddr*) &_cliAddr, &clilen);
-	sock._servAddr = this->_servAddr;
-	sock._cliAddr = this->_cliAddr;
 	if (sock._sockfd < 0)
 		return Status::ERROR;
+	sock._servAddr = this->_servAddr;
+	sock._cliAddr = this->_cliAddr;
 	
 	return Status::OK;
 }
