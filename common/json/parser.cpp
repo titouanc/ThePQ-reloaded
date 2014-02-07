@@ -58,8 +58,13 @@ static Dict *parseDict(const char *str, char **endptr)
     while (*str && *str != '}'){
         /* find key */
         str = lstrip(str+1);
+        if (*str == '}')
+            break; /* empty dict */
         if (*str != '"')
-            throw ParseError("Missing key (already have "+res->dumps()+")");
+            throw ParseError(
+                "Missing key (already have "+res->dumps()+
+                ") Trailing: "+str
+            );
         std::string key = parseString(str, endptr);
         
         /* find value */
@@ -92,18 +97,20 @@ static List *parseList(const char *str, char **endptr)
 
     List *res = new List();
 
-    while (*str && *str != ']'){
-        Value *item = parse(str+1, endptr);
-        if (item)
-            res->appendPtr(item);
+    if (str[1] != ']'){
+        while (*str && *str != ']'){
+            Value *item = parse(str+1, endptr);
+            if (item)
+                res->appendPtr(item);
 
-        /* Find next element sepatator */
-        str = lstrip(*endptr);
-        if (*str != ',' && *str != ']')
-            throw ParseError(
-                "Unexpected character (trailing \""+
-                std::string(str) + "\")"
-            );
+            /* Find next element sepatator */
+            str = lstrip(*endptr);
+            if (*str != ',' && *str != ']')
+                throw ParseError(
+                    "Unexpected character (trailing \""+
+                    std::string(str) + "\")"
+                );
+        }
     }
     *endptr = (char*) str + (*str ? 1 : 0);
     return res;
