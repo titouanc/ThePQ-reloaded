@@ -16,7 +16,7 @@ ${MAIN}: ${OBJ} ${LIBNETWORK}
 ${LIBNETWORK}: 
 	cd ../src && make all
 
-$(OBJ): $(SRC)
+%.o: %.cpp
 	${CXX} ${CXXFLAGS} -c -o $@ $<
 
 clean:
