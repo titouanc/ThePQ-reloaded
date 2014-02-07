@@ -149,6 +149,21 @@ TEST(json_parse_dict)
 	ASSERT(d.hasKey("group"));
 	ASSERT(d.get("group")->type() == JSON::Integer_t);
 	ASSERT(d.dumps() == repr);
+	delete res;
+ENDTEST()
+
+TEST(json_parse_dict_many_keys)
+	const char *repr = "{\"name\": \"Titou\", \"age\": 23}";
+	JSON::Value *res = JSON::parse(repr);
+	ASSERT(res != NULL);
+	ASSERT(res->type() == JSON::Dict_t);
+
+	JSON::Dict & d = DICT(res);
+	ASSERT(d.hasKey("name"));
+	ASSERT(d.get("name")->type() == JSON::String_t);
+	ASSERT(d.hasKey("age"));
+	ASSERT(d.get("age")->type() == JSON::Integer_t);
+	delete res;
 ENDTEST()
 
 int main(int argc, const char **argv)

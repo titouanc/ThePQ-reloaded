@@ -43,6 +43,7 @@ static std::string parseString(const char *str, char **endptr)
     ssize_t len = *endptr-str-1;
     if (**endptr != '"')
         throw ParseError("Missing trailing '\"'");
+    (*endptr)++;
     return std::string(str+1, len);
 }
 
@@ -54,25 +55,32 @@ static Dict *parseDict(const char *str, char **endptr)
     Dict *res = new Dict();
 
     while (*str && *str != '}'){
+        /* find key */
         str = lstrip(str+1);
-        if (*str != '"') /* No key */
+        if (*str != '"')
             throw ParseError("Missing key (already have "+res->dumps()+")");
         std::string key = parseString(str, endptr);
-        str = lstrip(*endptr+1);
+        
+        /* find value */
+        str = lstrip(*endptr);
         if (*str != ':') /* No key:value association */
             throw ParseError("Missing key:val separator");
         Value *val = parse(str+1, endptr);
+        if (! val)
+            throw ParseError("Missing value for key "+key);
+
+        /* Insert in result */
         res->set(key, *val);
         delete val;
-        str = lstrip(*endptr+1);
+
+        /* Find next element separator */
+        str = lstrip(*endptr);
         if (*str != ',' && *str != '}')
             throw ParseError(
                 "Unexpected character (trailing \""+
                 std::string(str) + "\")" + *endptr
             );
     }
-    if (*str != '}')
-        throw ParseError("Missing '}'");
     return res;
 }
 
