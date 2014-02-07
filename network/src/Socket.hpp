@@ -13,8 +13,8 @@ namespace net
 		virtual ~ Socket();
 
 		enum Status {
-		OK,
-		ERROR
+		ERROR,
+		OK
 		};
 
 	  protected:
