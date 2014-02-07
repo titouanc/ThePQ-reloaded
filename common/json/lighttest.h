@@ -57,6 +57,7 @@ static inline int runTestSuite(TestFunc suite[], size_t n_tests)
                     cout << "\033[31m !!! A wild exception appears: "\
                          << typeid(e).name() << ": " << e.what()\
                          << "\033[0m" << endl;\
+                    return false;\
                   } return true; }
 
 #define ASSERT(expr) __assert_count++;\
