@@ -85,7 +85,12 @@ namespace JSON {
                     delete _content[i];
             }
             Type type(void) const {return List_t;}
-            Value * clone(void) const {return NULL;}
+            Value * clone(void) const {
+                List *res = new List();
+                for (size_t i=0; i<len(); i++)
+                    res->append(*(_content[i]));
+                return res;
+            }
             std::string dumps(void) const {
                 std::stringstream res;
                 res << "[";
