@@ -20,6 +20,7 @@ namespace JSON {
 
     class Value {
         public:
+            virtual ~Value(){}
             virtual Value * clone(void) const = 0;
             virtual std::string dumps(void) const = 0;
             virtual Type type(void) const = 0;
@@ -79,6 +80,10 @@ namespace JSON {
             std::vector<Value*> _content;
         public:
             List() : _content() {};
+            ~List() {
+                for (size_t i=0; i<len(); i++)
+                    delete _content[i];
+            }
             Type type(void) const {return List_t;}
             Value * clone(void) const {return NULL;}
             std::string dumps(void) const {
