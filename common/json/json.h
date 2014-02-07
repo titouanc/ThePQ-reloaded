@@ -6,6 +6,7 @@
 #include <cstring>
 #include <vector>
 #include <sstream>
+#include <map>
 
 #define CLONE_METHOD(type) Value * clone(void) const {return new type(value());}
 
@@ -104,6 +105,50 @@ namespace JSON {
             const Value * operator[](size_t index){return _content[index];}
             void append(Value const & obj){_content.push_back(obj.clone());}
             size_t len(void) const {return _content.size();}
+    };
+
+    class KeyError {};
+
+    class Dict : public Value {
+        private:
+            std::map<std::string, Value*> _content;
+        public:
+            Dict() : _content() {};
+            ~Dict() {
+                std::map<std::string, Value*>::iterator elem;
+                for (elem=_content.begin(); elem!=_content.end(); elem++)
+                    delete elem->second;
+                _content.clear();
+            }
+            Type type(void) const {return Dict_t;}
+            Value * clone(void) const {return NULL;}
+            std::string dumps(void) const {
+                std::stringstream res;
+                res << "{";
+                std::map<std::string, Value*>::const_iterator elem;
+                for (elem=_content.begin(); elem!=_content.end(); elem++){
+                    if (elem != _content.begin()) res << ", ";
+                    res << "\"" << elem->first << "\": " 
+                        << elem->second->dumps();
+                }
+                res << "}";
+                return res.str();
+            }
+            bool hasKey(std::string const & key){
+                return _content.find(key) != _content.end();
+            }
+            void set(std::string const & key, Value const & val){
+                _content.insert(
+                    _content.begin(), 
+                    std::pair<std::string, Value*>(key, val.clone())
+                );
+            }
+            const Value * get(std::string const & key){
+                std::map<std::string, Value*>::const_iterator elem;
+                elem = _content.find(key);
+                if (elem == _content.end()) throw KeyError();
+                return elem->second;
+            }
     };
 }
 

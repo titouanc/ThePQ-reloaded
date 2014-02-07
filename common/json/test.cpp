@@ -42,6 +42,8 @@ ENDTEST()
 TEST(json_list)
 	JSON::List l;
 	ASSERT(l.len() == 0);
+	ASSERT(l.isSequence());
+	ASSERT(l.type() == JSON::List_t);
 ENDTEST()
 
 TEST(json_list_append)
@@ -93,6 +95,22 @@ TEST(json_list_repr)
 	delete lptr;
 ENDTEST()
 
+TEST(json_dict)
+	JSON::Dict d;
+	ASSERT(d.isSequence());
+	ASSERT(d.type() == JSON::Dict_t);
+ENDTEST()
+
+TEST(json_dict_keys)
+	JSON::Dict d;
+	d.set("key", JSON::String("value"));
+	ASSERT(d.dumps() == "{\"key\": \"value\"}");
+	ASSERT(d.hasKey("key"));
+	ASSERT(! d.hasKey("1337"));
+	ASSERT(d.get("key")->type() == JSON::String_t);
+	ASSERT_THROWS(JSON::KeyError, d.get("1337"));
+ENDTEST()
+
 int main(int argc, const char **argv)
 {
 	TestFunc testSuite[] = {
@@ -103,7 +121,9 @@ int main(int argc, const char **argv)
 		ADDTEST(json_list),
 		ADDTEST(json_list_append),
 		ADDTEST(json_list_mixed),
-		ADDTEST(json_list_repr)
+		ADDTEST(json_list_repr),
+		ADDTEST(json_dict),
+		ADDTEST(json_dict_keys)
 	};
 
 	return RUN(testSuite);
