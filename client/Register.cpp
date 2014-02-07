@@ -26,5 +26,15 @@ bool userWantsToRegister(){
 }
 
 string askForNewPassword(){
-
+	string password = "a";
+	string passwordConfirmation;
+	while (password != passwordConfirmation){
+		cout << "Enter a new password : " << endl;
+		cin >> password;
+		cout << "Confirm password : " << endl;
+		cin >> passwordConfirmation;
+		if (password != passwordConfirmation)
+			cout << "The two passwords entered were not the same." << endl;
+	}
+	return password;
 }
