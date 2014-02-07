@@ -24,5 +24,7 @@ void printLaunchingMessage(){
 	cout << "                               )/ \\/||_|_ " << endl;
 	cout << "                              /_\\_/ |  |  " << endl;
 	cout << "" << endl;
-
+	cout << "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -" << endl;
+	cout << "" << endl;
+	cout << "Welcome to The Pro Quidditch Manager 2014!" << endl;
 }
