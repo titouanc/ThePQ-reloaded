@@ -1,7 +1,7 @@
 #include "TcpSocket.hpp"
 #include <arpa/inet.h>
 
-Socket::Status TcpSocket::connect(const std::string ipAddr, int portNo)
+net::Socket::Status net::TcpSocket::connect(const std::string ipAddr, int portNo)
 {
     close();
     if (!create())
@@ -21,7 +21,7 @@ Socket::Status TcpSocket::connect(const std::string ipAddr, int portNo)
     return Status::OK;
 }
 
-Socket::Status TcpSocket::send(const void *data, size_t len)
+net::Socket::Status net::TcpSocket::send(const void *data, size_t len)
 {
     if (::send(_sockfd, data, len, 0) == 0)
     {
@@ -30,7 +30,7 @@ Socket::Status TcpSocket::send(const void *data, size_t len)
     return Status::OK;
 }
 
-Socket::Status TcpSocket::recv(void *data, size_t len, size_t & received)
+net::Socket::Status net::TcpSocket::recv(void *data, size_t len, size_t & received)
 {
     received = ::recv(_sockfd, data, len, 0);
     if (received == 0)

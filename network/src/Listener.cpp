@@ -1,6 +1,6 @@
 #include "Listener.hpp"
 
-Socket::Status Listener::listen(int portNo)
+net::Socket::Status net::Listener::listen(int portNo)
 {
     close();
     if (!create())
@@ -23,7 +23,7 @@ Socket::Status Listener::listen(int portNo)
     return Status::OK;
 }
 
-Socket::Status Listener::accept(TcpSocket & sock)
+net::Socket::Status net::Listener::accept(TcpSocket & sock)
 {
     if (!isOpen())
     {

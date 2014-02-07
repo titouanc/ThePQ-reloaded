@@ -6,26 +6,29 @@
 #include <netinet/in.h>
 #include <unistd.h>
 
-class Socket {
-  public:
-    virtual ~ Socket();
+namespace net
+{
+	class Socket {
+	  public:
+		virtual ~ Socket();
 
-    enum Status {
-	OK,
-	ERROR
-    };
+		enum Status {
+		OK,
+		ERROR
+		};
 
-  protected:
-    Socket();
-    bool create();
-    void close();
-    bool isOpen() {
-		return _sockfd >= 0;
-    };
+	  protected:
+		Socket();
+		bool create();
+		void close();
+		bool isOpen() {
+			return _sockfd >= 0;
+		};
 
-    int _sockfd;
-    struct sockaddr_in _servAddr;
-    struct sockaddr_in _cliAddr;
-};
+		int _sockfd;
+		struct sockaddr_in _servAddr;
+		struct sockaddr_in _cliAddr;
+	};
+}
 
 #endif				// __SOCKET_HPP
