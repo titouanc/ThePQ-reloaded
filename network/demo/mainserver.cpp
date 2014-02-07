@@ -13,6 +13,8 @@ int main (int argc, char **argv)
 	// Listen for new connections on port 6666
 	Listener list;
 	status = list.listen(6666);
+	if (status == Socket::Status::ERROR)
+		exit;
 	cout << "listen: " << status << endl;
 	
 	bool running = true;
