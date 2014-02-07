@@ -1,4 +1,3 @@
-
 #include <cppunit/extensions/HelperMacros.h>
 #include "TcpSocket.hpp"
 #include "Listener.hpp"
@@ -21,12 +20,6 @@ class NetworkTest : public CppUnit::TestCase {
 			//~ CCPUNIT_ASSERT(status == net::Socket::Status::OK);
 			status = cli.connect("127.0.0.1", 6666);
 			//~ CCPUNIT_ASSERT(status == net::Socket::Status::OK);			
-			
-			size_t received;
-			strcpy(bufCli, "test1");
-			cli.send((const void*) bufCli, 5);
-			serv.recv(bufServ, 50, received);
-			cout << bufServ << endl;;
 			
 			delete bufServ;
 			delete bufCli;
