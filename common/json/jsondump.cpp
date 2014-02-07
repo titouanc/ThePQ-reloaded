@@ -48,6 +48,7 @@ static void exploreJSON(const JSON::Value *elem, size_t depth=0)
             cout << it->first << " : ";
             exploreJSON(it->second, depth+1);
         }
+        indent(depth);
         cout << "}" << endl;
     }
 
