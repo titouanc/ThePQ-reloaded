@@ -15,6 +15,11 @@ void net::Socket::close()
 	}
 }
 
+net::Socket::Socket()
+{
+	
+}
+
 net::Socket::~Socket()
 {
     close();

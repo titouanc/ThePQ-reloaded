@@ -8,7 +8,7 @@ namespace net
 {
 	class Listener;
 
-	class TcpSocket:Socket {
+	class TcpSocket:public Socket {
 		friend Listener;
 	  public:
 		Status connect(const std::string ipAddr, int portNo);

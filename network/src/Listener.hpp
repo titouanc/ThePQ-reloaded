@@ -5,7 +5,7 @@
 
 namespace net
 {
-	class Listener:Socket {
+	class Listener:public Socket {
 	  public:
 		static const int CONNECTION_NB = 20;
 
