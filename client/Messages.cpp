@@ -3,6 +3,10 @@
 
 using namespace std;
 
+void printPrompt(){
+	cout << "> ";
+}
+
 void printLaunchingMessage(){
 	cout << "           __       _   " << endl;
 	cout << "           //_ _   /_/_ _                                |" << endl;
@@ -23,8 +27,24 @@ void printLaunchingMessage(){
 	cout << "          |                   _  _              |___/       " << endl;
 	cout << "                               )/ \\/||_|_ " << endl;
 	cout << "                              /_\\_/ |  |  " << endl;
-	cout << "" << endl;
+	cout << endl;
 	cout << "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -" << endl;
-	cout << "" << endl;
+	cout << endl;
 	cout << "Welcome to The Pro Quidditch Manager 2014!" << endl;
+}
+
+void printLoggedOffActions(){
+	cout << "You can : "<< endl;
+	cout << "   - (l)ogin" << endl;
+	cout << "   - (r)egister" << endl;
+	cout << "   - (q)uit" << endl;
+	printPrompt();
+}
+
+void printGoodbyeMessage(){
+	cout << endl;
+	cout << "                 =========================            " << endl;
+	cout << "   Thank you for playing the Pro Quidditch Manager 2014!" << endl;
+	cout << "                   See you next time! :)" << endl;
+	cout << "                 =========================            " << endl << endl;
 }

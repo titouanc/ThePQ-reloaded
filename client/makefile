@@ -1,13 +1,13 @@
 all:client.o
 
-client.o:Messages.o Register.o
-	g++ Client.cpp Messages.o Register.o -o client.o
+client.o:Messages.o Connexion.o
+	g++ Client.cpp Messages.o Connexion.o -o client.o
 
 Messages.o:
 	g++ -c Messages.cpp
 
-Register.o:
-	g++ -c Register.cpp
+Connexion.o:
+	g++ -c Connexion.cpp
 
 clean:
 	rm -rf *.o
