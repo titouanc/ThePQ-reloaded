@@ -109,6 +109,10 @@ namespace JSON {
         public: using std::runtime_error::runtime_error;
     };
 
+    class ParseError : public std::runtime_error {
+        public: using std::runtime_error::runtime_error;
+    };
+
     class Dict : public Value {
         private:
             std::map<std::string, Value*> _content;
@@ -129,10 +133,6 @@ namespace JSON {
             iterator end(void);
             const_iterator begin(void) const;
             const_iterator end(void) const;
-    };
-
-    class ParseError : public std::runtime_error {
-        public: using std::runtime_error::runtime_error;
     };
 
     Value *parse(const char *str, char **eptr=NULL);
