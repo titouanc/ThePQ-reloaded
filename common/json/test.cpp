@@ -87,6 +87,10 @@ TEST(json_list_repr)
 	l.append(JSON::Integer(2));
 	l.append(JSON::Float(42.125));
 	ASSERT(l.dumps() == "[2, 42.125000]");
+
+	JSON::List *lptr = (JSON::List *) l.clone();
+	ASSERT(lptr->dumps() == "[2, 42.125000]");
+	delete lptr;
 ENDTEST()
 
 int main(int argc, const char **argv)
