@@ -111,6 +111,47 @@ TEST(json_dict_keys)
 	ASSERT_THROWS(JSON::KeyError, d.get("1337"));
 ENDTEST()
 
+TEST(json_parse_int)
+	const char *repr = "42";
+	JSON::Value *i = JSON::parse(repr);
+	ASSERT(i != NULL);
+	ASSERT(i->type() == JSON::Integer_t);
+	ASSERT(((JSON::Integer*) i)->value() == 42);
+	ASSERT(i->dumps() == repr);
+	delete i;
+ENDTEST()
+
+TEST(json_parse_float)
+	const char *repr = "42.456700";
+	JSON::Value *f = JSON::parse(repr);
+	ASSERT(f != NULL);
+	ASSERT(f->type() == JSON::Float_t);
+	ASSERT(((JSON::Float*) f)->value() == 42.4567);
+	ASSERT(f->dumps() == repr);
+	delete f;
+ENDTEST()
+
+TEST(json_parse_str)
+	const char *repr = "\"Naim Qachri\"";
+	JSON::Value *s = JSON::parse(repr);
+	ASSERT(s != NULL);
+	ASSERT(s->type() == JSON::String_t);
+	ASSERT(((JSON::String*) s)->value() == "Naim Qachri");
+	ASSERT(s->dumps() == repr);
+	delete s;
+ENDTEST()
+
+TEST(json_parse_dict)
+	const char *repr = "{\"group\": 3}";
+	JSON::Value *res = JSON::parse(repr);
+	ASSERT(res != NULL);
+	ASSERT(res->type() == JSON::Dict_t);
+	JSON::Dict & d = *((JSON::Dict*) res);
+	ASSERT(d.hasKey("group"));
+	ASSERT(d.get("group")->type() == JSON::Integer_t);
+	ASSERT(d.dumps() == repr);
+ENDTEST()
+
 int main(int argc, const char **argv)
 {
 	TestFunc testSuite[] = {
@@ -123,7 +164,11 @@ int main(int argc, const char **argv)
 		ADDTEST(json_list_mixed),
 		ADDTEST(json_list_repr),
 		ADDTEST(json_dict),
-		ADDTEST(json_dict_keys)
+		ADDTEST(json_dict_keys),
+		ADDTEST(json_parse_int),
+		ADDTEST(json_parse_float),
+		ADDTEST(json_parse_str),
+		ADDTEST(json_parse_dict)
 	};
 
 	return RUN(testSuite);

@@ -7,6 +7,7 @@
 #include <vector>
 #include <sstream>
 #include <map>
+#include <stdexcept>
 
 #define CLONE_METHOD(type) Value * clone(void) const {return new type(value());}
 
@@ -107,7 +108,9 @@ namespace JSON {
             size_t len(void) const {return _content.size();}
     };
 
-    class KeyError {};
+    class KeyError : public std::runtime_error {
+        public: using std::runtime_error::runtime_error;
+    };
 
     class Dict : public Value {
         private:
@@ -146,10 +149,17 @@ namespace JSON {
             const Value * get(std::string const & key){
                 std::map<std::string, Value*>::const_iterator elem;
                 elem = _content.find(key);
-                if (elem == _content.end()) throw KeyError();
+                if (elem == _content.end()) 
+                    throw KeyError(key);
                 return elem->second;
             }
     };
+
+    class ParseError : public std::runtime_error {
+        public: using std::runtime_error::runtime_error;
+    };
+
+    Value *parse(const char *str, char **eptr=NULL);
 }
 
 #endif
