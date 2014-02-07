@@ -19,6 +19,7 @@ TEST(json_int)
 	ASSERT(i.isAtom());
 	ASSERT(i.isNumber());
 	ASSERT(i.type() == JSON::Integer_t);
+	ASSERT(ISINT(&i));
 ENDTEST()
 
 TEST(json_float)
@@ -28,6 +29,7 @@ TEST(json_float)
 	ASSERT(f.isAtom());
 	ASSERT(f.isNumber());
 	ASSERT(f.type() == JSON::Float_t);
+	ASSERT(ISFLOAT(&f));
 ENDTEST()
 
 TEST(json_str)
@@ -37,6 +39,7 @@ TEST(json_str)
 	ASSERT(s.isAtom());
 	ASSERT(! s.isNumber());
 	ASSERT(s.type() == JSON::String_t);
+	ASSERT(ISSTR(&s));
 ENDTEST()
 
 TEST(json_list)
@@ -44,6 +47,7 @@ TEST(json_list)
 	ASSERT(l.len() == 0);
 	ASSERT(l.isSequence());
 	ASSERT(l.type() == JSON::List_t);
+	ASSERT(ISLIST(&l));
 ENDTEST()
 
 TEST(json_list_append)
@@ -97,6 +101,7 @@ TEST(json_dict)
 	JSON::Dict d;
 	ASSERT(d.isSequence());
 	ASSERT(d.type() == JSON::Dict_t);
+	ASSERT(ISDICT(&d));
 ENDTEST()
 
 TEST(json_dict_keys)
@@ -190,9 +195,9 @@ TEST(json_parse_list_in_dict)
 
 	JSON::Dict & d = DICT(res);
 	ASSERT(d.hasKey("players"));
-	ASSERT(d.get("players")->type() == JSON::List_t);
+	ASSERT(ISLIST(d.get("players")));
 	ASSERT(LIST(d.get("players")).len() == 2);
-	ASSERT(LIST(d.get("players"))[0]->type() == JSON::Dict_t);
+	ASSERT(ISDICT(LIST(d.get("players"))[0]));
 
 	delete res;
 ENDTEST()
