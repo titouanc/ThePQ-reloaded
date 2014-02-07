@@ -17,6 +17,13 @@
 #define DICT(obj)  (*((JSON::Dict *)(obj)))
 #define LIST(obj)  (*((JSON::List *)(obj)))
 
+#define ISINT(ptr)   ((ptr)->type() == JSON::Integer_t)
+#define ISFLOAT(ptr) ((ptr)->type() == JSON::Float_t)
+#define ISSTR(ptr)   ((ptr)->type() == JSON::String_t)
+#define ISLIST(ptr)  ((ptr)->type() == JSON::List_t)
+#define ISDICT(ptr)  ((ptr)->type() == JSON::Dict_t)
+
+
 namespace JSON {
     enum Type {
         Integer_t = 0x01,
