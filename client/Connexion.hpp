@@ -4,6 +4,7 @@
 
 using namespace std;
 
+// Exceptions
 class WrongPasswordException : public runtime_error{
 public:
 	WrongPasswordException():runtime_error("Wrong password"){};
