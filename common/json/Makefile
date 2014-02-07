@@ -2,7 +2,7 @@ CXX = g++
 CXXFLAGS = -std=c++11 -pedantic -Wall -Wextra
 LDFLAGS = -lm
 HEADERS = $(shell ${CXX} ${CXXFLAGS} -MM *.cpp | sed -E 's/.+\.[^h]pp//g')
-OBJS = parser.o
+OBJS = parser.o number.o string.o list.o dict.o
 
 all: test
 	./$<

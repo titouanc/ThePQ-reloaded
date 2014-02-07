@@ -1,4 +1,5 @@
 #include "json.h"
+#include <cstring>
 #include <cassert>
 #include <cmath>
 
