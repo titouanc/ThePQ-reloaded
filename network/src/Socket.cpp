@@ -2,17 +2,18 @@
 
 bool Socket::create()
 {
-	/* Initialization */
+    /* Initialization */
     _sockfd = socket(AF_INET, SOCK_STREAM, 0);
-    return _sockfd >= 0; // Socket created
+    return _sockfd >= 0;	// Socket created
 }
 
 void Socket::close()
 {
-	::close(_sockfd);	
+    if (isOpen())
+	::close(_sockfd);
 }
 
 Socket::~Socket()
 {
-	close();
+    close();
 }

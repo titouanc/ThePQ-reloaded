@@ -3,13 +3,12 @@
 
 #include "TcpSocket.hpp"
 
-class Listener : Socket
-{
-public:
-	static const int CONNECTION_NB = 20;
-	
-	Status listen(int portNo);
-	Status accept(TcpSocket &sock);
+class Listener:Socket {
+  public:
+    static const int CONNECTION_NB = 20;
+
+    Status listen(int portNo);
+    Status accept(TcpSocket & sock);
 };
 
-#endif // __LISTENER_HPP
+#endif				// __LISTENER_HPP
