@@ -159,6 +159,14 @@ TEST(json_parse_list)
 	delete res;
 ENDTEST()
 
+TEST(json_parse_empty_list)
+	JSON::Value *res = JSON::parse("[]");
+	ASSERT(res != NULL);
+	ASSERT(ISLIST(res));
+	ASSERT(LIST(res).len() == 0);
+	delete res;
+ENDTEST()
+
 TEST(json_parse_dict)
 	const char *repr = "{\"group\": 3}";
 	JSON::Value *res = JSON::parse(repr);
@@ -169,6 +177,13 @@ TEST(json_parse_dict)
 	ASSERT(d.hasKey("group"));
 	ASSERT(d.get("group")->type() == JSON::Integer_t);
 	ASSERT(d.dumps() == repr);
+	delete res;
+ENDTEST()
+
+TEST(json_parse_empty_dict)
+	JSON::Value *res = JSON::parse("{}");
+	ASSERT(res != NULL);
+	ASSERT(ISDICT(res));
 	delete res;
 ENDTEST()
 
@@ -219,7 +234,9 @@ int main(int argc, const char **argv)
 		ADDTEST(json_parse_float),
 		ADDTEST(json_parse_str),
 		ADDTEST(json_parse_list),
+		ADDTEST(json_parse_empty_list),
 		ADDTEST(json_parse_dict),
+		ADDTEST(json_parse_empty_dict),
 		ADDTEST(json_parse_dict_many_keys),
 		ADDTEST(json_parse_list_in_dict)
 	};
