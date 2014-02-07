@@ -16,11 +16,11 @@ class Socket {
     };
 
   protected:
-     Socket();
+    Socket();
     bool create();
     void close();
     bool isOpen() {
-	return _sockfd >= 0;
+		return _sockfd >= 0;
     };
 
     int _sockfd;

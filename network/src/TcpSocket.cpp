@@ -24,7 +24,9 @@ Socket::Status TcpSocket::connect(const std::string ipAddr, int portNo)
 Socket::Status TcpSocket::send(const void *data, size_t len)
 {
     if (::send(_sockfd, data, len, 0) == 0)
-	return Status::ERROR;
+    {
+		return Status::ERROR;
+	}
     return Status::OK;
 }
 
@@ -32,6 +34,8 @@ Socket::Status TcpSocket::recv(void *data, size_t len, size_t & received)
 {
     received = ::recv(_sockfd, data, len, 0);
     if (received == 0)
-	return Status::ERROR;
+    {
+		return Status::ERROR;
+	}
     return Status::OK;
 }

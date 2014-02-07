@@ -10,7 +10,9 @@ bool Socket::create()
 void Socket::close()
 {
     if (isOpen())
-	::close(_sockfd);
+    {
+		::close(_sockfd);
+	}
 }
 
 Socket::~Socket()
