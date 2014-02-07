@@ -14,7 +14,7 @@ static inline const char *lstrip(const char *str, const char *junk=STRIP_JUNK){
 
 static Value *parseNumber(const char *str, char **endptr)
 {
-    assert('0' <= *str && *str <= '9');
+    assert(('0' <= *str && *str <= '9') || *str == '-');
     assert(endptr != NULL);
 
     double val = strtod(str, endptr);
@@ -119,7 +119,7 @@ Value *JSON::parse(const char *str, char **eptr)
     //* return NULL if empty string
     if (! *str) return NULL;
 
-    if ('0' <= *str && *str <= '9')
+    if (('0' <= *str && *str <= '9') || *str == '-')
         return parseNumber(str, eptr);
     if (*str == '"')
         return new String(parseString(str, eptr));
