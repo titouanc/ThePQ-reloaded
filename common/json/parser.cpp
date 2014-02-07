@@ -88,7 +88,23 @@ static List *parseList(const char *str, char **endptr)
 {
     assert(*str == '[');
     assert(endptr != NULL);
-    return NULL;
+
+    List *res = new List();
+
+    while (*str && *str != ']'){
+        Value *item = parse(str+1, endptr);
+        if (item){
+            res->append(*item);
+            delete item;
+        }
+        str = lstrip(*endptr);
+        if (*str != ',' && *str != ']')
+            throw ParseError(
+                "Unexpected character (trailing \""+
+                std::string(str) + "\")" + *endptr
+            );
+    }
+    return res;
 }
 
 Value *JSON::parse(const char *str, char **eptr)

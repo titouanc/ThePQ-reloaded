@@ -139,6 +139,21 @@ TEST(json_parse_str)
 	delete s;
 ENDTEST()
 
+TEST(json_parse_list)
+	const char *repr = "[1, 3.140000, \"Archimede\"]";
+	JSON::Value *res = JSON::parse(repr);
+	ASSERT(res != NULL);
+	ASSERT(res->type() == JSON::List_t);
+
+	JSON::List & l = LIST(res);
+	ASSERT(l.len() == 3);
+	ASSERT(l[0]->type() == JSON::Integer_t);
+	ASSERT(l[1]->type() == JSON::Float_t);
+	ASSERT(l[2]->type() == JSON::String_t);
+	ASSERT(l.dumps() == repr);
+	delete res;
+ENDTEST()
+
 TEST(json_parse_dict)
 	const char *repr = "{\"group\": 3}";
 	JSON::Value *res = JSON::parse(repr);
@@ -182,7 +197,9 @@ int main(int argc, const char **argv)
 		ADDTEST(json_parse_int),
 		ADDTEST(json_parse_float),
 		ADDTEST(json_parse_str),
-		ADDTEST(json_parse_dict)
+		ADDTEST(json_parse_list),
+		ADDTEST(json_parse_dict),
+		ADDTEST(json_parse_dict_many_keys)
 	};
 
 	return RUN(testSuite);
