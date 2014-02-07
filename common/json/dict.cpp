@@ -64,3 +64,23 @@ const Value * Dict::get(std::string const & key)
         throw KeyError(key);
     return elem->second;
 }
+
+Dict::iterator Dict::begin(void)
+{
+    return _content.begin();
+}
+
+Dict::iterator Dict::end(void)
+{
+    return _content.end();
+}
+
+Dict::const_iterator Dict::begin(void) const
+{
+    return _content.begin();
+}
+
+Dict::const_iterator Dict::end(void) const
+{
+    return _content.end();
+}
