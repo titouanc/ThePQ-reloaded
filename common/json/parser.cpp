@@ -70,17 +70,17 @@ static Dict *parseDict(const char *str, char **endptr)
             throw ParseError("Missing value for key "+key);
 
         /* Insert in result */
-        res->set(key, *val);
-        delete val;
+        res->setPtr(key, val);
 
         /* Find next element separator */
         str = lstrip(*endptr);
         if (*str != ',' && *str != '}')
             throw ParseError(
                 "Unexpected character (trailing \""+
-                std::string(str) + "\")" + *endptr
+                std::string(str) + "\")"
             );
     }
+    *endptr = (char*) str + (*str ? 1 : 0);
     return res;
 }
 
@@ -93,17 +93,18 @@ static List *parseList(const char *str, char **endptr)
 
     while (*str && *str != ']'){
         Value *item = parse(str+1, endptr);
-        if (item){
-            res->append(*item);
-            delete item;
-        }
+        if (item)
+            res->appendPtr(item);
+
+        /* Find next element sepatator */
         str = lstrip(*endptr);
         if (*str != ',' && *str != ']')
             throw ParseError(
                 "Unexpected character (trailing \""+
-                std::string(str) + "\")" + *endptr
+                std::string(str) + "\")"
             );
     }
+    *endptr = (char*) str + (*str ? 1 : 0);
     return res;
 }
 

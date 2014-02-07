@@ -110,7 +110,8 @@ namespace JSON {
                 return res.str();
             }
             const Value * operator[](size_t index){return _content[index];}
-            void append(Value const & obj){_content.push_back(obj.clone());}
+            void appendPtr(Value *ptr){_content.push_back(ptr);}
+            void append(Value const & obj){appendPtr(obj.clone());}
             size_t len(void) const {return _content.size();}
     };
 
@@ -146,11 +147,14 @@ namespace JSON {
             bool hasKey(std::string const & key){
                 return _content.find(key) != _content.end();
             }
-            void set(std::string const & key, Value const & val){
+            void setPtr(std::string const & key, Value *ptr){
                 _content.insert(
                     _content.begin(), 
-                    std::pair<std::string, Value*>(key, val.clone())
+                    std::pair<std::string, Value*>(key, ptr)
                 );
+            }
+            void set(std::string const & key, Value const & val){
+                setPtr(key, val.clone());
             }
             const Value * get(std::string const & key){
                 std::map<std::string, Value*>::const_iterator elem;

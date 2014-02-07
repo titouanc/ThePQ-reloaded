@@ -181,6 +181,22 @@ TEST(json_parse_dict_many_keys)
 	delete res;
 ENDTEST()
 
+TEST(json_parse_list_in_dict)
+	const char *repr = "{\"players\": [{\"name\":\"Titou\", \"level\": 52},"
+		               " {\"name\":\"Homere\", \"level\": 66}]}";
+	JSON::Value *res = JSON::parse(repr);
+	ASSERT(res != NULL);
+	ASSERT(res->type() == JSON::Dict_t);
+
+	JSON::Dict & d = DICT(res);
+	ASSERT(d.hasKey("players"));
+	ASSERT(d.get("players")->type() == JSON::List_t);
+	ASSERT(LIST(d.get("players")).len() == 2);
+	ASSERT(LIST(d.get("players"))[0]->type() == JSON::Dict_t);
+
+	delete res;
+ENDTEST()
+
 int main(int argc, const char **argv)
 {
 	TestFunc testSuite[] = {
@@ -199,7 +215,8 @@ int main(int argc, const char **argv)
 		ADDTEST(json_parse_str),
 		ADDTEST(json_parse_list),
 		ADDTEST(json_parse_dict),
-		ADDTEST(json_parse_dict_many_keys)
+		ADDTEST(json_parse_dict_many_keys),
+		ADDTEST(json_parse_list_in_dict)
 	};
 
 	return RUN(testSuite);
