@@ -29,9 +29,9 @@ string askForNewPassword(){
 	string password = "a";
 	string passwordConfirmation;
 	while (password != passwordConfirmation){
-		cout << "Enter a new password : " << endl;
+		cout << "Enter a new password : ";
 		cin >> password;
-		cout << "Confirm password : " << endl;
+		cout << "Confirm password : ";
 		cin >> passwordConfirmation;
 		if (password != passwordConfirmation)
 			cout << "The two passwords entered were not the same." << endl;

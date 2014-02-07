@@ -10,6 +10,8 @@ int main(int argc, char const *argv[])
 {
 	printLaunchingMessage();
 
+	// TODO add an option for the user to quit before logging in/registering
+
 	UserStatus userStatus = UserNotFound;
 	while (userStatus != UserLoggedIn){
 		string username;
@@ -18,11 +20,6 @@ int main(int argc, char const *argv[])
 		// TODO send username to server
 		// TODO receive username from server
 		// TODO receive userStatus from server 
-
-		if (userStatus != UserNotFound)
-			userStatus = UserNotFound;
-		else
-			userStatus = UserRegistered;
 
 		if (userStatus == UserRegistered){
 			string password;
@@ -44,13 +41,13 @@ int main(int argc, char const *argv[])
 		else if (userStatus == UserNotFound){
 			cout << "User " << username << " was not found." << endl;
 			if (userWantsToRegister()){
-				// Creating a new password
-				cout << "you want to register" << endl;
+				string password = askForNewPassword();
+				// TODO hash password
+				// TODO send hashed password to server
+				// TODO received hashed password from server
+				// TODO send isPasswordCorrect to server
+				// TODO receive userStatus from server
 			}
-			else {
-				cout << "you don't want to register" << endl;
-			}
-			
 		}
 	}
 	
