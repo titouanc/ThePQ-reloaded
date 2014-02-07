@@ -11,6 +11,12 @@
 
 #define CLONE_METHOD(type) Value * clone(void) const {return new type(value());}
 
+#define INT(obj)   (*((JSON::Integer *)(obj)))
+#define FLOAT(obj) (*((JSON::Float *)(obj)))
+#define STR(obj)   (*((JSON::String *)(obj)))
+#define DICT(obj)  (*((JSON::Dict *)(obj)))
+#define LIST(obj)  (*((JSON::List *)(obj)))
+
 namespace JSON {
     enum Type {
         Integer_t = 0x01,

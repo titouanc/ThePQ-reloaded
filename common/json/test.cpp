@@ -51,10 +51,8 @@ TEST(json_list_append)
 	for (int i=0; i<10; i++)
 		l.append(JSON::Integer(i));
 	ASSERT(l.len() == 10);
-	JSON::Integer *cur;
 	for (int i=0; i<10; i++){
-		cur = (JSON::Integer *) l[i];
-		ASSERT(cur->value() == i);
+		ASSERT(INT(l[i]).value() == i);
 	}
 ENDTEST()
 
@@ -72,11 +70,11 @@ TEST(json_list_mixed)
 		switch (l[i]->type()){
 			case JSON::Integer_t:
 				ASSERT(i%2);
-				ASSERT(((JSON::Integer*) l[i])->value() == 3);
+				ASSERT(INT(l[i]).value() == 3);
 				break;
 			case JSON::Float_t:
 				ASSERT(i%2 == 0);
-				ASSERT(((JSON::Float*) l[i])->value() == 12.45);
+				ASSERT(FLOAT(l[i]).value() == 12.45);
 				break;
 			default: break;
 		}
@@ -116,7 +114,7 @@ TEST(json_parse_int)
 	JSON::Value *i = JSON::parse(repr);
 	ASSERT(i != NULL);
 	ASSERT(i->type() == JSON::Integer_t);
-	ASSERT(((JSON::Integer*) i)->value() == 42);
+	ASSERT(INT(i).value() == 42);
 	ASSERT(i->dumps() == repr);
 	delete i;
 ENDTEST()
@@ -126,7 +124,7 @@ TEST(json_parse_float)
 	JSON::Value *f = JSON::parse(repr);
 	ASSERT(f != NULL);
 	ASSERT(f->type() == JSON::Float_t);
-	ASSERT(((JSON::Float*) f)->value() == 42.4567);
+	ASSERT(FLOAT(f).value() == 42.4567);
 	ASSERT(f->dumps() == repr);
 	delete f;
 ENDTEST()
@@ -136,7 +134,7 @@ TEST(json_parse_str)
 	JSON::Value *s = JSON::parse(repr);
 	ASSERT(s != NULL);
 	ASSERT(s->type() == JSON::String_t);
-	ASSERT(((JSON::String*) s)->value() == "Naim Qachri");
+	ASSERT(STR(s).value() == "Naim Qachri");
 	ASSERT(s->dumps() == repr);
 	delete s;
 ENDTEST()
@@ -146,7 +144,8 @@ TEST(json_parse_dict)
 	JSON::Value *res = JSON::parse(repr);
 	ASSERT(res != NULL);
 	ASSERT(res->type() == JSON::Dict_t);
-	JSON::Dict & d = *((JSON::Dict*) res);
+
+	JSON::Dict & d = DICT(res);
 	ASSERT(d.hasKey("group"));
 	ASSERT(d.get("group")->type() == JSON::Integer_t);
 	ASSERT(d.dumps() == repr);
