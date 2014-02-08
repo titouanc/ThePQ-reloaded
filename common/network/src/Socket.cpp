@@ -4,7 +4,7 @@ bool net::Socket::create()
 {
     /* Initialization */
     _sockfd = socket(AF_INET, SOCK_STREAM, 0);
-    return _sockfd >= 0;	// Socket created
+    return isOpen();	// Socket created
 }
 
 void net::Socket::close()
@@ -17,7 +17,7 @@ void net::Socket::close()
 
 net::Socket::Socket()
 {
-	
+	_sockfd = -1;
 }
 
 net::Socket::~Socket()

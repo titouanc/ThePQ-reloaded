@@ -66,6 +66,6 @@ net::Socket::Status net::TcpSocket::recv(JSON::Value **json)
 	}
 	data[received] = '\0';
 	*json = JSON::parse(data);
-	delete data;
+	delete[] data;
 	return Status::OK;
 }

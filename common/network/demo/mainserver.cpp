@@ -34,12 +34,14 @@ int main (int argc, char **argv)
 		cout << "Server: recv: " << data->dumps() << endl;
 		// You must delete because recv use JSON::parse which allocate memory
 		
+		delete data;
 		
 		// Create JSON value and send it
 		data = JSON::parse("42");
 		cout << "Server: send: " << data->dumps() << endl;
 		status = socket.send(data);
 		
+		delete data;
 		
 		//~ char* data = new char[6];
 		//~ size_t received;

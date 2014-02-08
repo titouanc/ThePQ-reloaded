@@ -8,8 +8,6 @@ CXXFLAGS = -std=c++11 -pedantic -Wall -Wextra -I../src/ -I../../json
 LDFLAGS =
 
 all: ${SERV} ${CLI}
-	./${SERV}&
-	./${CLI}
 
 ${SERV}: mainserver.o ${LIBNETWORK} ${LIBJSON}
 	${CXX} ${LDFLAGS} -o $@ $^
