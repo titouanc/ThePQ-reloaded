@@ -4,6 +4,19 @@
 
 using namespace std;
 
+string askForUserData(string prompt); // returns the user input.
+
+// Registering
+void registerUser();
+bool userWantsToRegister(); // asks the user if he wants to register when login has
+							// failed because the username specified doesn't exist.
+string askForNewPassword(); // prompts the user to create a new password with 
+							// confirmation. returns the password.
+
+// Logging in
+void login();
+
+
 // Exceptions
 class WrongPasswordException : public runtime_error{
 public:
@@ -17,13 +30,3 @@ class UserAlreadyExistsException : public runtime_error{
 public:
 	UserAlreadyExistsException():runtime_error("User already exists"){};
 };
-
-string askForUserData(string prompt);
-
-// Registering
-void registerUser();
-bool userWantsToRegister();
-string askForNewPassword();
-
-// Logging in
-void login();
