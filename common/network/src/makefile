@@ -1,10 +1,11 @@
 SRC=$(wildcard *.cpp)
 OBJ=$(SRC:.cpp=.o)
 LIBNETWORK=../build/libnetwork.a
+LIBJSON=libjson.a
 
 CXX = g++
-CXXFLAGS = -std=c++11 -pedantic -Wall -Wextra
-LDFLAGS =
+CXXFLAGS = -std=c++11 -pedantic -Wall -Wextra -I../../json
+LDFLAGS = -L../../json -ljson
 
 all: ${LIBNETWORK}
 

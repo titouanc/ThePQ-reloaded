@@ -1,21 +1,27 @@
-SERV = serv
-CLI = cli
-LIBNETWORK = ../build/libnetwork.a
+SERV = serv.app
+CLI = cli.app
+LIBNETWORK=../build/libnetwork.a
+LIBJSON=../../json/libjson.a
 
 CXX = g++
-CXXFLAGS = -std=c++11 -pedantic -Wall -Wextra -I../src/
+CXXFLAGS = -std=c++11 -pedantic -Wall -Wextra -I../src/ -I../../json
 LDFLAGS =
 
 all: ${SERV} ${CLI}
+	./${SERV}&
+	./${CLI}
 
-${SERV}: mainserver.o ${LIBNETWORK} 
+${SERV}: mainserver.o ${LIBNETWORK} ${LIBJSON}
 	${CXX} ${LDFLAGS} -o $@ $^
 	
-${CLI}: mainclient.o ${LIBNETWORK} 
+${CLI}: mainclient.o ${LIBNETWORK}  ${LIBJSON}
 	${CXX} ${LDFLAGS} -o $@ $^
 
 ${LIBNETWORK}: 
 	cd ../src && make all
+	
+${LIBJSON}:
+	cd ../../json && make all
 
 mainserver.o:
 	${CXX} ${CXXFLAGS} -c -o $@ mainserver.cpp

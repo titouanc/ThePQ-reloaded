@@ -1,4 +1,5 @@
 #include "net.hpp"
+#include <cstring>
 
 net::Socket::Status net::TcpSocket::connect(const std::string ipAddr, int portNo)
 {
@@ -20,21 +21,53 @@ net::Socket::Status net::TcpSocket::connect(const std::string ipAddr, int portNo
     return Status::OK;
 }
 
-net::Socket::Status net::TcpSocket::send(const void *data, size_t len)
+net::Socket::Status net::TcpSocket::send(const char *data, size_t len)
 {
-    if (::send(_sockfd, data, len, 0) == 0)
+    if (::send(_sockfd, data, len, 0) <= 0)
     {
 		return Status::ERROR;
 	}
     return Status::OK;
 }
 
-net::Socket::Status net::TcpSocket::recv(void *data, size_t len, size_t & received)
+net::Socket::Status net::TcpSocket::recv(char *data, size_t len, size_t & received)
 {
+	data = new char[100];
+	memset(data, 0, 100);
     received = ::recv(_sockfd, data, len, 0);
-    if (received == 0)
+    if (received <= 0)
+    {
+		return Status::ERROR;
+	}
+	data[received] = '\0';
+    return Status::OK;
+}
+
+net::Socket::Status net::TcpSocket::send(const JSON::Value *json)
+{
+	std::string dump = json->dumps();
+	const char* data = (dump.c_str());
+	std::cout << "char*: " << data << std::endl;
+    if (::send(_sockfd, data, dump.length(), 0) <= 0)
     {
 		return Status::ERROR;
 	}
     return Status::OK;
+}
+
+net::Socket::Status net::TcpSocket::recv(JSON::Value **json)
+{
+	char* data = new char[100];
+	size_t received;
+	memset(data, 0, 100);
+    received = ::recv(_sockfd, data, 100, 0);
+    if (received <= 0)
+    {
+		return Status::ERROR;
+	}
+	data[received] = '\0';
+	std::cout << "data: " << data << std::endl;
+	*json = JSON::parse(data);
+	delete data;
+	return Status::OK;
 }
