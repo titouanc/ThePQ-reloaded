@@ -1,0 +1,10 @@
+#!/bin/bash
+
+# Usage: build [target]
+# Run make [targets] in every subdirectory containing a Makefile
+
+for mf in `find . -iname makefile`; do
+	dir=$(dirname $mf)
+	printf "\033[1mmake -C $dir $*\033[0m\n"
+	make -C $dir $*
+done
