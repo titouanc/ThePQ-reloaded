@@ -81,6 +81,7 @@ int main(int argc, char const *argv[])
 		else {
 			cout << "Please enter a valid response." << endl;
 			printLoggedOffActions();
+		}
 	}
 
 
