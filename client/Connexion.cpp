@@ -82,7 +82,7 @@ void login(){
 				// TODO throw some kind of exception
 			}
 			*/
-
+			cout << "You have successfully logged in! Welcome! :)" << endl;
 		}
 		else throw WrongPasswordException();
 	}
