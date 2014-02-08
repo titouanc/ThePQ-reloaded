@@ -1,7 +1,6 @@
 #include <iostream>
 #include <cstdlib>
-#include "TcpSocket.hpp"
-#include "Listener.hpp"
+#include "net.hpp"
 using namespace std;
 using namespace net;
 
@@ -13,9 +12,12 @@ int main (int argc, char **argv)
 	// Listen for new connections on port 6666
 	Listener list;
 	status = list.listen(6666);
-	if (status == Socket::Status::ERROR)
-		exit;
 	cout << "listen: " << status << endl;
+	if (status == Socket::Status::ERROR)
+	{
+		cout << "Listener.listen: ERROR" << endl;
+		exit(1);
+	}
 	
 	bool running = true;
 	while (running)

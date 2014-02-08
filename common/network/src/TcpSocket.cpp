@@ -1,5 +1,4 @@
-#include "TcpSocket.hpp"
-#include <arpa/inet.h>
+#include "net.hpp"
 
 net::Socket::Status net::TcpSocket::connect(const std::string ipAddr, int portNo)
 {
