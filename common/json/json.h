@@ -100,6 +100,7 @@ namespace JSON {
             Value * clone(void) const;
             std::string dumps(void) const;
             const Value * operator[](size_t index);
+            const Value * operator[](size_t index) const;
             void appendPtr(Value *ptr);
             void append(Value const & obj);
             size_t len(void) const;

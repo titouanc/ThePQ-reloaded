@@ -42,6 +42,11 @@ const Value * List::operator[](size_t index)
     return _content[index];
 }
 
+const Value * List::operator[](size_t index) const
+{
+    return _content[index];
+}
+
 void List::appendPtr(Value *ptr)
 {
     _content.push_back(ptr);
