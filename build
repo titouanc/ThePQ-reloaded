@@ -2,6 +2,13 @@
 
 # Usage: build [targets]
 # Run make [targets] in every subdirectory containing a Makefile
+#
+# Config files
+# .make_flags: Options for make (ex: CXX=clang++)
+# .build_ignore: Do not build in those directories
+
+ignores_file=".build_ignore"
+makeflags_file=".make_flags"
 
 runCmd () {
 	printf "\033[1m$*\033[0m\n" 1>&2
@@ -13,12 +20,10 @@ runCmd () {
 	fi
 }
 
-makeflags_file=".make_flags"
-[ -e "$makeflags_file" ] || runCmd touch "$makeflags_file"
-
-makeflags=$(runCmd cat "$makeflags_file")
+[ -r "$makeflags_file" ] && makeflags=$(runCmd cat "$makeflags_file")
+[ -r "$ignores_file" ] && ignores=$(runCmd cat "$ignores_file")
 
 for mf in `find . -iname makefile`; do
 	dir=$(dirname $mf)
-	runCmd make $makeflags -C $dir $*
+	[ -z $(echo $ignores | grep $dir) ] && runCmd make $makeflags -C $dir $*
 done
