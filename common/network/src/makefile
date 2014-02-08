@@ -11,13 +11,16 @@ all: ${LIBNETWORK}
 %.o: %.cpp
 	${CXX} ${CXXFLAGS} -c -o $@ $<
 
-${LIBNETWORK}: ${OBJ}
-	ar r $@ $^
+${LIBNETWORK}: ../build ${OBJ}
+	ar r $@ ${OBJ}
+
+../build:
+	mkdir $@
 
 clean:
 	rm -f ${OBJ}
 
 mrproper: clean
-	rm -f ${LIBNETWORK}
+	rm -rf ../build
 
 .PHONY: clean all mrproper
