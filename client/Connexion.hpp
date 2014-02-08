@@ -1,3 +1,6 @@
+#ifndef CONNEXION_HPP
+#define CONNEXION_HPP
+
 #include <iostream>
 #include <string>
 #include <stdexcept>
@@ -30,3 +33,5 @@ class UserAlreadyExistsException : public runtime_error{
 public:
 	UserAlreadyExistsException():runtime_error("User already exists"){};
 };
+
+#endif
