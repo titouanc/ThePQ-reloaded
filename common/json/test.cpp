@@ -1,5 +1,5 @@
 #include "json.h"
-#include "lighttest.h"
+#include <lighttest.h>
 
 void iThrow(void)
 {
