@@ -47,7 +47,6 @@ net::Socket::Status net::TcpSocket::send(const JSON::Value *json)
 {
 	std::string dump = json->dumps();
 	const char* data = (dump.c_str());
-	std::cout << "char*: " << data << std::endl;
     if (::send(_sockfd, data, dump.length(), 0) <= 0)
     {
 		return Status::ERROR;
@@ -59,14 +58,13 @@ net::Socket::Status net::TcpSocket::recv(JSON::Value **json)
 {
 	char* data = new char[100];
 	size_t received;
-	memset(data, 0, 100);
+	bzero(data, 100);
     received = ::recv(_sockfd, data, 100, 0);
     if (received <= 0)
     {
 		return Status::ERROR;
 	}
 	data[received] = '\0';
-	std::cout << "data: " << data << std::endl;
 	*json = JSON::parse(data);
 	delete data;
 	return Status::OK;

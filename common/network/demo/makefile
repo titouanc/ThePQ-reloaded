@@ -17,7 +17,7 @@ ${SERV}: mainserver.o ${LIBNETWORK} ${LIBJSON}
 ${CLI}: mainclient.o ${LIBNETWORK}  ${LIBJSON}
 	${CXX} ${LDFLAGS} -o $@ $^
 
-${LIBNETWORK}: 
+${LIBNETWORK}:
 	cd ../src && make all
 	
 ${LIBJSON}:
