@@ -1,7 +1,6 @@
 #include <iostream>
 #include <cstdlib>
-#include "TcpSocket.hpp"
-#include "Listener.hpp"
+#include "net.hpp"
 using namespace std;
 using namespace net;
 
