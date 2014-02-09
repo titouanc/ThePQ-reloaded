@@ -12,10 +12,10 @@ public:
 	int getMagicBonus () const;
 	int getSpiritBonus () const;
 private:
-	int StrengthBonus;
-	int ConstitutionBonus;
-	int MagicBonus;
-	int SpiritBonus;
+	int strengthBonus;
+	int constitutionBonus;
+	int magicBonus;
+	int spiritBonus;
 };
 
 #endif
