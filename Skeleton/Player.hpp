@@ -10,20 +10,21 @@ class Player : Member
 {
 public:
 	Player ();
-	int getRemainingLife ();
-	int getRemainingMana ();
-	Abilities getAbilities ();
-	Broomstick getBroomstick ();
+	int getRemainingLife () const;
+	int getRemainingMana ()const;
+	Abilities getAbilities () const;
+	Broomstick getBroomstick () const;
+    void equipBroomstick (Broomstick aBroom);
+    void unequipBroomstick ();
 	Jersey equipJersey ();
 	void recoverLife ();
 	void loseLife (int damage);
 	void recoverMana ();
 	void loseMana (int spelled);
-	void setBroomstick (Broomstick anotherBs);
-	bool isBeater ();
-	bool isChaser ();
-	bool isKeeper ();
-	bool isSeeker ();
+	bool isBeater () const;
+	bool isChaser () const;
+	bool isKeeper () const;
+	bool isSeeker () const;
 private:
 	int lifeBar;
 	int manaBar;
