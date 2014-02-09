@@ -1,3 +1,5 @@
+.make_flags
+
 # Compiled Object files
 *.slo
 *.lo
