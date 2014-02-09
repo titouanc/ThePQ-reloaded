@@ -1,7 +1,6 @@
-#ifndef MESSAGES_HPP
-#define MESSAGES_HPP 
+#ifndef MESSAGE_HPP
+#define MESSAGE_HPP 
 
-#include <cstddef>
 #include <iostream>
 
 class Message

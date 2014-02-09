@@ -3,7 +3,7 @@
 
 #include <iostream>
 #include <string>
-#include "Messages.hpp"
+#include "Message.hpp"
 #include "Connection.hpp"
 
 
@@ -16,7 +16,6 @@ public:
 	void run();
 
 private:
-	net::TcpSocket _socket;
 	std::string _userChoice;
 
 };
