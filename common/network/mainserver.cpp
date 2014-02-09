@@ -2,6 +2,7 @@
 #include <cstdlib>
 #include "net.hpp"
 #include "json.h"
+#include "Message.hpp"
 using namespace std;
 using namespace net;
 
@@ -30,18 +31,21 @@ int main (int argc, char **argv)
 	
 		// Create JSON value and assign with received data
 		JSON::Value *data;
-		status = socket.recv(&data);
-		cout << "Server: recv: " << data->dumps() << endl;
+		Message *msg;
+		status = socket.recv((JSON::Value**) &msg);
+		cout << "Server: recv: " << msg->dumps() << endl;
 		// You must delete because recv use JSON::parse which allocate memory
 		
-		delete data;
+		delete msg;
 		
 		// Create JSON value and send it
 		data = JSON::parse("42");
-		cout << "Server: send: " << data->dumps() << endl;
-		status = socket.send(data);
+		msg = new Message(Message::Request::LOGIN, Message::Method::RESPONSE, data);
+		cout << "Server: send: " << msg->dumps() << endl;
+		status = socket.send(msg);
 		
 		delete data;
+		delete msg;
 		
 		//~ char* data = new char[6];
 		//~ size_t received;

@@ -7,26 +7,37 @@ namespace net
 {
 	class Message : public JSON::Dict
 	{
-	public:
+	public:		
+		enum Method
+		{
+			REQUEST,
+			RESPONSE
+		};
+		
+		enum Request
+		{
+			LOGIN,
+			SUBSCRIBE
+		};
+		
 		Message(Request request, Method method, JSON::Value* data) : JSON::Dict()
 		{
 			set("Request", JSON::Integer(request));
 			set("Method", JSON::Integer(method));
 			set("Data", *data);
 		}
-		~Message();
 		
-		enum Method
+		Message(JSON::Dict const & dict)
 		{
-			REQUEST,
-			RESPONSE
+			set("Request", *(dict.get("Request")));
+			set("Method", *(dict.get("Method")));
+			set("Data", *(dict.get("Data")));
 		}
 		
-		enum Request
+		~Message()
 		{
-			LOGIN,
-			SUBSCRIBE
-		}		
+			
+		}	
 	};
 }
 
