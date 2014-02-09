@@ -2,21 +2,25 @@ OBJ=Listener.o Socket.o TcpSocket.o
 SERV = serv.app
 CLI = cli.app
 LIBNETWORK=libnetwork.a
+LIBJSON=../json/libjson.a
 
 CXX = g++
 CXXFLAGS = -std=c++11 -pedantic -Wall -Wextra -I../json
-LDFLAGS = -L../json -ljson
+LDFLAGS = 
 
 all: ${SERV} ${CLI}
 
-${SERV}: mainserver.o ${LIBNETWORK}
+${SERV}: mainserver.o ${LIBNETWORK} ${LIBJSON}
 	${CXX} ${LDFLAGS} -o $@ $^
 	
-${CLI}: mainclient.o ${LIBNETWORK}
+${CLI}: mainclient.o ${LIBNETWORK} ${LIBJSON}
 	${CXX} ${LDFLAGS} -o $@ $^
 
 ${LIBNETWORK}: ${OBJ}
 	ar r libnetwork.a ${OBJ}
+	
+${LIBJSON}:
+	cd ../json && make
 
 %.o: %.cpp
 	${CXX} ${CXXFLAGS} -c -o $@ $^
