@@ -1,6 +1,8 @@
 #ifndef __MESSAGE_HPP
 #define __MESSAGE_HPP
 
+#include "json.h"
+
 namespace net
 {
 	class Message : public JSON::Dict
