@@ -22,7 +22,7 @@ void Client::run()
 	Message::printLoggedOffActions();
 	cin >> _userChoice;
 
-	while (_userChoice != "q" && _userChoice != "Q" && ! Connection::isLogged()){
+	while (_userChoice != "q" && _userChoice != "Q" && ! _connection.isLogged()){
 
 		// login
 		if (_userChoice == "l" || _userChoice == "L"){
@@ -55,7 +55,7 @@ void Client::run()
 			cout << "Please enter a valid response." << endl;
 			Message::printLoggedOffActions();
 		}
-		if (!Connection::isLogged()){
+		if (!_connection.isLogged()){
 			Message::printLoggedOffActions();
 			cin >> _userChoice;
 		}

@@ -3,12 +3,15 @@
 
 #include "net.hpp"
 #include "json.h"
+#include <string>
 
 class Connection
 {
 public:
 	Connection();
-	~Connection();
+	
+	void loginUser(std::string username, std::string passwd);
+	void registerUser(std::string username, std::string passwd);
 	
 	bool isLogged();
 	

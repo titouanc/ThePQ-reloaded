@@ -12,3 +12,13 @@ bool Connection::isLogged()
 {
 	return _isLogged;
 }
+
+void Connection::loginUser(string username, string passwd)
+{
+	
+}
+
+void Connection::registerUser(string username, string passwd)
+{
+	
+}

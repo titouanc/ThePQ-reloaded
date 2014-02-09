@@ -19,6 +19,7 @@ public:
 
 private:
 	std::string _userChoice;
+	Connection _connection;
 	
 	// Registering
 	static void registerUser();
