@@ -1,13 +1,12 @@
-#include <iostream>
 #include "Messages.hpp"
 
 using namespace std;
 
-void printPrompt(){
+void Message::printPrompt(){
 	cout << "> ";
 }
 
-void printLaunchingMessage(){
+void Message::printLaunchingMessage(){
 	cout << "           __       _   " << endl;
 	cout << "           //_ _   /_/_ _                  much amazing  |" << endl;
 	cout << "          // //_' /  //_/                              - * -" << endl;
@@ -33,7 +32,7 @@ void printLaunchingMessage(){
 	cout << "Welcome to The Pro Quidditch Manager 2014!" << endl;
 }
 
-void printLoggedOffActions(){
+void Message::printLoggedOffActions(){
 	cout << "You can : "<< endl;
 	cout << "   - (l)ogin" << endl;
 	cout << "   - (r)egister" << endl;
@@ -41,7 +40,7 @@ void printLoggedOffActions(){
 	printPrompt();
 }
 
-void printMainMenu(){
+void Message::printMainMenu(){
 	cout << "You can : "<< endl;
 	cout << "   - (m)anage your team and stadium" << endl;
 	cout << "   - (p)lay a friendly game" << endl;
@@ -49,7 +48,7 @@ void printMainMenu(){
 	printPrompt();
 }
 
-void printManagementMenu(){
+void Message::printManagementMenu(){
 	cout << "You can : "<< endl;
 	cout << "   - manage your (s)tadium and installations" << endl;
 	cout << "   - manage your (p)layers" << endl;
@@ -57,7 +56,7 @@ void printManagementMenu(){
 	printPrompt();
 }
 
-void printGoodbyeMessage(){
+void Message::printGoodbyeMessage(){
 	cout << endl;
 	cout << "                 =========================            " << endl;
 	cout << "   Thank you for playing the Pro Quidditch Manager 2014!" << endl;

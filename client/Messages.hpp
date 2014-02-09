@@ -1,14 +1,19 @@
 #ifndef MESSAGES_HPP
 #define MESSAGES_HPP 
 
-void printPrompt();
+#include <cstddef>
+#include <iostream>
 
-void printLaunchingMessage();
+class Message
+{
+public:
+	static void printPrompt();
+	static void printLaunchingMessage();
+	static void printLoggedOffActions();
+	static void printMainMenu();
+	static void printManagementMenu();
+	static void printGoodbyeMessage();
+};
 
-void printLoggedOffActions();
-void printMainMenu();
-void printManagementMenu();
-
-void printGoodbyeMessage();
 
 #endif

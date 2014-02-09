@@ -1,4 +1,4 @@
-OBJ= main.o Client.o Connexion.o Messages.o
+OBJ= Messages.o Connexion.o Client.o main.o
 MAIN=client.app
 CXX=g++
 CFLAGS=-std=c++11 -pedantic -Wall -Wextra -I../common/network -I../common/json

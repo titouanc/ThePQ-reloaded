@@ -5,15 +5,16 @@
 
 using namespace std;
 
+bool Connection::_isLogged = false;
 
-string askForUserData(string prompt){
+string Connection::askForUserData(string prompt){
 	string data;
 	cout << prompt;
 	cin >> data;
 	return data;
 }
 
-void registerUser(){
+void Connection::registerUser(){
 	UserStatus userStatus = UserNotFound;	// handy initialization
 	string username = askForUserData("Pick a username : ");
 	// TODO send username to server
@@ -29,7 +30,7 @@ void registerUser(){
 	else throw UserAlreadyExistsException();
 }
 
-bool userWantsToRegister(){
+bool Connection::userWantsToRegister(){
 	bool done = false;
 	bool res = false;
 	while (!done){
@@ -48,7 +49,7 @@ bool userWantsToRegister(){
 	return res;
 }
 
-string askForNewPassword(){
+string Connection::askForNewPassword(){
 	string password = "a";
 	string passwordConfirmation;
 	while (password != passwordConfirmation){
@@ -60,7 +61,12 @@ string askForNewPassword(){
 	return password;
 }
 
-void login(){
+bool Connection::isLogged()
+{
+	return _isLogged;
+}
+
+void Connection::login(){
 	UserStatus userStatus = UserNotFound;	// handy initialization
 	
 	string username = askForUserData("Username : ");
@@ -85,6 +91,7 @@ void login(){
 			}
 			*/
 			cout << "You have successfully logged in! Welcome! :)" << endl;
+			_isLogged = true;
 		}
 		else throw WrongPasswordException();
 	}
