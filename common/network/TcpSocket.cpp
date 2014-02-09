@@ -32,8 +32,8 @@ net::Socket::Status net::TcpSocket::send(const char *data, size_t len)
 
 net::Socket::Status net::TcpSocket::recv(char *data, size_t len, size_t & received)
 {
-	data = new char[100];
-	memset(data, 0, 100);
+	data = new char[MSG_SIZE];
+	memset(data, 0, MSG_SIZE);
     received = ::recv(_sockfd, data, len, 0);
     if (received <= 0)
     {
