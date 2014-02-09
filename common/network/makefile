@@ -31,5 +31,6 @@ clean:
 mrproper: clean
 	rm -f ${SERV}
 	rm -f ${CLI}
+	rm -f ${LIBNETWORK}
 
 .PHONY: clean all mrproper
