@@ -2,7 +2,11 @@
 
 using namespace std;
 
-bool Connection::_isLogged = false;
+Connection::Connection()
+{
+	_isLogged = false;
+	_socket.connect("127.0.0.1", 6666);
+}
 
 bool Connection::isLogged()
 {

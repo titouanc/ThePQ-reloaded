@@ -7,12 +7,15 @@
 class Connection
 {
 public:
-
+	Connection();
+	~Connection();
 	
-	static bool isLogged();
+	bool isLogged();
 	
 private:
-	static bool _isLogged;
+	bool _isLogged;
+	
+	net::TcpSocket _socket;
 	
 };
 
