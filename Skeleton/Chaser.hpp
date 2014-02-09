@@ -6,7 +6,7 @@
 class Chaser : Player 
 {
 public:
-	bool isChaser ();
+	bool isChaser () const;
 };
 
 #endif
