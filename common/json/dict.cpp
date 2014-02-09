@@ -36,7 +36,7 @@ void Dict::_writeTo(std::ostream & out) const
     out << "}";
 }
 
-bool Dict::hasKey(std::string const & key)
+bool Dict::hasKey(std::string const & key) const
 {
     return _content.find(key) != _content.end();
 }

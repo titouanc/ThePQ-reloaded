@@ -111,7 +111,7 @@ namespace JSON {
             Type type(void) const;
             Value * clone(void) const;
             virtual void _writeTo(std::ostream & out) const;
-            bool hasKey(std::string const & key);
+            bool hasKey(std::string const & key) const;
             void setPtr(std::string const & key, Value *ptr);
             void set(std::string const & key, Value const & val);
             const Value * get(std::string const & key) const;
