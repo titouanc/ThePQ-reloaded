@@ -125,7 +125,7 @@ namespace JSON {
             bool hasKey(std::string const & key);
             void setPtr(std::string const & key, Value *ptr);
             void set(std::string const & key, Value const & val);
-            const Value * get(std::string const & key);
+            const Value * get(std::string const & key) const;
             
             typedef std::map<std::string, Value*>::iterator iterator;
             typedef std::map<std::string, Value*>::const_iterator const_iterator;
