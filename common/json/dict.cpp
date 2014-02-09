@@ -29,9 +29,9 @@ void Dict::_writeTo(std::ostream & out) const
     std::map<std::string, Value*>::const_iterator it;
     out << "{";
     for (it=_content.begin(); it!=_content.end(); it++){
-        out << JSON::String(it->first);
-        out << ": ";
-        out << *(it->second);
+        if (it != _content.begin())
+            out << ", ";
+        out << JSON::String(it->first) << ": " << *(it->second);
     }
     out << "}";
 }

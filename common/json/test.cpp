@@ -120,8 +120,18 @@ TEST(json_dict_keys)
 	ASSERT(d.dumps() == "{\"key\": \"value\"}");
 	ASSERT(d.hasKey("key"));
 	ASSERT(! d.hasKey("1337"));
-	ASSERT(d.get("key")->type() == JSON::String_t);
+	ASSERT(ISSTR(d.get("key")));
 	ASSERT_THROWS(JSON::KeyError, d.get("1337"));
+ENDTEST()
+
+TEST(json_dict_repr)
+	JSON::Dict d;
+	d.set("key1", "value1");
+	d.set("key2", "value2");
+	ASSERT(
+		d.dumps() == "{\"key1\": \"value1\", \"key2\": \"value2\"}" || 
+		d.dumps() == "{\"key2\": \"value2\", \"key1\": \"value1\"}"
+	)
 ENDTEST()
 
 TEST(json_parse_error)
@@ -280,6 +290,7 @@ int main(int argc, const char **argv)
 		ADDTEST(json_list_repr),
 		ADDTEST(json_dict),
 		ADDTEST(json_dict_keys),
+		ADDTEST(json_dict_repr),
 		ADDTEST(json_parse_error),
 		ADDTEST(json_parse_int),
 		ADDTEST(json_parse_float),
