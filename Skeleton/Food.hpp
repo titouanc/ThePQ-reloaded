@@ -6,7 +6,7 @@ class Food
 public:
     std::string getName () const ;
 	int getPrice () const ;
-	void setPrice (int price);
+	void setPrice (int newPrice);
 private:
     std::string const name;
 	int price;

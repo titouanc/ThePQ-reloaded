@@ -2,14 +2,14 @@
 
 using namespace std;
 
-string Food::getName (){
-
+string Food::getName () const{
+    return name;
 }
 
-int Food::getPrice (){
-
+int Food::getPrice () const{
+    return price;
 }
 
-void Food::setPrice (int price){
-
+void Food::setPrice (int newPrice){
+    price = newPrice;
 }
