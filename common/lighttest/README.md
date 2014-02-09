@@ -9,7 +9,7 @@ Afin de gérer **automagiquement** les exceptions, le comptage des tests et des 
 	TEST(nom_du_test)
 		ASSERT(true);
 		ASSERT(not false);
-		ASSERT_THROWS(const char *, fonctionQuiThrow());
+		ASSERT_THROWS(ExceptionType, fonctionQuiThrow());
 	ENDTEST()
 
 ## Exécuter un test
