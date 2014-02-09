@@ -1,5 +1,7 @@
 #include "Client.hpp"
 
+using namespace std;
+
 Client::Client()
 {
 	_socket.connect("127.0.0.1", 6666);
@@ -18,13 +20,12 @@ void Client::run()
 	// LOGIN + REGISTERING LOOP
 
 	Message::printLoggedOffActions();
-	string userChoice;
-	cin >> userChoice;
+	cin >> _userChoice;
 
-	while (userChoice != "q" && userChoice != "Q" && ! Connection::isLogged()){
+	while (_userChoice != "q" && _userChoice != "Q" && ! Connection::isLogged()){
 
 		// login
-		if (userChoice == "l" || userChoice == "L"){
+		if (_userChoice == "l" || _userChoice == "L"){
 			try{
 				Connection::login();
 			} catch (WrongPasswordException &wpe){
@@ -41,7 +42,7 @@ void Client::run()
 		}
 
 		// registering
-		else if (userChoice == "r" || userChoice == "R"){
+		else if (_userChoice == "r" || _userChoice == "R"){
 			try{
 				Connection::registerUser();
 			} catch (UserAlreadyExistsException &uaee){
@@ -56,7 +57,7 @@ void Client::run()
 		}
 		if (!Connection::isLogged()){
 			Message::printLoggedOffActions();
-			cin >> userChoice;
+			cin >> _userChoice;
 		}
 	}
 
@@ -64,17 +65,17 @@ void Client::run()
 	// MAIN MENU LOOP
 
 	Message::printMainMenu();
-	cin >> userChoice;
+	cin >> _userChoice;
 
-	while (userChoice != "q" && userChoice != "Q"){
+	while (_userChoice != "q" && _userChoice != "Q"){
 
 		// team and stadium management
-		if (userChoice == "m" || userChoice == "M"){
+		if (_userChoice == "m" || _userChoice == "M"){
 			// managementMenu();
 		}
 
 		// play a friendly game
-		else if (userChoice == "p" || userChoice == "P"){
+		else if (_userChoice == "p" || _userChoice == "P"){
 			// friendlyGameLobby();
 		}
 

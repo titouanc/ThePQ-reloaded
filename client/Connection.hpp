@@ -1,14 +1,11 @@
-#ifndef CONNEXION_HPP
-#define CONNEXION_HPP
+#ifndef CONNECTION_HPP
+#define CONNECTION_HPP
 
-#include <iostream>
 #include <string>
 #include "net.hpp"
 #include "json.h"
-#include "Message.hpp"
 #include "Exception.hpp"
-
-using namespace std;
+#include "../common/Constants.hpp"
 
 class Connection
 {
@@ -18,7 +15,7 @@ public:
 	static void registerUser();
 	static bool userWantsToRegister(); // asks the user if he wants to register when login has
 								// failed because the username specified doesn't exist.
-	static string askForNewPassword(); // prompts the user to create a new password with 
+	static std::string askForNewPassword(); // prompts the user to create a new password with 
 							// confirmation. returns the password.
 
 	// Logging in
@@ -29,7 +26,7 @@ public:
 private:
 	static bool _isLogged;
 	
-	static string askForUserData(string prompt); // returns the user input.
+	static std::string askForUserData(std::string prompt); // returns the user input.
 };
 
 #endif

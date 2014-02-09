@@ -1,7 +1,4 @@
-#include <iostream>
-#include <string>
-#include "../common/Constants.hpp"
-#include "Connexion.hpp"
+#include "Connection.hpp"
 
 using namespace std;
 

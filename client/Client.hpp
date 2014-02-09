@@ -3,13 +3,9 @@
 
 #include <iostream>
 #include <string>
-#include "net.hpp"
 #include "Messages.hpp"
-#include "Connexion.hpp"
-#include "../common/Constants.hpp"
-#include "Exception.hpp"
+#include "Connection.hpp"
 
-using namespace std;
 
 class Client
 {
@@ -21,6 +17,7 @@ public:
 
 private:
 	net::TcpSocket _socket;
+	std::string _userChoice;
 
 };
 
