@@ -1,5 +1,4 @@
 #include "json.h"
-#include <sstream>
 
 using namespace JSON;
 
@@ -24,18 +23,16 @@ Value * Dict::clone(void) const
 	return NULL;
 }
 
-std::string Dict::dumps(void) const 
+void Dict::_writeTo(std::ostream & out) const
 {
-    std::stringstream res;
-    res << "{";
-    std::map<std::string, Value*>::const_iterator elem;
-    for (elem=_content.begin(); elem!=_content.end(); elem++){
-        if (elem != _content.begin()) res << ", ";
-        res << "\"" << elem->first << "\": " 
-            << elem->second->dumps();
+    std::map<std::string, Value*>::const_iterator it;
+    out << "{";
+    for (it=_content.begin(); it!=_content.end(); it++){
+        out << JSON::String(it->first);
+        out << ": ";
+        out << *(it->second);
     }
-    res << "}";
-    return res.str();
+    out << "}";
 }
 
 bool Dict::hasKey(std::string const & key)

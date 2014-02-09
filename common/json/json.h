@@ -43,11 +43,18 @@ namespace JSON {
 
     /* Abstract common ancestor for all JSON types */
     class Value {
+        private:
+            virtual void _writeTo(std::ostream & out) const = 0;
         public:
             virtual ~Value(){}
             virtual Value * clone(void) const = 0;
-            virtual std::string dumps(void) const = 0;
             virtual Type type(void) const = 0;
+            virtual std::string dumps(void) const;
+            friend std::ostream & operator<<(std::ostream & out, Value const & val)
+            {
+                val._writeTo(out);
+                return out;
+            }
             bool isNumber() const {return (type()&(Integer_t|Float_t)) != 0;}
             bool isAtom() const {return (type()&(Integer_t|Float_t|String_t)) != 0;}
             bool isSequence() const {return (type()&(Dict_t|List_t)) != 0;}
@@ -57,8 +64,10 @@ namespace JSON {
     class Number : public Value {
         private:
             T _value;
+            virtual void _writeTo(std::ostream & out) const;
         public:
             Number(T initial);
+            ~Number();
             T const & value(void) const;
             double doubleVal(void) const;
             long int intVal(void) const;
@@ -69,14 +78,12 @@ namespace JSON {
         public:
             using Number<long int>::Number;
             Type type(void) const;
-            std::string dumps() const;
     };
     
     class Float : public Number<double> {
         public:
             using Number<double>::Number;
             Type type(void) const;
-            std::string dumps() const;
     };
     
     class String : public Value {
@@ -84,9 +91,10 @@ namespace JSON {
             std::string _content;
         public:
             String(std::string str);
+            ~String();
             Type type(void) const;
             Value * clone(void) const;
-            std::string dumps(void) const;
+            virtual void _writeTo(std::ostream & out) const;
             std::string const & value(void) const;
     };
 
@@ -98,7 +106,7 @@ namespace JSON {
             ~List();
             Type type(void) const;
             Value * clone(void) const;
-            std::string dumps(void) const;
+            virtual void _writeTo(std::ostream & out) const;
             const Value * operator[](size_t index);
             Value * steal(size_t index);
             void appendPtr(Value *ptr);
@@ -122,7 +130,7 @@ namespace JSON {
             ~Dict();
             Type type(void) const;
             Value * clone(void) const;
-            std::string dumps(void) const;
+            virtual void _writeTo(std::ostream & out) const;
             bool hasKey(std::string const & key);
             void setPtr(std::string const & key, Value *ptr);
             void set(std::string const & key, Value const & val);
@@ -138,6 +146,47 @@ namespace JSON {
     };
 
     Value *parse(const char *str, char **eptr=NULL);
+
+    /* ===== Number<T> ===== */
+    template <typename T>
+    Number<T>::Number(T initial) : _value(initial)
+    {}
+
+    template <typename T>
+    Number<T>::~Number()
+    {}
+
+    template <typename T>
+    T const & Number<T>::value(void) const 
+    {
+        return _value;
+    }
+
+    template <typename T>
+    double Number<T>::doubleVal(void) const 
+    {
+        return (double) _value;
+    }
+
+    template <typename T>
+    long int Number<T>::intVal(void) const 
+    {
+        return (long int) _value;
+    }
+
+    template <typename T>
+    Value * Number<T>::clone(void) const
+    {
+        if (ISINT(this))
+            return new Integer(_value);
+        return new Float(_value);
+    }
+
+    template <typename T>
+    void Number<T>::_writeTo(std::ostream & out) const
+    {
+        out << _value;
+    }
 }
 
 #endif

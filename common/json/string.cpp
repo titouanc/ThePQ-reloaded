@@ -5,6 +5,9 @@ using namespace JSON;
 String::String(std::string str) : _content(str)
 {}
 
+String::~String()
+{}
+
 Type String::type(void) const 
 {
 	return String_t;
@@ -15,9 +18,9 @@ Value * String::clone(void) const
 	return new String(value());
 }
 
-std::string String::dumps(void) const 
+void String::_writeTo(std::ostream & out) const 
 {
-	return "\"" + _content + "\"";
+	out << "\"" << _content << "\"";
 }
 
 std::string const & String::value(void) const 

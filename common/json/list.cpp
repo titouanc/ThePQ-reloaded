@@ -25,16 +25,14 @@ Value * List::clone(void) const
     return res;
 }
 
-std::string List::dumps(void) const 
+void List::_writeTo(std::ostream & out) const
 {
-    std::stringstream res;
-    res << "[";
+    out << "[";
     for (size_t i=0; i<len(); i++){
-        if (i > 0) res << ", ";
-        res << _content[i]->dumps();
+        if (i > 0) out << ", ";
+        out << *(_content[i]);
     }
-    res << "]";
-    return res.str();
+    out << "]";
 }
 
 const Value * List::operator[](size_t index)

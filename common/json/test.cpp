@@ -25,7 +25,7 @@ ENDTEST()
 TEST(json_float)
 	JSON::Float f(3.14);
 	ASSERT(f.value() == 3.14);
-	ASSERT(f.dumps() == "3.140000");
+	ASSERT(f.dumps() == "3.14");
 	ASSERT(f.isAtom());
 	ASSERT(f.isNumber());
 	ASSERT(f.type() == JSON::Float_t);
@@ -90,10 +90,10 @@ TEST(json_list_repr)
 	ASSERT(l.dumps() == "[]");
 	l.append(JSON::Integer(2));
 	l.append(JSON::Float(42.125));
-	ASSERT(l.dumps() == "[2, 42.125000]");
+	ASSERT(l.dumps() == "[2, 42.125]");
 
 	JSON::List *lptr = (JSON::List *) l.clone();
-	ASSERT(lptr->dumps() == "[2, 42.125000]");
+	ASSERT(lptr->dumps() == "[2, 42.125]");
 	delete lptr;
 ENDTEST()
 
@@ -125,7 +125,7 @@ TEST(json_parse_int)
 ENDTEST()
 
 TEST(json_parse_float)
-	const char *repr = "42.456700";
+	const char *repr = "42.4567";
 	JSON::Value *f = JSON::parse(repr);
 	ASSERT(f != NULL);
 	ASSERT(f->type() == JSON::Float_t);
@@ -145,7 +145,7 @@ TEST(json_parse_str)
 ENDTEST()
 
 TEST(json_parse_list)
-	const char *repr = "[1, 3.140000, \"Archimede\"]";
+	const char *repr = "[1, 3.14, \"Archimede\"]";
 	JSON::Value *res = JSON::parse(repr);
 	ASSERT(res != NULL);
 	ASSERT(res->type() == JSON::List_t);
