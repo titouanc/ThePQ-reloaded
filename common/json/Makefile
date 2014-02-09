@@ -1,5 +1,6 @@
 CXX = g++
-CXXFLAGS = -std=c++11 -pedantic -Wall -Wextra -I../lighttest
+CXXFLAGS = -std=c++11 -pedantic -Wall -Wextra
+INCLUDES = -I../lighttest
 LDFLAGS = -lm
 HEADERS = $(shell ${CXX} ${CXXFLAGS} -MM *.cpp | sed -E 's/.+\.[^h]pp//g')
 OBJS = parser.o string.o list.o dict.o value.o number.o
@@ -13,7 +14,7 @@ test.ok: test
 %: %.cpp
 
 %.o: %.cpp ${HEADERS}
-	${CXX} ${CXXFLAGS} -c -o $@ $<
+	${CXX} ${INCLUDES} ${CXXFLAGS} -c -o $@ $<
 
 %.a: ${OBJS}
 	ar r $@ $^
