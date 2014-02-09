@@ -4,11 +4,11 @@
 class Food 
 {
 public:
-    std::string getName ();
-	int getPrice ();
+    std::string getName () const ;
+	int getPrice () const ;
 	void setPrice (int price);
 private:
-    std::string name;
+    std::string const name;
 	int price;
 };
 
