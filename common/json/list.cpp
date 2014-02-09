@@ -1,4 +1,5 @@
 #include "json.h"
+#include <cmath>
 #include <sstream>
 
 using namespace JSON;
@@ -64,4 +65,18 @@ void List::append(Value const & obj)
 size_t List::len(void) const 
 {
     return _content.size();
+}
+
+
+void List::append(double val)
+{
+    if (round(val) == val)
+        append(Integer(val));
+    else
+        append(Float(val));
+}
+
+void List::append(std::string const & val)
+{
+    append(String(val));
 }

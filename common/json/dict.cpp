@@ -1,4 +1,5 @@
 #include "json.h"
+#include <cmath>
 
 using namespace JSON;
 
@@ -72,6 +73,19 @@ Value * Dict::steal(std::string const & key)
     _content.erase(elem);
     return res;
 
+}
+
+void Dict::set(std::string const & key, double val)
+{
+    if (round(val) == val)
+        set(key, Integer(val));
+    else
+        set(key, Float(val));
+}
+
+void Dict::set(std::string const & key, std::string const & val)
+{
+    set(key, String(val));
 }
 
 Dict::iterator Dict::begin(void)

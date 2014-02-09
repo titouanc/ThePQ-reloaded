@@ -53,7 +53,7 @@ ENDTEST()
 TEST(json_list_append)
 	JSON::List l;
 	for (int i=0; i<10; i++)
-		l.append(JSON::Integer(i));
+		l.append(i);
 	ASSERT(l.len() == 10);
 	for (int i=0; i<10; i++){
 		ASSERT(INT(l[i]).value() == i);
@@ -64,9 +64,9 @@ TEST(json_list_mixed)
 	JSON::List l;
 	for (int i=0; i<10; i++){
 		if (i%2)
-			l.append(JSON::Integer(3));
+			l.append(3	);
 		else
-			l.append(JSON::Float(12.45));
+			l.append(12.45);
 	}
 	ASSERT(l.len() == 10);
 	for (int i=0; i<10; i++){
@@ -88,8 +88,8 @@ ENDTEST()
 TEST(json_list_repr)
 	JSON::List l;
 	ASSERT(l.dumps() == "[]");
-	l.append(JSON::Integer(2));
-	l.append(JSON::Float(42.125));
+	l.append(2);
+	l.append(42.125);
 	ASSERT(l.dumps() == "[2, 42.125]");
 
 	JSON::List *lptr = (JSON::List *) l.clone();
@@ -106,7 +106,7 @@ ENDTEST()
 
 TEST(json_dict_keys)
 	JSON::Dict d;
-	d.set("key", JSON::String("value"));
+	d.set("key", "value");
 	ASSERT(d.dumps() == "{\"key\": \"value\"}");
 	ASSERT(d.hasKey("key"));
 	ASSERT(! d.hasKey("1337"));
@@ -219,8 +219,8 @@ ENDTEST()
 
 TEST(json_dict_steal)
 	JSON::Dict d;
-	d.set("a", JSON::String("b"));
-	d.set("c", JSON::String("d"));
+	d.set("a", "b");
+	d.set("c", "d");
 	ASSERT(d.hasKey("a"))
 	ASSERT(d.hasKey("c"));
 
@@ -233,8 +233,8 @@ ENDTEST()
 
 TEST(json_list_steal)
 	JSON::List l;
-	l.append(JSON::String("a"));
-	l.append(JSON::String("b"));
+	l.append("a");
+	l.append("b");
 	ASSERT(l.dumps() == "[\"a\", \"b\"]");
 
 	JSON::List m;

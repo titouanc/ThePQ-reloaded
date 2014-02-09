@@ -88,6 +88,10 @@ namespace JSON {
             void appendPtr(Value *ptr);
             void append(Value const & obj);
             size_t len(void) const;
+
+            /* Fast setters */
+            void append(double val);
+            void append(std::string const & val);
     };
 
     class KeyError : public std::runtime_error {
@@ -113,6 +117,10 @@ namespace JSON {
             const Value * get(std::string const & key) const;
             Value * steal(std::string const & key);
             
+            /* Fast setters */
+            void set(std::string const & key, double val);
+            void set(std::string const & key, std::string const & val);
+
             typedef std::map<std::string, Value*>::iterator iterator;
             typedef std::map<std::string, Value*>::const_iterator const_iterator;
             iterator begin(void);
