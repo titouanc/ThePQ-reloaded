@@ -2,23 +2,23 @@
 
 using namespace std;
 
-Article::Article (string name, int price, string description){
+Article::Article (string name, int price, string description):name(name),price(price),description(description){
 
 }
 
-string Article::getName (){
-
+string Article::getName () const{
+    return name;
 }
 
-int getPrice (){
-
+int getPrice () const{
+    return price;
 }
 
-string Article::getDescription (){
-
+string Article::getDescription () const{
+    return description;
 }        
 
-void Article::setPrice (int price){
-
+void Article::setPrice (int aPrice){
+    price = aPrice;
 }
 
