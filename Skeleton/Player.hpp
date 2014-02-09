@@ -26,6 +26,8 @@ public:
 	bool isKeeper () const;
 	bool isSeeker () const;
 private:
+    int maxLife;
+    int maxMana;
 	int lifeBar;
 	int manaBar;
 	Abilities abilities;
