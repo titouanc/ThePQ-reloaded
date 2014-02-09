@@ -5,6 +5,7 @@
 
 using namespace std;
 
+
 string askForUserData(string prompt){
 	string data;
 	cout << prompt;
@@ -17,6 +18,7 @@ void registerUser(){
 	string username = askForUserData("Pick a username : ");
 	// TODO send username to server
 	// TODO receive userStatus from server
+	
 	if (userStatus == UserNotFound){
 		string password = askForNewPassword();
 		// TODO hash password

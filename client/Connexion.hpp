@@ -6,8 +6,10 @@
 #include <stdexcept>
 #include "net.hpp"
 #include "json.h"
+#include "Message.hpp"
 
 using namespace std;
+
 
 string askForUserData(string prompt); // returns the user input.
 

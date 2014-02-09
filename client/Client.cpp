@@ -9,6 +9,7 @@ using namespace std;
 int main(int argc, char const *argv[])
 {
 	printLaunchingMessage();
+	
 
 	// -------------------------------------------------------------------------
 	// LOGIN + REGISTERING LOOP
