@@ -2,6 +2,7 @@
 #include <cstring>
 #include <cassert>
 #include <cmath>
+#include <sstream>
 
 using namespace JSON;
 
@@ -29,23 +30,65 @@ static Value *parseNumber(const char *str, char **endptr)
     return NULL;
 }
 
+static inline unsigned char hex2byte(const char *src){
+    unsigned char res = 0;
+    if (src[0] == '\0' || src[1] == '\0')
+        throw ParseError("Unexpected end of string in hexadecimal escape seq");
+    for (int i=0; i<2; i++){
+        if (i) res <<= 4;
+        if ('0' <= src[i] && src[i] <= '9')
+            res += src[i]-'0';
+        else if ('a' <= src[i] && src[i] <= 'f')
+            res += 10 + src[i] - 'a';
+        else if ('A' <= src[i] && src[i] <= 'F')
+            res += 10 + src[i] - 'A';
+        else
+            throw ParseError(
+                std::string("Unexpected character ")
+                +src[i]+" in hexadecimal escape seq"
+            );
+    }
+    return res;
+}
+
 static std::string parseString(const char *str, char **endptr)
 {
     assert(*str == '"');
     assert(endptr != NULL);
+    std::stringstream buffer;
 
     bool escaped = false;
 
     *endptr = (char*) str+1;
     while (**endptr && (escaped || **endptr != '"')){
-        escaped = (! escaped && **endptr == '\\');
+        if (! escaped){
+            if (**endptr == '\\')
+                escaped = true;
+            else 
+                buffer << **endptr;
+        } else if (escaped) {
+            switch (**endptr){
+                case '\0': throw ParseError("Missing character in escape seq");
+                case '\\': buffer << '\\'; break;
+                case 'a': buffer << '\a'; break;
+                case 'b': buffer << '\b'; break;
+                case 'n': buffer << '\n'; break;
+                case 'r': buffer << '\r'; break;
+                case 't': buffer << '\t'; break;
+                case '"': buffer << '"'; break;
+                case 'x': 
+                    buffer << hex2byte(*endptr+1); 
+                    (*endptr) += 2; 
+                    break;
+            }
+            escaped = false;
+        }
         (*endptr)++;
     }
-    ssize_t len = *endptr-str-1;
     if (**endptr != '"')
         throw ParseError("Missing trailing '\"'");
     (*endptr)++;
-    return std::string(str+1, len);
+    return buffer.str();
 }
 
 static Dict *parseDict(const char *str, char **endptr)

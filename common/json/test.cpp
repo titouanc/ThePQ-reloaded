@@ -42,6 +42,12 @@ TEST(json_str)
 	ASSERT(ISSTR(&s));
 ENDTEST()
 
+TEST(json_str_escape)
+	JSON::String s("A\n\tb\nc");
+	ASSERT(s.value() == "A\n\tb\nc");
+	ASSERT(s.dumps() == "\"A\\n\\tb\\nc\"");
+ENDTEST()
+
 TEST(json_list)
 	JSON::List l;
 	ASSERT(l.len() == 0);
@@ -177,6 +183,16 @@ TEST(json_parse_str)
 	delete s;
 ENDTEST()
 
+TEST(json_parse_str_escape)
+	const char *repr = "\"Ligne 1\\\"\\n\\tTabulation ligne 2\\nLigne 3\"";
+	JSON::Value *res = JSON::parse(repr);
+	ASSERT(res != NULL);
+	ASSERT(ISSTR(res));
+	ASSERT(STR(res).value() == "Ligne 1\"\n\tTabulation ligne 2\nLigne 3");
+	ASSERT(res->dumps() == repr);
+	delete res;
+ENDTEST()
+
 TEST(json_parse_list)
 	const char *repr = "[1, 3.14, \"Archimede\"]";
 	JSON::Value *res = JSON::parse(repr);
@@ -283,6 +299,7 @@ int main(int argc, const char **argv)
 		ADDTEST(json_int),
 		ADDTEST(json_float),
 		ADDTEST(json_str),
+		ADDTEST(json_str_escape),
 		ADDTEST(json_list),
 		ADDTEST(json_list_append),
 		ADDTEST(json_list_key_error),
@@ -295,6 +312,7 @@ int main(int argc, const char **argv)
 		ADDTEST(json_parse_int),
 		ADDTEST(json_parse_float),
 		ADDTEST(json_parse_str),
+		ADDTEST(json_parse_str_escape),
 		ADDTEST(json_parse_list),
 		ADDTEST(json_parse_empty_list),
 		ADDTEST(json_parse_dict),
