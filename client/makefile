@@ -1,16 +1,27 @@
-all:client.o
+OBJ= Client.o Connexion.o Messages.o
+MAIN=client.app
+CXX=g++
+CFLAGS=-std=c++11 -pedantic -Wall -Wextra -I../common/network -I../common/json
+LDFLAGS= 
+LIBNETWORK=../common/network/libnetwork.a
+LIBJSON=../common/json/libjson.a
 
-client.o:Messages.o Connexion.o
-	g++ Client.cpp Messages.o Connexion.o -o client.o
+all: ${MAIN}
 
-Messages.o:
-	g++ -c Messages.cpp
+${MAIN}: ${OBJ} ${LIBNETWORK} ${LIBJSON}
+	${CXX} ${LDFLAGS} -o $@ $^
 
-Connexion.o:
-	g++ -c Connexion.cpp
+%.o: %.cpp
+	${CXX} ${CFLAGS} -c -o $@ $^
+
+${LIBNETWORK}:
+	cd ../common/network && make
+	
+${LIBJSON}:
+	cd ../common/json && make
 
 clean:
 	rm -rf *.o
 
 mrproper: clean
-	rm -rf ${EXEC}
+	rm -rf ${MAIN}

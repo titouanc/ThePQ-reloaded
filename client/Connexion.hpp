@@ -4,6 +4,8 @@
 #include <iostream>
 #include <string>
 #include <stdexcept>
+#include "net.hpp"
+#include "json.h"
 
 using namespace std;
 
