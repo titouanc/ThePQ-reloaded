@@ -60,6 +60,16 @@ TEST(json_list_append)
 	}
 ENDTEST()
 
+TEST(json_list_key_error)
+	JSON::List l;
+	ASSERT_THROWS(JSON::KeyError, l[0]);
+	ASSERT_THROWS(JSON::KeyError, l[10]);
+
+	l.append(1);
+	ASSERT(ISINT(l[0]));
+	ASSERT_THROWS(JSON::KeyError, l[10]);
+ENDTEST()
+
 TEST(json_list_mixed)
 	JSON::List l;
 	for (int i=0; i<10; i++){
@@ -112,6 +122,19 @@ TEST(json_dict_keys)
 	ASSERT(! d.hasKey("1337"));
 	ASSERT(d.get("key")->type() == JSON::String_t);
 	ASSERT_THROWS(JSON::KeyError, d.get("1337"));
+ENDTEST()
+
+TEST(json_parse_error)
+	ASSERT_THROWS(JSON::ParseError, JSON::parse("lalala")); // Unexpected character
+	ASSERT_THROWS(JSON::ParseError, JSON::parse("\"string")); // Unfinished string
+	ASSERT_THROWS(JSON::ParseError, JSON::parse("[1, 2, 3")); //Unfinished list
+	ASSERT_THROWS(JSON::ParseError, JSON::parse("{\"key\": \"val\"")); //Unfinished dict
+	ASSERT_THROWS(JSON::ParseError, JSON::parse("[1 2]")); // Missing ','
+	ASSERT_THROWS(JSON::ParseError, JSON::parse("{\"haha\"}")); //Missing ':'
+	ASSERT_THROWS(JSON::ParseError, JSON::parse("{\"haha\":}")); //Missing val
+	ASSERT_THROWS(JSON::ParseError, JSON::parse("{42}")); //Key is not str
+	ASSERT_THROWS(JSON::ParseError, JSON::parse("{\"key1\": val1}")); //val not parsable
+	ASSERT_THROWS(JSON::ParseError, JSON::parse("{\"key1\": 1 \"key2\": 2}")); //Missing ', '
 ENDTEST()
 
 TEST(json_parse_int)
@@ -252,10 +275,12 @@ int main(int argc, const char **argv)
 		ADDTEST(json_str),
 		ADDTEST(json_list),
 		ADDTEST(json_list_append),
+		ADDTEST(json_list_key_error),
 		ADDTEST(json_list_mixed),
 		ADDTEST(json_list_repr),
 		ADDTEST(json_dict),
 		ADDTEST(json_dict_keys),
+		ADDTEST(json_parse_error),
 		ADDTEST(json_parse_int),
 		ADDTEST(json_parse_float),
 		ADDTEST(json_parse_str),
