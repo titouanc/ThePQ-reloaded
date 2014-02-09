@@ -17,7 +17,7 @@ namespace net
 		enum Request
 		{
 			LOGIN,
-			SUBSCRIBE
+			REGISTER
 		};
 		
 		Message(Request request, Method method, JSON::Value* data) : JSON::Dict()
