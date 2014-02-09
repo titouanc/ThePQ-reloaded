@@ -3,7 +3,7 @@ CXXFLAGS = -std=c++11 -pedantic -Wall -Wextra
 INCLUDES = -I../
 LDFLAGS = -lm
 
-DEMOS = create
+DEMOS = create read
 
 all: ${DEMOS}
 	for exe in $^; do echo ===== $$exe ===== && ./$$exe; done
