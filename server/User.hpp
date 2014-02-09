@@ -1,3 +1,6 @@
+#ifndef USER_HPP
+#define USER_HPP 
+
 #include <string>
 #include "../common/net.hpp"
 
@@ -16,3 +19,5 @@ public:
 
 	string getUserPath() { return "users/"+getUsername(); }
 };
+
+#endif
