@@ -217,6 +217,32 @@ TEST(json_parse_list_in_dict)
 	delete res;
 ENDTEST()
 
+TEST(json_dict_steal)
+	JSON::Dict d;
+	d.set("a", JSON::String("b"));
+	d.set("c", JSON::String("d"));
+	ASSERT(d.hasKey("a"))
+	ASSERT(d.hasKey("c"));
+
+	JSON::Dict e;
+	e.setPtr("a", d.steal("a"));
+	ASSERT(e.hasKey("a"))
+	ASSERT(! d.hasKey("a"));
+	ASSERT(d.hasKey("c"));
+ENDTEST()
+
+TEST(json_list_steal)
+	JSON::List l;
+	l.append(JSON::String("a"));
+	l.append(JSON::String("b"));
+	ASSERT(l.dumps() == "[\"a\", \"b\"]");
+
+	JSON::List m;
+	m.appendPtr(l.steal(0));
+	ASSERT(l.dumps() == "[\"b\"]");
+	ASSERT(m.dumps() == "[\"a\"]");
+ENDTEST()
+
 int main(int argc, const char **argv)
 {
 	TestFunc testSuite[] = {
@@ -238,7 +264,9 @@ int main(int argc, const char **argv)
 		ADDTEST(json_parse_dict),
 		ADDTEST(json_parse_empty_dict),
 		ADDTEST(json_parse_dict_many_keys),
-		ADDTEST(json_parse_list_in_dict)
+		ADDTEST(json_parse_list_in_dict),
+		ADDTEST(json_dict_steal),
+		ADDTEST(json_list_steal)
 	};
 
 	return RUN(testSuite);

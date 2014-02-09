@@ -39,7 +39,18 @@ std::string List::dumps(void) const
 
 const Value * List::operator[](size_t index)
 {
+    if (index >= len())
+        throw KeyError("Index beyond list limits");
     return _content[index];
+}
+
+Value *List::steal(size_t index)
+{
+    if (index >= len())
+        throw KeyError("Index beyond list limits");
+    Value *res = _content[index];
+    _content.erase(_content.begin()+index);
+    return res;
 }
 
 void List::appendPtr(Value *ptr)

@@ -100,6 +100,7 @@ namespace JSON {
             Value * clone(void) const;
             std::string dumps(void) const;
             const Value * operator[](size_t index);
+            Value * steal(size_t index);
             void appendPtr(Value *ptr);
             void append(Value const & obj);
             size_t len(void) const;
@@ -126,6 +127,7 @@ namespace JSON {
             void setPtr(std::string const & key, Value *ptr);
             void set(std::string const & key, Value const & val);
             const Value * get(std::string const & key) const;
+            Value * steal(std::string const & key);
             
             typedef std::map<std::string, Value*>::iterator iterator;
             typedef std::map<std::string, Value*>::const_iterator const_iterator;

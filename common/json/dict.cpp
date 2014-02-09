@@ -65,6 +65,18 @@ const Value * Dict::get(std::string const & key) const
     return elem->second;
 }
 
+Value * Dict::steal(std::string const & key)
+{
+    std::map<std::string, Value*>::const_iterator elem;
+    elem = _content.find(key);
+    if (elem == _content.end()) 
+        throw KeyError(key);
+    Value *res = elem->second;
+    _content.erase(elem);
+    return res;
+
+}
+
 Dict::iterator Dict::begin(void)
 {
     return _content.begin();
