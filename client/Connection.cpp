@@ -1,4 +1,5 @@
 #include "Connection.hpp"
+#include "Exception.hpp"
 
 using namespace std;
 
@@ -15,7 +16,7 @@ bool Connection::isLogged()
 
 void Connection::loginUser(string username, string passwd)
 {
-	
+	throw UserNotFoundException();
 }
 
 void Connection::registerUser(string username, string passwd)
