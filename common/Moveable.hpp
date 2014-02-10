@@ -1,5 +1,5 @@
-#ifndef Moveable_hpp
-#define Moveable_hpp
+#ifndef MOVEABLE_HPP
+#define MOVEABLE_HPP
 
 #include "Constants.hpp"
 
