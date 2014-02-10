@@ -6,7 +6,7 @@
 using namespace std;
 
 float Team::getRatio (){
-
+    return nbrWin/nbrPlayed;
 }
 
 void Team::giveMatchRes (MatchResult result){

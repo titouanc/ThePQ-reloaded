@@ -56,50 +56,34 @@ namespace JSON {
 
     /* Abstract common ancestor for all JSON types */
     class Value {
+        private:
+            virtual void _writeTo(std::ostream & out) const = 0;
         public:
             virtual ~Value(){}
             virtual Value * clone(void) const = 0;
-            virtual std::string dumps(void) const = 0;
             virtual Type type(void) const = 0;
+            virtual std::string dumps(void) const;
+            friend std::ostream & operator<<(std::ostream & out, Value const & val)
+            {
+                val._writeTo(out);
+                return out;
+            }
             bool isNumber() const {return (type()&(Integer_t|Float_t)) != 0;}
             bool isAtom() const {return (type()&(Integer_t|Float_t|String_t)) != 0;}
             bool isSequence() const {return (type()&(Dict_t|List_t)) != 0;}
     };
 
-    template <typename T>
-    class Number : public Value {
-        private:
-            T _value;
-        public:
-            Number(T initial);
-            T const & value(void) const;
-            double doubleVal(void) const;
-            long int intVal(void) const;
-            Value *clone(void) const;
-    };
-
-    class Integer : public Number<long int> {
-        public:
-            using Number<long int>::Number;
-            Type type(void) const;
-            std::string dumps() const;
-    };
-    
-    class Float : public Number<double> {
-        public:
-            using Number<double>::Number;
-            Type type(void) const;
-            std::string dumps() const;
-    };
+    #include "number.h"
     
     class String : public Value {
         private:
             std::string _content;
         public:
             String(std::string str);
+            ~String();
             Type type(void) const;
             Value * clone(void) const;
-            std::string dumps(void) const;
+            virtual void _writeTo(std::ostream & out) const;
             std::string const & value(void) const;
     };
 
@@ -111,12 +95,17 @@ namespace JSON {
             ~List();
             Type type(void) const;
             Value * clone(void) const;
-            std::string dumps(void) const;
+            virtual void _writeTo(std::ostream & out) const;
             const Value * operator[](size_t index);
             const Value * operator[](size_t index) const;
+            Value * steal(size_t index);
             void appendPtr(Value *ptr);
             void append(Value const & obj);
             size_t len(void) const;
+
+            /* Fast setters */
+            void append(double val);
+            void append(std::string const & val);
     };
 
     class Dict : public Value {
@@ -127,12 +116,17 @@ namespace JSON {
             ~Dict();
             Type type(void) const;
             Value * clone(void) const;
-            std::string dumps(void) const;
-            bool hasKey(std::string const & key);
+            virtual void _writeTo(std::ostream & out) const;
+            bool hasKey(std::string const & key) const;
             void setPtr(std::string const & key, Value *ptr);
             void set(std::string const & key, Value const & val);
-            const Value * get(std::string const & key);
+            const Value * get(std::string const & key) const;
+            Value * steal(std::string const & key);
             
+            /* Fast setters */
+            void set(std::string const & key, double val);
+            void set(std::string const & key, std::string const & val);
+
             typedef std::map<std::string, Value*>::iterator iterator;
             typedef std::map<std::string, Value*>::const_iterator const_iterator;
             iterator begin(void);

@@ -46,7 +46,9 @@ namespace net
 	
 	class TcpSocket:public Socket {
 		friend Listener;
-	  public:
+	public:
+		static const size_t MSG_SIZE = 4096;
+	  
 		Status connect(const std::string ipAddr, int portNo);
 		Status send(const char *data, size_t len);
 		Status recv(char *data, size_t len, size_t & received);

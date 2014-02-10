@@ -7,8 +7,9 @@
 class Beater : Player 
 {
 public:
-	bool isBeater ();
+	bool isBeater () const;
 	void equipBat (Bat aBat);
+    void unequipBat ();
 private:
 	Bat bat;
 };

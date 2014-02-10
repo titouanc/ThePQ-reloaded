@@ -32,8 +32,8 @@ net::Socket::Status net::TcpSocket::send(const char *data, size_t len)
 
 net::Socket::Status net::TcpSocket::recv(char *data, size_t len, size_t & received)
 {
-	data = new char[100];
-	memset(data, 0, 100);
+	data = new char[MSG_SIZE];
+	memset(data, 0, MSG_SIZE);
     received = ::recv(_sockfd, data, len, 0);
     if (received <= 0)
     {
@@ -56,10 +56,10 @@ net::Socket::Status net::TcpSocket::send(const JSON::Value *json)
 
 net::Socket::Status net::TcpSocket::recv(JSON::Value **json)
 {
-	char* data = new char[100];
+	char* data = new char[MSG_SIZE];
 	size_t received;
-	bzero(data, 100);
-    received = ::recv(_sockfd, data, 100, 0);
+	bzero(data, MSG_SIZE);
+    received = ::recv(_sockfd, data, MSG_SIZE, 0);
     if (received <= 0)
     {
 		return Status::ERROR;

@@ -2,6 +2,7 @@
 #include <cstdlib>
 #include "net.hpp"
 #include "json.h"
+#include "Message.hpp"
 using namespace std;
 using namespace net;
 
@@ -17,16 +18,18 @@ int main (int argc, char **argv)
 	
 	// Parse JSON value then send it
 	JSON::Value *data = JSON::parse("\"La reponse a la grande question sur l'univers, la vie et sur tout ce qui est\"");
-	socket.send(data);
-	cout << "Client: send: " << data->dumps() << endl;
+	Message *msg = new Message(Message::Request::LOGIN, Message::Method::REQUEST, data);
+	socket.send(msg);
+	cout << "Client: send: " << msg->dumps() << endl;
 	
+	delete msg;
 	delete data;
 	
 	// Receive data by passing the address of a pointer to JSON::Value
-	socket.recv(&data);
-	cout << "Client: recv: " << data->dumps() << endl;
+	socket.recv((JSON::Value**)&msg);
+	cout << "Client: recv: " << msg->dumps() << endl;
 	
-	delete data;
+	delete msg;
 	
 	//~ // Send data of size 6
 	//~ status = socket.send("client", 6);
