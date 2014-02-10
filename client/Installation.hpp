@@ -24,5 +24,6 @@ public:
 	void upgrade();
 	void downgrade();
 
-	virtual int getMaxLevel() = 0;
+	// TODO this has to be pure virtual. 10 is just a value for tests.
+	virtual int getMaxLevel() { return 10; }; 
 };
