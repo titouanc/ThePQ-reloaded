@@ -112,6 +112,7 @@ TEST(json_list_repr)
 	ASSERT(l.dumps() == "[2, 42.125]");
 
 	JSON::List *lptr = (JSON::List *) l.clone();
+	ASSERT(lptr != NULL);
 	ASSERT(lptr->dumps() == "[2, 42.125]");
 	delete lptr;
 ENDTEST()
@@ -141,6 +142,10 @@ TEST(json_dict_repr)
 		d.dumps() == "{\"key1\": \"value1\", \"key2\": \"value2\"}" || 
 		d.dumps() == "{\"key2\": \"value2\", \"key1\": \"value1\"}"
 	)
+
+	JSON::Value *copy = d.clone();
+	ASSERT(copy != NULL);
+	ASSERT(d.dumps() == copy->dumps());
 ENDTEST()
 
 TEST(json_parse_error)
