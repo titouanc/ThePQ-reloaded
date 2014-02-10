@@ -1,6 +1,7 @@
 #include "Installation.hpp"
 
 int Installation::getMaintenanceCost(){
+	// TODO decide how to compute maintenance costs.
 }
 
 int Installation::getUpgradeCost(){
