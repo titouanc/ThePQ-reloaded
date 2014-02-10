@@ -1,6 +1,7 @@
 #ifndef DEFINE_POSITION_HEADER
 #define DEFINE_POSITION_HEADER
 
+#include <cmath>
 #include <json.h>
 
 class Position {
@@ -19,6 +20,7 @@ class Position {
         int y(void) const;
         bool operator==(Position const & other);
         unsigned int length(void) const; //Distance, in cells, from 0,0 to this pos
+        bool isDirection(void) const;
 
         /* Numeric operations */
         Position operator+(Position const & other);
@@ -30,7 +32,7 @@ class Position {
 
 template <typename T>
 Position operator*(T scalar, Position const & pos) {
-    return Position(scalar*pos.x(), scalar*pos.y());
+    return Position(round(scalar*pos.x()), round(scalar*pos.y()));
 }
 
 template <typename T>

@@ -32,6 +32,11 @@ unsigned int Position::length(void) const
 	return (abs(_x)+abs(_y))/2;
 }
 
+bool Position::isDirection(void) const
+{
+    return (abs(_x)==abs(_y) || abs(_y)==0) && (_x+_y)%2 == 0;
+}
+
 Position Position::operator+(Position const & other)
 {
     return Position(_x+other.x(), _y+other.y());

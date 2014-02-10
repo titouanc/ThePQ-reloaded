@@ -46,6 +46,12 @@ TEST(position_combili)
     ASSERT(2*West + East == West);
 ENDTEST()
 
+TEST(position_is_direction)
+    ASSERT(West.isDirection());
+    ASSERT((2*West).isDirection());
+    ASSERT(! (West+NorthWest).isDirection());
+ENDTEST()
+
 TEST(displacement)
     Displacement d;
     ASSERT(d.count() == 0);
@@ -72,6 +78,11 @@ TEST(displacement_position)
     ASSERT(d.position(0.5) == West);
 ENDTEST()
 
+TEST(displacement_not_a_direction)
+    Displacement d;
+    ASSERT_THROWS(NotADirection, d.addMove(Position(3, 7)));
+ENDTEST()
+
 TEST(displacement_to_json)
     Displacement d;
     d.addMove(West);
@@ -94,19 +105,28 @@ TEST(displacement_from_json)
 ENDTEST()
 
 TEST(composite_displacement)
-    JSON::Dict *fixtures = (JSON::Dict*) JSON::load("fixtures/composite_a.json");
-    ASSERT(fixtures);
+    JSON::Dict *fixtures = (JSON::Dict*) JSON::load("fixtures/composite.json");
+    ASSERT(fixtures && ISDICT(fixtures));
 
     Displacement d(LIST(fixtures->get("displacement")));
     JSON::List const & positions = LIST(fixtures->get("positions"));
-    ASSERT(positions.len() == d.length());
+
+    ASSERT(positions.len() == 1+d.length());
     
     for (size_t i=0; i<positions.len(); i++){
         Position expected(LIST(positions[i]));
-        float t = (float)i/(float)d.length();
-        ASSERT(d.position(t) == expected);
+        double t = (double)i/(double)d.length();
+        Position got = d.position(t);
+        ASSERT(expected == got);
     }
     delete fixtures;
+ENDTEST()
+
+TEST(composite_invalid_displacement)
+    JSON::Dict *fixtures = (JSON::Dict*) JSON::load("fixtures/composite_invalid.json");
+    ASSERT(fixtures && ISDICT(fixtures));
+
+    ASSERT_THROWS(NotADirection, Displacement d(LIST(fixtures->get("displacement"))));
 ENDTEST()
 
 int main(int argc, const char **argv)
@@ -117,11 +137,15 @@ int main(int argc, const char **argv)
         ADDTEST(position_from_json),
         ADDTEST(position_length),
     	ADDTEST(position_combili),
+        ADDTEST(position_is_direction),
         ADDTEST(displacement),
         ADDTEST(displacement_length),
         ADDTEST(displacement_position),
+        ADDTEST(displacement_not_a_direction),
         ADDTEST(displacement_to_json),
-        ADDTEST(displacement_from_json)
+        ADDTEST(displacement_from_json),
+        ADDTEST(composite_displacement),
+        ADDTEST(composite_invalid_displacement)
     };
 
     return RUN(testSuite);

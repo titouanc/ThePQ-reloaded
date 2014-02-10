@@ -12,18 +12,20 @@ Displacement::Displacement(JSON::List const & list) : Displacement()
     }
 }
 
-Position Displacement::position(float t, Position const & initial) const 
+Position Displacement::position(double t, Position const & initial) const 
 {
     assert(0 <= t && t <= 1);
     Position res(initial);
-    float total_length=length(), begin=0, end=0;
+    double begin=0, end=0;
+    t *= length();
     for (size_t i=0; i<count(); i++){
-        end += _moves[i].length()/total_length;
-        if (end < t){
+        end = begin + _moves[i].length();
+        if (end <= t){
             begin = end;
             res += _moves[i];
         } else {
-            float relative_pos = (t-begin)/(end-begin);
+            double l = t-begin;
+            double relative_pos = l/(end-begin);
             return res + _moves[i]*relative_pos;
         }
     }
@@ -32,6 +34,8 @@ Position Displacement::position(float t, Position const & initial) const
 
 void Displacement::addMove(Position const & move) 
 {
+    if (! move.isDirection())
+        throw NotADirection(move.toJson().dumps());
     _moves.push_back(move);
 }
 
@@ -51,7 +55,8 @@ JSON::List Displacement::toJson(void) const
 unsigned int Displacement::length(void) const 
 {
     unsigned int res = 0;
-    for (size_t i=0; i<count(); i++)
+    for (size_t i=0; i<count(); i++){
         res += _moves[i].length();
+    }
     return res;
 }
