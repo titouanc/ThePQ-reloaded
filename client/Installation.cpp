@@ -2,8 +2,7 @@
 #include <cmath>
 
 int Installation::getMaintenanceCost(){
-	// TODO decide how to compute maintenance costs.
-	return 10; // TODO delete this magic number and implement a nice algorithm.
+	return getValueAtLevel(getLevel())/10; 
 }
 
 int Installation::getValueAtLevel(int level){
