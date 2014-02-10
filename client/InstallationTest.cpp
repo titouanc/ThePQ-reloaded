@@ -23,6 +23,10 @@ TEST(setters)
 	ASSERT(i.getLevel() == 5);
 ENDTEST()
 
+TEST(upgrade)
+	Installation i(0, 100);
+ENDTEST()
+
 
 int main(int argc, const char **argv){
 	TestFunc tests[] = {
