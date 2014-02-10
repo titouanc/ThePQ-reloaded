@@ -30,8 +30,7 @@ void Player::equipBroomstick (Broomstick aBroom){
 }
 
 void unequipBroomstick (){
-    if (broomstick != NULL) //TOFIX
-        abilities.improveVelocity(-1 * broomstick.getVelocity());
+    abilities.improveVelocity(-1 * broomstick.getVelocity());
 }
 
 Jersey Player::equipJersey (Jersey aJersey){

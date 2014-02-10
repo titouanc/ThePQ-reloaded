@@ -5,8 +5,9 @@
 #include "Abilities.hpp"
 #include "Broomstick.hpp"
 #include "Jersey.hpp"
+#include "Moveable.hpp"
 
-class Player : Member 
+class Player : public Member, public Moveable 
 {
 public:
 	Player ();
