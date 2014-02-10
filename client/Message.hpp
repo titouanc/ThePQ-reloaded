@@ -1,17 +1,17 @@
 #ifndef MESSAGE_HPP
 #define MESSAGE_HPP 
 
-#include <iostream>
+#include <string>
 
 class Message
 {
 public:
-	static void printPrompt();
-	static void printLaunchingMessage();
-	static void printLoggedOffActions();
-	static void printMainMenu();
-	static void printManagementMenu();
-	static void printGoodbyeMessage();
+	static std::string printPrompt();
+	static std::string printLaunchingMessage();
+	static std::string printLoggedOffActions();
+	static std::string printMainMenu();
+	static std::string printManagementMenu();
+	static std::string printGoodbyeMessage();
 };
 
 

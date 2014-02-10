@@ -14,12 +14,12 @@ Client::~Client()
 
 void Client::run()
 {
-	Message::printLaunchingMessage();
+	cout << Message::printLaunchingMessage();
 
 	// -------------------------------------------------------------------------
 	// LOGIN + REGISTERING LOOP
 
-	Message::printLoggedOffActions();
+	cout << Message::printLoggedOffActions();
 	cin >> _userChoice;
 
 	while (_userChoice != "q" && _userChoice != "Q" && ! _connection.isLogged()){
@@ -41,10 +41,10 @@ void Client::run()
 		// input not understood
 		else {
 			cout << "Please enter a valid response." << endl;
-			Message::printLoggedOffActions();
+			cout << Message::printLoggedOffActions();
 		}
 		if (!_connection.isLogged()){
-			Message::printLoggedOffActions();
+			cout << Message::printLoggedOffActions();
 			cin >> _userChoice;
 		}
 		else
@@ -52,7 +52,7 @@ void Client::run()
 			// -------------------------------------------------------------------------
 			// MAIN MENU LOOP
 
-			Message::printMainMenu();
+			cout << Message::printMainMenu();
 			cin >> _userChoice;
 
 			while (_userChoice != "q" && _userChoice != "Q"){
@@ -70,13 +70,13 @@ void Client::run()
 				// input not understood
 				else {
 					cout << "Please enter a valid response." << endl;
-					Message::printLoggedOffActions();
+					cout << Message::printLoggedOffActions();
 				}
 			}
 		}
 	}
 
-	Message::printGoodbyeMessage();
+	cout << Message::printGoodbyeMessage();
 }
 
 void Client::login(){
