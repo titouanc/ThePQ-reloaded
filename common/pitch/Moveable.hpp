@@ -1,6 +1,7 @@
 #ifndef MOVEABLE_HPP
 #define MOVEABLE_HPP
 
+#include <string>
 #include "Constants.hpp"
 #include "position.h"
 
