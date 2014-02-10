@@ -1,13 +1,14 @@
 // Abstract class Installation. Methods to be implemented in subclasses : 
 // 		- int getMaxLevel();
-// All subclasses have to implement a constructor that sets a starting price.
 
 class Installation{
 private:
 	int _level;
 	int _currentValue; // represents the price of the building at its current level.
 public:
-
+	Installation():_level(0), _currentValue(100) {} // TODO remove magic number
+	Installation(int level, int currentValue) : _level(level), _currentValue(currentValue){}
+	
 	// GETTERS + SETTERS
 	int getLevel() { return _level; }
 	void setLevel(int level) { _level = level; }
