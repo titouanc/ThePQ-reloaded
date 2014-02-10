@@ -8,10 +8,10 @@ private:
 public:
 	Installation():_level(0), _currentValue(100) {} // TODO remove magic number
 	Installation(int level, int currentValue) : _level(level), _currentValue(currentValue){}
-	
+
 	// GETTERS + SETTERS
 	int getLevel() { return _level; }
-	void setLevel(int level) { _level = level; }
+	void setLevel(int level) { if (level < getMaxLevel()) _level = level; }
 
 	int getCurrentValue() { return _currentValue; }
 	void setCurrentValue(int newValue) { _currentValue = newValue; }
