@@ -2,14 +2,14 @@
 
 using namespace Gear;
 
-string Gear::getName (){
-
+string Gear::getName () const {
+    return name;
 }
 
-string Gear::getDescription (){
-
+string Gear::getDescription () const {
+    return description;
 }
 
-int Gear::getPrice (){
-
+int Gear::getPrice () const {
+    return price;
 }

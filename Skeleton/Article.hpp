@@ -5,14 +5,14 @@ class Article
 {
 public:
 	Article (std::string name, int price, std::string description);
-    std::string getName ();
-	int getPrice ();
-    std::string getDescription ();        
-	void setPrice (int price);
+    std::string getName () const;
+	int getPrice () const;
+    std::string getDescription () const;        
+	void setPrice (int aPrice);
 private:
-    std::string name;
+    std::string const name;
 	int price;
-    std::string description;
+    std::string const description;
 };
 
 #endif

@@ -4,18 +4,15 @@
 
 using namespace std;
 
-int Broomstick::getCases (){
+Broomstick(const int const nCases, const int const velocity):cases(nCases), velocityBonus(velocity){
 
 }
 
-int Broomstick::getVelocityBonus (){
-
+int Broomstick::getCases () const {
+    return cases;
 }
 
-void Broomstick::addVelocity (Player aPlayer){
-
+int Broomstick::getVelocityBonus () const{
+    return velocityBonus;
 }
 
-void Broomstick::removeVelocity (Player aPlayer){
-
-}

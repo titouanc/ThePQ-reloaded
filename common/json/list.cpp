@@ -1,4 +1,5 @@
 #include "json.h"
+#include <cmath>
 #include <sstream>
 
 using namespace JSON;
@@ -25,21 +26,30 @@ Value * List::clone(void) const
     return res;
 }
 
-std::string List::dumps(void) const 
+void List::_writeTo(std::ostream & out) const
 {
-    std::stringstream res;
-    res << "[";
+    out << "[";
     for (size_t i=0; i<len(); i++){
-        if (i > 0) res << ", ";
-        res << _content[i]->dumps();
+        if (i > 0) out << ", ";
+        out << *(_content[i]);
     }
-    res << "]";
-    return res.str();
+    out << "]";
 }
 
 const Value * List::operator[](size_t index)
 {
+    if (index >= len())
+        throw KeyError("Index beyond list limits");
     return _content[index];
+}
+
+Value *List::steal(size_t index)
+{
+    if (index >= len())
+        throw KeyError("Index beyond list limits");
+    Value *res = _content[index];
+    _content.erase(_content.begin()+index);
+    return res;
 }
 
 void List::appendPtr(Value *ptr)
@@ -55,4 +65,18 @@ void List::append(Value const & obj)
 size_t List::len(void) const 
 {
     return _content.size();
+}
+
+
+void List::append(double val)
+{
+    if (round(val) == val)
+        append(Integer(val));
+    else
+        append(Float(val));
+}
+
+void List::append(std::string const & val)
+{
+    append(String(val));
 }
