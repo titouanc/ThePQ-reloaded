@@ -270,7 +270,7 @@ TEST(json_parse_list_in_dict)
 ENDTEST()
 
 TEST(json_load)
-	JSON::Value *val = JSON::loadFile("fixtures/a.json");
+	JSON::Value *val = JSON::load("fixtures/a.json");
 	ASSERT(val != NULL && ISDICT(val));
 	JSON::Dict const & dict = DICT(val);
 	for (JSON::Dict::const_iterator it=dict.begin(); it!=dict.end(); it++){
@@ -281,11 +281,11 @@ TEST(json_load)
 ENDTEST()
 
 TEST(json_save)
-	JSON::Value *val = JSON::loadFile("fixtures/a.json");
+	JSON::Value *val = JSON::load("fixtures/a.json");
 	ASSERT(val != NULL);
-	JSON::saveFile("__test__.json", *val);
+	val->save("__test__.json");
 	
-	JSON::Value *copy = JSON::loadFile("__test__.json");
+	JSON::Value *copy = JSON::load("__test__.json");
 	unlink("__test__.json");
 	ASSERT(copy != NULL && ISDICT(copy));
 
@@ -294,6 +294,8 @@ TEST(json_save)
 		ASSERT(ISLIST(it->second));
 		ASSERT(LIST(it->second).len() == 3);
 	}
+	ASSERT(val->dumps() == copy->dumps());
+
 	delete val;
 	delete copy;
 ENDTEST()

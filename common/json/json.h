@@ -68,6 +68,7 @@ namespace JSON {
                 val._writeTo(out);
                 return out;
             }
+            void save(const char *filename) const;
             bool isNumber() const {return (type()&(Integer_t|Float_t)) != 0;}
             bool isAtom() const {return (type()&(Integer_t|Float_t|String_t)) != 0;}
             bool isSequence() const {return (type()&(Dict_t|List_t)) != 0;}
@@ -137,9 +138,7 @@ namespace JSON {
 
     Value *parse(const char *str, char **eptr=NULL);
 
-    Value *loadFile(const char *filename);
-
-    void saveFile(const char *filename, Value const & json);
+    Value *load(const char *filename);
 }
 
 #endif

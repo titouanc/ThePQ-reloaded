@@ -94,7 +94,7 @@ TEST(displacement_from_json)
 ENDTEST()
 
 TEST(composite_displacement)
-    JSON::Dict *fixtures = (JSON::Dict*) JSON::loadFile("fixtures/composite_a.json");
+    JSON::Dict *fixtures = (JSON::Dict*) JSON::load("fixtures/composite_a.json");
     ASSERT(fixtures);
 
     Displacement d(LIST(fixtures->get("displacement")));

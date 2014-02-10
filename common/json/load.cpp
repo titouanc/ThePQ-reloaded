@@ -14,7 +14,7 @@ using namespace JSON;
 
 #define BUFSIZE 4096
 
-Value *JSON::loadFile(const char *filename)
+Value *JSON::load(const char *filename)
 {
 	int fd, r;
 	char buffer[BUFSIZE+1];
@@ -35,20 +35,3 @@ Value *JSON::loadFile(const char *filename)
 	return parse(str.str().c_str());
 }
 
-void JSON::saveFile(const char *filename, Value const & json)
-{
-	int fd, r=0;
-
-	fd = open(filename, O_WRONLY|O_CREAT, 0644);
-	if (fd < 0)
-		throw IOError(strerror(errno));
-
-	std::string repr = json.dumps();
-	for (size_t i=0; i<repr.length(); i+=r){
-		r = write(fd, repr.c_str()+i, repr.length()-i);
-		if (r < 0)
-			throw IOError(strerror(errno));
-	}
-
-	close(fd);
-}
