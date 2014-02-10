@@ -80,24 +80,7 @@ namespace net
 			REGISTER
 		};
 		
-		Message(Request request, Method method, JSON::Value *data) : JSON::Dict()
-		{
-			set("Request", JSON::Integer(request));
-			set("Method", JSON::Integer(method));
-			set("Data", *data);
-		}
-		
-		Message(JSON::Dict const & dict) : JSON::Dict()
-		{
-			set("Request", *(dict.get("Request")));
-			set("Method", *(dict.get("Method")));
-			set("Data", *(dict.get("Data")));
-		}
-		
-		~Message()
-		{
-			
-		}	
+		Message(Request request, Method method, JSON::Value *data);
 	};
 }
 
