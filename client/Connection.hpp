@@ -19,8 +19,6 @@ public:
 private:
 	bool _isLogged;
 	
-	net::TcpSocket _socket;
-	
 };
 
 #endif
