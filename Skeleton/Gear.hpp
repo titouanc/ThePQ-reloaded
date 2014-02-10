@@ -4,13 +4,13 @@
 class Gear 
 {
 public:
-    std::string getName ();
-    std::string getDescription ();
-	int getPrice ();
+    std::string getName () const ;
+    std::string getDescription () const;
+	int getPrice () const;
 private:
-    std::string name;
-    std::string description;
-	 price;
+    std::string const name;
+    std::string const description;
+	int const price;
 };
 
 #ifndef

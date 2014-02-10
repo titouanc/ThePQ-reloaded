@@ -8,14 +8,14 @@ class GearStore : Installation
 {
 public:
 	void sell (Gear aGear,
-	           Player aPlayer,
+	           Team aTeam,
 	           int quantity);
-	list <Gear> getArticles ();
+	list <Gear> getArticles () const;
 	void buy (Gear aGear,
-	          Player from,
+	          Team aTeam,
 	          int quantity);
 private:
-	list <Gear> ArticlesList;
+	list <Gear> articlesList;
 };
 
 #endif;

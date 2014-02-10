@@ -43,6 +43,11 @@ const Value * List::operator[](size_t index)
     return _content[index];
 }
 
+const Value * List::operator[](size_t index) const
+{
+    return _content[index];
+}
+
 Value *List::steal(size_t index)
 {
     if (index >= len())

@@ -21,7 +21,10 @@ Type Dict::type(void) const
 
 Value * Dict::clone(void) const 
 {
-	return NULL;
+	Dict *res = new Dict();
+    for (Dict::const_iterator it=begin(); it!=end(); it++)
+        res->set(it->first, *(it->second));
+    return (Value*) res;
 }
 
 void Dict::_writeTo(std::ostream & out) const
