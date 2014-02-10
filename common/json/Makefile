@@ -3,7 +3,7 @@ CXXFLAGS = -std=c++11 -pedantic -Wall -Wextra
 INCLUDES = -I../lighttest
 LDFLAGS = -lm
 HEADERS = $(shell ${CXX} ${CXXFLAGS} -MM *.cpp | sed -E 's/.+\.[^h]pp//g')
-OBJS = parser.o string.o list.o dict.o value.o number.o
+OBJS = parser.o string.o list.o dict.o value.o number.o load.o
 LIB = libjson.a
 
 all: ${LIB} test.ok
