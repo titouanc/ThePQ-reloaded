@@ -42,9 +42,10 @@ TEST(downgrade_installation)
 		inst.downgrade();
 		cout << "level : " << inst.getLevel() << endl;
 		cout << "getCurrentValue : " << inst.getCurrentValue() << endl;
+		ASSERT(inst.getValueAtLevel(inst.getLevel())-inst.getValueAtLevel(inst.getLevel()-1) 
+				== inst.getDowngradeRefunds()/inst.getRefundRatio())
 		ASSERT(inst.getLevel() == 5-i-1);
 		ASSERT(inst.getCurrentValue() == 100*pow(2, inst.getLevel()-1));
-
 	}
 	ASSERT(inst.getValueAtLevel(inst.getLevel()) == 100);
 	inst.downgrade();
