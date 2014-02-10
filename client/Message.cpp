@@ -2,13 +2,13 @@
 
 using namespace std;
 
-string Message::printPrompt(){
+string Message::prompt(){
 	string ret;
 	ret+= "> ";
 	return ret;
 }
 
-string Message::printLaunchingMessage(){
+string Message::splashScreen(){
 	string ret;
 	ret+= "           __       _   \n";
 	ret+= "           //_ _   /_/_ _                  much amazing  |\n";
@@ -34,41 +34,41 @@ string Message::printLaunchingMessage(){
 	return ret;
 }
 
-string Message::printLoggedOffActions(){
+string Message::loginMenu(){
 	string ret;
 	ret+= "You can : \n";
 	ret+= "   - (l)ogin\n";
 	ret+= "   - (r)egister\n";
 	ret+= "   - (q)uit\n";
+	ret+= prompt();
 	return ret;
 }
 
-string Message::printMainMenu(){
+string Message::mainMenu(){
 	string ret;
 	ret+= "You can : \n";
 	ret+= "   - (m)anage your team and stadium\n";
 	ret+= "   - (p)lay a friendly game\n";
 	ret+= "   - (q)uit\n";
-	ret+= printPrompt();
+	ret+= prompt();
 	return ret;
 }
 
-string Message::printManagementMenu(){
+string Message::managmentMenu(){
 	string ret;
 	ret+= "You can : \n";
 	ret+= "   - manage your (s)tadium and installations\n";
 	ret+= "   - manage your (p)layers\n";
 	ret+= "   - (q)uit to main menu\n";
-	ret+= printPrompt();
+	ret+= prompt();
 	return ret;
 }
 
-string Message::printGoodbyeMessage(){
+string Message::goodBye(){
 	string ret;
 	ret+= "                 =========================            \n";
 	ret+= "   Thank you for playing the Pro Quidditch Manager 2014!\n";
 	ret+= "                   See you next time! :)\n";
 	ret+= "                 =========================            \n";
-	ret+= printPrompt();
 	return ret;
 }
