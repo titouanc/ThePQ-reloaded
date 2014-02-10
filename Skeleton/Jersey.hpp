@@ -12,6 +12,7 @@ public:
 	int getMagicBonus () const;
 	int getSpiritBonus () const;
 private:
+    Jersey();
 	int strengthBonus;
 	int constitutionBonus;
 	int magicBonus;

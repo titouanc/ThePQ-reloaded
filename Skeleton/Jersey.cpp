@@ -4,6 +4,10 @@
 
 using namespace std;
 
+Jersey::Jersey():strengthBonus(0), constitutionBonus(0), magicBonus(0), spiritBonus(0){
+
+}
+
 int Jersey::getStrengthBonus () const{
     return strengthBonus;
 }
