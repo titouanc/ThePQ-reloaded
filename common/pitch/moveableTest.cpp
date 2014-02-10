@@ -2,13 +2,17 @@
 #include "Moveable.hpp"
 #include "../lighttest/lighttest.h"
 
-ADDTEST(constructor_with_parameters)
+TEST(constructor_with_parameters)
 	Position mpos(3, 6);
 	Moveable m("MoveableName", 123, 201.5, mpos);
 	ASSERT(m.getName() == "MoveableName");
-ENDTEST();
+	ASSERT(m.getID() == 123);
+	ASSERT(m.getSpeed() == 201.5);
+	ASSERT(m.getPosition().x() == 3);
+	ASSERT(m.getPosition().y() == 6);
+ENDTEST()
 
-ADDTEST(setters)
+TEST(setters)
 	Position mpos(3, 6);
 	Moveable m("MoveableName", 123, 201.5, mpos);
 	m.setName("modifiedname");
@@ -20,14 +24,15 @@ ADDTEST(setters)
 	ASSERT(m.getID() == 1);
 	ASSERT(m.getSpeed() == 10.1);
 	ASSERT(m.getPosition().x() == 100);
-ENDTEST();
+	ASSERT(m.getPosition().y() == 2);
+ENDTEST()
 
 
 
 int main(int argc, const char **argv){
 	TestFunc tests[] = {
-		ADDTEST(constructor_with_parameters);
-		ADDTEST(setters);
+		ADDTEST(constructor_with_parameters),
+		ADDTEST(setters)
 	};
 	return RUN(tests);
 }

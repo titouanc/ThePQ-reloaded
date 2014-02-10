@@ -15,6 +15,9 @@ public:
 	~Moveable(){}
 
 	// GETTERS + SETTERS
+	string getName() { return _name; }
+	void setName(string name) { _name = name; }
+	
 	Position getPosition() { return _position; }
 	void setPosition(Position &position) { _position = position; }
 
