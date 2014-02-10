@@ -18,7 +18,6 @@ void Connection::loginUser(string username, string passwd)
 	JSON::Dict data;
 	data.set("username", JSON::String(username));
 	data.set("passwd", JSON::String(passwd));
-	cout << data.dumps() << endl;
 	net::Message *msg = new net::Message(net::Message::Request::LOGIN, 
 											net::Message::Method::REQUEST, 
 											&data);
