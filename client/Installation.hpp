@@ -8,8 +8,8 @@ private:
 	int _baseValue;
 	float _refundRatio;
 public:
-	Installation():_level(0), _currentValue(100), _baseValue(100), _refundRatio(0.5) {} // TODO remove magic numbers?
-	Installation(int level, int currentValue, float refundRatio=0.5) :
+	Installation():_level(0), _currentValue(100), _baseValue(100), _refundRatio(0.5) {} 
+	Installation(int currentValue, int level, float refundRatio=0.5) :
 			_level(level), _currentValue(currentValue), 
 			_baseValue(currentValue), _refundRatio(refundRatio){}
 
@@ -25,8 +25,8 @@ public:
 
 	float getRefundRatio() { return _refundRatio; }
 	void setRefundRatio(float refundRatio) { _refundRatio = refundRatio; } 
+	// -----------------
 
-	// WORK METHODS
 	int getMaintenanceCost();
 
 	int getValueAtLevel(int level);

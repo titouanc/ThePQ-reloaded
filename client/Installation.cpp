@@ -10,8 +10,9 @@ int Installation::getValueAtLevel(int level){
 }
 
 int Installation::getUpgradeCost(){
-	// returns a positive value that represents the cost of an upgrade to
-	// the next level.
+	/* returns a positive value that represents the cost of an upgrade to
+	 * the next level. 
+	 */
 	int res = getBaseValue();	// buy the installation
 	if (getLevel() != 0) 
 		res = getValueAtLevel(getLevel()+1) - getCurrentValue();
@@ -19,8 +20,9 @@ int Installation::getUpgradeCost(){
 }
 
 int Installation::getDowngradeRefunds(){
-	// returns a positive value that represents the
-	// funds that will be refunded when downgraded 1 level.
+	/* returns a positive value that represents the
+	 * funds that will be refunded when downgraded 1 level. 
+	 */
 	int res = 0;
 	if (getLevel() > 0)
 		res = (getCurrentValue() - getValueAtLevel(getLevel()-1))*getRefundRatio();
@@ -28,6 +30,8 @@ int Installation::getDowngradeRefunds(){
 }
 
 void Installation::upgrade(){
+	/* Upgrades the installation (its level, and its currentValue)
+	 */
 	if (getLevel() < getMaxLevel()){
 		setLevel( getLevel() + 1 );
 		setCurrentValue(getValueAtLevel(getLevel()));
@@ -35,6 +39,8 @@ void Installation::upgrade(){
 }
 
 void Installation::downgrade(){
+	/* Downgrades the installation (its level, and its currentValue)
+	 */
 	if (getLevel() > 0){
 		setLevel( getLevel() - 1 );
 		setCurrentValue(getValueAtLevel(getLevel()));
