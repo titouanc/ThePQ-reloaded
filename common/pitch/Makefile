@@ -4,9 +4,12 @@ LDFLAGS = -lm ../json/libjson.a
 HEADERS = $(shell ${CXX} ${CXXFLAGS} -MM *.cpp | sed -E 's/.+\.[^h]pp//g')
 OBJS = position.o displacement.o
 
-all: test.ok
+all: test.ok moveableTest.ok
 
 test.ok: test
+	./$< && touch $@
+
+moveableTest.ok: moveableTest
 	./$< && touch $@
 
 %: %.cpp

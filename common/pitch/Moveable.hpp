@@ -2,22 +2,23 @@
 #define MOVEABLE_HPP
 
 #include <string>
-#include "Constants.hpp"
 #include "position.h"
+
+using namespace std;
 
 class Moveable {
 public:
 	// CONSTRUCTORS
 	Moveable(){}
-	Moveable(string name, unsigned int id, float speed, Position position): 
-				_name(name), _uniqueID(id), _speed(speed), _position(position);
-	~Moveable();
+	Moveable(string name, unsigned int id, float speed, Position &position): 
+				_name(name), _uniqueID(id), _speed(speed), _position(position){}
+	~Moveable(){}
 
 	// GETTERS + SETTERS
 	Position getPosition() { return _position; }
-	void setPosition(Position position) { _position = position; }
+	void setPosition(Position &position) { _position = position; }
 
-	float getSpeed() { return speed; }
+	float getSpeed() { return _speed; }
 	void setSpeed(float speed) { _speed = speed; }
 
 	unsigned int getID() { return _uniqueID; }
