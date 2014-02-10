@@ -41,6 +41,19 @@ namespace JSON {
         Dict_t    = 0x10,
     };
 
+    /* JSON errors */
+    class KeyError : public std::runtime_error {
+        public: using std::runtime_error::runtime_error;
+    };
+
+    class ParseError : public std::runtime_error {
+        public: using std::runtime_error::runtime_error;
+    };
+
+    class IOError : std::runtime_error {
+        using std::runtime_error::runtime_error;
+    };
+
     /* Abstract common ancestor for all JSON types */
     class Value {
         public:
@@ -106,14 +119,6 @@ namespace JSON {
             size_t len(void) const;
     };
 
-    class KeyError : public std::runtime_error {
-        public: using std::runtime_error::runtime_error;
-    };
-
-    class ParseError : public std::runtime_error {
-        public: using std::runtime_error::runtime_error;
-    };
-
     class Dict : public Value {
         private:
             std::map<std::string, Value*> _content;
@@ -137,6 +142,10 @@ namespace JSON {
     };
 
     Value *parse(const char *str, char **eptr=NULL);
+
+    Value *loadFile(const char *filename);
+
+    void saveFile(const char *filename, Value const & json);
 }
 
 #endif

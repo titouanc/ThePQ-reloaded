@@ -217,6 +217,17 @@ TEST(json_parse_list_in_dict)
 	delete res;
 ENDTEST()
 
+TEST(json_load)
+	JSON::Value *val = JSON::loadFile("fixtures/a.json");
+	ASSERT(ISDICT(val));
+	JSON::Dict const & dict = DICT(val);
+	for (JSON::Dict::const_iterator it=dict.begin(); it!=dict.end(); it++){
+		ASSERT(ISLIST(it->second));
+		ASSERT(LIST(it->second).len() == 3);
+	}
+	delete val;
+ENDTEST()
+
 int main(int argc, const char **argv)
 {
 	TestFunc testSuite[] = {
@@ -238,7 +249,8 @@ int main(int argc, const char **argv)
 		ADDTEST(json_parse_dict),
 		ADDTEST(json_parse_empty_dict),
 		ADDTEST(json_parse_dict_many_keys),
-		ADDTEST(json_parse_list_in_dict)
+		ADDTEST(json_parse_list_in_dict),
+		ADDTEST(json_load)
 	};
 
 	return RUN(testSuite);
