@@ -7,8 +7,9 @@
 class Moveable {
 public:
 	// CONSTRUCTORS
-	Moveable();
-	Moveable(string name, unsigned int id, float speed);
+	Moveable(){}
+	Moveable(string name, unsigned int id, float speed, Position position): 
+				_name(name), _uniqueID(id), _speed(speed), _position(position);
 	~Moveable();
 
 	// GETTERS + SETTERS
