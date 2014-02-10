@@ -2,6 +2,7 @@
 #define MOVEABLE_HPP
 
 #include "Constants.hpp"
+#include "position.h"
 
 class Moveable {
 public:
