@@ -4,25 +4,22 @@
 class Installation{
 private:
 	int _level;
-	int _maintenanceCost;
-	int _upgradeCost;
-	int _downgradeRefunds;
+	int _currentValue; // represents the price of the building at its current level.
 public:
 
 	// GETTERS + SETTERS
 	int getLevel() { return _level; }
 	void setLevel(int level) { _level = level; }
 
-	int getMaintenanceCost() { return _maintenanceCost; }
-	void setMaintenanceCost(int maintenanceCost) { _maintenanceCost = maintenanceCost; }
-
-	int getUpgradeCost() { return _upgradeCost; }
-	void setUpgradeCost(int upgradeCost) { _upgradeCost = upgradeCost; }
-
-	int getDowngradeRefunds() { return _downgradeRefunds; }
-	void setDowngradeRefunds(int downgradeRefunds) { _downgradeRefunds = downgradeRefunds; }
+	int getCurrentValue() { return _currentValue; }
+	void setCurrentValue(int newValue) { _currentValue = newValue; }
 
 	// WORK METHODS
+	int getMaintenanceCost();
+
+	int getUpgradeCost();
+	int getDowngradeRefunds();
+	
 	void upgrade();
 	void downgrade();
 
