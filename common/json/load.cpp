@@ -39,7 +39,7 @@ void JSON::saveFile(const char *filename, Value const & json)
 {
 	int fd, r=0;
 
-	fd = open(filename, O_WRONLY);
+	fd = open(filename, O_WRONLY|O_CREAT, 0644);
 	if (fd < 0)
 		throw IOError(strerror(errno));
 
