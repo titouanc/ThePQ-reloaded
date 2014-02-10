@@ -1,5 +1,6 @@
 // Abstract class Installation. Methods to be implemented in subclasses : 
 // 		- int getMaxLevel();
+// All subclasses have to implement a constructor that sets a starting price.
 
 class Installation{
 private:
