@@ -26,28 +26,16 @@ void Client::run()
 
 		// login
 		if (_userChoice == "l" || _userChoice == "L"){
-			try{
-				login();
-			} catch (WrongPasswordException &wpe){
-				cout << "Wrong password. Please try again." << endl;
-			} catch (UserNotFoundException &unfe){
-				cout << "User was not found." << endl;
-				if (Client::userWantsToRegister())
-					try{
-						Client::registerUser();
-					} catch (UserAlreadyExistsException &uaee){
-						cout << "User already exists. Please try again with another username." << endl;
-					}
+			login();
+			if (_connection.isLogged() == false && userWantsToRegister() == true)
+			{
+				registerUser();
 			}
 		}
 
 		// registering
 		else if (_userChoice == "r" || _userChoice == "R"){
-			try{
-				Client::registerUser();
-			} catch (UserAlreadyExistsException &uaee){
-				cout << "User already exists. Please try again with another username." << endl;
-			}
+			registerUser();
 		}
 
 		// input not understood
@@ -90,11 +78,26 @@ void Client::run()
 	Message::printGoodbyeMessage();
 }
 
-string Client::askForUserData(string prompt){
-	string data;
-	cout << prompt;
-	cin >> data;
-	return data;
+void Client::login(){
+	
+	string username = askForUserData("Username : ");
+	// TODO send username to server
+	// TODO receive username from server
+	// TODO receive userStatus from server 
+	string password = askForUserData("Password : ");
+	
+	try {
+		_connection.loginUser(username, password);
+		cout << "You have successfully logged in! Welcome! :)" << endl;
+	}
+	catch (UserNotFoundException e)
+	{
+		cout << "User not found" << endl;
+	}
+	catch (WrongPasswordException e)
+	{
+		cout << "Wrong password" << endl;
+	}
 }
 
 void Client::registerUser(){
@@ -111,6 +114,13 @@ void Client::registerUser(){
 	{
 		cout << "User name already exists" << endl;
 	}
+}
+
+string Client::askForUserData(string prompt){
+	string data;
+	cout << prompt;
+	cin >> data;
+	return data;
 }
 
 bool Client::userWantsToRegister(){
@@ -142,26 +152,4 @@ string Client::askForNewPassword(){
 			cout << "The two passwords entered were not the same." << endl;
 	}
 	return password;
-}
-
-void Client::login(){
-	
-	string username = askForUserData("Username : ");
-	// TODO send username to server
-	// TODO receive username from server
-	// TODO receive userStatus from server 
-	string password = askForUserData("Password : ");
-	
-	try {
-		_connection.loginUser(username, password);
-		cout << "You have successfully logged in! Welcome! :)" << endl;
-	}
-	catch (UserNotFoundException e)
-	{
-		cout << "User not found" << endl;
-	}
-	catch (WrongPasswordException e)
-	{
-		cout << "Wrong password" << endl;
-	}
 }
