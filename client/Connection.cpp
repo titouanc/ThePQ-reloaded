@@ -15,16 +15,16 @@ bool Connection::isLogged()
 
 void Connection::loginUser(string username, string passwd)
 {
-	JSON::Dict* data = new JSON::Dict();
-	data->set("username", JSON::String(username));
-	data->set("passwd", JSON::String(passwd));
+	JSON::Dict data;
+	data.set("username", JSON::String(username));
+	data.set("passwd", JSON::String(passwd));
+	cout << data.dumps() << endl;
 	net::Message *msg = new net::Message(net::Message::Request::LOGIN, 
 											net::Message::Method::REQUEST, 
-											data);
-	_socket.send(msg);
+											&data);
 	cout << "Client sending: " << msg->dumps() << endl;
+	_socket.send(msg);
 	delete msg;
-	delete data;
 	_socket.recv((JSON::Value**)&msg);
 	cout << "Client receiving: " << msg->dumps() << endl;
 }

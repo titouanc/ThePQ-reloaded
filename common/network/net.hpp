@@ -87,7 +87,7 @@ namespace net
 			set("Data", *data);
 		}
 		
-		Message(JSON::Dict const & dict)
+		Message(JSON::Dict const & dict) :: JSON::Dict()
 		{
 			set("Request", *(dict.get("Request")));
 			set("Method", *(dict.get("Method")));
