@@ -93,6 +93,22 @@ TEST(displacement_from_json)
     ASSERT(d.count() == initial.count());
 ENDTEST()
 
+TEST(composite_displacement)
+    JSON::Dict *fixtures = (JSON::Dict*) JSON::loadFile("fixtures/composite_a.json");
+    ASSERT(fixtures);
+
+    Displacement d(LIST(fixtures->get("displacement")));
+    JSON::List const & positions = LIST(fixtures->get("positions"));
+    ASSERT(positions.len() == d.length());
+    
+    for (size_t i=0; i<positions.len(); i++){
+        Position expected(LIST(positions[i]));
+        float t = (float)i/(float)d.length();
+        ASSERT(d.position(t) == expected);
+    }
+    delete fixtures;
+ENDTEST()
+
 int main(int argc, const char **argv)
 {
     TestFunc testSuite[] = {
