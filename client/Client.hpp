@@ -22,15 +22,15 @@ private:
 	Connection _connection;
 	
 	// Registering
-	static void registerUser();
-	static bool userWantsToRegister(); // asks the user if he wants to register when login has
+	void registerUser();
+	bool userWantsToRegister(); // asks the user if he wants to register when login has
 								// failed because the username specified doesn't exist.
-	static std::string askForNewPassword(); // prompts the user to create a new password with 
+	std::string askForNewPassword(); // prompts the user to create a new password with 
 							// confirmation. returns the password.
 
 	// Logging in
-	static void login();
-	static std::string askForUserData(std::string prompt); // returns the user input.
+	void login();
+	std::string askForUserData(std::string prompt); // returns the user input.
 };
 
 #endif // __CLIENT_HPP

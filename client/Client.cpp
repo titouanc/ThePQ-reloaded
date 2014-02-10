@@ -27,7 +27,7 @@ void Client::run()
 		// login
 		if (_userChoice == "l" || _userChoice == "L"){
 			try{
-				Client::login();
+				login();
 			} catch (WrongPasswordException &wpe){
 				cout << "Wrong password. Please try again." << endl;
 			} catch (UserNotFoundException &unfe){
@@ -98,19 +98,19 @@ string Client::askForUserData(string prompt){
 }
 
 void Client::registerUser(){
-	UserStatus userStatus = UserNotFound;	// handy initialization
 	string username = askForUserData("Pick a username : ");
 	// TODO send username to server
 	// TODO receive userStatus from server
+	string password = askForNewPassword();
 	
-	if (userStatus == UserNotFound){
-		string password = askForNewPassword();
-		// TODO hash password
-		// TODO send hashed password to server
-		// TODO receive hashed password from server
+	try {
+		_connection.registerUser(username, password);
 		cout << "You have successfully registered! You can now login." << endl;
 	}
-	else throw UserAlreadyExistsException();
+	catch (UserAlreadyExistsException e)
+	{
+		cout << "User name already exists" << endl;
+	}
 }
 
 bool Client::userWantsToRegister(){
@@ -145,32 +145,23 @@ string Client::askForNewPassword(){
 }
 
 void Client::login(){
-	UserStatus userStatus = UserNotFound;	// handy initialization
 	
 	string username = askForUserData("Username : ");
 	// TODO send username to server
 	// TODO receive username from server
 	// TODO receive userStatus from server 
-
-	if (userStatus == UserRegistered){
-		string password = askForUserData("Password : ");
-		// TODO hash password
-		// TODO send password hash to server
-		bool isPasswordCorrect = false;
-		// TODO receive isPasswordCorrect from server
-		if (isPasswordCorrect){
-			// TODO receive userStatus from server
-
-			/*
-			// TODO we need to implement this only if we want the server to send
-			// a confirmation after saying that the password was correct.
-			if (userStatus != UserLoggedIn){
-				// TODO throw some kind of exception
-			}
-			*/
-			cout << "You have successfully logged in! Welcome! :)" << endl;
-		}
-		else throw WrongPasswordException();
+	string password = askForUserData("Password : ");
+	
+	try {
+		_connection.loginUser(username, password);
+		cout << "You have successfully logged in! Welcome! :)" << endl;
 	}
-	else throw UserNotFoundException();
+	catch (UserNotFoundException e)
+	{
+		cout << "User not found" << endl;
+	}
+	catch (WrongPasswordException e)
+	{
+		cout << "Wrong password" << endl;
+	}
 }
