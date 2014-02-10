@@ -3,6 +3,6 @@
 
 using namespace std;
 
-bool Seeker::isSeeker(){
+bool Seeker::isSeeker() const {
     return True;
 }

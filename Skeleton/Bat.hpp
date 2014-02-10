@@ -7,15 +7,12 @@
 class Bat : Gear 
 {
 public:
-	int getStrengthBonus ();
-	int getPrecisionBonus ();
-	void addStrength (Player aPlayer);
-	void removeStrength (Player aPlayer);
-	void addPrecision (Player aPlayer);
-	void removePrecision (Player aPlayer);
+    Bat(const int const strength, const int const precision);
+	int getStrengthBonus () const;
+	int getPrecisionBonus () const;
 private:
-	int StrengthBonus;
-	int PrecisionBonus;
+	int const strengthBonus;
+	int const precisionBonus;
 };
 
 #endif

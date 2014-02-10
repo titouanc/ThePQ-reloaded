@@ -4,7 +4,7 @@
 class Seeker : Player 
 {
 public:
-	bool isSeeker ();
+	bool isSeeker () const;
 };
 
 #endif

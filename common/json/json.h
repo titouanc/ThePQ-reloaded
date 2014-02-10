@@ -41,6 +41,19 @@ namespace JSON {
         Dict_t    = 0x10,
     };
 
+    /* JSON errors */
+    class KeyError : public std::runtime_error {
+        public: using std::runtime_error::runtime_error;
+    };
+
+    class ParseError : public std::runtime_error {
+        public: using std::runtime_error::runtime_error;
+    };
+
+    class IOError : std::runtime_error {
+        using std::runtime_error::runtime_error;
+    };
+
     /* Abstract common ancestor for all JSON types */
     class Value {
         private:
@@ -55,6 +68,7 @@ namespace JSON {
                 val._writeTo(out);
                 return out;
             }
+            void save(const char *filename) const;
             bool isNumber() const {return (type()&(Integer_t|Float_t)) != 0;}
             bool isAtom() const {return (type()&(Integer_t|Float_t|String_t)) != 0;}
             bool isSequence() const {return (type()&(Dict_t|List_t)) != 0;}
@@ -84,6 +98,7 @@ namespace JSON {
             Value * clone(void) const;
             virtual void _writeTo(std::ostream & out) const;
             const Value * operator[](size_t index);
+            const Value * operator[](size_t index) const;
             Value * steal(size_t index);
             void appendPtr(Value *ptr);
             void append(Value const & obj);
@@ -92,14 +107,6 @@ namespace JSON {
             /* Fast setters */
             void append(double val);
             void append(std::string const & val);
-    };
-
-    class KeyError : public std::runtime_error {
-        public: using std::runtime_error::runtime_error;
-    };
-
-    class ParseError : public std::runtime_error {
-        public: using std::runtime_error::runtime_error;
     };
 
     class Dict : public Value {
@@ -130,6 +137,8 @@ namespace JSON {
     };
 
     Value *parse(const char *str, char **eptr=NULL);
+
+    Value *load(const char *filename);
 }
 
 #endif

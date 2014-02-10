@@ -7,13 +7,12 @@
 class Broomstick : Gear 
 {
 public:
-	int getCases ();
-	int getVelocityBonus ();
-	void addVelocity (Player aPlayer);
-	void removeVelocity (Player aPlayer);
+    Broomstick(const int const nCases, const int const velocity);
+	int getCases () const ;
+	int getVelocityBonus () const ;
 private:
-	int cases;
-	int velocityBonus;
+	int const cases;
+	int const velocityBonus;
 };
 
 #endif

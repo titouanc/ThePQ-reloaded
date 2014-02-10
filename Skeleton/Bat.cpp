@@ -3,26 +3,15 @@
 
 using namespace std;
 
-int Bat::getStrengthBonus (){
+Bat::Bat(const int const strength, const int const precision): strengthBonus(strength),precisionBonus(precision){
 
 }
 
-int Bat::getPrecisionBonus (){
-
+int Bat::getStrengthBonus () const{
+    return strengthBonus;
 }
 
-void Bat::addStrength (Player aPlayer){
-
+int Bat::getPrecisionBonus () const{
+    return precisionBonus;
 }
 
-void Bat::removeStrength (Player aPlayer){
-
-}
-
-void Bat::addPrecision (Player aPlayer){
-
-}
-
-void Bat::removePrecision (Player aPlayer){
-
-}

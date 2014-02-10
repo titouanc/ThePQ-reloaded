@@ -20,7 +20,7 @@ ${LIBNETWORK}: ${OBJ}
 	ar r libnetwork.a ${OBJ}
 	
 ${LIBJSON}:
-	cd ../json && make
+	make -C ../json
 
 %.o: %.cpp
 	${CXX} ${CXXFLAGS} -c -o $@ $^

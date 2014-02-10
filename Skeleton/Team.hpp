@@ -8,10 +8,10 @@
 class Team 
 {
 public:
-	float getRatio ();
+	float getRatio () const;
 	void giveMatchRes (MatchResult result);
-	list<Gear> getAvailableEquipment ();
-	list<Gear> equipments;
+	list<Gear> getAvailableEquipment () const;
+	list<Gear> equipments const;
 private:
     std::string name;
 	list<Member> members;
@@ -19,8 +19,8 @@ private:
 	int funds;
 	list<Sponsor> sponsors;
 	list<Installation> stadium;
-	int nbrWin;
-	int nbrPlayed;
+	float nbrWin;
+	float nbrPlayed;
 };
 
 #endif

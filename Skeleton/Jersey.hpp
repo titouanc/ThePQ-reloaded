@@ -7,23 +7,15 @@
 class Jersey : Gear 
 {
 public:
-	int getStrengthBonus ();
-	int getConstitutionBonus ();
-	int getMagicBonus ();
-	int getSpiritBonus ();
-	void addStrength (Player aPlayer);
-	void remStrength (Player aPlayer);
-	void addConstitution (Player aPlayer);
-	void removeConstitution (Player aPlayer);
-	void addMagic (Player aPlayer);
-	void removeMagic (Player aPlayer);
-	void addSpirit (Player aPlayer);
-	void removeSpirit (Player aPlayer);
+	int getStrengthBonus () const;
+	int getConstitutionBonus () const;
+	int getMagicBonus () const;
+	int getSpiritBonus () const;
 private:
-	int StrengthBonus;
-	int ConstitutionBonus;
-	int MagicBonus;
-	int SpiritBonus;
+	int strengthBonus;
+	int constitutionBonus;
+	int magicBonus;
+	int spiritBonus;
 };
 
 #endif

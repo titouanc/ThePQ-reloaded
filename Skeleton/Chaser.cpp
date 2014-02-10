@@ -1,5 +1,5 @@
 #include "Chaser.hpp"
 
-bool Chaser::isChaser(){
+bool Chaser::isChaser()const {
     return True;
 }
