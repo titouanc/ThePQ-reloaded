@@ -1,5 +1,8 @@
 #include "json.h"
 #include <lighttest.h>
+extern "C" {
+	#include <unistd.h>
+}
 
 void iThrow(void)
 {
@@ -109,6 +112,7 @@ TEST(json_list_repr)
 	ASSERT(l.dumps() == "[2, 42.125]");
 
 	JSON::List *lptr = (JSON::List *) l.clone();
+	ASSERT(lptr != NULL);
 	ASSERT(lptr->dumps() == "[2, 42.125]");
 	delete lptr;
 ENDTEST()
@@ -138,6 +142,10 @@ TEST(json_dict_repr)
 		d.dumps() == "{\"key1\": \"value1\", \"key2\": \"value2\"}" || 
 		d.dumps() == "{\"key2\": \"value2\", \"key1\": \"value1\"}"
 	)
+
+	JSON::Value *copy = d.clone();
+	ASSERT(copy != NULL);
+	ASSERT(d.dumps() == copy->dumps());
 ENDTEST()
 
 TEST(json_parse_error)
@@ -266,6 +274,37 @@ TEST(json_parse_list_in_dict)
 	delete res;
 ENDTEST()
 
+TEST(json_load)
+	JSON::Value *val = JSON::load("fixtures/a.json");
+	ASSERT(val != NULL && ISDICT(val));
+	JSON::Dict const & dict = DICT(val);
+	for (JSON::Dict::const_iterator it=dict.begin(); it!=dict.end(); it++){
+		ASSERT(ISLIST(it->second));
+		ASSERT(LIST(it->second).len() == 3);
+	}
+	delete val;
+ENDTEST()
+
+TEST(json_save)
+	JSON::Value *val = JSON::load("fixtures/a.json");
+	ASSERT(val != NULL);
+	val->save("__test__.json");
+	
+	JSON::Value *copy = JSON::load("__test__.json");
+	unlink("__test__.json");
+	ASSERT(copy != NULL && ISDICT(copy));
+
+	JSON::Dict const & dict = DICT(copy);
+	for (JSON::Dict::const_iterator it=dict.begin(); it!=dict.end(); it++){
+		ASSERT(ISLIST(it->second));
+		ASSERT(LIST(it->second).len() == 3);
+	}
+	ASSERT(val->dumps() == copy->dumps());
+
+	delete val;
+	delete copy;
+ENDTEST()
+
 TEST(json_dict_steal)
 	JSON::Dict d;
 	d.set("a", "b");
@@ -319,6 +358,8 @@ int main(int argc, const char **argv)
 		ADDTEST(json_parse_empty_dict),
 		ADDTEST(json_parse_dict_many_keys),
 		ADDTEST(json_parse_list_in_dict),
+		ADDTEST(json_load),
+		ADDTEST(json_save),
 		ADDTEST(json_dict_steal),
 		ADDTEST(json_list_steal)
 	};
