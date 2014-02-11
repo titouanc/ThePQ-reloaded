@@ -2,11 +2,6 @@
 #include "Menu.hpp"
 using namespace std;
 
-Client::Client()
-{
-	
-}
-
 std::string Client::_userChoice;
 Connection Client::_connection;
 
@@ -66,6 +61,8 @@ void Client::mainMenu()
 	main.run();
 	// TODO : create menu and functions
 }
+
+/* Private methods */
 
 string Client::askForUserData(string prompt){
 	string data;

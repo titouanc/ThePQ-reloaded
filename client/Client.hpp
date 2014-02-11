@@ -12,11 +12,11 @@
 class Client
 {
 public:
-	
 	static void run();
 
 private:
-	Client();
+	Client()
+	{}
 	static std::string _userChoice;
 	static Connection _connection;
 	
@@ -24,7 +24,7 @@ private:
 	static void registerUser();
 	static void login();
 	
-	// Menu
+	// Menus
 	static void mainMenu();
 	
 	// utils
