@@ -47,6 +47,7 @@ namespace net
 		static const size_t MSG_SIZE = 4096;
 	
 		virtual ~ TcpSocket();
+		TcpSocket();
 
 		void connect(const std::string ipAddr, int portNo);
 		void send(const char *data, size_t len);
@@ -56,7 +57,6 @@ namespace net
 		JSON::Value* recv();
 		
 	protected:
-		TcpSocket();
 		bool create();
 		void close();
 		bool isOpen() {
