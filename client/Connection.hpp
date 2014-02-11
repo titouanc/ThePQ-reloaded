@@ -1,11 +1,10 @@
 #ifndef CONNECTION_HPP
 #define CONNECTION_HPP
 
-#include "net.hpp"
-#include "json.h"
+#include "../common/network/net.hpp"
+#include "../common/json/json.h"
 #include "Exception.hpp"
-#include "Constants.hpp"
-#include "../common/encryption.hpp"
+#include "../common/Constants.hpp"
 #include <string>
 
 class Connection
