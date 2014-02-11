@@ -26,6 +26,8 @@ private:
 	
 	// Menus
 	static void mainMenu();
+	static void managmentMenu();
+	static void friendlyMatchMenu();
 	
 	// utils
 	static std::string askForUserData(std::string prompt); // returns the user input.

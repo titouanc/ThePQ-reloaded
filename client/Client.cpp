@@ -58,8 +58,25 @@ void Client::mainMenu()
 {
 	Menu main;
 	main.setMessage(Message::mainMenu());
+	main.addOption("m", managmentMenu);
+	main.addOption("M", managmentMenu);
+	main.addOption("p", friendlyMatchMenu);
+	main.addOption("P", friendlyMatchMenu);
 	main.run();
-	// TODO : create menu and functions
+}
+
+void Client::managmentMenu()
+{
+	Menu mgt;
+	// TODO ; create managment menu
+	mgt.run();
+}
+
+void Client::friendlyMatchMenu()
+{
+	Menu friendly;
+	// TODO : create friendly match menu
+	friendly.run();
 }
 
 /* Private methods */
