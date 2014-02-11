@@ -42,10 +42,7 @@ namespace net
 		struct sockaddr_in _cliAddr;
 	};
 	
-	class Listener;
-	
 	class TcpSocket:public Socket {
-		friend Listener;
 	public:
 		static const size_t MSG_SIZE = 4096;
 	  
@@ -55,14 +52,6 @@ namespace net
 		
 		Status send(const JSON::Value *json);
 		Status recv(JSON::Value **json);
-	};
-	
-	class Listener:public Socket {
-	  public:
-		static const int CONNECTION_NB = 20;
-
-		Status listen(int portNo);
-		Status accept(TcpSocket & sock);
 	};
 	
 	class Message : public JSON::Dict

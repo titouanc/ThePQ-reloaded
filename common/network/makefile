@@ -1,4 +1,4 @@
-OBJ=Listener.o Socket.o TcpSocket.o Message.o
+OBJ= Socket.o TcpSocket.o Message.o
 SERV = serv.app
 CLI = cli.app
 LIBNETWORK=libnetwork.a
