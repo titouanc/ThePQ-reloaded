@@ -12,25 +12,25 @@
 class Client
 {
 public:
-	Client();
-	~Client();
 	
-	void run();
+	static void run();
 
 private:
-	std::string _userChoice;
-	Connection _connection;
+	Client();
+	static std::string _userChoice;
+	static Connection _connection;
 	
-	// Registering
-	void registerUser();
-	bool userWantsToRegister(); // asks the user if he wants to register when login has
-								// failed because the username specified doesn't exist.
-	std::string askForNewPassword(); // prompts the user to create a new password with 
+	// User menu
+	static void registerUser();
+	static void login();
+	
+	// Menu
+	static void mainMenu();
+	
+	// utils
+	static std::string askForUserData(std::string prompt); // returns the user input.
+	static std::string askForNewPassword(); // prompts the user to create a new password with 
 							// confirmation. returns the password.
-
-	// Logging in
-	void login();
-	std::string askForUserData(std::string prompt); // returns the user input.
 };
 
 #endif // __CLIENT_HPP

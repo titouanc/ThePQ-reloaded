@@ -1,5 +1,5 @@
 #include "Client.hpp"
-
+#include "Menu.hpp"
 using namespace std;
 
 Client::Client()
@@ -7,74 +7,20 @@ Client::Client()
 	
 }
 
-Client::~Client()
-{
-	
-}
+std::string Client::_userChoice;
+Connection Client::_connection;
 
 void Client::run()
 {
 	cout << Message::splashScreen();
 
-	// -------------------------------------------------------------------------
-	// LOGIN + REGISTERING LOOP
-
-	cout << Message::loginMenu();
-	cin >> _userChoice;
-
-	while (_userChoice != "q" && _userChoice != "Q" && ! _connection.isLogged()){
-
-		// login
-		if (_userChoice == "l" || _userChoice == "L"){
-			login();
-			if (_connection.isLogged() == false && userWantsToRegister() == true)
-			{
-				registerUser();
-			}
-		}
-
-		// registering
-		else if (_userChoice == "r" || _userChoice == "R"){
-			registerUser();
-		}
-
-		// input not understood
-		else {
-			cout << "Please enter a valid response." << endl;
-			cout << Message::loginMenu();
-		}
-		if (!_connection.isLogged()){
-			cout << Message::loginMenu();
-			cin >> _userChoice;
-		}
-		else
-		{
-			// -------------------------------------------------------------------------
-			// MAIN MENU LOOP
-
-			cout << Message::mainMenu();
-			cin >> _userChoice;
-
-			while (_userChoice != "q" && _userChoice != "Q"){
-
-				// team and stadium management
-				if (_userChoice == "m" || _userChoice == "M"){
-					// managementMenu();
-				}
-
-				// play a friendly game
-				else if (_userChoice == "p" || _userChoice == "P"){
-					// friendlyGameLobby();
-				}
-
-				// input not understood
-				else {
-					cout << "Please enter a valid response." << endl;
-					cout << Message::loginMenu();
-				}
-			}
-		}
-	}
+	Menu loginMenu;
+	loginMenu.setMessage(Message::loginMenu());
+	loginMenu.addOption("l", Client::login);
+	loginMenu.addOption("L", Client::login);
+	loginMenu.addOption("r", Client::registerUser);
+	loginMenu.addOption("R", Client::registerUser);
+	loginMenu.run();
 
 	cout << Message::goodBye();
 }
@@ -82,14 +28,12 @@ void Client::run()
 void Client::login(){
 	
 	string username = askForUserData("Username : ");
-	// TODO send username to server
-	// TODO receive username from server
-	// TODO receive userStatus from server 
 	string password = askForUserData("Password : ");
 	
 	try {
 		_connection.loginUser(username, password);
 		cout << "You have successfully logged in! Welcome! :)" << endl;
+		mainMenu();
 	}
 	catch (UserNotFoundException e)
 	{
@@ -103,8 +47,6 @@ void Client::login(){
 
 void Client::registerUser(){
 	string username = askForUserData("Pick a username : ");
-	// TODO send username to server
-	// TODO receive userStatus from server
 	string password = askForNewPassword();
 	
 	try {
@@ -117,30 +59,19 @@ void Client::registerUser(){
 	}
 }
 
+void Client::mainMenu()
+{
+	Menu main;
+	main.setMessage(Message::mainMenu());
+	main.run();
+	// TODO : create menu and functions
+}
+
 string Client::askForUserData(string prompt){
 	string data;
 	cout << prompt;
 	cin >> data;
 	return data;
-}
-
-bool Client::userWantsToRegister(){
-	bool done = false;
-	bool res = false;
-	while (!done){
-		string wantsToRegister = askForUserData("Do you want to register? (y/n) : ");
-		if (wantsToRegister == "y" || wantsToRegister == "Y") {
-			res = true;
-			done = true;
-		}
-		else if (wantsToRegister == "n" || wantsToRegister == "N") {
-			res = false;
-			done = true;
-		}
-		else
-			cout << "Please enter a valid response." << endl;
-	}
-	return res;
 }
 
 string Client::askForNewPassword(){

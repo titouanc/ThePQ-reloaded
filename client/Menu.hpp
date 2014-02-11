@@ -9,15 +9,15 @@ class Menu
 {
 public:
 	Menu();
-	Menu(std::string message, std::string choice, void (*callback)(void));
+	Menu(std::string message, std::string choice, void (*callback)());
 	void setMessage(std::string message);
-	void addOption(std::string choice, void (*callback)(void));
+	void addOption(std::string choice, void (*callback)());
 	void run();
 	
 	
 private:
 	std::string _message;
-	std::map<std::string, void(*)(void)> _options;
+	std::map<std::string, void(*)()> _options;
 	
 };
 
