@@ -6,7 +6,7 @@
 #include "Message.hpp"
 #include "Connection.hpp"
 #include "Exception.hpp"
-#include "../common/Constants.hpp"
+#include "Menu.hpp"
 
 
 class Client
