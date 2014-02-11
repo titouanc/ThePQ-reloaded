@@ -19,8 +19,10 @@ ConnectionManager::ConnectionManager(
     const char *bind_addr_repr, 
     unsigned short bind_port,
     int max_clients
-) : _sockfd(-1), _clients()
+) : _sockfd(-1), _clients(), _running(false)
 {
+    pthread_mutex_init(&_mutex, NULL);
+
     _sockfd = socket(AF_INET, SOCK_STREAM, 0);
     if (_sockfd < 0)
         throw ConnectionError(
@@ -62,6 +64,7 @@ ConnectionManager::~ConnectionManager()
     for (it=_clients.begin(); it!=_clients.end(); it++){
         close(*it);
     }
+    pthread_mutex_destroy(&_mutex);
 }
 
 JSON::Value *ConnectionManager::_addClient(void)
@@ -124,45 +127,48 @@ void ConnectionManager::mainloop(SharedQueue<Message> & incoming)
 {
     fd_set readable;
     std::set<int>::iterator it;
-    int fdmax = _sockfd;
+    int fdmax;
 
-    FD_ZERO(&readable);
-    FD_SET(_sockfd, &readable);
+    while (isRunning()){
+        fdmax = _sockfd;
+        FD_ZERO(&readable);
+        FD_SET(_sockfd, &readable);
 
-    for (it=_clients.begin(); it!=_clients.end(); it++){
-        FD_SET(*it, &readable);
-        if (*it > fdmax)
-            fdmax = *it;
-    }
-
-    if (select(fdmax+1, &readable, NULL, NULL, NULL) > 0){
-        if (FD_ISSET(_sockfd, &readable)){
-            JSON::Value *msg = _addClient();
-            if (msg)
-                incoming.push(Message(*it, msg));
+        for (it=_clients.begin(); it!=_clients.end(); it++){
+            FD_SET(*it, &readable);
+            if (*it > fdmax)
+                fdmax = *it;
         }
-        for (it=_clients.begin(); it!=_clients.end();){
-            if (! FD_ISSET(*it, &readable))
-                it++; /* fd not set; examine next */
-            else {
-                try {
-                    JSON::Value *msg = _readFrom(*it);
-                    if (msg){
-                        incoming.push(Message(*it, msg));
-                        it++;
-                    } else {
-                        /* select() returned ready for read, but nothing has 
-                           been read => close connection */
-                        std::set<int>::iterator to_remove = it;
-                        it++;
-                        msg = _removeClient(to_remove);
-                        if (msg)
-                            incoming.push(Message(_sockfd, msg));
-                    }
-                } catch (JSON::ParseError &err) {}
+
+        if (select(fdmax+1, &readable, NULL, NULL, NULL) > 0){
+            if (FD_ISSET(_sockfd, &readable)){
+                JSON::Value *msg = _addClient();
+                if (msg)
+                    incoming.push(Message(*it, msg));
             }
-        }
-    } 
+            for (it=_clients.begin(); it!=_clients.end();){
+                if (! FD_ISSET(*it, &readable))
+                    it++; /* fd not set; examine next */
+                else {
+                    try {
+                        JSON::Value *msg = _readFrom(*it);
+                        if (msg){
+                            incoming.push(Message(*it, msg));
+                            it++;
+                        } else {
+                            /* select() returned ready for read, but nothing has 
+                               been read => close connection */
+                            std::set<int>::iterator to_remove = it;
+                            it++;
+                            msg = _removeClient(to_remove);
+                            if (msg)
+                                incoming.push(Message(_sockfd, msg));
+                        }
+                    } catch (JSON::ParseError &err) {}
+                }
+            }
+        } 
+    }
 }
 
 const char *ConnectionManager::ip(void) const
@@ -173,4 +179,59 @@ const char *ConnectionManager::ip(void) const
 unsigned short ConnectionManager::port(void) const
 {
     return ntohs(_bind_addr.sin_port);
+}
+
+typedef void*(*pthread_routine_t)(void*);
+static void runConnectionManager(void *args)
+{
+    ConnectionManager *manager = ((ConnectionManager**) args)[0];
+    SharedQueue<Message> *incoming = ((SharedQueue<Message>**) args)[1];
+
+    manager->mainloop(*incoming);
+    delete[] (char*) args;
+    pthread_exit(NULL);
+}
+
+bool ConnectionManager::start(SharedQueue<Message> & incoming)
+{
+    bool res = false;
+    int lock = pthread_mutex_lock(&_mutex);
+    if (lock == 0){
+        if (! _running){
+            _running = true;
+            void **args = new void*[2];
+            args[0] = (void*) this;
+            args[1] = (void*) &incoming;
+            int r = pthread_create(
+                &_io_thread, NULL, 
+                (pthread_routine_t) runConnectionManager, args
+            );
+            res = (r == 0);
+        }
+        pthread_mutex_unlock(&_mutex);
+    }
+    return res;
+}
+
+bool ConnectionManager::stop(void)
+{
+    bool res = false;
+    int lock = pthread_mutex_lock(&_mutex);
+    if (lock == 0){
+        _running = false;
+        pthread_mutex_unlock(&_mutex);
+        res = true;
+    }
+    return res;
+}
+
+bool ConnectionManager::isRunning(void)
+{
+    bool res = false;
+    int lock = pthread_mutex_lock(&_mutex);
+    if (lock == 0){
+        res = _running;
+        pthread_mutex_unlock(&_mutex);
+    }
+    return res;
 }

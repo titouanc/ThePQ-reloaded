@@ -4,24 +4,28 @@ using namespace std;
 
 int main(int argc, const char **argv)
 {
-	SharedQueue<Message> incoming, outgoing;
+	SharedQueue<Message> incoming;
 
 	try {
 		ConnectionManager manager;
+		manager.start(incoming);
 		cout << "Launched server on " << manager.ip() << ":" << manager.port() << endl;
-		while (true){
-			manager.mainloop(incoming);
-
-			while (incoming.available()){
-				Message const & msg = incoming.pop();
-				cout << "Message from client #" << msg.peer_id << endl;
-				if (ISDICT(msg.data)){
-					JSON::Dict::iterator it;
-					for (it=DICT(msg.data).begin(); it!=DICT(msg.data).end(); it++)
-						cout << "\t" << it->first << ": " << *(it->second) << endl;
+		while (manager.isRunning()){
+			Message const & msg = incoming.pop();
+			cout << "Got message from client #" << msg.peer_id << endl;
+			if (ISDICT(msg.data)){
+				JSON::Dict const & dict = DICT(msg.data);
+				JSON::Dict::const_iterator it;
+				for (it=dict.begin(); it!=dict.end(); it++)
+					cout << "\t" << it->first << ": " << *(it->second) << endl;
+				if (dict.hasKey("__type__") && ISSTR(dict.get("__type__"))){
+					if (STR(dict.get("__type__")).value() == "DISCONNECT"){
+						manager.stop();
+						break;
+					}
 				}
-				delete msg.data;
 			}
+			delete msg.data;
 		}
 	} catch (ConnectionError & err){
 		cout << "ERREUR: " << err.what() << endl;

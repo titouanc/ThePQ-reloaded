@@ -13,7 +13,7 @@ obj = {
 		'key1': 'val1',
 		'key2': 'val2'
 	},
-	'numbers': list(range(40000))
+	'numbers': list(range(10))
 }
 
 dumped = bytes(json.dumps(obj), 'utf-8')
