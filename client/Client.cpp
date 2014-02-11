@@ -10,6 +10,7 @@ void Client::run()
 {
 	cout << Message::splashScreen();
 
+	/* user menu */
 	Menu loginMenu;
 	string message;
 	message+= "You can : \n";
@@ -18,10 +19,10 @@ void Client::run()
 	message+= "   - (q)uit\n";
 	message+= _prompt;
 	loginMenu.setMessage(message);
-	loginMenu.addOption("l", Client::login);
-	loginMenu.addOption("L", Client::login);
-	loginMenu.addOption("r", Client::registerUser);
-	loginMenu.addOption("R", Client::registerUser);
+	loginMenu.addOption("l", login);
+	loginMenu.addOption("L", login);
+	loginMenu.addOption("r", registerUser);
+	loginMenu.addOption("R", registerUser);
 	loginMenu.run();
 
 	cout << Message::goodBye();
@@ -61,6 +62,7 @@ void Client::registerUser(){
 	}
 }
 
+/* main menu */
 void Client::mainMenu()
 {
 	Menu main;
@@ -78,6 +80,7 @@ void Client::mainMenu()
 	main.run();
 }
 
+/* Managment menu */
 void Client::managmentMenu()
 {
 	Menu mgt;
@@ -88,15 +91,54 @@ void Client::managmentMenu()
 	message+= "   - (q)uit to main menu\n";
 	message+= _prompt;
 	mgt.setMessage(message);
-	// TODO ; create managment menu
+	mgt.addOption("s", stadiumMenu);
+	mgt.addOption("p", playersMenu);
 	mgt.run();
 }
 
+void Client::stadiumMenu()
+{
+	Menu stadium;
+	string message;
+	message+= "You can : \n";
+	message+= "    - (q)uit to managment menu\n";
+	stadium.setMessage(message);
+	stadium.run();
+}
+
+void Client::playersMenu()
+{
+	Menu players;
+	string message;
+	message+= "You can : \n";
+	message+= "    - (q)uit to managment menu\n";
+	players.setMessage(message);
+	players.run();
+}
+
+/* Friendly match menu */
 void Client::friendlyMatchMenu()
 {
 	Menu friendly;
+	string message;
+	message+= "You can : \n";
+	message+= "   - (l)ist all connected players\n";
+	message+= "   - (c)hoose one to play a friendly game with\n";
+	message+= "   - (q)uit to main menu\n";
+	message+= _prompt;
+	friendly.setMessage(message);
 	// TODO : create friendly match menu
 	friendly.run();
+}
+
+void Client::listUsers()
+{
+	
+}
+
+void Client::chooseUser()
+{
+	
 }
 
 /* Private methods */

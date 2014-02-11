@@ -28,7 +28,11 @@ private:
 	// Menus
 	static void mainMenu();
 	static void managmentMenu();
+	static void stadiumMenu();
+	static void playersMenu();
 	static void friendlyMatchMenu();
+	static void listUsers();
+	static void chooseUser();
 	
 	// utils
 	static std::string askForUserData(std::string prompt); // returns the user input.
