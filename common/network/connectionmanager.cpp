@@ -17,10 +17,12 @@ extern "C" {
 
 ConnectionManager::ConnectionManager( 
     SharedQueue<Message> & incoming_queue,
+    SharedQueue<Message> & outgoing_queue,
     const char *bind_addr_repr, 
     unsigned short bind_port,
     int max_clients
-) : _sockfd(-1), _clients(), _running(false), _incoming(incoming_queue)
+) : _sockfd(-1), _clients(), _running(false), 
+    _incoming(incoming_queue), _outgoing(outgoing_queue)
 {
     pthread_mutex_init(&_mutex, NULL);
 
@@ -87,7 +89,7 @@ JSON::Value *ConnectionManager::_readFrom(int fd)
     std::stringstream res;
     char buffer[BUFSIZE+1];
     int r, i=0;
-    while ((r = recv(fd, buffer, BUFSIZE, 0)) > 0){
+    while ((r = recv(fd, buffer, BUFSIZE, MSG_WAITALL)) > 0){
         buffer[r] = '\0';
         res << buffer;
         i++;
@@ -124,7 +126,7 @@ bool ConnectionManager::_writeTo(int fd, JSON::Value *obj)
     return true;
 }
 
-void ConnectionManager::mainloop(void)
+void ConnectionManager::_mainloop_in(void)
 {
     fd_set readable;
     std::set<int>::iterator it;
@@ -172,6 +174,17 @@ void ConnectionManager::mainloop(void)
     }
 }
 
+void ConnectionManager::_mainloop_out(void)
+{
+    while (isRunning()){
+        Message const & to_send = _outgoing.pop();
+        std::set<int>::iterator pos = _clients.find(to_send.peer_id);
+        if (pos != _clients.end())
+            _writeTo(to_send.peer_id, to_send.data);
+        delete to_send.data;
+    }
+}
+
 const char *ConnectionManager::ip(void) const
 {
     return inet_ntoa(_bind_addr.sin_addr);
@@ -183,10 +196,17 @@ unsigned short ConnectionManager::port(void) const
 }
 
 typedef void*(*pthread_routine_t)(void*);
-static void runConnectionManager(void *args)
+static void runConnectionManagerIn(void *args)
 {
     ConnectionManager *manager = (ConnectionManager*) args;
-    manager->mainloop();
+    manager->_mainloop_in();
+    pthread_exit(NULL);
+}
+
+static void runConnectionManagerOut(void *args)
+{
+    ConnectionManager *manager = (ConnectionManager*) args;
+    manager->_mainloop_out();
     pthread_exit(NULL);
 }
 
@@ -198,9 +218,14 @@ bool ConnectionManager::start(void)
         if (! _running){
             _running = true;
             int r = pthread_create(
-                &_io_thread, NULL, 
-                (pthread_routine_t) runConnectionManager, this
+                &_in_thread, NULL, 
+                (pthread_routine_t) runConnectionManagerIn, this
             );
+            if (r != 0)
+                r = pthread_create(
+                    &_out_thread, NULL,
+                    (pthread_routine_t) runConnectionManagerOut, this
+                );
             res = (r == 0);
         }
         pthread_mutex_unlock(&_mutex);

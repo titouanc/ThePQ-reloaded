@@ -4,28 +4,17 @@ using namespace std;
 
 int main(int argc, const char **argv)
 {
-	SharedQueue<Message> incoming;
+	SharedQueue<Message> inbox, outbox;
 
 	try {
-		ConnectionManager manager(incoming);
+		ConnectionManager manager(inbox, outbox, "0.0.0.0", 32123);
 		manager.start();
 		cout << "Launched server on " << manager.ip() << ":" << manager.port() << endl;
 		while (manager.isRunning()){
-			Message const & msg = incoming.pop();
+			Message const & msg = inbox.pop();
 			cout << "Got message from client #" << msg.peer_id << endl;
-			if (ISDICT(msg.data)){
-				JSON::Dict const & dict = DICT(msg.data);
-				JSON::Dict::const_iterator it;
-				for (it=dict.begin(); it!=dict.end(); it++)
-					cout << "\t" << it->first << ": " << *(it->second) << endl;
-				if (dict.hasKey("__type__") && ISSTR(dict.get("__type__"))){
-					if (STR(dict.get("__type__")).value() == "DISCONNECT"){
-						manager.stop();
-						break;
-					}
-				}
-			}
-			delete msg.data;
+			cout << "\t" << *(msg.data) << endl;
+			outbox.push(msg);
 		}
 	} catch (ConnectionError & err){
 		cout << "ERREUR: " << err.what() << endl;
