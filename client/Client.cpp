@@ -125,6 +125,8 @@ void Client::friendlyMatchMenu()
 	message+= "   - (q)uit to main menu\n";
 	message+= _prompt;
 	friendly.setMessage(message);
+	friendly.addOption('l', listUsers);
+	friendly.addOption('c', chooseUser);
 	friendly.run();
 }
 
