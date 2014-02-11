@@ -15,35 +15,44 @@ bool Connection::isLogged()
 
 void Connection::loginUser(string username, string passwd)
 {
+	if (doesUserExist(username)){
+		toSend.set("type", "CO_P");
+		toSend.set("data", encrypt(passwd, HASH_KEY));
+		_socket.send(&toSend);
+
+		// TODO receive response from server
+
+		if (received.hasKey("type") && ISSTR(received.get("type")) 
+			&& STR(received.get("type")) == "CO_S"){
+			if (received.hasKey("data") && ISSTR(received.get("data")) 
+				&& STR(received.get("data")) != "P_OK"){
+				throw WrongPasswordException();
+			}
+		}
+		// User is logged in at this point.
+	}
+	else {
+		throw UserNotFoundException();
+	}
+}
+
+bool Connection::doesUserExist(string username){
+	bool res = false;
 	JSON::Dict toSend, received;
 	toSend.set("type", "CO_U");
 	toSend.set("data", username);
 	_socket.send(&toSend);
 
-	// TODO receive response from server
+	// TODO receive server response
 
 	if (received.hasKey("type") && ISSTR(received.get("type")) 
 		&& STR(received.get("type")) == "CO_S"){
 		if (received.hasKey("data") && ISSTR(received.get("data")) 
-			&& STR(received.get("data")) != "U_REG"){
-			throw UserNotFoundException();
+			&& STR(received.get("data")) == "U_REG"){
+			res = true;
 		}
 	}
-
-	toSend.set("type", "CO_P");
-	toSend.set("data", encrypt(passwd, HASH_KEY));
-	_socket.send(&toSend);
-
-	// TODO receive response from server
-
-	if (received.hasKey("type") && ISSTR(received.get("type")) 
-		&& STR(received.get("type")) == "CO_S"){
-		if (received.hasKey("data") && ISSTR(received.get("data")) 
-			&& STR(received.get("data")) != "P_OK"){
-			throw WrongPasswordException();
-		}
-	}
-	// User is logged in at this point.
+	return res;
 }
 
 void Connection::registerUser(string username, string passwd)
