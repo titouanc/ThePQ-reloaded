@@ -16,21 +16,47 @@
 #include <unistd.h>
 #include <string>
 #include <arpa/inet.h>
+#include <stdexcept>
+#include <cerrno>
+#include <cstring>
 #include "json.h"
 
 namespace net
 {
-	class Socket {
-	  public:
-		virtual ~ Socket();
+	class ConnectionFailedException : public std::runtime_error {
+	public:
+		ConnectionFailedException():runtime_error(std::string("connect() failed: ")+strerror(errno))
+		{}
+	};
+	
+	class SendFailedException : public std::runtime_error {
+	public:
+		SendFailedException():runtime_error(std::string("send() failed: ")+strerror(errno))
+		{}
+	};
+	
+	class RecvFailedException : public std::runtime_error {
+	public:
+		RecvFailedException():runtime_error(std::string("recv() failed: ")+strerror(errno))
+		{}
+	};
+	
+	class TcpSocket {
+	public:
+	
+		static const size_t MSG_SIZE = 4096;
+	
+		virtual ~ TcpSocket();
 
-		enum Status {
-		ERROR,
-		OK
-		};
-
-	  protected:
-		Socket();
+		void connect(const std::string ipAddr, int portNo);
+		void send(const char *data, size_t len);
+		void recv(char *data, size_t len, size_t & received);
+		
+		void send(const JSON::Value *json);
+		JSON::Value* recv();
+		
+	protected:
+		TcpSocket();
 		bool create();
 		void close();
 		bool isOpen() {
@@ -40,18 +66,6 @@ namespace net
 		int _sockfd;
 		struct sockaddr_in _servAddr;
 		struct sockaddr_in _cliAddr;
-	};
-	
-	class TcpSocket:public Socket {
-	public:
-		static const size_t MSG_SIZE = 4096;
-	  
-		Status connect(const std::string ipAddr, int portNo);
-		Status send(const char *data, size_t len);
-		Status recv(char *data, size_t len, size_t & received);
-		
-		Status send(const JSON::Value *json);
-		Status recv(JSON::Value **json);
 	};
 }
 
