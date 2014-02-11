@@ -1,0 +1,1 @@
+enum UserStatus {UserNotFound, UserRegistered, UserLoggedIn};

@@ -64,6 +64,24 @@ namespace net
 		Status listen(int portNo);
 		Status accept(TcpSocket & sock);
 	};
+	
+	class Message : public JSON::Dict
+	{
+	public:		
+		enum Method
+		{
+			REQUEST,
+			RESPONSE
+		};
+		
+		enum Request
+		{
+			LOGIN,
+			REGISTER
+		};
+		
+		Message(Request request, Method method, JSON::Value *data);
+	};
 }
 
 #endif // __NET_HPP
