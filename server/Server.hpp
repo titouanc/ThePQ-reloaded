@@ -5,11 +5,13 @@
 #include <string>
 #include "../common/network/connectionmanager.h"
 
+using namespace std;
+
 class Server{
 public:
 	Server();
 	void run();
-	void treatMessage(Message &message);
+	void treatMessage(const Message &message);
 private:
 	ConnectionManager _connectionManager;
 	SharedQueue<Message> _inbox, _outbox;
