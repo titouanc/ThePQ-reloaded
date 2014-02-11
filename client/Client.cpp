@@ -19,8 +19,8 @@ void Client::run()
 	message+= "   - (q)uit\n";
 	message+= _prompt;
 	loginMenu.setMessage(message);
-	loginMenu.addOption("l", login);
-	loginMenu.addOption("r", registerUser);
+	loginMenu.addOption('l', login);
+	loginMenu.addOption('r', registerUser);
 	loginMenu.run();
 
 	cout << Message::goodBye();
@@ -71,8 +71,8 @@ void Client::mainMenu()
 	message+= "   - (q)uit\n";
 	message+= _prompt;
 	main.setMessage(message);
-	main.addOption("m", managmentMenu);
-	main.addOption("p", friendlyMatchMenu);
+	main.addOption('m', managmentMenu);
+	main.addOption('p', friendlyMatchMenu);
 	main.run();
 }
 
@@ -87,8 +87,8 @@ void Client::managmentMenu()
 	message+= "   - (q)uit to main menu\n";
 	message+= _prompt;
 	mgt.setMessage(message);
-	mgt.addOption("s", stadiumMenu);
-	mgt.addOption("p", playersMenu);
+	mgt.addOption('s', stadiumMenu);
+	mgt.addOption('p', playersMenu);
 	mgt.run();
 }
 
