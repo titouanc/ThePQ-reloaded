@@ -19,6 +19,7 @@ private:
 	{}
 	static std::string _userChoice;
 	static Connection _connection;
+	static std::string _prompt;
 	
 	// User menu
 	static void registerUser();

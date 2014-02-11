@@ -2,73 +2,37 @@
 
 using namespace std;
 
-string Message::prompt(){
-	string ret;
-	ret+= "> ";
-	return ret;
-}
-
 string Message::splashScreen(){
-	string ret;
-	ret+= "           __       _   \n";
-	ret+= "           //_ _   /_/_ _                  much amazing  |\n";
-	ret+= "          // //_' /  //_/                              - * -\n";
-	ret+= "      ____       _     _     _     _ _ _       _         |\n";
-	ret+= "     /___ \\_   _(_) __| | __| | __| (_) |_ ___| |__  \n";
-	ret+= "    //  / / | | | |/ _` |/ _` |/ _` | | __/ __| '_ \\ \n";
-	ret+= "   / \\_/ /| |_| | | (_| | (_| | (_| | | || (__| | | |\n";
-	ret+= "   \\___,_\\ \\__,_|_|\\__,_|\\__,_|\\__,_|_|\\__\\___|_| |_|\n";
-	ret+= "        =======||\\\n";
-	ret+= "    ===========|| \\___________________________  ___            |\n";
-	ret+= "  =============||  |__________________________==___|>        - * -\n";
-	ret+= "    ===========|| /                                            |\n";
-	ret+= "        =======||/     /\\/\\   __ _ _ __   __ _  __ _  ___ _ __  \n";
-	ret+= "                      /    \\ / _` | '_ \\ / _` |/ _` |/ _ \\ '__|\n";
-	ret+= "          |          / /\\/\\ \\ (_| | | | | (_| | (_| |  __/ |  \n";
-	ret+= "        - * -        \\/    \\/\\__,_|_| |_|\\__,_|\\__, |\\___|_| \n";
-	ret+= "          |                   _  _              |___/       \n";
-	ret+= "                  wow          )/ \\/||_|_ \n";
-	ret+= "                              /_\\_/ |  |              Gluten-free!\n";
-	ret+= "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -\n";
-	ret+= "Welcome to The Pro Quidditch Manager 2014!\n";
-	return ret;
-}
-
-string Message::loginMenu(){
-	string ret;
-	ret+= "You can : \n";
-	ret+= "   - (l)ogin\n";
-	ret+= "   - (r)egister\n";
-	ret+= "   - (q)uit\n";
-	ret+= prompt();
-	return ret;
-}
-
-string Message::mainMenu(){
-	string ret;
-	ret+= "You can : \n";
-	ret+= "   - (m)anage your team and stadium\n";
-	ret+= "   - (p)lay a friendly game\n";
-	ret+= "   - (q)uit\n";
-	ret+= prompt();
-	return ret;
-}
-
-string Message::managmentMenu(){
-	string ret;
-	ret+= "You can : \n";
-	ret+= "   - manage your (s)tadium and installations\n";
-	ret+= "   - manage your (p)layers\n";
-	ret+= "   - (q)uit to main menu\n";
-	ret+= prompt();
-	return ret;
+	string message;
+	message+= "           __       _   \n";
+	message+= "           //_ _   /_/_ _                  much amazing  |\n";
+	message+= "          // //_' /  //_/                              - * -\n";
+	message+= "      ____       _     _     _     _ _ _       _         |\n";
+	message+= "     /___ \\_   _(_) __| | __| | __| (_) |_ ___| |__  \n";
+	message+= "    //  / / | | | |/ _` |/ _` |/ _` | | __/ __| '_ \\ \n";
+	message+= "   / \\_/ /| |_| | | (_| | (_| | (_| | | || (__| | | |\n";
+	message+= "   \\___,_\\ \\__,_|_|\\__,_|\\__,_|\\__,_|_|\\__\\___|_| |_|\n";
+	message+= "        =======||\\\n";
+	message+= "    ===========|| \\___________________________  ___            |\n";
+	message+= "  =============||  |__________________________==___|>        - * -\n";
+	message+= "    ===========|| /                                            |\n";
+	message+= "        =======||/     /\\/\\   __ _ _ __   __ _  __ _  ___ _ __  \n";
+	message+= "                      /    \\ / _` | '_ \\ / _` |/ _` |/ _ \\ '__|\n";
+	message+= "          |          / /\\/\\ \\ (_| | | | | (_| | (_| |  __/ |  \n";
+	message+= "        - * -        \\/    \\/\\__,_|_| |_|\\__,_|\\__, |\\___|_| \n";
+	message+= "          |                   _  _              |___/       \n";
+	message+= "                  wow          )/ \\/||_|_ \n";
+	message+= "                              /_\\_/ |  |              Gluten-free!\n";
+	message+= "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -\n";
+	message+= "Welcome to The Pro Quidditch Manager 2014!\n";
+	return message;
 }
 
 string Message::goodBye(){
-	string ret;
-	ret+= "                 =========================            \n";
-	ret+= "   Thank you for playing the Pro Quidditch Manager 2014!\n";
-	ret+= "                   See you next time! :)\n";
-	ret+= "                 =========================            \n";
-	return ret;
+	string message;
+	message+= "                 =========================            \n";
+	message+= "   Thank you for playing the Pro Quidditch Manager 2014!\n";
+	message+= "                   See you next time! :)\n";
+	message+= "                 =========================            \n";
+	return message;
 }

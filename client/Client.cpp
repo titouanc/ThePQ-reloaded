@@ -2,15 +2,22 @@
 #include "Menu.hpp"
 using namespace std;
 
-std::string Client::_userChoice;
+string Client::_userChoice;
 Connection Client::_connection;
+string Client::_prompt = ">";
 
 void Client::run()
 {
 	cout << Message::splashScreen();
 
 	Menu loginMenu;
-	loginMenu.setMessage(Message::loginMenu());
+	string message;
+	message+= "You can : \n";
+	message+= "   - (l)ogin\n";
+	message+= "   - (r)egister\n";
+	message+= "   - (q)uit\n";
+	message+= _prompt;
+	loginMenu.setMessage(message);
 	loginMenu.addOption("l", Client::login);
 	loginMenu.addOption("L", Client::login);
 	loginMenu.addOption("r", Client::registerUser);
@@ -57,7 +64,13 @@ void Client::registerUser(){
 void Client::mainMenu()
 {
 	Menu main;
-	main.setMessage(Message::mainMenu());
+	string message;
+	message+= "You can : \n";
+	message+= "   - (m)anage your team and stadium\n";
+	message+= "   - (p)lay a friendly game\n";
+	message+= "   - (q)uit\n";
+	message+= _prompt;
+	main.setMessage(message);
 	main.addOption("m", managmentMenu);
 	main.addOption("M", managmentMenu);
 	main.addOption("p", friendlyMatchMenu);
@@ -68,6 +81,13 @@ void Client::mainMenu()
 void Client::managmentMenu()
 {
 	Menu mgt;
+	string message;
+	message+= "You can : \n";
+	message+= "   - manage your (s)tadium and installations\n";
+	message+= "   - manage your (p)layers\n";
+	message+= "   - (q)uit to main menu\n";
+	message+= _prompt;
+	mgt.setMessage(message);
 	// TODO ; create managment menu
 	mgt.run();
 }
