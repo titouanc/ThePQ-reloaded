@@ -20,9 +20,7 @@ void Client::run()
 	message+= _prompt;
 	loginMenu.setMessage(message);
 	loginMenu.addOption("l", login);
-	loginMenu.addOption("L", login);
 	loginMenu.addOption("r", registerUser);
-	loginMenu.addOption("R", registerUser);
 	loginMenu.run();
 
 	cout << Message::goodBye();
@@ -74,9 +72,7 @@ void Client::mainMenu()
 	message+= _prompt;
 	main.setMessage(message);
 	main.addOption("m", managmentMenu);
-	main.addOption("M", managmentMenu);
 	main.addOption("p", friendlyMatchMenu);
-	main.addOption("P", friendlyMatchMenu);
 	main.run();
 }
 

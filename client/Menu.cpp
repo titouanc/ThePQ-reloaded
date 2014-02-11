@@ -33,6 +33,10 @@ void Menu::run()
 	{
 		cout << _message;
 		cin >> userChoice;
+		if (userChoice[0] >= 'A' && userChoice[0] <= 'Z')
+		{
+			userChoice[0] -= 'A' - 'a';
+		}
 		map<std::string, void(*)()>::const_iterator it;
 		it = _options.find(userChoice);
 		if (it != _options.end())
