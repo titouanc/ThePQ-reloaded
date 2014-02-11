@@ -8,6 +8,7 @@
 class Menu
 {
 public:
+	Menu();
 	Menu(std::string message, std::string choice, void (*callback)(void));
 	void setMessage(std::string message);
 	void addOption(std::string choice, void (*callback)(void));
@@ -15,7 +16,7 @@ public:
 	
 	
 private:
-	std::string (*_message)(void);
+	std::string _message;
 	std::map<std::string, void(*)(void)> _options;
 	
 };
