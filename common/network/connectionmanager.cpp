@@ -3,6 +3,7 @@
 #include <cstring>
 #include <sstream>
 #include <json.h>
+#include <cstdint>
 
 extern "C" {
     #include <unistd.h>
@@ -89,10 +90,20 @@ JSON::Value *ConnectionManager::_readFrom(int fd)
     std::stringstream res;
     char buffer[BUFSIZE+1];
     int r, i=0;
-    while ((r = recv(fd, buffer, BUFSIZE, MSG_WAITALL)) > 0){
+
+    uint32_t msglen;
+    r = recv(fd, &msglen, 4, 0);
+    if (r != 4)
+        return NULL;
+    msglen = ntohl(msglen);
+    std::cout << "EXPECTING " << msglen << "B MESSAGE" << std::endl;
+
+    while (msglen > 0 && (r = recv(fd, buffer, BUFSIZE, 0)) > 0){
         buffer[r] = '\0';
         res << buffer;
         i++;
+        msglen -= r;
+        std::cout << "EXPECTING " << msglen << "B MESSAGE" << std::endl;
     }
     if (r < 0 || i == 0)
         return NULL;
@@ -116,7 +127,11 @@ bool ConnectionManager::_writeTo(int fd, JSON::Value *obj)
 {
     if (obj != NULL){
         std::string const & repr = obj->dumps();
-        int r = 0;
+        uint32_t msglen = htonl(repr.length());
+        int r = send(fd, &msglen, 4, 0);
+        if (r != 4)
+            return false;
+
         for (size_t i=0; i<repr.length(); i+=r){
             r = send(fd, repr.c_str()+i, repr.length()-i, 0);
             if (r < 0)
