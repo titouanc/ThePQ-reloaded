@@ -349,6 +349,14 @@ TEST(json_list_steal)
 	ASSERT(m.dumps() == "[\"a\"]");
 ENDTEST()
 
+TEST(json_dict_replace_key)
+	JSON::Dict d;
+	d.set("key", 1);
+	ASSERT(ISINT(d.get("key")) && INT(d.get("key")).value() == 1);
+	d.set("key", "val");
+	ASSERT(ISSTR(d.get("key")) && STR(d.get("key")).value() == "val");
+ENDTEST()
+
 int main(int argc, const char **argv)
 {
 	TestFunc testSuite[] = {
@@ -381,7 +389,8 @@ int main(int argc, const char **argv)
 		ADDTEST(json_load),
 		ADDTEST(json_save),
 		ADDTEST(json_dict_steal),
-		ADDTEST(json_list_steal)
+		ADDTEST(json_list_steal),
+		ADDTEST(json_dict_replace_key)
 	};
 
 	return RUN(testSuite);

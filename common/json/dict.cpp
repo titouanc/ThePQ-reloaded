@@ -46,10 +46,16 @@ bool Dict::hasKey(std::string const & key) const
 
 void Dict::setPtr(std::string const & key, Value *ptr)
 {
-    _content.insert(
-        _content.begin(), 
-        std::pair<std::string, Value*>(key, ptr)
-    );
+    std::map<std::string, Value*>::iterator pos = _content.find(key);
+    if (pos != _content.end()){
+        delete pos->second;
+        pos->second = ptr;
+    } else {
+        _content.insert(
+            _content.begin(), 
+            std::pair<std::string, Value*>(key, ptr)
+        );
+    }
 }
 
 void Dict::set(std::string const & key, Value const & val)
