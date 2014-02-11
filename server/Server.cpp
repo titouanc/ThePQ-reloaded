@@ -11,8 +11,6 @@ Server::Server() : _connectionManager(ConnectionManager(_inbox, _outbox, "0.0.0.
 void Server::run(){
 	while (_connectionManager.isRunning()){
 		Message const & msg = _inbox.pop();
-		cout << "Got message from client #" << msg.peer_id << endl;
-		cout << "\t" << *(msg.data) << endl;
 		treatMessage(msg);
 	}
 }
