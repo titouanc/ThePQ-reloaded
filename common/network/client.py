@@ -1,6 +1,7 @@
 import json
 from socket import *
 from time import sleep
+from struct import pack
 
 HOST, PORT = 'localhost', 32123
 
@@ -18,11 +19,16 @@ obj = {
 }
 
 dumped = bytes(json.dumps(obj), 'utf-8')
-s.sendall(dumped)
+msglen = len(dumped)
+l = pack('I', htonl(msglen))
+msg = l + dumped
+s.sendall(msg)
+
+print("Sent "+str(msg))
 
 print("Sleepin for 5 sec...")
 sleep(5)
 
-print(s.recv(100))
+print(s.recv(msglen+4))
 
 s.close()

@@ -76,7 +76,6 @@ JSON::Value *ConnectionManager::_addClient(void)
     int fd = accept(_sockfd, NULL, NULL);
     if (fd < 0)
         throw ConnectionError(std::string("Accept error: ")+strerror(errno));
-    std::cout << "NEW CLIENT: " << fd << std::endl;
     _clients.insert(_clients.begin(), fd);
     JSON::Dict *msg = new JSON::Dict();
     msg->set("__type__", "CONNECT");
@@ -96,14 +95,12 @@ JSON::Value *ConnectionManager::_readFrom(int fd)
     if (r != 4)
         return NULL;
     msglen = ntohl(msglen);
-    std::cout << "EXPECTING " << msglen << "B MESSAGE" << std::endl;
 
     while (msglen > 0 && (r = recv(fd, buffer, BUFSIZE, 0)) > 0){
         buffer[r] = '\0';
         res << buffer;
         i++;
         msglen -= r;
-        std::cout << "EXPECTING " << msglen << "B MESSAGE" << std::endl;
     }
     if (r < 0 || i == 0)
         return NULL;
@@ -236,7 +233,7 @@ bool ConnectionManager::start(void)
                 &_in_thread, NULL, 
                 (pthread_routine_t) runConnectionManagerIn, this
             );
-            if (r != 0)
+            if (r == 0)
                 r = pthread_create(
                     &_out_thread, NULL,
                     (pthread_routine_t) runConnectionManagerOut, this
