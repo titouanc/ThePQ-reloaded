@@ -53,24 +53,6 @@ namespace net
 		Status send(const JSON::Value *json);
 		Status recv(JSON::Value **json);
 	};
-	
-	class Message : public JSON::Dict
-	{
-	public:		
-		enum Method
-		{
-			REQUEST,
-			RESPONSE
-		};
-		
-		enum Request
-		{
-			LOGIN,
-			REGISTER
-		};
-		
-		Message(Request request, Method method, JSON::Value *data);
-	};
 }
 
 #endif // __NET_HPP
