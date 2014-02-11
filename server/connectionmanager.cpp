@@ -58,29 +58,23 @@ ConnectionManager::ConnectionManager(
 
 ConnectionManager::~ConnectionManager()
 {
-    std::map<int, User>::iterator it;
+    std::set<int>::iterator it;
     for (it=_clients.begin(); it!=_clients.end(); it++){
-        close(it->first);
+        close(*it);
     }
 }
 
-void ConnectionManager::_removeClient(int client_id)
-{
-    std::cout << "REMOVE CLIENT: " << client_id << std::endl;
-    std::map<int, User>::iterator pos = _clients.find(client_id);
-    if (pos != _clients.end()){
-        _clients.erase(pos);
-        close(client_id);
-    }
-}
-
-void ConnectionManager::_addClient(void)
+JSON::Value *ConnectionManager::_addClient(void)
 {
     int fd = accept(_sockfd, NULL, NULL);
     if (fd < 0)
         throw ConnectionError(std::string("Accept error: ")+strerror(errno));
     std::cout << "NEW CLIENT: " << fd << std::endl;
-    _clients.insert(_clients.begin(), std::pair<int, User>(fd, User()));
+    _clients.insert(_clients.begin(), fd);
+    JSON::Dict *msg = new JSON::Dict();
+    msg->set("__type__", "CONNECT");
+    msg->set("client_id", fd);
+    return msg;
 }
 
 #define BUFSIZE 0x1000
@@ -100,6 +94,15 @@ JSON::Value *ConnectionManager::_readFrom(int fd)
     return JSON::parse(res.str().c_str());
 }
 
+JSON::Value *ConnectionManager::_removeClient(std::set<int>::iterator position)
+{
+    close(*position);
+    _clients.erase(position);
+    JSON::Dict *msg = new JSON::Dict();
+    msg->set("__type__", "DISCONNECT");
+    return msg;
+}
+
 bool ConnectionManager::_writeTo(int fd, JSON::Value *obj)
 {
     if (obj != NULL){
@@ -116,35 +119,37 @@ bool ConnectionManager::_writeTo(int fd, JSON::Value *obj)
 
 void ConnectionManager::mainloop(SharedQueue<Message> & incoming)
 {
-    fd_set readable, errors;
-    std::map<int, User>::const_iterator it;
+    fd_set readable;
+    std::set<int>::iterator it;
     int fdmax = _sockfd;
 
     FD_ZERO(&readable);
-    FD_ZERO(&errors);
     FD_SET(_sockfd, &readable);
+
     for (it=_clients.begin(); it!=_clients.end(); it++){
-        FD_SET(it->first, &readable);
-        FD_SET(it->first, &errors);
-        if (it->first > fdmax)
-            fdmax = it->first;
+        FD_SET(*it, &readable);
+        if (*it > fdmax)
+            fdmax = *it;
     }
 
-    if (select(fdmax+1, &readable, NULL, &errors, NULL) > 0){
-        if (FD_ISSET(_sockfd, &readable))
-            _addClient();
+    if (select(fdmax+1, &readable, NULL, NULL, NULL) > 0){
+        if (FD_ISSET(_sockfd, &readable)){
+            JSON::Value *msg = _addClient();
+            if (msg)
+                incoming.push(Message(*it, msg));
+        }
         for (it=_clients.begin(); it!=_clients.end(); it++){
-            int client_id = it->first;
-            if (FD_ISSET(client_id, &readable)){
+            if (FD_ISSET(*it, &readable)){
                 try {
-                    JSON::Value *msg = _readFrom(client_id);
+                    JSON::Value *msg = _readFrom(*it);
                     if (msg)
-                        incoming.push(Message(client_id, msg));
+                        incoming.push(Message(*it, msg));
                     else {
                         /* select() returned ready for read, but nothing has 
                            been read => close connection */
-                        close(it->first);
-                        _clients.erase(it);
+                        msg = _removeClient(it);
+                        if (msg)
+                            incoming.push(Message(*it, msg));
                     }
                 } catch (JSON::ParseError &err) {}
             }

@@ -11,7 +11,7 @@ int main(int argc, const char **argv)
 		cout << "Launched server on " << manager.ip() << ":" << manager.port() << endl;
 		while (true){
 			manager.mainloop(incoming);
-			
+
 			while (incoming.available()){
 				Message const & msg = incoming.pop();
 				cout << "Message from client #" << msg.peer_id << endl;
@@ -20,6 +20,7 @@ int main(int argc, const char **argv)
 					for (it=DICT(msg.data).begin(); it!=DICT(msg.data).end(); it++)
 						cout << "\t" << it->first << ": " << *(it->second) << endl;
 				}
+				delete msg.data;
 			}
 		}
 	} catch (ConnectionError & err){
