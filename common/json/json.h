@@ -22,6 +22,7 @@
 #define STR(obj)   (*((JSON::String *)(obj)))
 #define DICT(obj)  (*((JSON::Dict *)(obj)))
 #define LIST(obj)  (*((JSON::List *)(obj)))
+#define BOOL(obj)  (*((JSON::Bool *)(obj)))
 
 /* Convenience typecheck macros */
 #define ISINT(ptr)   ((ptr)->type() == JSON::Integer_t)
@@ -29,6 +30,7 @@
 #define ISSTR(ptr)   ((ptr)->type() == JSON::String_t)
 #define ISLIST(ptr)  ((ptr)->type() == JSON::List_t)
 #define ISDICT(ptr)  ((ptr)->type() == JSON::Dict_t)
+#define ISBOOL(ptr)  ((ptr)->type() == JSON::Boolean_t)
 
 
 namespace JSON {
@@ -39,6 +41,7 @@ namespace JSON {
         String_t  = 0x04,
         List_t    = 0x08,
         Dict_t    = 0x10,
+        Boolean_t = 0x20
     };
 
     /* JSON errors */
@@ -70,7 +73,9 @@ namespace JSON {
             }
             void save(const char *filename) const;
             bool isNumber() const {return (type()&(Integer_t|Float_t)) != 0;}
-            bool isAtom() const {return (type()&(Integer_t|Float_t|String_t)) != 0;}
+            bool isAtom() const {
+                return (type()&(Integer_t|Float_t|String_t|Boolean_t)) != 0;
+            }
             bool isSequence() const {return (type()&(Dict_t|List_t)) != 0;}
     };
 

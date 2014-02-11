@@ -35,6 +35,24 @@ TEST(json_float)
 	ASSERT(ISFLOAT(&f));
 ENDTEST()
 
+TEST(json_bool_true)
+	JSON::Bool b(true);
+	ASSERT(b.value() == true);
+	ASSERT(b.dumps() == "true");
+	ASSERT(b.isAtom());
+	ASSERT(! b.isNumber());
+	ASSERT(ISBOOL(&b));
+ENDTEST()
+
+TEST(json_bool_false)
+	JSON::Bool b(false);
+	ASSERT(b.value() == false);
+	ASSERT(b.dumps() == "false");
+	ASSERT(b.isAtom());
+	ASSERT(! b.isNumber());
+	ASSERT(ISBOOL(&b));
+ENDTEST()
+
 TEST(json_str)
 	JSON::String s("Je suis un canape qui chante");
 	ASSERT(s.value() == "Je suis un canape qui chante");
@@ -190,6 +208,26 @@ TEST(json_parse_float)
 	delete f;
 ENDTEST()
 
+TEST(json_parse_bool_true)
+	const char *repr = "true";
+	JSON::Value *b = JSON::parse(repr);
+	ASSERT(b != NULL);
+	ASSERT(b->type() == JSON::Boolean_t);
+	ASSERT(BOOL(b).value() == true);
+	ASSERT(b->dumps() == repr);
+	delete b;
+ENDTEST()
+
+TEST(json_parse_bool_false)
+	const char *repr = "false";
+	JSON::Value *b = JSON::parse(repr);
+	ASSERT(b != NULL);
+	ASSERT(b->type() == JSON::Boolean_t);
+	ASSERT(BOOL(b).value() == false);
+	ASSERT(b->dumps() == repr);
+	delete b;
+ENDTEST()
+
 TEST(json_parse_str)
 	const char *repr = "\"Naim Qachri\"";
 	JSON::Value *s = JSON::parse(repr);
@@ -263,7 +301,7 @@ TEST(json_parse_empty_dict)
 ENDTEST()
 
 TEST(json_parse_dict_many_keys)
-	const char *repr = "{\"name\": \"Titou\", \"age\": 23}";
+	const char *repr = "{\"name\": \"Titou\", \"age\": 23, \"male\": true}";
 	JSON::Value *res = JSON::parse(repr);
 	ASSERT(res != NULL);
 	ASSERT(res->type() == JSON::Dict_t);
@@ -273,6 +311,8 @@ TEST(json_parse_dict_many_keys)
 	ASSERT(d.get("name")->type() == JSON::String_t);
 	ASSERT(d.hasKey("age"));
 	ASSERT(d.get("age")->type() == JSON::Integer_t);
+	ASSERT(d.hasKey("male"));
+	ASSERT(ISBOOL(d.get("male")));
 	delete res;
 ENDTEST()
 
@@ -363,6 +403,8 @@ int main(int argc, const char **argv)
 		ADDTEST(lighttest),
 		ADDTEST(json_int),
 		ADDTEST(json_float),
+		ADDTEST(json_bool_true),
+		ADDTEST(json_bool_false),
 		ADDTEST(json_str),
 		ADDTEST(json_str_escape),
 		ADDTEST(json_list),
@@ -377,6 +419,8 @@ int main(int argc, const char **argv)
 		ADDTEST(json_parse_nothing),
 		ADDTEST(json_parse_int),
 		ADDTEST(json_parse_float),
+		ADDTEST(json_parse_bool_true),
+		ADDTEST(json_parse_bool_false),
 		ADDTEST(json_parse_str),
 		ADDTEST(json_parse_str_escape),
 		ADDTEST(json_parse_str_escape_hex),
