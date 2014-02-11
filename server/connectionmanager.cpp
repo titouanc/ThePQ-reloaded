@@ -96,10 +96,13 @@ JSON::Value *ConnectionManager::_readFrom(int fd)
 
 JSON::Value *ConnectionManager::_removeClient(std::set<int>::iterator position)
 {
-    close(*position);
+    int client_id = *position;
+    close(client_id);
     _clients.erase(position);
+
     JSON::Dict *msg = new JSON::Dict();
     msg->set("__type__", "DISCONNECT");
+    msg->set("client_id", client_id);
     return msg;
 }
 
@@ -138,18 +141,23 @@ void ConnectionManager::mainloop(SharedQueue<Message> & incoming)
             if (msg)
                 incoming.push(Message(*it, msg));
         }
-        for (it=_clients.begin(); it!=_clients.end(); it++){
-            if (FD_ISSET(*it, &readable)){
+        for (it=_clients.begin(); it!=_clients.end();){
+            if (! FD_ISSET(*it, &readable))
+                it++; /* fd not set; examine next */
+            else {
                 try {
                     JSON::Value *msg = _readFrom(*it);
-                    if (msg)
+                    if (msg){
                         incoming.push(Message(*it, msg));
-                    else {
+                        it++;
+                    } else {
                         /* select() returned ready for read, but nothing has 
                            been read => close connection */
-                        msg = _removeClient(it);
+                        std::set<int>::iterator to_remove = it;
+                        it++;
+                        msg = _removeClient(to_remove);
                         if (msg)
-                            incoming.push(Message(*it, msg));
+                            incoming.push(Message(_sockfd, msg));
                     }
                 } catch (JSON::ParseError &err) {}
             }
