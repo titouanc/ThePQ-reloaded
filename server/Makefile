@@ -1,7 +1,7 @@
 CXX = g++
 CPPFLAGS = -I../common/json/
-CXXFLAGS = -std=c++11 -pedantic -Wall -Wextra
-LDFLAGS = -lm 
+CXXFLAGS = -std=c++11 -pedantic -Wall -Wextra -pthread
+LDFLAGS = -lm -lpthread
 HEADERS = $(shell ${CXX} ${CPPFLAGS} -MM *.cpp | sed -E 's/.+\.[^h]pp//g')
 OBJS = connectionmanager.o
 
