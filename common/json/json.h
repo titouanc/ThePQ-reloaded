@@ -25,13 +25,12 @@
 #define BOOL(obj)  (*((JSON::Bool *)(obj)))
 
 /* Convenience typecheck macros */
-#define ISINT(ptr)   ((ptr)->type() == JSON::Integer_t)
-#define ISFLOAT(ptr) ((ptr)->type() == JSON::Float_t)
-#define ISSTR(ptr)   ((ptr)->type() == JSON::String_t)
-#define ISLIST(ptr)  ((ptr)->type() == JSON::List_t)
-#define ISDICT(ptr)  ((ptr)->type() == JSON::Dict_t)
-#define ISBOOL(ptr)  ((ptr)->type() == JSON::Boolean_t)
-
+#define ISINT(ptr)   ((ptr) != NULL && (ptr)->type() == JSON::Integer_t)
+#define ISFLOAT(ptr) ((ptr) != NULL && (ptr)->type() == JSON::Float_t)
+#define ISSTR(ptr)   ((ptr) != NULL && (ptr)->type() == JSON::String_t)
+#define ISLIST(ptr)  ((ptr) != NULL && (ptr)->type() == JSON::List_t)
+#define ISDICT(ptr)  ((ptr) != NULL && (ptr)->type() == JSON::Dict_t)
+#define ISBOOL(ptr)  ((ptr) != NULL && (ptr)->type() == JSON::Boolean_t)
 
 namespace JSON {
     /* Differents kind of JSON objects */
