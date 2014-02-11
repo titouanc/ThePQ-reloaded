@@ -161,6 +161,15 @@ TEST(json_parse_error)
 	ASSERT_THROWS(JSON::ParseError, JSON::parse("{\"key1\": 1 \"key2\": 2}")); //Missing ', '
 ENDTEST()
 
+TEST(json_parse_nothing)
+	ASSERT(JSON::parse("") == NULL);
+	ASSERT(JSON::parse("\n") == NULL);
+	ASSERT(JSON::parse("\r") == NULL);
+	ASSERT(JSON::parse("\t") == NULL);
+	ASSERT(JSON::parse(" ") == NULL);
+	ASSERT(JSON::parse("\n\r\t ") == NULL);
+ENDTEST()
+
 TEST(json_parse_int)
 	const char *repr = "42";
 	JSON::Value *i = JSON::parse(repr);
@@ -198,6 +207,15 @@ TEST(json_parse_str_escape)
 	ASSERT(ISSTR(res));
 	ASSERT(STR(res).value() == "Ligne 1\"\n\tTabulation ligne 2\nLigne 3");
 	ASSERT(res->dumps() == repr);
+	delete res;
+ENDTEST()
+
+TEST(json_parse_str_escape_hex)
+	const char *repr = "\"Une chaine\\x20de caracteres\\xfa\"";
+	JSON::Value *res = JSON::parse(repr);
+	ASSERT(res != NULL);
+	ASSERT(ISSTR(res));
+	ASSERT(STR(res).value() == "Une chaine de caracteres\xfa");
 	delete res;
 ENDTEST()
 
@@ -348,10 +366,12 @@ int main(int argc, const char **argv)
 		ADDTEST(json_dict_keys),
 		ADDTEST(json_dict_repr),
 		ADDTEST(json_parse_error),
+		ADDTEST(json_parse_nothing),
 		ADDTEST(json_parse_int),
 		ADDTEST(json_parse_float),
 		ADDTEST(json_parse_str),
 		ADDTEST(json_parse_str_escape),
+		ADDTEST(json_parse_str_escape_hex),
 		ADDTEST(json_parse_list),
 		ADDTEST(json_parse_empty_list),
 		ADDTEST(json_parse_dict),
