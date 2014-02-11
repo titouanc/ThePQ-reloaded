@@ -48,15 +48,12 @@ void Client::login(){
 
 void Client::registerUser(){
 	string username = askForUserData("Pick a username : ");
-	string password = askForNewPassword();
-	
-	try {
+	if (_connection.doesUserExist(username))
+		cout << "User name already exists. Try again with a different username." << endl;
+	else {
+		string password = askForNewPassword();
 		_connection.registerUser(username, password);
 		cout << "You have successfully registered! You can now login." << endl;
-	}
-	catch (UserAlreadyExistsException e)
-	{
-		cout << "User name already exists" << endl;
 	}
 }
 
