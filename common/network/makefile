@@ -24,8 +24,8 @@ clean:
 	rm -f *.o
 
 mrproper: clean
-	rm -f ${SERV}
-	rm -f ${CLI}
+	rm -f test.app
 	rm -f ${LIBNETWORK}
 
 .PHONY: clean all mrproper
+.PRECIOUS: ${OBJS}
