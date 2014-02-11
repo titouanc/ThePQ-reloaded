@@ -43,7 +43,7 @@ namespace net
 	
 	class TcpSocket {
 	public:
-	
+		TcpSocket();
 		static const size_t MSG_SIZE = 4096;
 	
 		virtual ~ TcpSocket();
@@ -56,7 +56,6 @@ namespace net
 		JSON::Value* recv();
 		
 	protected:
-		TcpSocket();
 		bool create();
 		void close();
 		bool isOpen() {
