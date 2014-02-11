@@ -99,6 +99,7 @@ void Client::stadiumMenu()
 	message+= "You can : \n";
 	message+= "    - (q)uit to managment menu\n";
 	stadium.setMessage(message);
+	// TODO : stadium menu
 	stadium.run();
 }
 
@@ -109,6 +110,7 @@ void Client::playersMenu()
 	message+= "You can : \n";
 	message+= "    - (q)uit to managment menu\n";
 	players.setMessage(message);
+	// TODO : players menu
 	players.run();
 }
 
@@ -123,18 +125,17 @@ void Client::friendlyMatchMenu()
 	message+= "   - (q)uit to main menu\n";
 	message+= _prompt;
 	friendly.setMessage(message);
-	// TODO : create friendly match menu
 	friendly.run();
 }
 
 void Client::listUsers()
 {
-	
+	// TODO : list users for friendly match
 }
 
 void Client::chooseUser()
 {
-	
+	// TODO : choose user for friendly match
 }
 
 /* Private methods */
