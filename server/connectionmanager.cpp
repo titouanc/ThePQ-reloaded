@@ -16,10 +16,11 @@ extern "C" {
 }
 
 ConnectionManager::ConnectionManager( 
+    SharedQueue<Message> & incoming_queue,
     const char *bind_addr_repr, 
     unsigned short bind_port,
     int max_clients
-) : _sockfd(-1), _clients(), _running(false)
+) : _sockfd(-1), _clients(), _running(false), _incoming(incoming_queue)
 {
     pthread_mutex_init(&_mutex, NULL);
 
@@ -123,7 +124,7 @@ bool ConnectionManager::_writeTo(int fd, JSON::Value *obj)
     return true;
 }
 
-void ConnectionManager::mainloop(SharedQueue<Message> & incoming)
+void ConnectionManager::mainloop(void)
 {
     fd_set readable;
     std::set<int>::iterator it;
@@ -144,7 +145,7 @@ void ConnectionManager::mainloop(SharedQueue<Message> & incoming)
             if (FD_ISSET(_sockfd, &readable)){
                 JSON::Value *msg = _addClient();
                 if (msg)
-                    incoming.push(Message(*it, msg));
+                    _incoming.push(Message(*it, msg));
             }
             for (it=_clients.begin(); it!=_clients.end();){
                 if (! FD_ISSET(*it, &readable))
@@ -153,7 +154,7 @@ void ConnectionManager::mainloop(SharedQueue<Message> & incoming)
                     try {
                         JSON::Value *msg = _readFrom(*it);
                         if (msg){
-                            incoming.push(Message(*it, msg));
+                            _incoming.push(Message(*it, msg));
                             it++;
                         } else {
                             /* select() returned ready for read, but nothing has 
@@ -162,7 +163,7 @@ void ConnectionManager::mainloop(SharedQueue<Message> & incoming)
                             it++;
                             msg = _removeClient(to_remove);
                             if (msg)
-                                incoming.push(Message(_sockfd, msg));
+                                _incoming.push(Message(_sockfd, msg));
                         }
                     } catch (JSON::ParseError &err) {}
                 }
@@ -184,27 +185,21 @@ unsigned short ConnectionManager::port(void) const
 typedef void*(*pthread_routine_t)(void*);
 static void runConnectionManager(void *args)
 {
-    ConnectionManager *manager = ((ConnectionManager**) args)[0];
-    SharedQueue<Message> *incoming = ((SharedQueue<Message>**) args)[1];
-
-    manager->mainloop(*incoming);
-    delete[] (char*) args;
+    ConnectionManager *manager = (ConnectionManager*) args;
+    manager->mainloop();
     pthread_exit(NULL);
 }
 
-bool ConnectionManager::start(SharedQueue<Message> & incoming)
+bool ConnectionManager::start(void)
 {
     bool res = false;
     int lock = pthread_mutex_lock(&_mutex);
     if (lock == 0){
         if (! _running){
             _running = true;
-            void **args = new void*[2];
-            args[0] = (void*) this;
-            args[1] = (void*) &incoming;
             int r = pthread_create(
                 &_io_thread, NULL, 
-                (pthread_routine_t) runConnectionManager, args
+                (pthread_routine_t) runConnectionManager, this
             );
             res = (r == 0);
         }

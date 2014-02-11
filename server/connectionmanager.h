@@ -21,12 +21,21 @@ struct Message {
 
 class ConnectionManager {
     private:
+        /* Bound IP structure */
         struct sockaddr_in _bind_addr;
+        /* Listener socket */
         int _sockfd;
+        /* Currently connected clients */
         std::set<int> _clients;
+        /* Communication thread */
         pthread_t   _io_thread;
+        /* isRunning() mutex */
         pthread_mutex_t _mutex;
+        /* Is IO thread running ? */
         bool _running;
+        /* Incoming message queue */
+        SharedQueue<Message> & _incoming;
+
 
         /* Accept a new connection; return 
            {"__type__": "CONNECT", "client_id": <int>} */
@@ -38,7 +47,8 @@ class ConnectionManager {
         JSON::Value *_readFrom(int fd);
         bool _writeTo(int fd, JSON::Value *obj);
     public:
-        ConnectionManager(
+        explicit ConnectionManager(
+            SharedQueue<Message> & incoming_queue,
             const char *bind_addr="127.0.0.1", 
             unsigned short bind_port=32123,
             int max_clients=25
@@ -49,10 +59,10 @@ class ConnectionManager {
          *               read messages from clients; 
          *               feed an incoming queue 
          */
-        void mainloop(SharedQueue<Message> & incoming);
+        void mainloop(void);
 
         /* Start the main IO loop in a background thread */
-        bool start(SharedQueue<Message> & incoming);
+        bool start(void);
 
         /* Stop the main IO loop */
         bool stop(void);

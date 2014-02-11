@@ -7,8 +7,8 @@ int main(int argc, const char **argv)
 	SharedQueue<Message> incoming;
 
 	try {
-		ConnectionManager manager;
-		manager.start(incoming);
+		ConnectionManager manager(incoming);
+		manager.start();
 		cout << "Launched server on " << manager.ip() << ":" << manager.port() << endl;
 		while (manager.isRunning()){
 			Message const & msg = incoming.pop();
