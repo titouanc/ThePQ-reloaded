@@ -22,7 +22,7 @@ void Connection::loginUser(string username, string passwd)
 	toSend.set("data", credentials);
 	_socket.send(&toSend);
 
-	// TODO receive response from server
+	_socket.recv(&received);	// receiving server response
 
 	if (received.hasKey("type") && ISSTR(received.get("type")) 
 		&& STR(received.get("type")).value() == "CO_S"){
@@ -43,7 +43,7 @@ bool Connection::doesUserExist(string username){
 	toSend.set("data", username);
 	_socket.send(&toSend);
 
-	// TODO receive server response
+	_socket.recv(&received); // receiving server response
 
 	if (received.hasKey("type") && ISSTR(received.get("type")) 
 		&& STR(received.get("type")).value() == "CO_S"){
