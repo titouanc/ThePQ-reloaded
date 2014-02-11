@@ -54,96 +54,115 @@ ConnectionManager::ConnectionManager(
             bind_addr_repr+strerror(errno)
         );
     }
-
-    std::cout << "Bound to " << bind_addr_repr << ":" << bind_port << std::endl;
 }
 
 ConnectionManager::~ConnectionManager()
 {
-    std::map<int, User>::iterator it;
+    std::set<int>::iterator it;
     for (it=_clients.begin(); it!=_clients.end(); it++){
-        close(it->first);
+        close(*it);
     }
 }
 
-void ConnectionManager::_removeClient(int client_id)
-{
-    std::cout << "REMOVE CLIENT: " << client_id << std::endl;
-    std::map<int, User>::iterator pos = _clients.find(client_id);
-    if (pos != _clients.end()){
-        _clients.erase(pos);
-        close(client_id);
-    }
-}
-
-void ConnectionManager::_addClient(void)
+JSON::Value *ConnectionManager::_addClient(void)
 {
     int fd = accept(_sockfd, NULL, NULL);
     if (fd < 0)
         throw ConnectionError(std::string("Accept error: ")+strerror(errno));
     std::cout << "NEW CLIENT: " << fd << std::endl;
-    _clients.insert(_clients.begin(), std::pair<int, User>(fd, User()));
+    _clients.insert(_clients.begin(), fd);
+    JSON::Dict *msg = new JSON::Dict();
+    msg->set("__type__", "CONNECT");
+    msg->set("client_id", fd);
+    return msg;
 }
 
 #define BUFSIZE 0x1000
-bool ConnectionManager::_readFromFD(int fd)
+JSON::Value *ConnectionManager::_readFrom(int fd)
 {
-    std::cout << "READ FROM CLIENT: " << fd << std::endl;
     std::stringstream res;
     char buffer[BUFSIZE+1];
     int r, i=0;
     while ((r = recv(fd, buffer, BUFSIZE, 0)) > 0){
         buffer[r] = '\0';
         res << buffer;
-        std::cout << "Read " << r << " bytes" << std::endl;
         i++;
     }
-    if (r < 0 || i == 0){
-        std::cout << "READ ERROR: " << strerror(errno) << std::endl;
-        return false;
+    if (r < 0 || i == 0)
+        return NULL;
+
+    return JSON::parse(res.str().c_str());
+}
+
+JSON::Value *ConnectionManager::_removeClient(std::set<int>::iterator position)
+{
+    close(*position);
+    _clients.erase(position);
+    JSON::Dict *msg = new JSON::Dict();
+    msg->set("__type__", "DISCONNECT");
+    return msg;
+}
+
+bool ConnectionManager::_writeTo(int fd, JSON::Value *obj)
+{
+    if (obj != NULL){
+        std::string const & repr = obj->dumps();
+        int r = 0;
+        for (size_t i=0; i<repr.length(); i+=r){
+            r = send(fd, repr.c_str()+i, repr.length()-i, 0);
+            if (r < 0)
+                return false;
+        }
     }
-    JSON::Value *parsed = JSON::parse(res.str().c_str());
-    if (parsed)
-        std::cout << "RECEIVED: " << *parsed << std::endl;
-    delete parsed;
     return true;
 }
 
-void ConnectionManager::mainloop(void)
+void ConnectionManager::mainloop(SharedQueue<Message> & incoming)
 {
-    fd_set readable, errors;
-    std::map<int, User>::const_iterator it;
+    fd_set readable;
+    std::set<int>::iterator it;
     int fdmax = _sockfd;
 
-    std::cout << " --- MAINLOOP START --- " << std::endl;
-    std::cout << "SOCKFD: " << _sockfd <<std::endl;
-
     FD_ZERO(&readable);
-    FD_ZERO(&errors);
     FD_SET(_sockfd, &readable);
+
     for (it=_clients.begin(); it!=_clients.end(); it++){
-        FD_SET(it->first, &readable);
-        FD_SET(it->first, &errors);
-        if (it->first > fdmax)
-            fdmax = it->first;
+        FD_SET(*it, &readable);
+        if (*it > fdmax)
+            fdmax = *it;
     }
 
-    if (select(fdmax+1, &readable, NULL, &errors, NULL) > 0){
-        std::cout << "SELECT > 0" << std::endl;
-        if (FD_ISSET(_sockfd, &readable))
-            _addClient();
+    if (select(fdmax+1, &readable, NULL, NULL, NULL) > 0){
+        if (FD_ISSET(_sockfd, &readable)){
+            JSON::Value *msg = _addClient();
+            if (msg)
+                incoming.push(Message(*it, msg));
+        }
         for (it=_clients.begin(); it!=_clients.end(); it++){
-            if (FD_ISSET(it->first, &readable)){
-                if (! _readFromFD(it->first)){
-                    close(it->first);
-                    _clients.erase(it);
-                }
+            if (FD_ISSET(*it, &readable)){
+                try {
+                    JSON::Value *msg = _readFrom(*it);
+                    if (msg)
+                        incoming.push(Message(*it, msg));
+                    else {
+                        /* select() returned ready for read, but nothing has 
+                           been read => close connection */
+                        msg = _removeClient(it);
+                        if (msg)
+                            incoming.push(Message(*it, msg));
+                    }
+                } catch (JSON::ParseError &err) {}
             }
         }
-    } else {
-        std::cout << "SELECT <= 0" << std::endl;
-    }
-
-    std::cout << " === MAINLOOP END === " << std::endl;
+    } 
 }
 
+const char *ConnectionManager::ip(void) const
+{
+    return inet_ntoa(_bind_addr.sin_addr);
+}
+
+unsigned short ConnectionManager::port(void) const
+{
+    return ntohs(_bind_addr.sin_port);
+}

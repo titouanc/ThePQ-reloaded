@@ -1,8 +1,8 @@
 CXX = g++
-INCLUDES = -I../../common/lighttest/ -I../../common/json/
+CPPFLAGS = -I../common/json/
 CXXFLAGS = -std=c++11 -pedantic -Wall -Wextra
-LDFLAGS = -lm ../../common/json/libjson.a
-HEADERS = $(shell ${CXX} ${CXXFLAGS} -MM *.cpp | sed -E 's/.+\.[^h]pp//g')
+LDFLAGS = -lm 
+HEADERS = $(shell ${CXX} ${CPPFLAGS} -MM *.cpp | sed -E 's/.+\.[^h]pp//g')
 OBJS = connectionmanager.o
 
 all: test.ok
@@ -15,7 +15,7 @@ test.ok: test
 %.o: %.cpp ${HEADERS}
 	${CXX} ${CXXFLAGS} ${INCLUDES} -c -o $@ $<
 
-%: %.o ${OBJS}
+%: %.o ${OBJS} ../common/json/libjson.a
 	${CXX} ${LDFLAGS} -o $@ $^
 
 .PRECIOUS: ${OBJS}
