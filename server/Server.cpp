@@ -21,9 +21,9 @@ void Server::treatMessage(const Message &message){
 	if (ISDICT(message.data)){
 		JSON::Dict const &received = DICT(message.data);
 		if (received.hasKey("type") && ISSTR(received.get("type"))) {
+			string messageType = STR(received.get("type")).value();
 			if (received.hasKey("data") && ISDICT(received.get("data"))){
 				// data is a DICT
-				string messageType = STR(received.get("type")).value();
 				if (messageType == "CO_L"){
 					logUserIn(DICT(received.get("data")), message.peer_id);
 				}
@@ -33,7 +33,6 @@ void Server::treatMessage(const Message &message){
 			}
 			else if (received.hasKey("data") && ISSTR(received.get("data"))){
 				// data is a STR
-				string messageType = STR(received.get("type")).value();
 				if (messageType == "CO_U") {
 					checkIfUserExists(STR(received.get("data")).value(), message.peer_id);
 				}

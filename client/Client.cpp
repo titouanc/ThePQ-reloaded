@@ -47,13 +47,15 @@ void Client::login(){
 }
 
 void Client::registerUser(){
-	for (int i = 0; i < 3; ++i)
+	bool registered = false;
+	for (int i = 0; i < 3 && ! registered; ++i)
 	{
 		string username = askForUserData("Pick a username : ");
 		try {
 			_connection.doesUserExist(username);
 			string password = askForNewPassword();
 			_connection.registerUser(username, password);
+			registered = true;
 			cout << "You have successfully registered! You can now login." << endl;
 		}
 		catch (UserAlreadyExistsException e) {
