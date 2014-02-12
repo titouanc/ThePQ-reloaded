@@ -2,7 +2,7 @@
 #define CONNECTION_HPP
 
 #include "../common/network/net.hpp"
-#include "../common/json/json.h"
+#include "../common/json/json.hpp"
 #include "Exception.hpp"
 #include "../common/Constants.hpp"
 #include <string>

@@ -1,10 +1,10 @@
 #ifndef DEFINE_DISPLACEMENT_HEADER
 #define DEFINE_DISPLACEMENT_HEADER
 
-#include <json.h>
+#include <json.hpp>
 #include <vector>
 #include <stdexcept>
-#include "position.h"
+#include "position.hpp"
 
 class NotADirection : public std::runtime_error {
     using std::runtime_error::runtime_error;

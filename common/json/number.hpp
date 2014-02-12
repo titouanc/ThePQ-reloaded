@@ -1,7 +1,7 @@
 #ifndef DEFINE_JSON_NUMBER_HEADER
 #define DEFINE_JSON_NUMBER_HEADER
 
-#include "json.h"
+#include "json.hpp"
 
 template <typename T>
 class Number : public Value {

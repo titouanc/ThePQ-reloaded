@@ -19,7 +19,7 @@
 #include <stdexcept>
 #include <cerrno>
 #include <cstring>
-#include "json.h"
+#include "json.hpp"
 
 namespace net
 {

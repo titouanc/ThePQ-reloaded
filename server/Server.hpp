@@ -3,7 +3,7 @@
 
 #include <iostream>
 #include <string>
-#include "../common/network/connectionmanager.h"
+#include "../common/network/connectionmanager.hpp"
 #include "User.hpp"
 #include "../common/network/net.hpp"
 

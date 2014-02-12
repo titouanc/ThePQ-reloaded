@@ -1,7 +1,7 @@
 Du presque test unitaire en un seul header plein de macros magiques.
 
 #Utilisation
-`#include <lightest.h>`
+`#include <lightest.hpp>`
 
 ## Ecrire un test
 Afin de gérer **automagiquement** les exceptions, le comptage des tests et des assertions, il ne faut pas définir de fonction soi-même, mais utiliser les macros `TEST` et `ENDTEST`.

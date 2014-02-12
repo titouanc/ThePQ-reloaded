@@ -1,8 +1,8 @@
-#include "connectionmanager.h"
+#include "connectionmanager.hpp"
 #include <cstdlib>
 #include <cstring>
 #include <sstream>
-#include <json.h>
+#include <json.hpp>
 #include <cstdint>
 
 extern "C" {
