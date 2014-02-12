@@ -36,7 +36,6 @@ void Server::treatMessage(const Message &message){
 void Server::registerUser(const JSON::Dict &credentials, int peer_id){
 	if (credentials.hasKey("CO_U") && ISSTR(credentials.get("CO_U"))
 		&& credentials.hasKey("CO_P") && ISSTR(credentials.get("CO_P" ))){
-		string userpath = "data/users/" + STR(credentials.get("CO_U")).value();
 		User newUser(STR(credentials.get("CO_U")).value(), STR(credentials.get("CO_P")).value());
 		newUser.save();
 		JSON::Dict * statusDict = new JSON::Dict();
