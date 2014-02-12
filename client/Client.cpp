@@ -56,6 +56,7 @@ void Client::registerUser(){
 	else {
 		cout << "User name already exists. Try again with a different username." << endl;		
 	}
+}
 	
 
 /* main menu */
