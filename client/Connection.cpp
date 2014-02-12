@@ -75,6 +75,20 @@ void Connection::registerUser(string username, string passwd)
 	toSend.set("data", credentials);
 	_socket.send(&toSend);
 
-	// TODO receive response from server
-	// TODO handle exception if response is different than U_REG
+	
+	cout << "Please wait..." << endl;
+
+	JSON::Value *serverMessage = _socket.recv();	// receiving server response
+
+	if (ISDICT(serverMessage)){
+		JSON::Dict const &received = DICT(serverMessage);
+		if (received.hasKey("type") && ISSTR(received.get("type")) 
+			&& STR(received.get("type")).value() == "CO_S"){
+			if (received.hasKey("data") && ISSTR(received.get("data"))) {
+				if (STR(received.get("data")).value() == "U_E")
+					throw UserAlreadyExistsException();
+			}
+		}
+	}
+	// User is registered
 }

@@ -39,13 +39,28 @@ void Server::treatMessage(const Message &message){
 void Server::registerUser(const JSON::Dict &credentials, int peer_id){
 	if (credentials.hasKey("CO_U") && ISSTR(credentials.get("CO_U"))
 		&& credentials.hasKey("CO_P") && ISSTR(credentials.get("CO_P" ))){
-		User newUser(STR(credentials.get("CO_U")).value(), STR(credentials.get("CO_P")).value());
-		newUser.save();
-		JSON::Dict * statusDict = new JSON::Dict();
-		statusDict->set("type", "CO_S");
-		statusDict->set("data", "U_L_IN");
-		Message status(peer_id, statusDict);
-		_outbox.push(status);
+		User* newUser = User::load(STR(credentials.get("CO_U")).value());
+		if (newUser == NULL)
+		{
+			// User doesnt exist
+			newUser = new User(STR(credentials.get("CO_U")).value(), STR(credentials.get("CO_P")).value());
+			newUser->save();
+			JSON::Dict * statusDict = new JSON::Dict();
+			statusDict->set("type", "CO_S");
+			statusDict->set("data", "U_R");
+			Message status(peer_id, statusDict);
+			_outbox.push(status);
+		}
+		else
+		{
+			// User exists
+			JSON::Dict * statusDict = new JSON::Dict();
+			statusDict->set("type", "CO_S");
+			statusDict->set("data", "U_E");
+			Message status(peer_id, statusDict);
+			_outbox.push(status);			
+		}
+		delete newUser;
 	}
 }
 
