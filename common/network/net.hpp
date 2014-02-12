@@ -43,7 +43,6 @@ namespace net
 	
 	class TcpSocket {
 	public:
-		TcpSocket();
 		static const size_t MSG_SIZE = 4096;
 	
 		virtual ~ TcpSocket();

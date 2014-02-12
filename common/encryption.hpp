@@ -17,7 +17,7 @@ string hashPassword(string pswd,string key){
  	return output;
 }
 
-string encrypt(string pswd,string key){
+string encryptS(string pswd,string key){
 	/*Method that encrypts pswd against a given key
 	*returns a string consisting in the hashed password
 	*/
@@ -25,7 +25,7 @@ string encrypt(string pswd,string key){
 }
 
 
-string decrypt(string pswd,string key){
+string decryptS(string pswd,string key){
 	/*Method that decrypts pswd against a given key
 	*returns a string representing the password
 	*/
