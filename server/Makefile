@@ -3,12 +3,16 @@ LIBNETWORK=../common/network/libnetwork.a
 LIBJSON=../common/json/libjson.a
 
 CXX = g++
-CXXFLAGS = -std=c++11 -pedantic -Wall -Wextra -pthread -I../common/json
+CXXFLAGS = -std=c++11 -pedantic -Wall -Wextra -pthread -I../common/json -I../common/lighttest
 LDFLAGS = -lm -lpthread
 
-all: server.app
+all: server.app test.app
+	./test.app
 
 server.app: main.o ${OBJ} ${LIBNETWORK} ${LIBJSON}
+	${CXX} ${LDFLAGS} -o $@ $^
+
+test.app: test.o User.o ${LIBJSON}
 	${CXX} ${LDFLAGS} -o $@ $^
 
 %.o: %.cpp
