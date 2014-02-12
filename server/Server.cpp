@@ -27,7 +27,7 @@ void Server::treatMessage(const Message &message){
 				logUserIn(DICT(received.get("data")), message.peer_id);
 			}
 			else if (messageType == "CO_R") {
-				registerUser(received.get("data"), message.peer_id);
+				registerUser(DICT(received.get("data")), message.peer_id);
 			}
 		}
 	}

@@ -17,3 +17,8 @@ User* User::load(string username)
 	string fileName = USER_PATH + username + "/user.json";
 	return (User*)JSON::load(fileName.c_str());
 }
+
+void User::save()
+{
+	
+}
