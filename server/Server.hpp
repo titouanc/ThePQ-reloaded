@@ -17,6 +17,7 @@ public:
 
 	void registerUser(const JSON::Dict &credentials, int peer_id);
 	void logUserIn(const JSON::Dict &credentials, int peer_id);
+	void checkIfUserExists(const JSON::Dict &credentials, int peer_id);
 private:
 	ConnectionManager _connectionManager;
 	SharedQueue<Message> _inbox, _outbox;
