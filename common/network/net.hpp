@@ -41,6 +41,12 @@ namespace net
 		{}
 	};
 	
+	class WrongMessageException : public std::runtime_error {
+	public:
+		WrongMessageException():runtime_error(std::string("Wrong message received"))
+		{}
+	};
+	
 	class TcpSocket {
 	public:
 		static const size_t MSG_SIZE = 4096;

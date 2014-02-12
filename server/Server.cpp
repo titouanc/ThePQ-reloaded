@@ -75,12 +75,6 @@ void Server::logUserIn(const JSON::Dict &credentials, int peer_id){
 			statusDict->set("data", "U_N_F");
 			Message status(peer_id, statusDict);
 			_outbox.push(status);
-		}
-		
+		}	
 	}
-	JSON::Dict * statusDict = new JSON::Dict();
-	statusDict->set("type", "CO_S");
-	statusDict->set("data", "U_L_IN");
-	Message status(peer_id, statusDict);
-	_outbox.push(status);
 }

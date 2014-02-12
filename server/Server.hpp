@@ -5,6 +5,7 @@
 #include <string>
 #include "../common/network/connectionmanager.h"
 #include "User.hpp"
+#include "../common/network/net.hpp"
 
 using namespace std;
 
