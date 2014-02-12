@@ -44,7 +44,7 @@ void Server::registerUser(const JSON::Dict &credentials, int peer_id){
 			newUser->save();
 			JSON::Dict * statusDict = new JSON::Dict();
 			statusDict->set("type", "CO_S");
-			statusDict->set("data", "U_L_IN");
+			statusDict->set("data", "U_R");
 			Message status(peer_id, statusDict);
 			_outbox.push(status);
 		}
