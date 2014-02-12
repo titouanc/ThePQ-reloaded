@@ -16,8 +16,6 @@ void Connection::loginUser(string username, string passwd)
 	toSend.set("data", credentials);
 	_socket.send(&toSend);
 
-	cout << "Please wait..." << endl;
-
 	JSON::Value *serverMessage = _socket.recv();	// receiving server response
 
 	if (ISDICT(serverMessage)){
@@ -41,8 +39,6 @@ void Connection::doesUserExist(string username){
 	toSend.set("data", username);
 	_socket.send(&toSend);
 
-	cout << "Please wait..." << endl;
-
 	JSON::Value *serverMessage = _socket.recv(); // receiving server response
 
 	if(ISDICT(serverMessage)){
@@ -65,9 +61,6 @@ void Connection::registerUser(string username, string passwd)
 	toSend.set("type", "CO_R");
 	toSend.set("data", credentials);
 	_socket.send(&toSend);
-
-	
-	cout << "Please wait..." << endl;
 
 	JSON::Value *serverMessage = _socket.recv();	// receiving server response
 

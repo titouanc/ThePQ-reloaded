@@ -32,6 +32,7 @@ void Client::login(){
 	string password = askForUserData("Password : ");
 	
 	try {
+		cout << "Please wait..." << endl;
 		_connection.loginUser(username, password);
 		cout << "You have successfully logged in! Welcome! :)" << endl;
 		mainMenu();
@@ -52,8 +53,10 @@ void Client::registerUser(){
 	{
 		string username = askForUserData("Pick a username : ");
 		try {
+			cout << "Please wait..." << endl;
 			_connection.doesUserExist(username);
 			string password = askForNewPassword();
+			cout << "Please wait..." << endl;
 			_connection.registerUser(username, password);
 			registered = true;
 			cout << "You have successfully registered! You can now login." << endl;
