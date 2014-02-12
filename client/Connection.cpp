@@ -5,7 +5,7 @@ using namespace std;
 Connection::Connection()
 {
 	_isLogged = false;
-	_socket.connect("172.23.218.15", 32123);
+	_socket.connect("0.0.0.0", 32123);
 }
 
 bool Connection::isLogged()
