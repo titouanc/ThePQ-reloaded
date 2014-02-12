@@ -15,16 +15,16 @@ public:
 	~Moveable(){}
 
 	// GETTERS + SETTERS
-	string getName() { return _name; }
+	string getName() const { return _name; }
 	void setName(string name) { _name = name; }
 
-	Position getPosition() { return _position; }
+	Position getPosition() const { return _position; }
 	void setPosition(Position &position) { _position = position; }
 
-	float getSpeed() { return _speed; }
+	float getSpeed() const { return _speed; }
 	void setSpeed(float speed) { _speed = speed; }
 
-	unsigned int getID() { return _uniqueID; }
+	unsigned int getID() const { return _uniqueID; }
 	void setID(unsigned int newID) { _uniqueID = newID; }
 
 private:
