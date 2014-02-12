@@ -1,5 +1,8 @@
 #include "json.h"
 #include <lighttest.h>
+extern "C" {
+	#include <unistd.h>
+}
 
 void iThrow(void)
 {
@@ -30,6 +33,24 @@ TEST(json_float)
 	ASSERT(f.isNumber());
 	ASSERT(f.type() == JSON::Float_t);
 	ASSERT(ISFLOAT(&f));
+ENDTEST()
+
+TEST(json_bool_true)
+	JSON::Bool b(true);
+	ASSERT(b.value() == true);
+	ASSERT(b.dumps() == "true");
+	ASSERT(b.isAtom());
+	ASSERT(! b.isNumber());
+	ASSERT(ISBOOL(&b));
+ENDTEST()
+
+TEST(json_bool_false)
+	JSON::Bool b(false);
+	ASSERT(b.value() == false);
+	ASSERT(b.dumps() == "false");
+	ASSERT(b.isAtom());
+	ASSERT(! b.isNumber());
+	ASSERT(ISBOOL(&b));
 ENDTEST()
 
 TEST(json_str)
@@ -109,6 +130,7 @@ TEST(json_list_repr)
 	ASSERT(l.dumps() == "[2, 42.125]");
 
 	JSON::List *lptr = (JSON::List *) l.clone();
+	ASSERT(lptr != NULL);
 	ASSERT(lptr->dumps() == "[2, 42.125]");
 	delete lptr;
 ENDTEST()
@@ -138,6 +160,10 @@ TEST(json_dict_repr)
 		d.dumps() == "{\"key1\": \"value1\", \"key2\": \"value2\"}" || 
 		d.dumps() == "{\"key2\": \"value2\", \"key1\": \"value1\"}"
 	)
+
+	JSON::Value *copy = d.clone();
+	ASSERT(copy != NULL);
+	ASSERT(d.dumps() == copy->dumps());
 ENDTEST()
 
 TEST(json_parse_error)
@@ -151,6 +177,15 @@ TEST(json_parse_error)
 	ASSERT_THROWS(JSON::ParseError, JSON::parse("{42}")); //Key is not str
 	ASSERT_THROWS(JSON::ParseError, JSON::parse("{\"key1\": val1}")); //val not parsable
 	ASSERT_THROWS(JSON::ParseError, JSON::parse("{\"key1\": 1 \"key2\": 2}")); //Missing ', '
+ENDTEST()
+
+TEST(json_parse_nothing)
+	ASSERT(JSON::parse("") == NULL);
+	ASSERT(JSON::parse("\n") == NULL);
+	ASSERT(JSON::parse("\r") == NULL);
+	ASSERT(JSON::parse("\t") == NULL);
+	ASSERT(JSON::parse(" ") == NULL);
+	ASSERT(JSON::parse("\n\r\t ") == NULL);
 ENDTEST()
 
 TEST(json_parse_int)
@@ -173,6 +208,26 @@ TEST(json_parse_float)
 	delete f;
 ENDTEST()
 
+TEST(json_parse_bool_true)
+	const char *repr = "true";
+	JSON::Value *b = JSON::parse(repr);
+	ASSERT(b != NULL);
+	ASSERT(b->type() == JSON::Boolean_t);
+	ASSERT(BOOL(b).value() == true);
+	ASSERT(b->dumps() == repr);
+	delete b;
+ENDTEST()
+
+TEST(json_parse_bool_false)
+	const char *repr = "false";
+	JSON::Value *b = JSON::parse(repr);
+	ASSERT(b != NULL);
+	ASSERT(b->type() == JSON::Boolean_t);
+	ASSERT(BOOL(b).value() == false);
+	ASSERT(b->dumps() == repr);
+	delete b;
+ENDTEST()
+
 TEST(json_parse_str)
 	const char *repr = "\"Naim Qachri\"";
 	JSON::Value *s = JSON::parse(repr);
@@ -190,6 +245,15 @@ TEST(json_parse_str_escape)
 	ASSERT(ISSTR(res));
 	ASSERT(STR(res).value() == "Ligne 1\"\n\tTabulation ligne 2\nLigne 3");
 	ASSERT(res->dumps() == repr);
+	delete res;
+ENDTEST()
+
+TEST(json_parse_str_escape_hex)
+	const char *repr = "\"Une chaine\\x20de caracteres\\xfa\"";
+	JSON::Value *res = JSON::parse(repr);
+	ASSERT(res != NULL);
+	ASSERT(ISSTR(res));
+	ASSERT(STR(res).value() == "Une chaine de caracteres\xfa");
 	delete res;
 ENDTEST()
 
@@ -237,7 +301,7 @@ TEST(json_parse_empty_dict)
 ENDTEST()
 
 TEST(json_parse_dict_many_keys)
-	const char *repr = "{\"name\": \"Titou\", \"age\": 23}";
+	const char *repr = "{\"name\": \"Titou\", \"age\": 23, \"male\": true}";
 	JSON::Value *res = JSON::parse(repr);
 	ASSERT(res != NULL);
 	ASSERT(res->type() == JSON::Dict_t);
@@ -247,6 +311,8 @@ TEST(json_parse_dict_many_keys)
 	ASSERT(d.get("name")->type() == JSON::String_t);
 	ASSERT(d.hasKey("age"));
 	ASSERT(d.get("age")->type() == JSON::Integer_t);
+	ASSERT(d.hasKey("male"));
+	ASSERT(ISBOOL(d.get("male")));
 	delete res;
 ENDTEST()
 
@@ -264,6 +330,37 @@ TEST(json_parse_list_in_dict)
 	ASSERT(ISDICT(LIST(d.get("players"))[0]));
 
 	delete res;
+ENDTEST()
+
+TEST(json_load)
+	JSON::Value *val = JSON::load("fixtures/a.json");
+	ASSERT(val != NULL && ISDICT(val));
+	JSON::Dict const & dict = DICT(val);
+	for (JSON::Dict::const_iterator it=dict.begin(); it!=dict.end(); it++){
+		ASSERT(ISLIST(it->second));
+		ASSERT(LIST(it->second).len() == 3);
+	}
+	delete val;
+ENDTEST()
+
+TEST(json_save)
+	JSON::Value *val = JSON::load("fixtures/a.json");
+	ASSERT(val != NULL);
+	val->save("__test__.json");
+	
+	JSON::Value *copy = JSON::load("__test__.json");
+	unlink("__test__.json");
+	ASSERT(copy != NULL && ISDICT(copy));
+
+	JSON::Dict const & dict = DICT(copy);
+	for (JSON::Dict::const_iterator it=dict.begin(); it!=dict.end(); it++){
+		ASSERT(ISLIST(it->second));
+		ASSERT(LIST(it->second).len() == 3);
+	}
+	ASSERT(val->dumps() == copy->dumps());
+
+	delete val;
+	delete copy;
 ENDTEST()
 
 TEST(json_dict_steal)
@@ -292,12 +389,22 @@ TEST(json_list_steal)
 	ASSERT(m.dumps() == "[\"a\"]");
 ENDTEST()
 
+TEST(json_dict_replace_key)
+	JSON::Dict d;
+	d.set("key", 1);
+	ASSERT(ISINT(d.get("key")) && INT(d.get("key")).value() == 1);
+	d.set("key", "val");
+	ASSERT(ISSTR(d.get("key")) && STR(d.get("key")).value() == "val");
+ENDTEST()
+
 int main(int argc, const char **argv)
 {
 	TestFunc testSuite[] = {
 		ADDTEST(lighttest),
 		ADDTEST(json_int),
 		ADDTEST(json_float),
+		ADDTEST(json_bool_true),
+		ADDTEST(json_bool_false),
 		ADDTEST(json_str),
 		ADDTEST(json_str_escape),
 		ADDTEST(json_list),
@@ -309,18 +416,25 @@ int main(int argc, const char **argv)
 		ADDTEST(json_dict_keys),
 		ADDTEST(json_dict_repr),
 		ADDTEST(json_parse_error),
+		ADDTEST(json_parse_nothing),
 		ADDTEST(json_parse_int),
 		ADDTEST(json_parse_float),
+		ADDTEST(json_parse_bool_true),
+		ADDTEST(json_parse_bool_false),
 		ADDTEST(json_parse_str),
 		ADDTEST(json_parse_str_escape),
+		ADDTEST(json_parse_str_escape_hex),
 		ADDTEST(json_parse_list),
 		ADDTEST(json_parse_empty_list),
 		ADDTEST(json_parse_dict),
 		ADDTEST(json_parse_empty_dict),
 		ADDTEST(json_parse_dict_many_keys),
 		ADDTEST(json_parse_list_in_dict),
+		ADDTEST(json_load),
+		ADDTEST(json_save),
 		ADDTEST(json_dict_steal),
-		ADDTEST(json_list_steal)
+		ADDTEST(json_list_steal),
+		ADDTEST(json_dict_replace_key)
 	};
 
 	return RUN(testSuite);

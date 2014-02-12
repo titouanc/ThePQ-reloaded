@@ -21,7 +21,10 @@ Type Dict::type(void) const
 
 Value * Dict::clone(void) const 
 {
-	return NULL;
+	Dict *res = new Dict();
+    for (Dict::const_iterator it=begin(); it!=end(); it++)
+        res->set(it->first, *(it->second));
+    return (Value*) res;
 }
 
 void Dict::_writeTo(std::ostream & out) const
@@ -43,10 +46,16 @@ bool Dict::hasKey(std::string const & key) const
 
 void Dict::setPtr(std::string const & key, Value *ptr)
 {
-    _content.insert(
-        _content.begin(), 
-        std::pair<std::string, Value*>(key, ptr)
-    );
+    std::map<std::string, Value*>::iterator pos = _content.find(key);
+    if (pos != _content.end()){
+        delete pos->second;
+        pos->second = ptr;
+    } else {
+        _content.insert(
+            _content.begin(), 
+            std::pair<std::string, Value*>(key, ptr)
+        );
+    }
 }
 
 void Dict::set(std::string const & key, Value const & val)

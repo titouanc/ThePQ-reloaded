@@ -1,19 +1,14 @@
-OBJ=Listener.o Socket.o TcpSocket.o
-SERV = serv.app
-CLI = cli.app
+OBJ= test.o TcpSocket.o connectionmanager.o
 LIBNETWORK=libnetwork.a
 LIBJSON=../json/libjson.a
 
 CXX = g++
-CXXFLAGS = -std=c++11 -pedantic -Wall -Wextra -I../json
-LDFLAGS = 
+CXXFLAGS = -std=c++11 -pedantic -Wall -Wextra -pthread -I../json
+LDFLAGS = -lm -lpthread
 
-all: ${SERV} ${CLI}
+all: test.app
 
-${SERV}: mainserver.o ${LIBNETWORK} ${LIBJSON}
-	${CXX} ${LDFLAGS} -o $@ $^
-	
-${CLI}: mainclient.o ${LIBNETWORK} ${LIBJSON}
+test.app: ${OBJ} ${LIBNETWORK} ${LIBJSON}
 	${CXX} ${LDFLAGS} -o $@ $^
 
 ${LIBNETWORK}: ${OBJ}
@@ -29,8 +24,8 @@ clean:
 	rm -f *.o
 
 mrproper: clean
-	rm -f ${SERV}
-	rm -f ${CLI}
+	rm -f test.app
 	rm -f ${LIBNETWORK}
 
 .PHONY: clean all mrproper
+.PRECIOUS: ${OBJS}

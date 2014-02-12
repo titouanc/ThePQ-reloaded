@@ -29,6 +29,13 @@ class Float : public Number<double> {
         Type type(void) const;
 };
 
+class Bool : public Number<bool> {
+    public:
+        using Number<bool>::Number;
+        Type type(void) const;
+        void _writeTo(std::ostream & out) const;
+};
+
 template <typename T>
 Number<T>::Number(T initial) : _value(initial)
 {}
