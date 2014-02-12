@@ -1,4 +1,4 @@
-OBJ= Server.o
+OBJ= Server.o User.o
 LIBNETWORK=../common/network/libnetwork.a
 LIBJSON=../common/json/libjson.a
 
