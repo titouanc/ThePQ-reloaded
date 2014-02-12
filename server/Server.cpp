@@ -39,17 +39,35 @@ void Server::registerUser(const JSON::Dict &credentials, int peer_id){
 		string userpath = "data/users/" + STR(credentials.get("CO_U")).value();
 		User newUser(STR(credentials.get("CO_U")).value(), STR(credentials.get("CO_P")).value());
 		newUser.save();
+		JSON::Dict * statusDict = new JSON::Dict();
+		statusDict->set("type", "CO_S");
+		statusDict->set("data", "U_L_IN");
+		Message status(peer_id, statusDict);
+		_outbox.push(status);
 	}
 }
 
 void Server::logUserIn(const JSON::Dict &credentials, int peer_id){
 	if (credentials.hasKey("CO_U") && ISSTR(credentials.get("CO_U"))
 		&& credentials.hasKey("CO_P") && ISSTR(credentials.get("CO_P" ))){
-		User user(STR(credentials.get("CO_U")).value(), STR(credentials.get("CO_P")).value());
+		User user;
+		user = load(STR(credentials.get("CO_U")).value());
+		if (user && user.getPassword() == STR(credentials.get("CO_P")).value()){
+			// correct password
+			JSON::Dict * statusDict = new JSON::Dict();
+			statusDict->set("type", "CO_S");
+			statusDict->set("data", "U_L_IN");
+			Message status(peer_id, statusDict);
+			_outbox.push(status);
+		}
+		else {
+			// wrong password
+			JSON::Dict * statusDict = new JSON::Dict();
+			statusDict->set("type", "CO_S");
+			statusDict->set("data", "P_ER");
+			Message status(peer_id, statusDict);
+			_outbox.push(status);
+		}
 	}
-	JSON::Dict * statusDict = new JSON::Dict();
-	statusDict->set("type", "CO_S");
-	statusDict->set("data", "U_L_IN");
-	Message status(peer_id, statusDict);
-	_outbox.push(status);
+	
 }
