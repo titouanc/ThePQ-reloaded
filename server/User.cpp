@@ -15,7 +15,10 @@ User::User(const JSON::Dict* json)
 User* User::load(string username)
 {
 	string fileName = USER_PATH + username + "/user.json";
-	return (User*)JSON::load(fileName.c_str());
+	JSON::Value* json = JSON::load(fileName.c_str());
+	User* user = new User((JSON::Dict*)json);
+	delete json;
+	return user;
 }
 
 void User::save()
