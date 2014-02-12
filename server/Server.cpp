@@ -22,10 +22,23 @@ void Server::treatMessage(const Message &message){
 		JSON::Dict const &received = DICT(message.data);
 		if (received.hasKey("type") && ISSTR(received.get("type")) 
 			&& (received.hasKey("data") && ISDICT(received.get("data")))){
-			if (STR(received.get("type")).value() == "CO_L"){
+			string messageType = STR(received.get("type")).value()
+			if (messageType == "CO_L"){
 				logUserIn(DICT(received.get("data")), message.peer_id);
 			}
+			else if (messageType == "CO_R") {
+				registerUser(received.get("data"), message.peer_id);
+			}
 		}
+	}
+}
+
+void Server::registerUser(const JSON::Dict &credentials, int peer_id){
+	if (credentials.hasKey("CO_U") && ISSTR(credentials.get("CO_U"))
+		&& credentials.hasKey("CO_P") && ISSTR(credentials.get("CO_P" ))){
+		string userpath = "data/users/" + STR(credentials.get("CO_U")).value();
+		User newUser(STR(credentials.get("CO_U")).value(), STR(credentials.get("CO_P")).value()):
+		newUser.save();
 	}
 }
 

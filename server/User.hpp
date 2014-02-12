@@ -17,7 +17,7 @@ public:
 	TcpSocket getSocket() { return _socket; }
 	void setSocket(TcpSocket socket) { _socket = socket; }
 
-	string getUserPath() { return "users/"+getUsername(); }
+	string getUserPath() { return "data/users/"+getUsername(); }
 };
 
 #endif
