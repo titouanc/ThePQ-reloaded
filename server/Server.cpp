@@ -51,22 +51,33 @@ void Server::logUserIn(const JSON::Dict &credentials, int peer_id){
 	if (credentials.hasKey("CO_U") && ISSTR(credentials.get("CO_U"))
 		&& credentials.hasKey("CO_P") && ISSTR(credentials.get("CO_P" ))){
 		User *user = User::load(STR(credentials.get("CO_U")).value());
-		if (user != NULL && user->getPassword() == STR(credentials.get("CO_P")).value()){
-			// correct password
+		if (user != NULL){
+			if (user->getPassword() == STR(credentials.get("CO_P")).value()){
+				// correct password
 			JSON::Dict * statusDict = new JSON::Dict();
 			statusDict->set("type", "CO_S");
 			statusDict->set("data", "U_L_IN");
 			Message status(peer_id, statusDict);
 			_outbox.push(status);
+			}
+			else {
+				// wrong password
+				JSON::Dict * statusDict = new JSON::Dict();
+				statusDict->set("type", "CO_S");
+				statusDict->set("data", "P_ER");
+				Message status(peer_id, statusDict);
+				_outbox.push(status);
+			}
 		}
-		else {
-			// wrong password
+		else{
+			// user not found
 			JSON::Dict * statusDict = new JSON::Dict();
 			statusDict->set("type", "CO_S");
-			statusDict->set("data", "P_ER");
+			statusDict->set("data", "U_N_F");
 			Message status(peer_id, statusDict);
 			_outbox.push(status);
 		}
+		
 	}
 	JSON::Dict * statusDict = new JSON::Dict();
 	statusDict->set("type", "CO_S");
