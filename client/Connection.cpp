@@ -8,11 +8,6 @@ Connection::Connection()
 	_socket.connect("0.0.0.0", 32123);
 }
 
-bool Connection::isLogged()
-{
-	return _isLogged;
-}
-
 void Connection::loginUser(string username, string passwd)
 {
 	JSON::Dict toSend, credentials;
