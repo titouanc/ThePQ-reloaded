@@ -2,7 +2,7 @@
 
 using namespace std;
 
-Server::Server() : _connectionManager(ConnectionManager(_inbox, _outbox, "0.0.0.0", 32123)){
+Server::Server() : _connectionManager(_inbox, _outbox, "0.0.0.0", 32123){
 	_connectionManager.start();
 	cout << "Launched server on " << _connectionManager.ip() << ":" << _connectionManager.port() << endl;
 	run();
