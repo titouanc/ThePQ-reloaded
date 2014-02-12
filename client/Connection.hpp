@@ -13,7 +13,7 @@ public:
 	Connection();
 	
 	void loginUser(std::string username, std::string passwd);
-	bool doesUserExist(std::string username);
+	void doesUserExist(std::string username);
 	void registerUser(std::string username, std::string passwd);
 	
 	

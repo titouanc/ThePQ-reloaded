@@ -4,7 +4,6 @@ using namespace std;
 
 Connection::Connection()
 {
-	_isLogged = false;
 	_socket.connect("0.0.0.0", 32123);
 }
 
@@ -36,8 +35,7 @@ void Connection::loginUser(string username, string passwd)
 	// User is logged in at this point.
 }
 
-bool Connection::doesUserExist(string username){
-	bool res = false;
+void Connection::doesUserExist(string username){
 	JSON::Dict toSend;
 	toSend.set("type", "CO_U");
 	toSend.set("data", username);
@@ -53,12 +51,10 @@ bool Connection::doesUserExist(string username){
 			&& STR(received.get("type")).value() == "CO_S"){
 			if (received.hasKey("data") && ISSTR(received.get("data")) 
 				&& STR(received.get("data")).value() == "U_REG"){
-				res = true;
+				throw UserAlreadyExistsException();
 			}
 		}
 	}
-	
-	return res;
 }
 
 void Connection::registerUser(string username, string passwd)
