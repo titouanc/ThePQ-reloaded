@@ -3,6 +3,7 @@
 
 #include <string>
 #include "../common/json/json.h"
+#include "sys/stat.h"
 
 using namespace std;
 
