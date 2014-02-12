@@ -30,8 +30,8 @@ void Server::treatMessage(const Message &message){
 }
 
 void Server::logUserIn(const JSON::Dict &credentials, int peer_id){
-	if (DICT(credentials.get("data")).hasKey("CO_U") && ISSTR(DICT(credentials.get("data")).get("CO_U"))
-		&& DICT(credentials.get("data")).hasKey("CO_P") && ISSTR(DICT(credentials.get("data")).get("CO_P" ))){
+	if (credentials.hasKey("CO_U") && ISSTR(credentials.get("CO_U"))
+		&& credentials.hasKey("CO_P") && ISSTR(credentials.get("CO_P" ))){
 		// TODO check if user exists and if his password is ok
 	}
 	JSON::Dict * statusDict = new JSON::Dict();
