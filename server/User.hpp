@@ -22,6 +22,8 @@ public:
 	string getPassword() { return _passwd; }
 	void setPassword(const string& passwd) { _passwd = passwd; }
 	
+	void save();
+	
 	static User* load(string username);
 };
 

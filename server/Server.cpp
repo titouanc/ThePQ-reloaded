@@ -27,7 +27,7 @@ void Server::treatMessage(const Message &message){
 				logUserIn(DICT(received.get("data")), message.peer_id);
 			}
 			else if (messageType == "CO_R") {
-				registerUser(received.get("data"), message.peer_id);
+				registerUser(DICT(received.get("data")), message.peer_id);
 			}
 		}
 	}
@@ -45,7 +45,19 @@ void Server::registerUser(const JSON::Dict &credentials, int peer_id){
 void Server::logUserIn(const JSON::Dict &credentials, int peer_id){
 	if (credentials.hasKey("CO_U") && ISSTR(credentials.get("CO_U"))
 		&& credentials.hasKey("CO_P") && ISSTR(credentials.get("CO_P" ))){
-		User user(STR(credentials.get("CO_U")).value(), STR(credentials.get("CO_P")).value());
+		User* user = User::load(STR(credentials.get("CO_U")).value());
+		if (user == NULL)
+		{
+			// user doesnt exist
+		}
+		else if (user->getPassword() != STR(credentials.get("CO_P")).value())
+		{
+			// password is wrong
+		}
+		else
+		{
+			cout << "User logged" << endl;
+		}
 	}
 	JSON::Dict * statusDict = new JSON::Dict();
 	statusDict->set("type", "CO_S");
