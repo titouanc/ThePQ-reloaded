@@ -61,7 +61,7 @@ void Server::registerUser(const JSON::Dict &credentials, int peer_id){
 			// User exists
 			JSON::Dict * statusDict = new JSON::Dict();
 			statusDict->set("type", "CO_S");
-			statusDict->set("data", "U_E");
+			statusDict->set("data", "U_REG");
 			Message status(peer_id, statusDict);
 			_outbox.push(status);			
 		}

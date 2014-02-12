@@ -76,7 +76,8 @@ void Connection::registerUser(string username, string passwd)
 		if (received.hasKey("type") && ISSTR(received.get("type")) 
 			&& STR(received.get("type")).value() == "CO_S"){
 			if (received.hasKey("data") && ISSTR(received.get("data"))) {
-				// TODO: this is the problem : nothing is returned when any request successed
+				if (STR(received.get("data")).value() == "U_REG")
+					throw UserAlreadyExistsException();
 			}
 		}
 	}
