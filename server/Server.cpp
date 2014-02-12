@@ -37,7 +37,7 @@ void Server::registerUser(const JSON::Dict &credentials, int peer_id){
 	if (credentials.hasKey("CO_U") && ISSTR(credentials.get("CO_U"))
 		&& credentials.hasKey("CO_P") && ISSTR(credentials.get("CO_P" ))){
 		string userpath = "data/users/" + STR(credentials.get("CO_U")).value();
-		User newUser(STR(credentials.get("CO_U")).value(), STR(credentials.get("CO_P")).value()):
+		User newUser(STR(credentials.get("CO_U")).value(), STR(credentials.get("CO_P")).value());
 		newUser.save();
 	}
 }
@@ -45,7 +45,7 @@ void Server::registerUser(const JSON::Dict &credentials, int peer_id){
 void Server::logUserIn(const JSON::Dict &credentials, int peer_id){
 	if (credentials.hasKey("CO_U") && ISSTR(credentials.get("CO_U"))
 		&& credentials.hasKey("CO_P") && ISSTR(credentials.get("CO_P" ))){
-		// TODO check if user exists and if his password is ok
+		User user(STR(credentials.get("CO_U")).value(), STR(credentials.get("CO_P")).value());
 	}
 	JSON::Dict * statusDict = new JSON::Dict();
 	statusDict->set("type", "CO_S");
