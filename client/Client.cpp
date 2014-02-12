@@ -47,14 +47,17 @@ void Client::login(){
 }
 
 void Client::registerUser(){
-	string username = askForUserData("Pick a username : ");
-	if (!_connection.doesUserExist(username)){
-		string password = askForNewPassword();
-		_connection.registerUser(username, password);
-		cout << "You have successfully registered! You can now login." << endl;
-	}
-	else {
-		cout << "User name already exists. Try again with a different username." << endl;		
+	for (int i = 0; i < 3; ++i)
+	{
+		string username = askForUserData("Pick a username : ");
+		if (!_connection.doesUserExist(username)){
+			string password = askForNewPassword();
+			_connection.registerUser(username, password);
+			cout << "You have successfully registered! You can now login." << endl;
+		}
+		else {
+			cout << "User name already exists. Try again with a different username." << endl;		
+		}
 	}
 }
 	
