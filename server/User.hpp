@@ -2,22 +2,27 @@
 #define USER_HPP 
 
 #include <string>
-#include "../common/net.hpp"
+#include "../common/json/json.h"
 
 using namespace std;
 
 class User{
 private:
 	string _username;
-	TcpSocket _socket;
+	string _passwd;
 public:
+	#define USER_PATH "data/users/"
+	
+	User(const string& username, const string& password);
+	User(const JSON::Dict*);
+
 	string getUsername() { return _username; }
-	void setUsername(string username){ _username = username; };
-
-	TcpSocket getSocket() { return _socket; }
-	void setSocket(TcpSocket socket) { _socket = socket; }
-
-	string getUserPath() { return "users/"+getUsername(); }
+	void setUsername(const string& username){ _username = username; };
+	
+	string getPassword() { return _passwd; }
+	void setPassword(const string& passwd) { _passwd = passwd; }
+	
+	static User* load(string username);
 };
 
 #endif
