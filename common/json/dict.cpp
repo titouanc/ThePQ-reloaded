@@ -68,7 +68,7 @@ const Value * Dict::get(std::string const & key) const
     std::map<std::string, Value*>::const_iterator elem;
     elem = _content.find(key);
     if (elem == _content.end()) 
-        throw KeyError(key);
+        return NULL;
     return elem->second;
 }
 

@@ -149,7 +149,6 @@ TEST(json_dict_keys)
 	ASSERT(d.hasKey("key"));
 	ASSERT(! d.hasKey("1337"));
 	ASSERT(ISSTR(d.get("key")));
-	ASSERT_THROWS(JSON::KeyError, d.get("1337"));
 ENDTEST()
 
 TEST(json_dict_repr)
@@ -397,6 +396,13 @@ TEST(json_dict_replace_key)
 	ASSERT(ISSTR(d.get("key")) && STR(d.get("key")).value() == "val");
 ENDTEST()
 
+TEST(json_macros)
+	JSON::Dict d;
+	d.set("key", "val");
+	ASSERT(ISSTR(d.get("key")));
+	ASSERT(! ISINT(d.get("unknow")));
+ENDTEST()
+
 int main(int argc, const char **argv)
 {
 	TestFunc testSuite[] = {
@@ -434,7 +440,8 @@ int main(int argc, const char **argv)
 		ADDTEST(json_save),
 		ADDTEST(json_dict_steal),
 		ADDTEST(json_list_steal),
-		ADDTEST(json_dict_replace_key)
+		ADDTEST(json_dict_replace_key),
+		ADDTEST(json_macros)
 	};
 
 	return RUN(testSuite);
