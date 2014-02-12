@@ -18,6 +18,12 @@ test.app: test.o User.o ${LIBJSON}
 %.o: %.cpp
 	${CXX} ${CXXFLAGS} -c -o $@ $^
 
+${LIBNETWORK}:
+	cd ../common/network && make
+	
+${LIBJSON}:
+	cd ../common/json && make
+
 clean:
 	rm -f *.o
 
