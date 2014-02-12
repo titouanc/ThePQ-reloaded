@@ -2,7 +2,7 @@
 #define USER_HPP 
 
 #include <string>
-#include "../common/net.hpp"
+#include "../common/network/net.hpp"
 
 using namespace std;
 
