@@ -12,6 +12,8 @@ public:
 	Server();
 	void run();
 	void treatMessage(const Message &message);
+
+	void logUserIn(const JSON::Dict &credentials, int peer_id);
 private:
 	ConnectionManager _connectionManager;
 	SharedQueue<Message> _inbox, _outbox;

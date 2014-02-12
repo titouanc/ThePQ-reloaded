@@ -21,15 +21,22 @@ void Server::treatMessage(const Message &message){
 	if (ISDICT(message.data)){
 		JSON::Dict const &received = DICT(message.data);
 		if (received.hasKey("type") && ISSTR(received.get("type")) 
-			&& STR(received.get("type")).value() == "CO_L"){
-			if (received.hasKey("data") && ISDICT(received.get("data"))) {
-				// TODO check user credentials
-				JSON::Dict statusDict;
-				statusDict.set("type", "CO_S");
-				statusDict.set("data", "U_L_IN");
-				Message status(message.peer_id, statusDict.clone());
-				_outbox.push(status);
+			&& (received.hasKey("data") && ISDICT(received.get("data")))){
+			if (STR(received.get("type")).value() == "CO_L"){
+				logUserIn(DICT(received.get("data")), message.peer_id);
 			}
 		}
 	}
+}
+
+void Server::logUserIn(const JSON::Dict &credentials, int peer_id){
+	if (DICT(credentials.get("data")).hasKey("CO_U") && ISSTR(DICT(credentials.get("data")).get("CO_U"))
+		&& DICT(credentials.get("data")).hasKey("CO_P") && ISSTR(DICT(credentials.get("data")).get("CO_P" ))){
+		// TODO check if user exists and if his password is ok
+	}
+	JSON::Dict * statusDict = new JSON::Dict();
+	statusDict->set("type", "CO_S");
+	statusDict->set("data", "U_L_IN");
+	Message status(peer_id, statusDict);
+	_outbox.push(status);
 }
