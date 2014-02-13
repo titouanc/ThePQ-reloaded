@@ -7,6 +7,7 @@
 #include "Connection.hpp"
 #include "Exception.hpp"
 #include "Menu.hpp"
+#include "StadiumManager.hpp"
 
 
 class Client
