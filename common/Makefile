@@ -1,15 +1,15 @@
-all: json/test.ok network/test.ok pitch/test.ok
+make.ok: network/test.ok pitch/test.ok
+	touch $@
 
-json/test.ok: json
+json/libjson.a: json
 	make -C json
 
-network/test.ok: json/libjson.a network
-	make -C network
-
-pitch/test.ok: json/libjson.a pitch
-	make -C pitch
+%/test.ok: % json/libjson.a
+	make -C $<
 
 clean:
-	make -C json clean
-	make -C pitch clean
-	make -C network clean
+	rm -f *.ok
+	for dir in pitch network json; do make -C $$dir clean; done
+
+mrproper: clean
+	for dir in pitch network json; do make -C $$dir mrproper; done	
