@@ -5,7 +5,7 @@
 #include <string>
 #include <map>
 #include <network/ConnectionManager.hpp>
-#include <network/net.hpp>
+#include <network/TcpSocket.hpp>
 #include "User.hpp"
 
 using namespace std;

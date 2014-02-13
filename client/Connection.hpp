@@ -1,7 +1,7 @@
 #ifndef CONNECTION_HPP
 #define CONNECTION_HPP
 
-#include <network/net.hpp>
+#include <network/TcpSocket.hpp>
 #include <json/json.hpp>
 #include "Exception.hpp"
 #include <Constants.hpp>
