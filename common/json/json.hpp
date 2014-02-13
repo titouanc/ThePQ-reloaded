@@ -100,6 +100,9 @@ namespace JSON {
         public:
             List();
             ~List();
+            List(List const & other);
+            List & operator=(List const & other);
+
             Type type(void) const;
             Value * clone(void) const;
             virtual void _writeTo(std::ostream & out) const;
@@ -121,6 +124,9 @@ namespace JSON {
         public:
             Dict();
             ~Dict();
+            Dict(Dict const & other);
+            Dict & operator=(Dict const & other);
+
             Type type(void) const;
             Value * clone(void) const;
             virtual void _writeTo(std::ostream & out) const;

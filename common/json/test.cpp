@@ -430,6 +430,20 @@ TEST(conversion_operators)
 	delete res;
 ENDTEST()
 
+TEST(dict_assign)
+	JSON::Value *parsed = JSON::load("fixtures/a.json");
+	ASSERT(ISDICT(parsed));
+	JSON::Dict d1 = DICT(parsed);
+	JSON::Dict d2(DICT(parsed));
+
+	for (JSON::Dict::iterator it=d1.begin(); it!=d1.end(); it++){
+		ASSERT(d2.hasKey(it->first));
+		ASSERT(DICT(parsed).hasKey(it->first));
+	}
+
+	delete parsed;
+ENDTEST()
+
 int main(int argc, const char **argv)
 {
 	TestFunc testSuite[] = {
@@ -469,7 +483,8 @@ int main(int argc, const char **argv)
 		ADDTEST(json_list_steal),
 		ADDTEST(json_dict_replace_key),
 		ADDTEST(json_macros),
-		ADDTEST(conversion_operators)
+		ADDTEST(conversion_operators),
+		ADDTEST(dict_assign)
 	};
 
 	return RUN(testSuite);
