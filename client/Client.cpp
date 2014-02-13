@@ -79,13 +79,13 @@ void Client::mainMenu()
 	message+= "   - (q)uit\n";
 	message+= _prompt;
 	main.setMessage(message);
-	main.addOption('m', managmentMenu);
+	main.addOption('m', managementMenu);
 	main.addOption('p', friendlyMatchMenu);
 	main.run();
 }
 
-/* Managment menu */
-void Client::managmentMenu()
+/* Management menu */
+void Client::managementMenu()
 {
 	Menu mgt;
 	string message;
@@ -105,7 +105,7 @@ void Client::stadiumMenu()
 	Menu stadium;
 	string message;
 	message+= "You can : \n";
-	message+= "    - (q)uit to managment menu\n";
+	message+= "    - (q)uit to management menu\n";
 	stadium.setMessage(message);
 	// TODO : stadium menu
 	stadium.run();
@@ -116,7 +116,7 @@ void Client::playersMenu()
 	Menu players;
 	string message;
 	message+= "You can : \n";
-	message+= "    - (q)uit to managment menu\n";
+	message+= "    - (q)uit to management menu\n";
 	players.setMessage(message);
 	// TODO : players menu
 	players.run();
