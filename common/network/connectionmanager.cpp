@@ -25,6 +25,7 @@ ConnectionManager::ConnectionManager(
 ) : _sockfd(-1), _clients(), _running(false), 
     _incoming(incoming_queue), _outgoing(outgoing_queue)
 {
+    int yes = 1;
     pthread_mutex_init(&_mutex, NULL);
 
     _sockfd = socket(AF_INET, SOCK_STREAM, 0);
@@ -33,6 +34,10 @@ ConnectionManager::ConnectionManager(
             std::string("Unable to open socket: ")+
             strerror(errno)
         );
+
+    if (setsockopt(_sockfd, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(int)) == -1){
+        throw ConnectionError(std::string("Unable to set socket options : ")+strerror(errno));
+    }
 
     memset(&_bind_addr, 0, sizeof(struct sockaddr_in));
     _bind_addr.sin_family = AF_INET;
