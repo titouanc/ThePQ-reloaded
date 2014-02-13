@@ -1,10 +1,10 @@
 #ifndef CONNECTION_HPP
 #define CONNECTION_HPP
 
-#include "../common/network/net.hpp"
-#include "../common/json/json.hpp"
+#include <network/net.hpp>
+#include <json/json.hpp>
 #include "Exception.hpp"
-#include "../common/Constants.hpp"
+#include <Constants.hpp>
 #include <string>
 
 class Connection

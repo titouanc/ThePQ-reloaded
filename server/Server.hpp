@@ -4,9 +4,9 @@
 #include <iostream>
 #include <string>
 #include <map>
-#include "../common/network/connectionmanager.hpp"
+#include <network/connectionmanager.hpp>
+#include <network/net.hpp>
 #include "User.hpp"
-#include "../common/network/net.hpp"
 
 using namespace std;
 

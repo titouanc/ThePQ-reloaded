@@ -1,6 +1,6 @@
 #include "User.hpp"
-#include "json.hpp"
-#include "lighttest.hpp"
+#include <json/json.hpp>
+#include <lighttest/lighttest.hpp>
 
 TEST(USER)
 	User user("usertest", "passwdtest");

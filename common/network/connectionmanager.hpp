@@ -6,8 +6,8 @@
 #include <stdexcept>
 #include <netinet/in.h>
 #include <pthread.h>
-#include "../sharedqueue.hpp"
-#include <json.hpp>
+#include <sharedqueue.hpp>
+#include <json/json.hpp>
 
 class ConnectionError : public std::runtime_error {
     public: using std::runtime_error::runtime_error;

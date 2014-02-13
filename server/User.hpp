@@ -2,8 +2,8 @@
 #define USER_HPP 
 
 #include <string>
-#include "../common/json/json.hpp"
-#include <net.hpp>
+#include <json/json.hpp>
+#include <network/net.hpp>
 #include "sys/stat.h"
 
 using namespace std;
