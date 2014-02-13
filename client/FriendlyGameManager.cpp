@@ -11,5 +11,6 @@ void FriendlyGameManager::printConnectedUsersList(){
 }
 
 void FriendlyGameManager::loadConnectedUsersList(Connection *connection){
+	_connectedUsers.clear();
 	connection->getConnectedUsersList(_connectedUsers);
 }
