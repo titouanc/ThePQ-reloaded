@@ -23,7 +23,7 @@ class Position {
         bool isDirection(void) const;
 
         /* Numeric operations */
-        Position operator+(Position const & other);
+        Position operator+(Position const & other) const;
         Position const & operator+=(Position const & other);
         
         /* Transformations */
