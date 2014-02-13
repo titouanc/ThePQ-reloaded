@@ -35,3 +35,7 @@ Value *JSON::load(const char *filename)
 	return parse(str.str().c_str());
 }
 
+Value *JSON::load(std::string filename){
+	return JSON::load(filename.c_str());
+}
+
