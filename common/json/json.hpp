@@ -43,17 +43,21 @@ namespace JSON {
         Boolean_t = 0x20
     };
 
+    class Error : public std::runtime_error {
+        public: using std::runtime_error::runtime_error;
+    };
+
     /* JSON errors */
-    class KeyError : public std::runtime_error {
-        public: using std::runtime_error::runtime_error;
+    class KeyError : public Error {
+        public: using Error::Error;
     };
 
-    class ParseError : public std::runtime_error {
-        public: using std::runtime_error::runtime_error;
+    class ParseError : public Error {
+        public: using Error::Error;
     };
 
-    class IOError : std::runtime_error {
-        using std::runtime_error::runtime_error;
+    class IOError : public Error {
+        public: using Error::Error;
     };
 
     /* Abstract common ancestor for all JSON types */
@@ -135,6 +139,7 @@ namespace JSON {
             void set(std::string const & key, Value const & val);
             const Value * get(std::string const & key) const;
             Value * steal(std::string const & key);
+            size_t len(void) const;
             
             /* Fast setters */
             void set(std::string const & key, double val);

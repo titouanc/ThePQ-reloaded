@@ -1,29 +1,25 @@
 CXX = g++
 CXXFLAGS = -std=c++11 -pedantic -Wall -Wextra -I../json/ -I../lighttest
-LDFLAGS = -lm ../json/libjson.a
+LDFLAGS = -lm
 HEADERS = $(shell ${CXX} ${CXXFLAGS} -MM *.cpp | sed -E 's/.+\.[^h]pp//g')
 OBJS = position.o displacement.o
+TESTS = test.ok moveableTest.ok
 
-all: test.ok moveableTest.ok
+all: ${TESTS}
 
-test.ok: test
+%.ok: %.app
 	./$< && touch $@
-
-moveableTest.ok: moveableTest
-	./$< && touch $@
-
-%: %.cpp
 
 %.o: %.cpp ${HEADERS}
 	${CXX} ${CXXFLAGS} -c -o $@ $<
 
-%: %.o ${OBJS}
+%.app: %.o ${OBJS} ../json/libjson.a
 	${CXX} ${LDFLAGS} -o $@ $^
 
-.PRECIOUS: ${OBJS}
+.PRECIOUS: ${OBJS} $(TESTS:.ok=.app) $(TESTS:.ok=.o)
 .PHONY: clean mrproper
 clean:
 	rm -f *.o *.ok
 
 mrproper: clean
-	rm -f test
+	rm -f *.app
