@@ -61,6 +61,7 @@ namespace net
 		static const std::string USER_REGISTERED = "U_R";
 		// data queries
 		static const std::string INSTALLATIONS_LIST = "DQ_I_L";
+		static const std::string CONNECTED_USERS_LIST = "DQ_CU_L";
 
 	}
 	

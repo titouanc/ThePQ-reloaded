@@ -40,6 +40,9 @@ void Server::treatMessage(const Message &message){
 					if(STR(received.get("data")).value() == net::MSG::INSTALLATIONS_LIST){
 						sendInstallationsList(message.peer_id);
 					}
+					else if(STR(received.get("data")).value() == net::MSG::CONNECTED_USERS_LIST){
+						sendConnectedUsersList(message.peer_id);
+					}
 				}
 			}
 			else if (received.hasKey("data") && ISINT(received.get("data"))){
@@ -143,4 +146,16 @@ void Server::sendInstallationsList(int peer_id){
 	string listPath = _users[peer_id]->getUserDirectoryPath() + "installations.json";
 	JSON::Value * installationsList = JSON::load(listPath);
 	_outbox.push(Message(peer_id, installationsList));
+}
+
+void Server::sendConnectedUsersList(int peer_id){
+	JSON::Dict usersList;
+	usersList.set("type", net::MSG::CONNECTED_USERS_LIST);
+	usersList.set("data", JSON::List());
+	for (map<int, User*>::iterator it=_users.begin(); it!=_users.end(); it++){
+		LIST(usersList.get("data")).append(it->second->getUsername());
+	}
+
+	//JSON::Value * installationsList = JSON::load(listPath);
+	_outbox.push(Message(peer_id, &usersList));
 }
