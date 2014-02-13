@@ -24,6 +24,9 @@ class Pitch {
 		 */
 		Moveable * getAt(int x, int y) const;
 
+		bool inEllipsis(int x, int y) const;
+		bool inEllipsis(Moveable *moveable) const;
+
 		/*!
 		 * @meth void Pitch::setAt(int x, int y, Moveable *moveable)
 		 * @brief Set Moveable at position x,y
@@ -32,6 +35,14 @@ class Pitch {
 		 * @param moveable The moveable to place on the pitch
 		 */
 		void setAt(int x, int y, Moveable *moveable);
+		void setAt(Position const & pos, Moveable *moveable);
+
+		/*!
+		 * @meth void Pitch::insert(Moveable *moveable)
+		 * @brief Set a moveable to its position on pitch
+		 * @param moveable The moveable to place on the pitch
+		 */
+		void insert(Moveable *moveable);
 };
 
 #endif

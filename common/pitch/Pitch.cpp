@@ -27,14 +27,37 @@ Moveable * Pitch::getAt(int x, int y) const
 	return _matrix[_index(x, y)];
 }
 
+bool Pitch::inEllipsis(int x, int y) const
+{
+	double k  = ((double) _width)/_height;
+	double dx = ((double) x)/k;
+	return (dx*dx + y*y) < _height*_height;
+}
+
+bool Pitch::inEllipsis(Moveable *moveable) const
+{
+	return inEllipsis(moveable->getPosition().x(), moveable->getPosition().y());
+}
+
 void Pitch::setAt(int x, int y, Moveable *moveable)
 {
 	Position initial = moveable->getPosition();
 	Position dest(x, y);
 	size_t fromPos = _index(initial.x(), initial.y());
-	if (initial != dest && _matrix[fromPos] == moveable){
+	if (initial != dest && _matrix[fromPos] == moveable)
 		_matrix[fromPos] = NULL;
+	if (inEllipsis(x, y)) {
 		moveable->setPosition(dest);
+		_matrix[_index(x, y)] = moveable;
 	}
-	_matrix[_index(x, y)] = moveable;
+}
+
+void Pitch::setAt(Position const & pos, Moveable *moveable)
+{
+	setAt(pos.x(), pos.y(), moveable);
+}
+
+void Pitch::insert(Moveable *moveable)
+{
+	setAt(moveable->getPosition(), moveable);
 }
