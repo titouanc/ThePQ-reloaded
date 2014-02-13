@@ -47,7 +47,7 @@ namespace net
 		static const std::string LOGIN_QUERY = "Q_L";
 		static const std::string REGISTER_QUERY = "Q_R";
 		static const std::string USER_EXISTS_QUERY = "Q_U";
-		static const std::string USER_STATUS = "Q_S";
+		static const std::string CONNECTION_STATUS = "Q_S";
 		
 		// DATA
 		static const std::string USERNAME = "D_U";
