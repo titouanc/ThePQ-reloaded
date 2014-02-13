@@ -1,4 +1,4 @@
-OBJ=Installation.o
+OBJ=Installation.o InstallationTest.o
 CXX=g++
 CFLAGS=-std=c++11 -pedantic -Wall -Wextra -I../json -I../lighttest
 LDFLAGS= ../json/libjson.a
@@ -6,7 +6,7 @@ LDFLAGS= ../json/libjson.a
 all: test.app
 	./test.app
 	
-test.app: InstallationTest.o ${OBJ}
+test.app: ${OBJ}
 	${CXX} ${LDFLAGS} -o $@ $^
 	
 %.o: %.cpp
@@ -15,5 +15,5 @@ test.app: InstallationTest.o ${OBJ}
 clean:
 	rm -f ${OBJ}
 	
-mrproper:
+mrproper: clean
 	rm -f test.app

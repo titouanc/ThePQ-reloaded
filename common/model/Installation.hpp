@@ -2,9 +2,11 @@
 // 		- int getMaxLevel();
 
 #include "json.hpp"
+#include <string>
 
 class Installation{
 private:
+	std::string _name;
 	int _level;
 	int _baseValue;
 	float _refundRatio;
@@ -23,8 +25,9 @@ public:
 		return json;
 	}
 	
-	Installation():_level(0), _baseValue(100), _refundRatio(0.5) {} 
-	Installation(int baseValue, int level, float refundRatio=0.5) :
+	Installation():_name(""), _level(0), _baseValue(100), _refundRatio(0.5) {} 
+	Installation(std::string name, int baseValue, int level, float refundRatio=0.5) :
+			_name(name),
 			_level(level), 
 			_baseValue(baseValue), _refundRatio(refundRatio){}
 
@@ -39,6 +42,9 @@ public:
 
 	float getRefundRatio() { return _refundRatio; }
 	void setRefundRatio(float refundRatio) { _refundRatio = refundRatio; } 
+	
+	std::string getName() { return _name; }
+	void setName(std::string name) { _name = name; }
 	// -----------------
 
 	int getMaintenanceCost();
