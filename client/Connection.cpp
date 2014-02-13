@@ -77,16 +77,28 @@ void Connection::registerUser(string username, string passwd)
 	// User is registered
 }
 
-void Connection::getInstallationsList(JSON::Dict & toFill){
-	JSON::Dict query;
+vector<Installation> Connection::getInstallationsList(){
+	JSON::Dict query, toFill;
 	query.set("type", net::MSG::DATA_QUERY);
 	query.set("data", net::MSG::INSTALLATIONS_LIST);
 	_socket.send(&query);
 
 	JSON::Value *serverResponse = _socket.recv();
-	if (ISDICT(serverResponse)){
+	if (ISDICT(serverResponse))
+	{
 		toFill = DICT(serverResponse);
 	}
+	JSON::Dict::const_iterator it = toFill.begin();
+	vector<Installation> vec;
+	while (it != toFill.end())
+	{
+		JSON::Dict json = DICT(it->second);
+		vec.push_back(json);
+		it++;
+	}
+	
+	delete serverResponse;
+	return vec;
 }
 
 void Connection::getConnectedUsersList(vector<string> &users){
