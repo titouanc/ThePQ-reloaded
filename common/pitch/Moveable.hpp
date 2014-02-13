@@ -2,7 +2,7 @@
 #define MOVEABLE_HPP
 
 #include <string>
-#include "position.h"
+#include "position.hpp"
 
 using namespace std;
 

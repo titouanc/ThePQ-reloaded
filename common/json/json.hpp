@@ -78,7 +78,7 @@ namespace JSON {
             bool isSequence() const {return (type()&(Dict_t|List_t)) != 0;}
     };
 
-    #include "number.h"
+    #include "number.hpp"
     
     class String : public Value {
         private:

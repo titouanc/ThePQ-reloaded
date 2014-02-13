@@ -2,7 +2,7 @@
 #define CONNECTION_HPP
 
 #include "../common/network/net.hpp"
-#include "../common/json/json.h"
+#include "../common/json/json.hpp"
 #include "Exception.hpp"
 #include "../common/Constants.hpp"
 #include <string>
@@ -13,13 +13,11 @@ public:
 	Connection();
 	
 	void loginUser(std::string username, std::string passwd);
-	bool doesUserExist(std::string username);
+	void doesUserExist(std::string username);
 	void registerUser(std::string username, std::string passwd);
 	
-	bool isLogged();
 	
 private:
-	bool _isLogged;
 	net::TcpSocket _socket;
 };
 

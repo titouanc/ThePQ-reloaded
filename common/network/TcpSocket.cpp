@@ -44,6 +44,10 @@ void net::TcpSocket::send(const JSON::Value *json)
 {
 	std::string dump = json->dumps();
 	const char* data = (dump.c_str());
+	uint32_t len = htonl(dump.length());
+	int r = ::send (_sockfd, &len, 4, 0);
+	if (r != 4)
+		throw SendFailedException();
     if (::send(_sockfd, data, dump.length(), 0) <= 0)
     {
 		throw SendFailedException();
@@ -56,8 +60,13 @@ JSON::Value* net::TcpSocket::recv()
 	char* data = new char[MSG_SIZE];
 	size_t received;
 	bzero(data, MSG_SIZE);
-    received = ::recv(_sockfd, data, MSG_SIZE, 0);
-    if (received <= 0)
+	uint32_t len = 0;
+	int r = ::recv(_sockfd, &len, 4, 0);
+	len = ntohl(len);
+	if (r != 4)
+		throw RecvFailedException();
+    received = ::recv(_sockfd, data, len, 0);
+    if (received != len)
     {
 		throw RecvFailedException();
 	}

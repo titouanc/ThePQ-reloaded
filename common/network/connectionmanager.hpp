@@ -6,8 +6,8 @@
 #include <stdexcept>
 #include <netinet/in.h>
 #include <pthread.h>
-#include "../sharedqueue.h"
-#include <json.h>
+#include "../sharedqueue.hpp"
+#include <json.hpp>
 
 class ConnectionError : public std::runtime_error {
     public: using std::runtime_error::runtime_error;
@@ -27,14 +27,14 @@ class ConnectionManager {
         int _sockfd;
         /* Currently connected clients */
         std::set<int> _clients;
-        /* Communication thread */
-        pthread_t   _io_thread;
+        /* Communication threads */
+        pthread_t   _in_thread, _out_thread;
         /* isRunning() mutex */
         pthread_mutex_t _mutex;
         /* Is IO thread running ? */
         bool _running;
         /* Incoming message queue */
-        SharedQueue<Message> & _incoming;
+        SharedQueue<Message> & _incoming, &_outgoing;
 
 
         /* Accept a new connection; return 
@@ -49,17 +49,12 @@ class ConnectionManager {
     public:
         explicit ConnectionManager(
             SharedQueue<Message> & incoming_queue,
+            SharedQueue<Message> & outgoing_queue,
             const char *bind_addr="127.0.0.1", 
             unsigned short bind_port=32123,
             int max_clients=25
         );
         ~ConnectionManager();
-
-        /* Main IO loop: accept connections; 
-         *               read messages from clients; 
-         *               feed an incoming queue 
-         */
-        void mainloop(void);
 
         /* Start the main IO loop in a background thread */
         bool start(void);
@@ -71,6 +66,13 @@ class ConnectionManager {
         const char *ip(void) const;
         unsigned short port(void) const;
         bool isRunning(void);
+
+        /* Main in loop: accept connections; 
+         *               read messages from clients; 
+         *               feed an incoming queue 
+         */
+        void _mainloop_in(void);
+        void _mainloop_out(void);
 };
 
 #endif

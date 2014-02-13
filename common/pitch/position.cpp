@@ -1,4 +1,4 @@
-#include "position.h"
+#include "position.hpp"
 #include <cassert>
 
 Position::Position(int x, int y) : _x(x), _y(y)

@@ -1,4 +1,4 @@
-#include "displacement.h"
+#include "displacement.hpp"
 #include <cassert>
 
 Displacement::Displacement() : _moves()

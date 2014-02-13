@@ -1,5 +1,5 @@
-#include "json.h"
-#include <lighttest.h>
+#include "json.hpp"
+#include <lighttest.hpp>
 #include <cstring>
 extern "C" {
 	#include <unistd.h>

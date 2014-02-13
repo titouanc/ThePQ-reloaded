@@ -19,7 +19,7 @@
 #include <stdexcept>
 #include <cerrno>
 #include <cstring>
-#include "json.h"
+#include "json.hpp"
 
 namespace net
 {
@@ -40,6 +40,24 @@ namespace net
 		RecvFailedException():runtime_error(std::string("recv() failed: ")+strerror(errno))
 		{}
 	};
+	
+	namespace MSG
+	{
+		// TYPE
+		static const std::string LOGIN_QUERY = "Q_L";
+		static const std::string REGISTER_QUERY = "Q_R";
+		static const std::string USER_EXISTS_QUERY = "Q_U";
+		static const std::string CONNECTION_STATUS = "Q_S";
+		
+		// DATA
+		static const std::string USERNAME = "D_U";
+		static const std::string PASSWORD = "D_P";
+		static const std::string USER_LOGIN = "U_L";
+		static const std::string PASSWORD_ERROR = "U_P";
+		static const std::string USER_NOT_FOUND = "U_NF";
+		static const std::string USER_EXISTS = "U_E";
+		static const std::string USER_REGISTERED = "U_R";
+	}
 	
 	class TcpSocket {
 	public:
