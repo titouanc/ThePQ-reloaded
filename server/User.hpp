@@ -2,7 +2,7 @@
 #define USER_HPP 
 
 #include <string>
-#include "../common/json/json.h"
+#include "../common/json/json.hpp"
 #include "sys/stat.h"
 
 using namespace std;

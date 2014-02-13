@@ -2,7 +2,7 @@
 #define DEFINE_POSITION_HEADER
 
 #include <cmath>
-#include <json.h>
+#include <json.hpp>
 
 class Position {
     private:

@@ -27,7 +27,7 @@ private:
 	
 	// Menus
 	static void mainMenu();
-	static void managmentMenu();
+	static void managementMenu();
 	static void stadiumMenu();
 	static void playersMenu();
 	static void friendlyMatchMenu();

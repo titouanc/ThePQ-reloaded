@@ -10,9 +10,9 @@ Connection::Connection()
 void Connection::loginUser(string username, string passwd)
 {
 	JSON::Dict toSend, credentials;
-	credentials.set("CO_U", username);
-	credentials.set("CO_P", passwd);
-	toSend.set("type", "CO_L");
+	credentials.set(net::MSG::USERNAME, username);
+	credentials.set(net::MSG::PASSWORD, passwd);
+	toSend.set("type", net::MSG::LOGIN_QUERY);
 	toSend.set("data", credentials);
 	_socket.send(&toSend);
 
@@ -21,11 +21,11 @@ void Connection::loginUser(string username, string passwd)
 	if (ISDICT(serverMessage)){
 		JSON::Dict const &received = DICT(serverMessage);
 		if (received.hasKey("type") && ISSTR(received.get("type")) 
-			&& STR(received.get("type")).value() == "CO_S"){
+			&& STR(received.get("type")).value() == net::MSG::CONNECTION_STATUS){
 			if (received.hasKey("data") && ISSTR(received.get("data"))) {
-				if (STR(received.get("data")).value() == "P_ER")
+				if (STR(received.get("data")).value() == net::MSG::PASSWORD_ERROR)
 					throw WrongPasswordException();
-				else if (STR(received.get("data")).value() == "U_N_F")
+				else if (STR(received.get("data")).value() == net::MSG::USER_NOT_FOUND)
 					throw UserNotFoundException();
 			}
 		}
@@ -35,7 +35,7 @@ void Connection::loginUser(string username, string passwd)
 
 void Connection::doesUserExist(string username){
 	JSON::Dict toSend;
-	toSend.set("type", "CO_U");
+	toSend.set("type", net::MSG::USER_EXISTS_QUERY);
 	toSend.set("data", username);
 	_socket.send(&toSend);
 
@@ -44,9 +44,9 @@ void Connection::doesUserExist(string username){
 	if(ISDICT(serverMessage)){
 		JSON::Dict const &received = DICT(serverMessage);
 		if (received.hasKey("type") && ISSTR(received.get("type")) 
-			&& STR(received.get("type")).value() == "CO_S"){
+			&& STR(received.get("type")).value() == net::MSG::CONNECTION_STATUS){
 			if (received.hasKey("data") && ISSTR(received.get("data")) 
-				&& STR(received.get("data")).value() == "U_REG"){
+				&& STR(received.get("data")).value() == net::MSG::USER_EXISTS){
 				throw UserAlreadyExistsException();
 			}
 		}
@@ -56,9 +56,9 @@ void Connection::doesUserExist(string username){
 void Connection::registerUser(string username, string passwd)
 {
 	JSON::Dict toSend, received, credentials;
-	credentials.set("CO_U", username);
-	credentials.set("CO_P", passwd);
-	toSend.set("type", "CO_R");
+	credentials.set(net::MSG::USERNAME, username);
+	credentials.set(net::MSG::PASSWORD, passwd);
+	toSend.set("type", net::MSG::REGISTER_QUERY);
 	toSend.set("data", credentials);
 	_socket.send(&toSend);
 
@@ -67,9 +67,9 @@ void Connection::registerUser(string username, string passwd)
 	if (ISDICT(serverMessage)){
 		JSON::Dict const &received = DICT(serverMessage);
 		if (received.hasKey("type") && ISSTR(received.get("type")) 
-			&& STR(received.get("type")).value() == "CO_S"){
+			&& STR(received.get("type")).value() == net::MSG::CONNECTION_STATUS){
 			if (received.hasKey("data") && ISSTR(received.get("data"))) {
-				if (STR(received.get("data")).value() == "U_REG")
+				if (STR(received.get("data")).value() == net::MSG::USER_EXISTS)
 					throw UserAlreadyExistsException();
 			}
 		}

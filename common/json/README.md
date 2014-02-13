@@ -1,4 +1,4 @@
-Tous les exemples ici sont dans `common/json/demo`. Il faut inclure `json.h`.
+Tous les exemples ici sont dans `common/json/demo`. Il faut inclure `json.hpp`.
 
 #Typage
 ## Types de données
@@ -30,7 +30,7 @@ Il est aussi possible de *voler* un objet à un conteneur (l'appelant devient al
 ## Créer un objet JSON
 
 	#include <iostream>
-	#include <json.h>
+	#include <json.hpp>
 
 	using namespace std;
 
@@ -57,7 +57,7 @@ Il est aussi possible de *voler* un objet à un conteneur (l'appelant devient al
 ## Lire un objet JSON à partir d'une chaîne
 
 	#include <iostream>
-	#include <json.h>
+	#include <json.hpp>
 
 	using namespace std;
 

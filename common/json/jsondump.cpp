@@ -5,7 +5,7 @@
  *    + 2014-02-07: First release (Titou)
  */
 
-#include "json.h"
+#include "json.hpp"
 #include <iostream>
 
 extern "C" {

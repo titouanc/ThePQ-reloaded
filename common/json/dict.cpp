@@ -1,4 +1,4 @@
-#include "json.h"
+#include "json.hpp"
 #include <cmath>
 
 using namespace JSON;
@@ -12,6 +12,22 @@ Dict::~Dict()
     for (elem=_content.begin(); elem!=_content.end(); elem++)
         delete elem->second;
     _content.clear();
+}
+
+Dict::Dict(const Dict & other) : Dict()
+{
+    for (Dict::const_iterator it=other.begin(); it!=other.end(); it++)
+        setPtr(it->first, it->second->clone());
+}
+
+Dict & Dict::operator=(const Dict & other)
+{
+    for (Dict::iterator it=begin(); it!=end(); it++)
+        delete it->second;
+    _content.clear();
+    for (Dict::const_iterator it=other.begin(); it!=other.end(); it++)
+        setPtr(it->first, it->second->clone());
+    return *this;
 }
 
 Type Dict::type(void) const 

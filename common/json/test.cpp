@@ -1,5 +1,6 @@
-#include "json.h"
-#include <lighttest.h>
+#include "json.hpp"
+#include <lighttest.hpp>
+#include <cstring>
 extern "C" {
 	#include <unistd.h>
 }
@@ -403,6 +404,63 @@ TEST(json_macros)
 	ASSERT(! ISINT(d.get("unknow")));
 ENDTEST()
 
+TEST(conversion_operators)
+	const char *repr = "{\"str\": \"chaine\", \"int\": 42,"
+	                   " \"float\": 3.14, \"bool\": true}";
+	JSON::Value *res = JSON::parse(repr);
+	ASSERT(ISDICT(res));
+
+	JSON::Dict const & dict = DICT(res);
+
+	ASSERT(ISINT(dict.get("int")));
+	ASSERT(INT(dict.get("int")) == 42);
+
+	ASSERT(ISFLOAT(dict.get("float")));
+	ASSERT(FLOAT(dict.get("float")) == 3.14);
+
+	ASSERT(ISBOOL(dict.get("bool")));
+	ASSERT(BOOL(dict.get("bool")));
+
+	ASSERT(ISSTR(dict.get("str")));
+	ASSERT(strcmp(STR(dict.get("str")), "chaine") == 0);
+
+	std::string const & chaine = STR(dict.get("str"));
+	ASSERT(chaine == "chaine");
+
+	delete res;
+ENDTEST()
+
+TEST(list_assign)
+	JSON::Value *parsed = JSON::parse("[1, 2, 3]");
+	ASSERT(ISLIST(parsed));
+	JSON::List l1 = LIST(parsed);
+	JSON::List l2(LIST(parsed));
+
+	ASSERT(LIST(parsed).len() == l1.len());
+	ASSERT(LIST(parsed).len() == l2.len());
+	for (size_t i=0; i<l1.len(); i++){
+		ASSERT(LIST(parsed)[i] != l1[i]); /* Different pointers */
+		ASSERT(LIST(parsed)[i] != l2[i]);
+
+		ASSERT(ISINT(l1[i])); /* But same val */
+		ASSERT(INT(l1[i]).value() == INT(l2[i]).value());
+	}
+ENDTEST()
+
+TEST(dict_assign)
+	JSON::Value *parsed = JSON::load("fixtures/a.json");
+	ASSERT(ISDICT(parsed));
+	JSON::Dict d1 = DICT(parsed);
+	JSON::Dict d2(DICT(parsed));
+
+	for (JSON::Dict::iterator it=d1.begin(); it!=d1.end(); it++){
+		ASSERT(d2.hasKey(it->first));
+		ASSERT(DICT(parsed).hasKey(it->first));
+	}
+
+	delete parsed;
+ENDTEST()
+
 int main(int argc, const char **argv)
 {
 	TestFunc testSuite[] = {
@@ -441,7 +499,10 @@ int main(int argc, const char **argv)
 		ADDTEST(json_dict_steal),
 		ADDTEST(json_list_steal),
 		ADDTEST(json_dict_replace_key),
-		ADDTEST(json_macros)
+		ADDTEST(json_macros),
+		ADDTEST(conversion_operators),
+		ADDTEST(list_assign),
+		ADDTEST(dict_assign)
 	};
 
 	return RUN(testSuite);

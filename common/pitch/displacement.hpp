@@ -1,7 +1,7 @@
 #ifndef DEFINE_DISPLACEMENT_HEADER
 #define DEFINE_DISPLACEMENT_HEADER
 
-#include <json.h>
+#include <json.hpp>
 #include <vector>
 #include <stdexcept>
 #include "position.h"

@@ -1,7 +1,7 @@
 #ifndef DEFINE_JSON_NUMBER_HEADER
 #define DEFINE_JSON_NUMBER_HEADER
 
-#include "json.h"
+#include "json.hpp"
 
 template <typename T>
 class Number : public Value {
@@ -15,6 +15,7 @@ class Number : public Value {
         double doubleVal(void) const;
         long int intVal(void) const;
         Value *clone(void) const;
+        operator T const &(){return value();}
 };
 
 class Integer : public Number<long int> {
