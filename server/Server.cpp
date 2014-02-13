@@ -155,7 +155,5 @@ void Server::sendConnectedUsersList(int peer_id){
 	for (map<int, User*>::iterator it=_users.begin(); it!=_users.end(); it++){
 		LIST(usersList.get("data")).append(it->second->getUsername());
 	}
-
-	//JSON::Value * installationsList = JSON::load(listPath);
 	_outbox.push(Message(peer_id, &usersList));
 }
