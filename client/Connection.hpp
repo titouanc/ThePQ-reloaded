@@ -16,6 +16,7 @@ public:
 	void doesUserExist(std::string username);
 	void registerUser(std::string username, std::string passwd);
 	
+	void getInstallationsList(JSON::Dict & toFill);
 	
 private:
 	net::TcpSocket _socket;

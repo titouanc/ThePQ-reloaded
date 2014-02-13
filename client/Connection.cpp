@@ -76,3 +76,15 @@ void Connection::registerUser(string username, string passwd)
 	}
 	// User is registered
 }
+
+void Connection::getInstallationsList(JSON::Dict & toFill){
+	JSON::Dict query;
+	query.set("type", net::MSG::DATA_QUERY);
+	query.set("DATA", net::MSG::INSTALLATIONS_LIST);
+	_socket.send(&query);
+
+	JSON::Value *serverResponse = _socket.recv();
+	if (ISDICT(serverResponse)){
+		toFill = DICT(serverResponse);
+	}
+}

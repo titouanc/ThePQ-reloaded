@@ -102,9 +102,12 @@ void Client::managementMenu()
 
 void Client::stadiumMenu()
 {
+	StadiumManager stadiumManager(_connection);
+	stadiumManager.printInstallationsList();
 	Menu stadium;
 	string message;
 	message+= "You can : \n";
+	message+= "    - (v)iew your installations\n";
 	message+= "    - (q)uit to management menu\n";
 	stadium.setMessage(message);
 	// TODO : stadium menu
