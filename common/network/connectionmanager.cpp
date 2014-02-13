@@ -78,8 +78,8 @@ JSON::Value *ConnectionManager::_addClient(void)
         throw ConnectionError(std::string("Accept error: ")+strerror(errno));
     _clients.insert(_clients.begin(), fd);
     JSON::Dict *msg = new JSON::Dict();
-    msg->set("__type__", "CONNECT");
-    msg->set("client_id", fd);
+    msg->set("type", "CONNECT");
+    msg->set("data", fd);
     return msg;
 }
 
@@ -115,8 +115,8 @@ JSON::Value *ConnectionManager::_removeClient(std::set<int>::iterator position)
     _clients.erase(position);
 
     JSON::Dict *msg = new JSON::Dict();
-    msg->set("__type__", "DISCONNECT");
-    msg->set("client_id", client_id);
+    msg->set("type", "DISCONNECT");
+    msg->set("data", client_id);
     return msg;
 }
 
@@ -158,8 +158,9 @@ void ConnectionManager::_mainloop_in(void)
         if (select(fdmax+1, &readable, NULL, NULL, NULL) > 0){
             if (FD_ISSET(_sockfd, &readable)){
                 JSON::Value *msg = _addClient();
-                if (msg)
-                    _incoming.push(Message(*it, msg));
+                if (msg){
+                    _incoming.push(Message(INT(DICT(msg).get("data")), msg));
+                }
             }
             for (it=_clients.begin(); it!=_clients.end();){
                 if (! FD_ISSET(*it, &readable))
@@ -175,9 +176,10 @@ void ConnectionManager::_mainloop_in(void)
                                been read => close connection */
                             std::set<int>::iterator to_remove = it;
                             it++;
+                            int the_client_id = *to_remove;
                             msg = _removeClient(to_remove);
                             if (msg)
-                                _incoming.push(Message(_sockfd, msg));
+                                _incoming.push(Message(the_client_id, msg));
                         }
                     } catch (JSON::ParseError &err) {}
                 }

@@ -151,6 +151,7 @@ namespace JSON {
     Value *parse(const char *str, char **eptr=NULL);
 
     Value *load(const char *filename);
+    Value *load(std::string filename);
 }
 
 #endif

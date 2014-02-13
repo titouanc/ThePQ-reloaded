@@ -8,16 +8,20 @@ User::User(const string& username, const string& password)
 
 User::User(const JSON::Dict* json)
 {
-	setUsername(STR(json->get("username")).value());
-	setPassword(STR(json->get("password")).value());
+	setUsername(STR(json->get(net::MSG::USERNAME)).value());
+	setPassword(STR(json->get(net::MSG::PASSWORD)).value());
 }
 
 User::operator JSON::Dict()
 {
 	JSON::Dict ret;
-	ret.set("username", _username);
-	ret.set("password", _password);
+	ret.set(net::MSG::USERNAME, _username);
+	ret.set(net::MSG::PASSWORD, _password);
 	return ret;
+}
+
+string User::getUserDirectoryPath(){
+	return USER_PATH + getUsername() + "/";
 }
 
 User* User::load(string username)
@@ -38,8 +42,8 @@ User* User::load(string username)
 void User::save()
 {
 	JSON::Dict json = *this;
-	mkdir(string(USER_PATH + _username).c_str(), 0755);
-	json.save(string(USER_PATH + _username + "/user.json").c_str());
+	mkdir(getUserDirectoryPath().c_str(), 0755);
+	json.save(string(getUserDirectoryPath() + "user.json").c_str());
 }
 
 // TODO add User.delete
