@@ -1,10 +1,12 @@
 [
 	{
+		"name": "Medical Center",
 		"level": 0, 
 		"baseValue" : 200, 
 		"refundRatio" : 0.5
 	}, 
 	{
+		"name": "Gear Shop",
 		"level": 1, 
 		"baseValue" : 100, 
 		"refundRatio" : 0.5

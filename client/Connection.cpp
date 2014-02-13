@@ -78,23 +78,21 @@ void Connection::registerUser(string username, string passwd)
 }
 
 vector<Installation> Connection::getInstallationsList(){
-	JSON::Dict query, toFill;
+	JSON::Dict query;
+	JSON::List toFill;
 	query.set("type", net::MSG::DATA_QUERY);
 	query.set("data", net::MSG::INSTALLATIONS_LIST);
 	_socket.send(&query);
 
 	JSON::Value *serverResponse = _socket.recv();
-	if (ISDICT(serverResponse))
+	if (ISLIST(serverResponse))
 	{
-		toFill = DICT(serverResponse);
+		toFill = LIST(serverResponse);
 	}
-	JSON::Dict::const_iterator it = toFill.begin();
 	vector<Installation> vec;
-	while (it != toFill.end())
+	for (size_t i = 0; i < toFill.len(); ++i)
 	{
-		JSON::Dict json = DICT(it->second);
-		vec.push_back(json);
-		it++;
+		vec.push_back(DICT(toFill[i]));
 	}
 	
 	delete serverResponse;
