@@ -11,7 +11,8 @@ private:
 	int _baseValue;
 	float _refundRatio;
 public:
-	Installation(JSON::Dict json) : _level(INT(json.get("level"))), 
+	Installation(JSON::Dict json) : _name(STR(json.get("name")).value()),
+									   _level(INT(json.get("level"))), 
 									   _baseValue(INT(json.get("baseValue"))),
 									   _refundRatio(INT(json.get("refundRatio")))
 	{}
