@@ -1,4 +1,5 @@
 make.ok: server/make.ok client/make.ok
+	touch $@
 
 common/make.ok: common
 	make -C $<
