@@ -2,9 +2,8 @@
 
 using namespace std;
 
-StadiumManager::StadiumManager(Connection& connection): _connection(connection){
-	loadInstallations();
-}
+JSON::Dict StadiumManager::_installations;
+Connection StadiumManager::_connection;
 
 void StadiumManager::printInstallationsList(){
 	// TODO implement printInstallationsList
@@ -14,6 +13,7 @@ void StadiumManager::printInstallationsList(){
 	}
 }
 
-void StadiumManager::loadInstallations(){
+void StadiumManager::loadInstallations(Connection& connection){
+	_connection = connection;
 	_connection.getInstallationsList(_installations);
 }
