@@ -13,6 +13,16 @@ public:
 									   _baseValue(INT(json.get("baseValue"))),
 									   _refundRatio(INT(json.get("refundRatio")))
 	{}
+	
+	operator JSON::Dict()
+	{
+		JSON::Dict json;
+		json.set("level", _level);
+		json.set("baseValue", _baseValue);
+		json.set("refundRation", _refundRatio);
+		return json;
+	}
+	
 	Installation():_level(0), _baseValue(100), _refundRatio(0.5) {} 
 	Installation(int baseValue, int level, float refundRatio=0.5) :
 			_level(level), 
