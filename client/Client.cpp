@@ -109,6 +109,7 @@ void Client::stadiumMenu()
 	message+= "You can : \n";
 	message+= "    - (v)iew your installations\n";
 	message+= "    - (q)uit to management menu\n";
+	stadium.addOption('v', StadiumManager::printInstallationsList);
 	stadium.setMessage(message);
 	// TODO : stadium menu
 	stadium.run();
