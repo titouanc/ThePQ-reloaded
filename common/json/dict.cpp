@@ -116,3 +116,8 @@ Dict::const_iterator Dict::end(void) const
 {
     return _content.end();
 }
+
+size_t Dict::len(void) const
+{
+    return _content.size();
+}

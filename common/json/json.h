@@ -127,6 +127,7 @@ namespace JSON {
             void set(std::string const & key, Value const & val);
             const Value * get(std::string const & key) const;
             Value * steal(std::string const & key);
+            size_t len(void) const;
             
             /* Fast setters */
             void set(std::string const & key, double val);
