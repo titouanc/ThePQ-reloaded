@@ -3,7 +3,7 @@ LIBNETWORK=../common/network/libnetwork.a
 LIBJSON=../common/json/libjson.a
 
 CXX = g++
-CXXFLAGS = -std=c++11 -pedantic -Wall -Wextra -pthread -I../common/json -I../common/lighttest
+CXXFLAGS = -std=c++11 -pedantic -Wall -Wextra -pthread -I../common/json -I../common/lighttest -I../common/network
 LDFLAGS = -lm -lpthread
 
 all: server.app test.app
