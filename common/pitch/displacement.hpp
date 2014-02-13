@@ -4,7 +4,7 @@
 #include <json.hpp>
 #include <vector>
 #include <stdexcept>
-#include "position.h"
+#include "position.hpp"
 #include "Moveable.hpp"
 
 class NotADirection : public std::runtime_error {
