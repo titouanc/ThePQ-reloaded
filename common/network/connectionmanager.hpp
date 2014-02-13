@@ -8,10 +8,7 @@
 #include <pthread.h>
 #include <sharedqueue.hpp>
 #include <json/json.hpp>
-
-class ConnectionError : public std::runtime_error {
-    public: using std::runtime_error::runtime_error;
-}; 
+#include "Exception.hpp"
 
 struct Message {
     int peer_id;

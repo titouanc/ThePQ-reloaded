@@ -29,13 +29,13 @@ ConnectionManager::ConnectionManager(
 
     _sockfd = socket(AF_INET, SOCK_STREAM, 0);
     if (_sockfd < 0)
-        throw ConnectionError(
+        throw ConnectionFailedException(
             std::string("Unable to open socket: ")+
             strerror(errno)
         );
 
     if (setsockopt(_sockfd, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(int)) == -1){
-        throw ConnectionError(std::string("Unable to set socket options : ")+strerror(errno));
+        throw ConnectionFailedException(std::string("Unable to set socket options : ")+strerror(errno));
     }
 
     memset(&_bind_addr, 0, sizeof(struct sockaddr_in));
@@ -43,7 +43,7 @@ ConnectionManager::ConnectionManager(
     _bind_addr.sin_port = htons(bind_port);
     if (inet_aton(bind_addr_repr, &(_bind_addr.sin_addr)) == 0){
         close(_sockfd);
-        throw ConnectionError(
+        throw ConnectionFailedException(
             std::string("Unable to parse adress ")+
             bind_addr_repr+strerror(errno)
         );
@@ -51,7 +51,7 @@ ConnectionManager::ConnectionManager(
 
     if (bind(_sockfd, (struct sockaddr *) &_bind_addr, sizeof(struct sockaddr_in)) != 0){
         close(_sockfd);
-        throw ConnectionError(
+        throw ConnectionFailedException(
             std::string("Unable to bind to ")+
             bind_addr_repr+strerror(errno)
         );
@@ -59,7 +59,7 @@ ConnectionManager::ConnectionManager(
 
     if (listen(_sockfd, max_clients) != 0){
         close(_sockfd);
-        throw ConnectionError(
+        throw ConnectionFailedException(
             std::string("Unable to listen on ")+
             bind_addr_repr+strerror(errno)
         );
@@ -79,7 +79,7 @@ JSON::Value *ConnectionManager::_addClient(void)
 {
     int fd = accept(_sockfd, NULL, NULL);
     if (fd < 0)
-        throw ConnectionError(std::string("Accept error: ")+strerror(errno));
+        throw ConnectionFailedException(std::string("Accept error: ")+strerror(errno));
     _clients.insert(_clients.begin(), fd);
     JSON::Dict *msg = new JSON::Dict();
     msg->set("type", "CONNECT");
