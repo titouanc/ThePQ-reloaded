@@ -78,8 +78,8 @@ JSON::Value *ConnectionManager::_addClient(void)
         throw ConnectionError(std::string("Accept error: ")+strerror(errno));
     _clients.insert(_clients.begin(), fd);
     JSON::Dict *msg = new JSON::Dict();
-    msg->set("__type__", "CONNECT");
-    msg->set("client_id", fd);
+    msg->set("type", "CONNECT");
+    msg->set("data", fd);
     return msg;
 }
 
@@ -115,8 +115,8 @@ JSON::Value *ConnectionManager::_removeClient(std::set<int>::iterator position)
     _clients.erase(position);
 
     JSON::Dict *msg = new JSON::Dict();
-    msg->set("__type__", "DISCONNECT");
-    msg->set("client_id", client_id);
+    msg->set("type", "DISCONNECT");
+    msg->set("data", client_id);
     return msg;
 }
 
