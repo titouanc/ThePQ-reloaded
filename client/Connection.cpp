@@ -88,3 +88,20 @@ void Connection::getInstallationsList(JSON::Dict & toFill){
 		toFill = DICT(serverResponse);
 	}
 }
+
+void Connection::getConnectedUsersList(vector<string> &users){
+	JSON::Dict query;
+	query.set("type", net::MSG::DATA_QUERY);
+	query.set("data", net::MSG::CONNECTED_USERS_LIST);
+	_socket.send(&query);
+
+	JSON::Value *serverResponse = _socket.recv();
+	if (ISDICT(serverResponse)){
+		JSON::Dict received = DICT(serverResponse);
+		if (ISSTR(received.getKey("type")) && ISLIST(received.getKey("data"))){
+			JSON::List & connectedUsers = LIST(received.getKey("data"));
+			for (size_t i = 0; i<connectedUsers.len(); ++i)
+				users.push_back(connectedUsers[i]);
+		}
+	}
+}
