@@ -29,15 +29,9 @@ namespace net
 		{}
 	};
 	
-	class SendFailedException : public std::runtime_error {
+	class DisconnectedException : public std::runtime_error {
 	public:
-		SendFailedException():runtime_error(std::string("send() failed: ")+strerror(errno))
-		{}
-	};
-	
-	class RecvFailedException : public std::runtime_error {
-	public:
-		RecvFailedException():runtime_error(std::string("recv() failed: ")+strerror(errno))
+		DisconnectedException():runtime_error(std::string("host disconnected")+strerror(errno))
 		{}
 	};
 	

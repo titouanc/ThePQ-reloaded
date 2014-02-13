@@ -1,4 +1,4 @@
-OBJ= Menu.o Message.o Connection.o Client.o StadiumManager.o main.o
+OBJ= Menu.o Message.o Connection.o Client.o StadiumManager.o FriendlyGameManager.o main.o
 MAIN=client.app
 CXX=g++
 CFLAGS=-std=c++11 -pedantic -Wall -Wextra -I../common
