@@ -11,14 +11,13 @@ using namespace std;
 
 class StadiumManager {
 public:
-	StadiumManager(Connection& connection);
 
-	void printInstallationsList();
-	void loadInstallations();
+	static void printInstallationsList();
+	static void loadInstallations(Connection& connection);
 
 private:
-	JSON::Dict _installations;
-	Connection _connection;
+	static JSON::Dict _installations;
+	static Connection _connection;
 };
 
 #endif

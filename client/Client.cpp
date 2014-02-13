@@ -102,8 +102,8 @@ void Client::managementMenu()
 
 void Client::stadiumMenu()
 {
-	StadiumManager stadiumManager(_connection);
-	stadiumManager.printInstallationsList();
+	StadiumManager::loadInstallations(_connection);
+	StadiumManager::printInstallationsList();
 	Menu stadium;
 	string message;
 	message+= "You can : \n";
