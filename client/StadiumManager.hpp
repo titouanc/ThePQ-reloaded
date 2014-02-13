@@ -4,8 +4,8 @@
 #include <string>
 #include <map>
 #include "Connection.hpp"
-#include "json.hpp"
-#include "Installation.hpp"
+#include <model/Installation.hpp>
+#include <json/json.hpp>
 
 using namespace std;
 

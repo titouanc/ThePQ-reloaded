@@ -1,7 +1,7 @@
 // Abstract class Installation. Methods to be implemented in subclasses : 
 // 		- int getMaxLevel();
 
-#include "json.hpp"
+#include <json/json.hpp>
 #include <string>
 
 class Installation{
