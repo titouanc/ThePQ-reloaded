@@ -4,7 +4,7 @@
 #include <iostream>
 #include <string>
 #include <map>
-#include <network/connectionmanager.hpp>
+#include <network/ConnectionManager.hpp>
 #include <network/net.hpp>
 #include "User.hpp"
 
