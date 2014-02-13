@@ -24,7 +24,7 @@ void net::TcpSocket::send(const char *data, size_t len)
 {
     if (::send(_sockfd, data, len, 0) <= 0)
     {
-		throw SendFailedException();
+		throw DisconnectedException();
 	}
 }
 
@@ -35,7 +35,7 @@ void net::TcpSocket::recv(char *data, size_t len, size_t & received)
     received = ::recv(_sockfd, data, len, 0);
     if (received <= 0)
     {
-		throw RecvFailedException();
+		throw DisconnectedException();
 	}
 	data[received] = '\0';
 }
@@ -47,10 +47,10 @@ void net::TcpSocket::send(const JSON::Value *json)
 	uint32_t len = htonl(dump.length());
 	int r = ::send (_sockfd, &len, 4, 0);
 	if (r != 4)
-		throw SendFailedException();
+		throw DisconnectedException();
     if (::send(_sockfd, data, dump.length(), 0) <= 0)
     {
-		throw SendFailedException();
+		throw DisconnectedException();
 	}
 }
 
@@ -64,11 +64,11 @@ JSON::Value* net::TcpSocket::recv()
 	int r = ::recv(_sockfd, &len, 4, 0);
 	len = ntohl(len);
 	if (r != 4)
-		throw RecvFailedException();
+		throw DisconnectedException();
     received = ::recv(_sockfd, data, len, 0);
     if (received != len)
     {
-		throw RecvFailedException();
+		throw DisconnectedException();
 	}
 	data[received] = '\0';
 	json = JSON::parse(data);
