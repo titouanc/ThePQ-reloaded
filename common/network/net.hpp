@@ -20,6 +20,7 @@
 #include <cerrno>
 #include <cstring>
 #include <json/json.hpp>
+#include "Exception.hpp"
 
 namespace net
 {

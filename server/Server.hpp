@@ -14,7 +14,7 @@ class Server{
 public:
 	Server();
 	void run();
-	void treatMessage(const Message &message);
+	void treatMessage(const net::Message &message);
 
 	void registerUser(const JSON::Dict &credentials, int peer_id);
 	void logUserIn(const JSON::Dict &credentials, int peer_id);
@@ -22,8 +22,8 @@ public:
 	void sendInstallationsList(int peer_id);
 	void sendConnectedUsersList(int peer_id);
 private:
-	ConnectionManager _connectionManager;
-	SharedQueue<Message> _inbox, _outbox;
+	net::ConnectionManager _connectionManager;
+	SharedQueue<net::Message> _inbox, _outbox;
 	map<int, User*> _users;
 };
 #endif

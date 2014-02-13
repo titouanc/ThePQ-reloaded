@@ -1,6 +1,7 @@
 #include "Server.hpp"
 
 using namespace std;
+using namespace net;
 
 Server::Server() : _connectionManager(_inbox, _outbox, "0.0.0.0", 32123), _users(){
 	_connectionManager.start();
@@ -155,5 +156,7 @@ void Server::sendConnectedUsersList(int peer_id){
 	for (map<int, User*>::iterator it=_users.begin(); it!=_users.end(); it++){
 		LIST(usersList.get("data")).append(it->second->getUsername());
 	}
-	_outbox.push(Message(peer_id, usersList.clone()));
+
+	//JSON::Value * installationsList = JSON::load(listPath);
+	_outbox.push(Message(peer_id, &usersList));
 }

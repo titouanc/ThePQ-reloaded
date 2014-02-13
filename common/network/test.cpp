@@ -1,6 +1,7 @@
 #include "connectionmanager.hpp"
 
 using namespace std;
+using namespace net;
 
 int main(int argc, const char **argv)
 {
