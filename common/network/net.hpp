@@ -41,6 +41,27 @@ namespace net
 		{}
 	};
 	
+	namespace MSG
+	{
+		namespace TYPE
+		{
+			#define LOGIN_QUERY "Q_L"
+			#define REGISTER_QUERY "Q_R"
+			#define USER_EXISTS_QUERY "Q_U"
+			#define USER_STATUS "Q_S"
+		}
+		namespace DATA
+		{
+			#define USERNAME "D_U"
+			#define PASSWORD "D_P"
+			#define USER_LOGIN "U_L"
+			#define PASSWORD_ERROR "U_P"
+			#define USER_NOT_FOUND "U_NF"
+			#define USER_EXISTS "U_E"
+			#define USER_REGISTERED "U_R"
+		}
+	}
+	
 	class TcpSocket {
 	public:
 		static const size_t MSG_SIZE = 4096;
