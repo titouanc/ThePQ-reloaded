@@ -3,6 +3,7 @@
 
 #include <string>
 #include "../common/json/json.hpp"
+#include <net.hpp>
 #include "sys/stat.h"
 
 using namespace std;
@@ -25,6 +26,7 @@ public:
 	string getPassword() { return _password; }
 	void setPassword(const string& password) { _password = password; }
 	
+	string getUserDirectoryPath();
 	void save();
 	
 	static User* load(string username);
