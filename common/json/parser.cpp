@@ -169,6 +169,14 @@ Value *JSON::parse(const char *str, char **eptr)
     //* return NULL if empty string
     if (! *str) return NULL;
 
+    if (strncmp(str, "true", 4) == 0){
+        *eptr = (char*) str + 4;
+        return new Bool(true);
+    }
+    if (strncmp(str, "false", 5) == 0){
+        *eptr = (char*) str + 5;
+        return new Bool(false);
+    }
     if (('0' <= *str && *str <= '9') || *str == '-')
         return parseNumber(str, eptr);
     if (*str == '"')
