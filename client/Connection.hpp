@@ -17,6 +17,7 @@ public:
 	void registerUser(std::string username, std::string passwd);
 	
 	void getInstallationsList(JSON::Dict & toFill);
+	void Connection::getConnectedUsersList(vector<string> users)
 	
 private:
 	net::TcpSocket _socket;
