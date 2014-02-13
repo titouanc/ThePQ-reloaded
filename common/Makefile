@@ -1,10 +1,15 @@
-all: json/libjson.a network/libnetwork.a pitch/test
+all: json/test.ok network/test.ok pitch/test.ok
 
-json/libjson.a:
+json/test.ok: json
 	make -C json
 
-network/libnetwork.a: json/libjson.a
+network/test.ok: json/libjson.a network
 	make -C network
 
-pitch/test: json/libjson.a
+pitch/test.ok: json/libjson.a pitch
 	make -C pitch
+
+clean:
+	make -C json clean
+	make -C pitch clean
+	make -C network clean
