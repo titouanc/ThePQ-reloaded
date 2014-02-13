@@ -49,7 +49,7 @@ Position const & Position::operator+=(Position const & other)
     return *this;
 }
 
-bool Position::operator==(Position const & other)
+bool Position::operator==(Position const & other) const
 {
     return _x == other.x() && _y == other.y();
 }
