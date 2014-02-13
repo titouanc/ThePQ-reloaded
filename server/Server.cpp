@@ -36,6 +36,11 @@ void Server::treatMessage(const Message &message){
 				if (messageType == net::MSG::USER_EXISTS_QUERY) {
 					checkIfUserExists(STR(received.get("data")).value(), message.peer_id);
 				}
+				if (messageType == net::MSG::DATA_QUERY){
+					if(STR(received.getKey()).value() == net::MSG::INSTALLATIONS_LIST){
+						sendInstallationsList(message.peer_id);
+					}
+				}
 			}
 		}
 	}
@@ -120,4 +125,8 @@ void Server::checkIfUserExists(string username, int peer_id){
 		Message status(peer_id, statusDict);
 		_outbox.push(status);
 	}
+}
+
+void Server::sendInstallationsList(int peer_id){
+	
 }
