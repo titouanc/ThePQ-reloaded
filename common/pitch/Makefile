@@ -1,8 +1,8 @@
 CXX = g++
-CXXFLAGS = -std=c++11 -pedantic -Wall -Wextra -I../json/ -I../lighttest
+CXXFLAGS = -std=c++11 -pedantic -Wall -Wextra -I../
 LDFLAGS = -lm
 HEADERS = $(shell ${CXX} ${CXXFLAGS} -MM *.cpp | sed -E 's/.+\.[^h]pp//g')
-OBJS = position.o displacement.o
+OBJS = Position.o Displacement.o
 TESTS = test.ok moveableTest.ok
 
 all: ${TESTS}

@@ -1,6 +1,6 @@
 #include <string>
 #include "Moveable.hpp"
-#include "../lighttest/lighttest.hpp"
+#include <lighttest/lighttest.hpp>
 
 TEST(constructor_without_parameters)
 	Moveable m;
