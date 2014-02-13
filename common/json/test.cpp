@@ -430,6 +430,23 @@ TEST(conversion_operators)
 	delete res;
 ENDTEST()
 
+TEST(list_assign)
+	JSON::Value *parsed = JSON::parse("[1, 2, 3]");
+	ASSERT(ISLIST(parsed));
+	JSON::List l1 = LIST(parsed);
+	JSON::List l2(LIST(parsed));
+
+	ASSERT(LIST(parsed).len() == l1.len());
+	ASSERT(LIST(parsed).len() == l2.len());
+	for (size_t i=0; i<l1.len(); i++){
+		ASSERT(LIST(parsed)[i] != l1[i]); /* Different pointers */
+		ASSERT(LIST(parsed)[i] != l2[i]);
+
+		ASSERT(ISINT(l1[i])); /* But same val */
+		ASSERT(INT(l1[i]).value() == INT(l2[i]).value());
+	}
+ENDTEST()
+
 TEST(dict_assign)
 	JSON::Value *parsed = JSON::load("fixtures/a.json");
 	ASSERT(ISDICT(parsed));
@@ -484,6 +501,7 @@ int main(int argc, const char **argv)
 		ADDTEST(json_dict_replace_key),
 		ADDTEST(json_macros),
 		ADDTEST(conversion_operators),
+		ADDTEST(list_assign),
 		ADDTEST(dict_assign)
 	};
 
