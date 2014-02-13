@@ -80,7 +80,7 @@ void Connection::registerUser(string username, string passwd)
 void Connection::getInstallationsList(JSON::Dict & toFill){
 	JSON::Dict query;
 	query.set("type", net::MSG::DATA_QUERY);
-	query.set("DATA", net::MSG::INSTALLATIONS_LIST);
+	query.set("data", net::MSG::INSTALLATIONS_LIST);
 	_socket.send(&query);
 
 	JSON::Value *serverResponse = _socket.recv();
