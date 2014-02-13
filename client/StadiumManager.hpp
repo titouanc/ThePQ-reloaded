@@ -4,7 +4,8 @@
 #include <string>
 #include <map>
 #include "Connection.hpp"
-#include "../common/json/json.hpp"
+#include "json.hpp"
+#include "Installation.hpp"
 
 using namespace std;
 

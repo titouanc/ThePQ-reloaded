@@ -1,7 +1,7 @@
 OBJ= Menu.o Message.o Connection.o Client.o StadiumManager.o main.o
 MAIN=client.app
 CXX=g++
-CFLAGS=-std=c++11 -pedantic -Wall -Wextra -I../common/network -I../common/json
+CFLAGS=-std=c++11 -pedantic -Wall -Wextra -I../common/network -I../common/json -I../common/model
 LDFLAGS= 
 LIBNETWORK=../common/network/libnetwork.a
 LIBJSON=../common/json/libjson.a
