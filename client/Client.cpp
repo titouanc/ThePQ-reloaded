@@ -102,7 +102,7 @@ void Client::managementMenu()
 
 void Client::stadiumMenu()
 {
-	StadiumManager::loadInstallations(_connection);
+	StadiumManager::loadInstallations(&_connection);
 	StadiumManager::printInstallationsList();
 	Menu stadium;
 	string message;

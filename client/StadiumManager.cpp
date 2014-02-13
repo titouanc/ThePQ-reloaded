@@ -3,7 +3,7 @@
 using namespace std;
 
 JSON::Dict StadiumManager::_installations;
-Connection StadiumManager::_connection;
+Connection *StadiumManager::_connection;
 
 void StadiumManager::printInstallationsList(){
 	// TODO implement printInstallationsList
@@ -13,7 +13,7 @@ void StadiumManager::printInstallationsList(){
 	}
 }
 
-void StadiumManager::loadInstallations(Connection& connection){
+void StadiumManager::loadInstallations(Connection *connection){
 	_connection = connection;
-	_connection.getInstallationsList(_installations);
+	_connection->getInstallationsList(_installations);
 }
