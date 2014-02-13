@@ -8,13 +8,12 @@ StadiumManager::StadiumManager(Connection& connection): _connection(connection){
 
 void StadiumManager::printInstallationsList(){
 	// TODO implement printInstallationsList
-	cout << "Installations!" << endl;
-	cout << "You have NOTHING" << endl; 
+	cout << "Here are all the installations you own :" << endl;
+	for (JSON::Dict::const_iterator it=_installations.begin(); it!=_installations.end(); it++){
+		cout << "  - " << it->first << endl;
+	}
 }
 
 void StadiumManager::loadInstallations(){
-	JSON::Dict received;
-	_connection.getInstallationsList(received);
-	cout << "Server response in load installations : " << endl;
-	cout << received << endl;
+	_connection.getInstallationsList(_installations);
 }

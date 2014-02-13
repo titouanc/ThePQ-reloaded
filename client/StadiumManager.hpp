@@ -17,7 +17,7 @@ public:
 	void loadInstallations();
 
 private:
-	map<string, Installation> _installations;
+	JSON::Dict _installations;
 	Connection _connection;
 };
 
