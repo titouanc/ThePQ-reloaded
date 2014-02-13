@@ -7,11 +7,8 @@
 #include <model/Installation.hpp>
 #include <json/json.hpp>
 
-using namespace std;
-
 class StadiumManager {
 public:
-
 	static void printInstallationsList();
 	static void loadInstallations(Connection* connection);
 
