@@ -144,7 +144,8 @@ void Client::friendlyMatchMenu()
 
 void Client::listUsers()
 {
-	// TODO : list users for friendly match
+	FriendlyGameManager::loadConnectedUsersList(&_connection);
+	FriendlyGameManager::printConnectedUsersList();
 }
 
 void Client::chooseUser()

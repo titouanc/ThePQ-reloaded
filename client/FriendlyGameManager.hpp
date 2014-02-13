@@ -9,7 +9,7 @@ using namespace std;
 
 class FriendlyGameManager {
 public:
-	static void printUsersList();
+	static void printConnectedUsersList();
 	static void loadConnectedUsersList(Connection* connection);
 private:
 	static std::vector<std::string> _connectedUsers;
