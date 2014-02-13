@@ -8,6 +8,7 @@
 #include "Exception.hpp"
 #include "Menu.hpp"
 #include "StadiumManager.hpp"
+#include "FriendlyGameManager.hpp"
 
 
 class Client
