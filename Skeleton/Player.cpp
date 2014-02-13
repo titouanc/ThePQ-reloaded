@@ -4,8 +4,8 @@
 #include "Broomstick.hpp"
 #include "Jersey.hpp"
 
-Player::Player (){
-
+Player::Player ():maxLife(100), maxMana(100), lifeBar(100), manaBar(100), abilities(new Abilities()), broomstick(new Broomstick(5,50)), jersey(new Jersey()){
+    
 }
 
 int Player::getRemainingLife () const{
@@ -30,8 +30,7 @@ void Player::equipBroomstick (Broomstick aBroom){
 }
 
 void unequipBroomstick (){
-    if (broomstick != NULL) //TOFIX
-        abilities.improveVelocity(-1 * broomstick.getVelocity());
+    abilities.improveVelocity(-1 * broomstick.getVelocity());
 }
 
 Jersey Player::equipJersey (Jersey aJersey){
@@ -46,7 +45,7 @@ Jersey Player::equipJersey (Jersey aJersey){
 }
 
 void Player::recoverLife (){
-    lifeBar = manaBar;
+    lifeBar = maxLife;
 }
 
 void Player::loseLife (int damage){
