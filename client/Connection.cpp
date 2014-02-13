@@ -98,10 +98,10 @@ void Connection::getConnectedUsersList(vector<string> &users){
 	JSON::Value *serverResponse = _socket.recv();
 	if (ISDICT(serverResponse)){
 		JSON::Dict received = DICT(serverResponse);
-		if (ISSTR(received.getKey("type")) && ISLIST(received.getKey("data"))){
-			JSON::List & connectedUsers = LIST(received.getKey("data"));
+		if (ISSTR(received.get("type")) && ISLIST(received.get("data"))){
+			JSON::List & connectedUsers = LIST(received.get("data"));
 			for (size_t i = 0; i<connectedUsers.len(); ++i)
-				users.push_back(connectedUsers[i]);
+				users.push_back(STR(connectedUsers[i]));
 		}
 	}
 }
