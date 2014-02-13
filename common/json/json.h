@@ -90,6 +90,8 @@ namespace JSON {
             Value * clone(void) const;
             virtual void _writeTo(std::ostream & out) const;
             std::string const & value(void) const;
+            operator std::string const &(){return value();}
+            operator const char *(){return value().c_str();}
     };
 
     class List : public Value {

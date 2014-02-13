@@ -1,5 +1,6 @@
 #include "json.h"
 #include <lighttest.h>
+#include <cstring>
 extern "C" {
 	#include <unistd.h>
 }
@@ -403,6 +404,32 @@ TEST(json_macros)
 	ASSERT(! ISINT(d.get("unknow")));
 ENDTEST()
 
+TEST(conversion_operators)
+	const char *repr = "{\"str\": \"chaine\", \"int\": 42,"
+	                   " \"float\": 3.14, \"bool\": true}";
+	JSON::Value *res = JSON::parse(repr);
+	ASSERT(ISDICT(res));
+
+	JSON::Dict const & dict = DICT(res);
+
+	ASSERT(ISINT(dict.get("int")));
+	ASSERT(INT(dict.get("int")) == 42);
+
+	ASSERT(ISFLOAT(dict.get("float")));
+	ASSERT(FLOAT(dict.get("float")) == 3.14);
+
+	ASSERT(ISBOOL(dict.get("bool")));
+	ASSERT(BOOL(dict.get("bool")));
+
+	ASSERT(ISSTR(dict.get("str")));
+	ASSERT(strcmp(STR(dict.get("str")), "chaine") == 0);
+
+	std::string const & chaine = STR(dict.get("str"));
+	ASSERT(chaine == "chaine");
+
+	delete res;
+ENDTEST()
+
 int main(int argc, const char **argv)
 {
 	TestFunc testSuite[] = {
@@ -441,7 +468,8 @@ int main(int argc, const char **argv)
 		ADDTEST(json_dict_steal),
 		ADDTEST(json_list_steal),
 		ADDTEST(json_dict_replace_key),
-		ADDTEST(json_macros)
+		ADDTEST(json_macros),
+		ADDTEST(conversion_operators)
 	};
 
 	return RUN(testSuite);

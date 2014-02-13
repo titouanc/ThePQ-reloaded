@@ -15,6 +15,7 @@ class Number : public Value {
         double doubleVal(void) const;
         long int intVal(void) const;
         Value *clone(void) const;
+        operator T const &(){return value();}
 };
 
 class Integer : public Number<long int> {
