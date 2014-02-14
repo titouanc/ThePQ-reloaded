@@ -54,17 +54,15 @@ void Server::treatMessage(const Message &message){
 				else if (messageType == MSG::REGISTER_QUERY) 
 					registerUser(DICT(received.get("data")), message.peer_id);
 			} else if (ISSTR(received.get("data"))){
-				// data is a STR
-				string const & query = STR(received.get("data"));
+				string const & data = STR(received.get("data"));
+
 				if (messageType == MSG::USER_EXISTS_QUERY) {
-					checkIfUserExists(query, message.peer_id);
+					checkIfUserExists(data, message.peer_id);
 				} else if (messageType == MSG::DATA_QUERY){
-					if (query == net::MSG::INSTALLATIONS_LIST){
+					if (data == MSG::INSTALLATIONS_LIST)
 						sendInstallationsList(message.peer_id);
-					}
-					else if(query == net::MSG::CONNECTED_USERS_LIST){
+					else if(data == MSG::CONNECTED_USERS_LIST)
 						sendConnectedUsersList(message.peer_id);
-					}
 				}
 			}
 		}
@@ -72,86 +70,78 @@ void Server::treatMessage(const Message &message){
 }
 
 void Server::registerUser(const JSON::Dict &credentials, int peer_id){
-	if (credentials.hasKey(net::MSG::USERNAME) && ISSTR(credentials.get(net::MSG::USERNAME))
-		&& credentials.hasKey(net::MSG::PASSWORD) && ISSTR(credentials.get(net::MSG::PASSWORD))){
-		User* newUser = User::load(STR(credentials.get(net::MSG::USERNAME)).value());
-		if (newUser == NULL)
-		{
-			// User doesnt exist
-			newUser = new User(STR(credentials.get(net::MSG::USERNAME)).value(), STR(credentials.get(net::MSG::PASSWORD)).value());
+	if (ISSTR(credentials.get(MSG::USERNAME)) && ISSTR(credentials.get(MSG::PASSWORD))){
+		std::string const & username = STR(credentials.get(MSG::USERNAME));
+		std::string const & password = STR(credentials.get(MSG::PASSWORD));
+
+		JSON::Dict response = JSON::Dict();
+		response.set("type", MSG::CONNECTION_STATUS);
+
+		User* newUser = User::load(username);
+		if (newUser != NULL){
+			response.set("data", MSG::USER_EXISTS);
+		} else { // User doesnt exist
+			newUser = new User(username, password);
 			newUser->save();
-			JSON::Dict * statusDict = new JSON::Dict();
-			statusDict->set("type", net::MSG::CONNECTION_STATUS);
-			statusDict->set("data", net::MSG::USER_REGISTERED);
-			Message status(peer_id, statusDict);
-			_outbox.push(status);
+			response.set("data", MSG::USER_REGISTERED);
 		}
-		else
-		{
-			// User exists
-			JSON::Dict * statusDict = new JSON::Dict();
-			statusDict->set("type", net::MSG::CONNECTION_STATUS);
-			statusDict->set("data", net::MSG::USER_EXISTS);
-			Message status(peer_id, statusDict);
-			_outbox.push(status);			
-		}
+
+		/* Clone dict before sending, because
+		     + it should be dynamically allocated (ConnectionManager deletes it)
+		     + cloning at the end is less memory efficient, but do not leak
+		       memory if a trap/exc occurs after response allocation.
+		 */
+		Message status(peer_id, response.clone());
+		_outbox.push(status);
 		delete newUser;
 	}
 }
 
 void Server::logUserIn(const JSON::Dict &credentials, int peer_id){
-	if (credentials.hasKey(net::MSG::USERNAME) && ISSTR(credentials.get(net::MSG::USERNAME))
-		&& credentials.hasKey(net::MSG::PASSWORD) && ISSTR(credentials.get(net::MSG::PASSWORD))){
-		User *user = User::load(STR(credentials.get(net::MSG::USERNAME)).value());
+	if (ISSTR(credentials.get(MSG::USERNAME)) && ISSTR(credentials.get(MSG::PASSWORD))){
+		std::string const & username = STR(credentials.get(MSG::USERNAME));
+		std::string const & password = STR(credentials.get(MSG::PASSWORD));
+
+		JSON::Dict response;
+		response.set("type", MSG::CONNECTION_STATUS);
+
+		User *user = User::load(username);
 		if (user != NULL){
-			if (user->getPassword() == STR(credentials.get(net::MSG::PASSWORD)).value()){
+			if (user->getPassword() == password){
 				// correct password
 				// mapping user to its peer_id to keep a list of connected users.
 				_users.insert(std::pair<int, User*>(peer_id, user));
-				JSON::Dict * statusDict = new JSON::Dict();
-				statusDict->set("type", net::MSG::CONNECTION_STATUS);
-				statusDict->set("data", net::MSG::USER_LOGIN);
-				Message status(peer_id, statusDict);
-				_outbox.push(status);
-			}
-			else {
+				response.set("data", MSG::USER_LOGIN);
+			} else {
 				// wrong password
-				JSON::Dict * statusDict = new JSON::Dict();
-				statusDict->set("type", net::MSG::CONNECTION_STATUS);
-				statusDict->set("data", net::MSG::PASSWORD_ERROR);
-				Message status(peer_id, statusDict);
-				_outbox.push(status);
+				response.set("data", MSG::PASSWORD_ERROR);
 			}
-		}
-		else{
+		} else {
 			// user not found
-			JSON::Dict * statusDict = new JSON::Dict();
-			statusDict->set("type", net::MSG::CONNECTION_STATUS);
-			statusDict->set("data", net::MSG::USER_NOT_FOUND);
-			Message status(peer_id, statusDict);
-			_outbox.push(status);
-		}	
+			response.set("data", MSG::USER_NOT_FOUND);
+		}
+
+		Message status(peer_id, response.clone());
+		_outbox.push(status);
 	}
 }
 
 void Server::checkIfUserExists(string username, int peer_id){
 	User *user = User::load(username);
-	if (user != NULL){
+	JSON::Dict response;
+	response.set("type", MSG::CONNECTION_STATUS);
+
+	if (user != NULL)
 		// user found
-		JSON::Dict * statusDict = new JSON::Dict();
-		statusDict->set("type", net::MSG::CONNECTION_STATUS);
-		statusDict->set("data", net::MSG::USER_EXISTS);
-		Message status(peer_id, statusDict);
-		_outbox.push(status);
-	}
-	else {
+		response.set("data", MSG::USER_EXISTS);
+	else 
 		// user not found
-		JSON::Dict * statusDict = new JSON::Dict();
-		statusDict->set("type", net::MSG::CONNECTION_STATUS);
-		statusDict->set("data", net::MSG::USER_NOT_FOUND);
-		Message status(peer_id, statusDict);
-		_outbox.push(status);
-	}
+		response.set("data", MSG::USER_NOT_FOUND);
+
+	Message status(peer_id, response.clone());
+	_outbox.push(status);
+
+	delete user;
 }
 
 void Server::sendInstallationsList(int peer_id){
@@ -162,7 +152,7 @@ void Server::sendInstallationsList(int peer_id){
 
 void Server::sendConnectedUsersList(int peer_id){
 	JSON::Dict usersList;
-	usersList.set("type", net::MSG::CONNECTED_USERS_LIST);
+	usersList.set("type", MSG::CONNECTED_USERS_LIST);
 	usersList.set("data", JSON::List());
 	for (map<int, User*>::iterator it=_users.begin(); it!=_users.end(); it++){
 		LIST(usersList.get("data")).append(it->second->getUsername());
