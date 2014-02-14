@@ -21,7 +21,7 @@ void Client::run()
 	message+= _prompt;
 	loginMenu.setMessage(message);
 	loginMenu.addOption('l', new ClassCallback<Client>(this,&Client::login));
-	loginMenu.addOption('r', registerUser);
+	loginMenu.addOption('r', new ClassCallback<Client>(this,&Client::registerUser));
 	loginMenu.run();
 
 	cout << Message::goodBye();
@@ -80,8 +80,8 @@ void Client::mainMenu()
 	message+= "   - (q)uit\n";
 	message+= _prompt;
 	main.setMessage(message);
-	main.addOption('m', managementMenu);
-	main.addOption('p', friendlyMatchMenu);
+	main.addOption('m', new ClassCallback<Client>(this, &Client::managementMenu));
+	main.addOption('p', new ClassCallback<Client>(this, &Client::friendlyMatchMenu));
 	main.run();
 }
 
@@ -96,8 +96,8 @@ void Client::managementMenu()
 	message+= "   - (q)uit to main menu\n";
 	message+= _prompt;
 	mgt.setMessage(message);
-	mgt.addOption('s', stadiumMenu);
-	mgt.addOption('p', playersMenu);
+	mgt.addOption('s', new ClassCallback<Client>(this, &Client::stadiumMenu));
+	mgt.addOption('p', new ClassCallback<Client>(this, &Client::playersMenu));
 	mgt.run();
 }
 
@@ -138,8 +138,8 @@ void Client::friendlyMatchMenu()
 	message+= "   - (q)uit to main menu\n";
 	message+= _prompt;
 	friendly.setMessage(message);
-	friendly.addOption('l', listUsers);
-	friendly.addOption('c', chooseUser);
+	friendly.addOption('l', new ClassCallback<Client>(this, &Client::listUsers));
+	friendly.addOption('c', new ClassCallback<Client>(this, &Client::chooseUser));
 	friendly.run();
 }
 
