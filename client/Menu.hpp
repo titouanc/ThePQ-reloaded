@@ -5,19 +5,35 @@
 #include <iostream>
 #include "Message.hpp"
 
+struct Callback {
+  virtual ~Callback(){}
+  virtual void operator()()=0;
+};
+
+template<class T>
+class ClassCallback : public Callback {
+  T* _classPtr;
+  typedef void(T::*fncb)();
+  fncb _cbProc;
+public:
+  ClassCallback(T* classPtr,fncb cbProc):_classPtr(classPtr),_cbProc(cbProc){}
+  virtual void operator()(){
+    (_classPtr->*_cbProc)();
+  }
+};
+
 class Menu
 {
 public:
 	Menu();
-	Menu(std::string message, char choice, void (*callback)());
 	void setMessage(std::string message);
-	void addOption(char choice, void (*callback)());
+	void addOption(char choice, Callback* callback);
 	void run();
 	
 	
 private:
 	std::string _message;
-	std::map<char, void(*)()> _options;
+	std::map<char, Callback*> _options;
 	
 };
 

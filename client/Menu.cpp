@@ -7,22 +7,16 @@ Menu::Menu()
 	_message = "";
 }
 
-Menu::Menu(string message, char choice, void (*callback)())
-{
-	setMessage(message);
-	addOption(choice, callback);
-}
-
 void Menu::setMessage(string message)
 {
 	_message = message;
 }
 
-void Menu::addOption(char choice, void (*callback)())
+void Menu::addOption(char choice, Callback* callback)
 {
 	if (choice != 'q' && choice != 'Q')
 	{
-		_options.insert(std::pair<char, void(*)()>(choice, callback));
+		_options.insert(std::pair<char, Callback*>(choice, callback));
 	}
 }
 
@@ -37,11 +31,11 @@ void Menu::run()
 		{
 			userChoice -= 'A' - 'a';
 		}
-		map<char, void(*)()>::const_iterator it;
+		map<char, Callback*>::const_iterator it;
 		it = _options.find(userChoice);
 		if (it != _options.end())
 		{
-			it->second();
+			(*(it->second))();
 		}
 	}
 	while (userChoice != 'q' && userChoice != 'Q');
