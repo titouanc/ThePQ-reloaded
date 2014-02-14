@@ -25,7 +25,13 @@ void StadiumManager::printInstallationsList(){
 
 void StadiumManager::upgradeInstallation()
 {
-	
+	char choice;
+	cout << "Enter the number of the installation you want to upgrade" << endl;
+	cin >> choice;
+	if (choice >= 0 and choice < vector.length())
+	{
+		// TODO _connection.upgradeInstallation(vector[i]);
+	}
 }
 
 void StadiumManager::downgradeInstallation()
