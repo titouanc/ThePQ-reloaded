@@ -2,9 +2,10 @@
 
 using namespace std;
 
-string Client::_userChoice;
-Connection Client::_connection;
-string Client::_prompt = " > ";
+Client::Client()
+{
+	_prompt = ">";
+}
 
 void Client::run()
 {
@@ -19,7 +20,7 @@ void Client::run()
 	message+= "   - (q)uit\n";
 	message+= _prompt;
 	loginMenu.setMessage(message);
-	loginMenu.addOption('l', login);
+	loginMenu.addOption('l', new ClassCallback<Client>(this,&Client::login));
 	loginMenu.addOption('r', registerUser);
 	loginMenu.run();
 

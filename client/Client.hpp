@@ -33,31 +33,30 @@ struct NetConfig : public Config {
 class Client
 {
 public:
-	static void run();
+	void run();
+	Client();
 
 private:
-	Client()
-	{}
-	static std::string _userChoice;
-	static Connection _connection;
-	static std::string _prompt;
+	std::string _userChoice;
+	Connection _connection;
+	std::string _prompt;
 	
 	// User menu
-	static void registerUser();
-	static void login();
+	void registerUser();
+	void login();
 	
 	// Menus
-	static void mainMenu();
-	static void managementMenu();
-	static void stadiumMenu();
-	static void playersMenu();
-	static void friendlyMatchMenu();
-	static void listUsers();
-	static void chooseUser();
+	void mainMenu();
+	void managementMenu();
+	void stadiumMenu();
+	void playersMenu();
+	void friendlyMatchMenu();
+	void listUsers();
+	void chooseUser();
 	
 	// utils
-	static std::string askForUserData(std::string prompt); // returns the user input.
-	static std::string askForNewPassword(); // prompts the user to create a new password with 
+	std::string askForUserData(std::string prompt); // returns the user input.
+	std::string askForNewPassword(); // prompts the user to create a new password with 
 							// confirmation. returns the password.
 };
 
