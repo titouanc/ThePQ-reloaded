@@ -48,27 +48,23 @@ bool Pitch::inEllipsis(Moveable *moveable) const
 	return inEllipsis(moveable->getPosition().x(), moveable->getPosition().y());
 }
 
-void Pitch::setAt(int x, int y, Moveable *moveable)
+bool Pitch::setAt(int x, int y, Moveable *moveable)
 {
-	Position initial = moveable->getPosition();
-	Position dest(x, y);
-	size_t fromPos = _index(initial.x(), initial.y());
-	if (initial != dest && _matrix[fromPos] == moveable)
-		_matrix[fromPos] = NULL;
-	if (inEllipsis(x, y)) {
-		moveable->setPosition(dest);
+	if (inEllipsis(x, y)){
 		_matrix[_index(x, y)] = moveable;
+		return true;
 	}
+	return false;
 }
 
-void Pitch::setAt(Position const & pos, Moveable *moveable)
+bool Pitch::setAt(Position const & pos, Moveable *moveable)
 {
-	setAt(pos.x(), pos.y(), moveable);
+	return setAt(pos.x(), pos.y(), moveable);
 }
 
-void Pitch::insert(Moveable *moveable)
+bool Pitch::insert(Moveable *moveable)
 {
-	setAt(moveable->getPosition(), moveable);
+	return setAt(moveable->getPosition(), moveable);
 }
 
 std::ostream & operator<<(std::ostream & out, Pitch const & pitch)

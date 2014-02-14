@@ -145,10 +145,9 @@ TEST(pitch)
 
     /* Move m1 from 0,0 to 1,1 */
     p.setAt(1, 1, p.getAt(0, 0));
-    ASSERT(p.getAt(0, 0) == NULL);
     ASSERT(p.getAt(1, 1) == &m1);
 
-    ASSERT(m1.getPosition() == Position(1, 1));
+    ASSERT(m1.getPosition() == Position(0, 0));
     ASSERT(m2.getPosition() == Position(2, 0));
 ENDTEST()
 

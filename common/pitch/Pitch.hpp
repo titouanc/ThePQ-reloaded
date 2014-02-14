@@ -49,15 +49,15 @@ class Pitch {
 		 * @param y The row (the middle row is 0)
 		 * @param moveable The moveable to place on the pitch
 		 */
-		void setAt(int x, int y, Moveable *moveable);
-		void setAt(Position const & pos, Moveable *moveable);
+		bool setAt(int x, int y, Moveable *moveable);
+		bool setAt(Position const & pos, Moveable *moveable);
 
 		/*!
 		 * @meth void Pitch::insert(Moveable *moveable)
 		 * @brief Set a moveable to its position on pitch
 		 * @param moveable The moveable to place on the pitch
 		 */
-		void insert(Moveable *moveable);
+		bool insert(Moveable *moveable);
 };
 
 std::ostream & operator<<(std::ostream & out, Pitch const & pitch);
