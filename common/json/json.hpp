@@ -60,6 +60,10 @@ namespace JSON {
         public: using Error::Error;
     };
 
+    class TypeError : public Error {
+        public: using Error::Error;
+    };
+
     /* Abstract common ancestor for all JSON types */
     class Value {
         private:
