@@ -12,8 +12,8 @@ public:
 	StadiumManager(Connection* connection);
 	void printInstallationsList();
 	
-	static void upgradeInstallation(size_t i);
-	static void downgradeInstallation(size_t i);
+	void upgradeInstallation();
+	void downgradeInstallation();
 
 private:
 	void loadInstallations();
