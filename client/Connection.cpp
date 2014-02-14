@@ -94,7 +94,6 @@ vector<Installation> Connection::getInstallationsList(){
 	{
 		vec.push_back(DICT(toFill[i]));
 	}
-	
 	delete serverResponse;
 	return vec;
 }

@@ -25,7 +25,7 @@ int Installation::getDowngradeRefunds() const {
 	 */
 	int res = 0;
 	if (getLevel() > 0)
-		res = getCurrentValue() - getValueAtLevel(getLevel()-1))*getRefundRatio();
+		res = ((float)(getCurrentValue() - getValueAtLevel(getLevel()-1)))*getRefundRatio();
 	return res;
 }
 
