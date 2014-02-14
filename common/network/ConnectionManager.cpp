@@ -100,7 +100,7 @@ JSON::Value *net::ConnectionManager::_readFrom(int fd)
 
     JSON::Value *res = JSON::parse(globalBuf.str().c_str());
     if (res)
-        std::cout << fd << " \033[33m>>\033[0m " << *res << std::endl;
+        std::cout << "\033[1m" << fd << " \033[33m>>\033[0m " << *res << std::endl;
     return res;
 }
 
@@ -131,7 +131,7 @@ bool net::ConnectionManager::_writeTo(int fd, JSON::Value *obj)
             if (r < 0)
                 return false;
         }
-        std::cout << fd << " \033[36m<<\033[0m " << *obj << std::endl;
+        std::cout << "\033[1m" << fd << " \033[36m<<\033[0m " << *obj << std::endl;
     }
     return true;
 }
