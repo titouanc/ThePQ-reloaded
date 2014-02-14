@@ -9,15 +9,15 @@
 
 class StadiumManager {
 public:
-	static void setConnection(Connection* connection);
-	static void printInstallationsList();
-	static void loadInstallations();
+	StadiumManager(Connection* connection);
+	void printInstallationsList();
+	void loadInstallations();
 	//~ static void upgradeInstallation(Installation i);
 	//~ static void downgradeInstallation(Installation i);
 
 private:
-	static std::vector<Installation> _installations;
-	static Connection *_connection;
+	std::vector<Installation> _installations;
+	Connection *_connection;
 };
 
 #endif

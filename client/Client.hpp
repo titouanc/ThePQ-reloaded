@@ -33,10 +33,10 @@ struct NetConfig : public Config {
 class Client
 {
 public:
-	void run();
 	Client();
 
 private:
+	void run();
 	std::string _userChoice;
 	Connection _connection;
 	std::string _prompt;

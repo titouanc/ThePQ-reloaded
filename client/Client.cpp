@@ -5,6 +5,7 @@ using namespace std;
 Client::Client()
 {
 	_prompt = ">";
+	run();
 }
 
 void Client::run()
@@ -12,7 +13,7 @@ void Client::run()
 	cout << Message::splashScreen();
 
 	/* user menu */
-	Menu loginMenu;
+	Menu<Client> loginMenu;
 	string message;
 	message+= "You can : \n";
 	message+= "   - (l)ogin\n";
@@ -72,7 +73,7 @@ void Client::registerUser(){
 /* main menu */
 void Client::mainMenu()
 {
-	Menu main;
+	Menu<Client> main;
 	string message;
 	message+= "You can : \n";
 	message+= "   - (m)anage your team and stadium\n";
@@ -88,7 +89,7 @@ void Client::mainMenu()
 /* Management menu */
 void Client::managementMenu()
 {
-	Menu mgt;
+	Menu<Client> mgt;
 	string message;
 	message+= "You can : \n";
 	message+= "   - manage your (s)tadium and installations\n";
@@ -103,14 +104,14 @@ void Client::managementMenu()
 
 void Client::stadiumMenu()
 {
-	StadiumManager::setConnection(&_connection);
-	StadiumManager::loadInstallations();
-	Menu stadium;
+	StadiumManager stadiumMgr(&_connection);
+	stadiumMgr.loadInstallations();
+	Menu<StadiumManager> stadium;
 	string message;
 	message+= "You can : \n";
 	message+= "    - (v)iew your installations\n";
 	message+= "    - (q)uit to management menu\n";
-	stadium.addOption('v', StadiumManager::printInstallationsList);
+	stadium.addOption('v', new ClassCallback<StadiumManager>(&stadiumMgr, &StadiumManager::printInstallationsList));
 	stadium.setMessage(message);
 	// TODO : stadium menu
 	stadium.run();
@@ -118,7 +119,7 @@ void Client::stadiumMenu()
 
 void Client::playersMenu()
 {
-	Menu players;
+	Menu<Client> players;
 	string message;
 	message+= "You can : \n";
 	message+= "    - (q)uit to management menu\n";
@@ -130,7 +131,7 @@ void Client::playersMenu()
 /* Friendly match menu */
 void Client::friendlyMatchMenu()
 {
-	Menu friendly;
+	Menu<Client> friendly;
 	string message;
 	message+= "You can : \n";
 	message+= "   - (l)ist all connected players\n";
