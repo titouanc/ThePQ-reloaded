@@ -78,7 +78,7 @@ JSON::Value *net::ConnectionManager::_addClient(void)
 #define BUFSIZE 0x1000
 JSON::Value *net::ConnectionManager::_readFrom(int fd)
 {
-    std::stringstream res;
+    std::stringstream globalBuf;
     char buffer[BUFSIZE+1];
     int r, i=0;
 
@@ -90,14 +90,17 @@ JSON::Value *net::ConnectionManager::_readFrom(int fd)
 
     while (msglen > 0 && (r = recv(fd, buffer, BUFSIZE, 0)) > 0){
         buffer[r] = '\0';
-        res << buffer;
+        globalBuf << buffer;
         i++;
         msglen -= r;
     }
     if (r < 0 || i == 0)
         return NULL;
 
-    return JSON::parse(res.str().c_str());
+    JSON::Value *res = JSON::parse(globalBuf.str().c_str());
+    if (res)
+        std::cout << fd << " >> " << *res << std::endl;
+    return res;
 }
 
 JSON::Value *net::ConnectionManager::_removeClient(std::set<int>::iterator position)
@@ -126,6 +129,7 @@ bool net::ConnectionManager::_writeTo(int fd, JSON::Value *obj)
             if (r < 0)
                 return false;
         }
+        std::cout << fd << " << " << *obj << std::endl;
     }
     return true;
 }

@@ -17,8 +17,6 @@ void Server::run(){
 }
 
 void Server::treatMessage(const Message &message){
-	cout << "Got message from client #" << message.peer_id << endl;
-	cout << "\t" << *(message.data) << endl;
 	if (ISDICT(message.data)){
 		JSON::Dict const &received = DICT(message.data);
 		if (received.hasKey("type") && ISSTR(received.get("type"))) {
