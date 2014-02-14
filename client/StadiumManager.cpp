@@ -18,6 +18,7 @@ void StadiumManager::printInstallationsList(){
 	for (size_t i = 0; i < _installations.size(); ++i){
 		cout << "  - " << _installations[i].getName() << endl;
 		cout << "      Level : 				" << _installations[i].getLevel() << endl;
+		cout << "      Current Value : 		" << _installations[i].getCurrentValue() << endl;
 		cout << "      Upgrade Cost : 		" << _installations[i].getUpgradeCost() << endl;
 		cout << "      Downgrade Refunds : 	" << _installations[i].getDowngradeRefunds() << endl;
 	}
@@ -30,7 +31,7 @@ void StadiumManager::upgradeInstallation()
 	cin >> choice;
 	if (choice < _installations.size())
 	{
-		// TODO _connection.upgradeInstallation(vector[i]);
+		// TODO _connection.upgradeInstallation(_installations[i]);
 	}
 }
 
