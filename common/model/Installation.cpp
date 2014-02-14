@@ -1,15 +1,15 @@
 #include "Installation.hpp"
 #include <cmath>
 
-int Installation::getMaintenanceCost(){
+int Installation::getMaintenanceCost() const {
 	return getValueAtLevel(getLevel())/10; 
 }
 
-int Installation::getValueAtLevel(int level){
+int Installation::getValueAtLevel(int level) const {
 	return level ? (getBaseValue() * pow(2, level+1)) : 0;
 }
 
-int Installation::getUpgradeCost(){
+int Installation::getUpgradeCost() const{
 	/* returns a positive value that represents the cost of an upgrade to
 	 * the next level. 
 	 */
@@ -19,7 +19,7 @@ int Installation::getUpgradeCost(){
 	return res;
 }
 
-int Installation::getDowngradeRefunds(){
+int Installation::getDowngradeRefunds() const {
 	/* returns a positive value that represents the
 	 * funds that will be refunded when downgraded 1 level. 
 	 */
