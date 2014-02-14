@@ -27,8 +27,8 @@ void Server::run(){
 		Message const & msg = _inbox.pop();
 		try {treatMessage(msg);}
 		catch (std::runtime_error & err){
-			cerr << "\033[31mError " << humanExcName(typeid(err).name()) << " in handler of " 
-			     << *(msg.data) << endl
+			cerr << "\033[31mError " << humanExcName(typeid(err).name()) 
+				 << " in handler of " << *(msg.data) << endl
 			     << "\t" << err.what() << "\033[0m" << endl;
 		} catch (...){
 			cerr << "\033[31mUnknow error in handler of " << *(msg.data) 
