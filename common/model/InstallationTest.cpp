@@ -1,4 +1,4 @@
-#include "lighttest.hpp"
+#include "lighttest/lighttest.hpp"
 #include "Installation.hpp"
 #include <cmath>
 

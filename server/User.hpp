@@ -3,7 +3,7 @@
 
 #include <string>
 #include <json/json.hpp>
-#include <network/net.hpp>
+#include <network/TcpSocket.hpp>
 #include "sys/stat.h"
 
 using namespace std;

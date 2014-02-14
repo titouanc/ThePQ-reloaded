@@ -2,21 +2,21 @@
 #define __STADIUM_MANAGER_HPP 
 
 #include <string>
-#include <map>
+#include <vector>
 #include "Connection.hpp"
 #include <model/Installation.hpp>
 #include <json/json.hpp>
 
-using namespace std;
-
 class StadiumManager {
 public:
-
+	static void setConnection(Connection* connection);
 	static void printInstallationsList();
-	static void loadInstallations(Connection* connection);
+	static void loadInstallations();
+	//~ static void upgradeInstallation(Installation i);
+	//~ static void downgradeInstallation(Installation i);
 
 private:
-	static JSON::Dict _installations;
+	static std::vector<Installation> _installations;
 	static Connection *_connection;
 };
 

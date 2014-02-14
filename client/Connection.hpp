@@ -1,12 +1,13 @@
 #ifndef CONNECTION_HPP
 #define CONNECTION_HPP
 
-#include <network/net.hpp>
+#include <network/TcpSocket.hpp>
 #include <json/json.hpp>
 #include "Exception.hpp"
 #include <Constants.hpp>
 #include <string>
 #include <vector>
+#include "model/Installation.hpp"
 
 class Connection
 {
@@ -17,7 +18,7 @@ public:
 	void doesUserExist(std::string username);
 	void registerUser(std::string username, std::string passwd);
 	
-	void getInstallationsList(JSON::Dict & toFill);
+	std::vector<Installation> getInstallationsList();
 	void getConnectedUsersList(std::vector<std::string> &users);
 	
 private:

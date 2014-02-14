@@ -125,7 +125,7 @@ static Dict *parseDict(const char *str, char **endptr)
         str = lstrip(*endptr);
         if (*str != ',' && *str != '}')
             throw ParseError(
-                "Unexpected character (trailing \""+
+                "Expecting dict separator (trailing \""+
                 std::string(str) + "\")"
             );
     }
@@ -140,7 +140,9 @@ static List *parseList(const char *str, char **endptr)
 
     List *res = new List();
 
-    if (str[1] != ']'){
+    if (str[1] == ']')
+        *endptr = (char *) str + 2;
+    else {
         while (*str && *str != ']'){
             Value *item = parse(str+1, endptr);
             if (item)
@@ -150,12 +152,12 @@ static List *parseList(const char *str, char **endptr)
             str = lstrip(*endptr);
             if (*str != ',' && *str != ']')
                 throw ParseError(
-                    "Unexpected character (trailing \""+
+                    "Expecting list separator (trailing \""+
                     std::string(str) + "\")"
                 );
         }
+        *endptr = (char*) str + (*str ? 1 : 0);
     }
-    *endptr = (char*) str + (*str ? 1 : 0);
     return res;
 }
 

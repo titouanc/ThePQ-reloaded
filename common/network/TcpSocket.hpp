@@ -1,8 +1,8 @@
-#ifndef __NET_HPP
-#define __NET_HPP
+#ifndef __TCP_SOCKET_HPP
+#define __TCP_SOCKET_HPP
 
 /*
- * net.hpp : header for a socket library
+ * TcpSocket.hpp : header for a socket library
  * 
  * Author : Antoine Carpentier
  * 
@@ -20,20 +20,10 @@
 #include <cerrno>
 #include <cstring>
 #include <json/json.hpp>
+#include "Exception.hpp"
 
 namespace net
 {
-	class ConnectionFailedException : public std::runtime_error {
-	public:
-		ConnectionFailedException():runtime_error(std::string("connect() failed: ")+strerror(errno))
-		{}
-	};
-	
-	class DisconnectedException : public std::runtime_error {
-	public:
-		DisconnectedException():runtime_error(std::string("host disconnected")+strerror(errno))
-		{}
-	};
 	
 	namespace MSG
 	{
@@ -86,4 +76,4 @@ namespace net
 	};
 }
 
-#endif // __NET_HPP
+#endif // __TCP_SOCKET_HPP

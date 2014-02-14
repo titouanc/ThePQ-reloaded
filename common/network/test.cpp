@@ -1,6 +1,7 @@
-#include "connectionmanager.hpp"
+#include "ConnectionManager.hpp"
 
 using namespace std;
+using namespace net;
 
 int main(int argc, const char **argv)
 {
@@ -16,7 +17,7 @@ int main(int argc, const char **argv)
 			cout << "\t" << *(msg.data) << endl;
 			outbox.push(msg);
 		}
-	} catch (ConnectionError & err){
+	} catch (ConnectionFailedException & err){
 		cout << "ERREUR: " << err.what() << endl;
 	}
 	return 0;

@@ -36,3 +36,8 @@ void Value::save(const char *filename) const
 
 	close(fd);
 }
+
+void Value::save(std::string const & filename) const 
+{
+	save(filename.c_str());
+}

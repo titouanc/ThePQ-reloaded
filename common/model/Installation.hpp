@@ -1,3 +1,6 @@
+#ifndef __INSTALLATION_HPP
+#define __INSTALLATION_HPP
+
 // Abstract class Installation. Methods to be implemented in subclasses : 
 // 		- int getMaxLevel();
 
@@ -44,7 +47,7 @@ public:
 	float getRefundRatio() { return _refundRatio; }
 	void setRefundRatio(float refundRatio) { _refundRatio = refundRatio; } 
 	
-	std::string getName() { return _name; }
+	std::string getName() const { return _name; }
 	void setName(std::string name) { _name = name; }
 	// -----------------
 
@@ -63,3 +66,5 @@ public:
 	// TODO this has to be pure virtual. 10 is just a value for tests.
 	virtual int getMaxLevel() { return 10; }; 
 };
+
+#endif

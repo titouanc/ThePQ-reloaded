@@ -1,4 +1,4 @@
-#include "net.hpp"
+#include "TcpSocket.hpp"
 #include <cstring>
 
 void net::TcpSocket::connect(const std::string ipAddr, int portNo)

@@ -1,4 +1,4 @@
-#include "connectionmanager.hpp"
+#include "ConnectionManager.hpp"
 #include <cstdlib>
 #include <cstring>
 #include <sstream>
@@ -15,7 +15,7 @@ extern "C" {
     #include <fcntl.h>
 }
 
-ConnectionManager::ConnectionManager( 
+net::ConnectionManager::ConnectionManager( 
     SharedQueue<Message> & incoming_queue,
     SharedQueue<Message> & outgoing_queue,
     const char *bind_addr_repr, 
@@ -29,13 +29,10 @@ ConnectionManager::ConnectionManager(
 
     _sockfd = socket(AF_INET, SOCK_STREAM, 0);
     if (_sockfd < 0)
-        throw ConnectionError(
-            std::string("Unable to open socket: ")+
-            strerror(errno)
-        );
+        throw ConnectionFailedException();
 
     if (setsockopt(_sockfd, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(int)) == -1){
-        throw ConnectionError(std::string("Unable to set socket options : ")+strerror(errno));
+        throw ConnectionFailedException();
     }
 
     memset(&_bind_addr, 0, sizeof(struct sockaddr_in));
@@ -43,30 +40,21 @@ ConnectionManager::ConnectionManager(
     _bind_addr.sin_port = htons(bind_port);
     if (inet_aton(bind_addr_repr, &(_bind_addr.sin_addr)) == 0){
         close(_sockfd);
-        throw ConnectionError(
-            std::string("Unable to parse adress ")+
-            bind_addr_repr+strerror(errno)
-        );
+        throw ConnectionFailedException();
     }
 
     if (bind(_sockfd, (struct sockaddr *) &_bind_addr, sizeof(struct sockaddr_in)) != 0){
         close(_sockfd);
-        throw ConnectionError(
-            std::string("Unable to bind to ")+
-            bind_addr_repr+strerror(errno)
-        );
+        throw ConnectionFailedException();
     }
 
     if (listen(_sockfd, max_clients) != 0){
         close(_sockfd);
-        throw ConnectionError(
-            std::string("Unable to listen on ")+
-            bind_addr_repr+strerror(errno)
-        );
+        throw ConnectionFailedException();
     }
 }
 
-ConnectionManager::~ConnectionManager()
+net::ConnectionManager::~ConnectionManager()
 {
     std::set<int>::iterator it;
     for (it=_clients.begin(); it!=_clients.end(); it++){
@@ -75,22 +63,23 @@ ConnectionManager::~ConnectionManager()
     pthread_mutex_destroy(&_mutex);
 }
 
-JSON::Value *ConnectionManager::_addClient(void)
+JSON::Value *net::ConnectionManager::_addClient(void)
 {
     int fd = accept(_sockfd, NULL, NULL);
     if (fd < 0)
-        throw ConnectionError(std::string("Accept error: ")+strerror(errno));
+        throw ConnectionFailedException();
     _clients.insert(_clients.begin(), fd);
     JSON::Dict *msg = new JSON::Dict();
     msg->set("type", "CONNECT");
     msg->set("data", fd);
+    std::cout << "\033[34m * New client: " << fd << "\033[0m" << std::endl;
     return msg;
 }
 
 #define BUFSIZE 0x1000
-JSON::Value *ConnectionManager::_readFrom(int fd)
+JSON::Value *net::ConnectionManager::_readFrom(int fd)
 {
-    std::stringstream res;
+    std::stringstream globalBuf;
     char buffer[BUFSIZE+1];
     int r, i=0;
 
@@ -102,17 +91,20 @@ JSON::Value *ConnectionManager::_readFrom(int fd)
 
     while (msglen > 0 && (r = recv(fd, buffer, BUFSIZE, 0)) > 0){
         buffer[r] = '\0';
-        res << buffer;
+        globalBuf << buffer;
         i++;
         msglen -= r;
     }
     if (r < 0 || i == 0)
         return NULL;
 
-    return JSON::parse(res.str().c_str());
+    JSON::Value *res = JSON::parse(globalBuf.str().c_str());
+    if (res)
+        std::cout << "\033[1m" << fd << " \033[33m>>\033[0m " << *res << std::endl;
+    return res;
 }
 
-JSON::Value *ConnectionManager::_removeClient(std::set<int>::iterator position)
+JSON::Value *net::ConnectionManager::_removeClient(std::set<int>::iterator position)
 {
     int client_id = *position;
     close(client_id);
@@ -121,10 +113,11 @@ JSON::Value *ConnectionManager::_removeClient(std::set<int>::iterator position)
     JSON::Dict *msg = new JSON::Dict();
     msg->set("type", "DISCONNECT");
     msg->set("data", client_id);
+    std::cout << "\033[35m * Wiped client: " << client_id << "\033[0m" << std::endl;
     return msg;
 }
 
-bool ConnectionManager::_writeTo(int fd, JSON::Value *obj)
+bool net::ConnectionManager::_writeTo(int fd, JSON::Value *obj)
 {
     if (obj != NULL){
         std::string const & repr = obj->dumps();
@@ -138,11 +131,12 @@ bool ConnectionManager::_writeTo(int fd, JSON::Value *obj)
             if (r < 0)
                 return false;
         }
+        std::cout << "\033[1m" << fd << " \033[36m<<\033[0m " << *obj << std::endl;
     }
     return true;
 }
 
-void ConnectionManager::_mainloop_in(void)
+void net::ConnectionManager::_mainloop_in(void)
 {
     fd_set readable;
     std::set<int>::iterator it;
@@ -192,7 +186,7 @@ void ConnectionManager::_mainloop_in(void)
     }
 }
 
-void ConnectionManager::_mainloop_out(void)
+void net::ConnectionManager::_mainloop_out(void)
 {
     while (isRunning()){
         Message const & to_send = _outgoing.pop();
@@ -203,12 +197,12 @@ void ConnectionManager::_mainloop_out(void)
     }
 }
 
-const char *ConnectionManager::ip(void) const
+const char *net::ConnectionManager::ip(void) const
 {
     return inet_ntoa(_bind_addr.sin_addr);
 }
 
-unsigned short ConnectionManager::port(void) const
+unsigned short net::ConnectionManager::port(void) const
 {
     return ntohs(_bind_addr.sin_port);
 }
@@ -216,19 +210,19 @@ unsigned short ConnectionManager::port(void) const
 typedef void*(*pthread_routine_t)(void*);
 static void runConnectionManagerIn(void *args)
 {
-    ConnectionManager *manager = (ConnectionManager*) args;
+    net::ConnectionManager *manager = (net::ConnectionManager*) args;
     manager->_mainloop_in();
     pthread_exit(NULL);
 }
 
 static void runConnectionManagerOut(void *args)
 {
-    ConnectionManager *manager = (ConnectionManager*) args;
+    net::ConnectionManager *manager = (net::ConnectionManager*) args;
     manager->_mainloop_out();
     pthread_exit(NULL);
 }
 
-bool ConnectionManager::start(void)
+bool net::ConnectionManager::start(void)
 {
     bool res = false;
     int lock = pthread_mutex_lock(&_mutex);
@@ -251,7 +245,7 @@ bool ConnectionManager::start(void)
     return res;
 }
 
-bool ConnectionManager::stop(void)
+bool net::ConnectionManager::stop(void)
 {
     bool res = false;
     int lock = pthread_mutex_lock(&_mutex);
@@ -263,7 +257,7 @@ bool ConnectionManager::stop(void)
     return res;
 }
 
-bool ConnectionManager::isRunning(void)
+bool net::ConnectionManager::isRunning(void)
 {
     bool res = false;
     int lock = pthread_mutex_lock(&_mutex);

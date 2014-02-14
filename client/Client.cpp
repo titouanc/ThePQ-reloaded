@@ -4,7 +4,7 @@ using namespace std;
 
 string Client::_userChoice;
 Connection Client::_connection;
-string Client::_prompt = ">";
+string Client::_prompt = " > ";
 
 void Client::run()
 {
@@ -102,8 +102,8 @@ void Client::managementMenu()
 
 void Client::stadiumMenu()
 {
-	StadiumManager::loadInstallations(&_connection);
-	StadiumManager::printInstallationsList();
+	StadiumManager::setConnection(&_connection);
+	StadiumManager::loadInstallations();
 	Menu stadium;
 	string message;
 	message+= "You can : \n";

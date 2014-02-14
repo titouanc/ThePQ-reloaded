@@ -1,6 +1,6 @@
 OBJ=Installation.o InstallationTest.o
 CXX=g++
-CFLAGS=-std=c++11 -pedantic -Wall -Wextra -I../json -I../lighttest
+CFLAGS=-std=c++11 -pedantic -Wall -Wextra -I..
 LDFLAGS= ../json/libjson.a
 
 all: test.app
