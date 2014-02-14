@@ -15,20 +15,20 @@ void StadiumManager::loadInstallations(){
 void StadiumManager::printInstallationsList(){
 	// TODO implement printInstallationsList
 	cout << "Here are all the installations you own :" << endl;
-	for (vector<Installation>::const_iterator it=_installations.begin(); it!=_installations.end(); it++){
-		cout << "  - " << it->getName() << endl;
-		cout << "      Level : 				" << it->getLevel() << endl;
-		cout << "      Upgrade Cost : 		" << it->getUpgradeCost() << endl;
-		cout << "      Downgrade Refunds : 	" << it->getDowngradeRefunds() << endl;
+	for (size_t i = 0; i < _installations.size(); ++i){
+		cout << "  - " << _installations[i].getName() << endl;
+		cout << "      Level : 				" << _installations[i].getLevel() << endl;
+		cout << "      Upgrade Cost : 		" << _installations[i].getUpgradeCost() << endl;
+		cout << "      Downgrade Refunds : 	" << _installations[i].getDowngradeRefunds() << endl;
 	}
 }
 
 void StadiumManager::upgradeInstallation()
 {
-	char choice;
+	size_t choice;
 	cout << "Enter the number of the installation you want to upgrade" << endl;
 	cin >> choice;
-	if (choice >= 0 and choice < vector.length())
+	if (choice < _installations.size())
 	{
 		// TODO _connection.upgradeInstallation(vector[i]);
 	}
