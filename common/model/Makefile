@@ -1,19 +1,24 @@
-OBJ=Installation.o InstallationTest.o
-CXX=g++
-CFLAGS=-std=c++11 -pedantic -Wall -Wextra -I..
-LDFLAGS= ../json/libjson.a
+OBJ = Installation.o
+CXX = g++
+CFLAGS = -std=c++11 -pedantic -Wall -Wextra -I..
+LDFLAGS = ../json/libjson.a
 
-all: test.app
-	./test.app
+all: InstallationTest.ok
+
+%.ok: %.app
+	./$< && touch $@
 	
-test.app: ${OBJ}
+%.app: %.o ${OBJ}
 	${CXX} ${LDFLAGS} -o $@ $^
 	
 %.o: %.cpp
-	${CXX} ${CFLAGS} -c -o $@ $^
+	${CXX} ${CFLAGS} -c -o $@ $<
+
+.PHONY: clean mrproper all
+.PRECIOUS: ${OBJ}
 
 clean:
-	rm -f ${OBJ}
+	rm -f ${OBJ} *.ok
 	
 mrproper: clean
-	rm -f test.app
+	rm -f *.app
