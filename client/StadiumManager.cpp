@@ -23,12 +23,12 @@ void StadiumManager::printInstallationsList(){
 	}
 }
 
-void StadiumManager::upgradeInstallation(Installation& i)
+void StadiumManager::upgradeInstallation(size_t i)
 {
 	
 }
 
-void StadiumManager::downgradeInstallation(Installation& i)
+void StadiumManager::downgradeInstallation(size_t i)
 {
 	
 }
