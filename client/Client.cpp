@@ -4,7 +4,7 @@ using namespace std;
 
 string Client::_userChoice;
 Connection Client::_connection;
-string Client::_prompt = ">";
+string Client::_prompt = " > ";
 
 void Client::run()
 {
