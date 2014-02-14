@@ -37,5 +37,11 @@ void StadiumManager::upgradeInstallation()
 
 void StadiumManager::downgradeInstallation()
 {
-	
+	size_t choice;
+	cout << "Enter the number of the installation you want to downgrade" << endl;
+	cin >> choice;
+	if (choice < _installations.size())
+	{
+		// TODO _connection.upgradeInstallation(_installations[i]);
+	}
 }
