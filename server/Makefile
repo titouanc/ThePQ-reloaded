@@ -1,6 +1,8 @@
-OBJ= Server.o User.o
+OBJS= Server.o User.o
 LIBNETWORK=../common/network/libnetwork.a
 LIBJSON=../common/json/libjson.a
+LIBPITCH=../common/pitch/libpitch.a
+LIBS = ${LIBPITCH} ${LIBJSON} ${LIBNETWORK}
 
 CXX = g++
 CXXFLAGS = -std=c++11 -pedantic -Wall -Wextra -pthread -I../common/
@@ -9,20 +11,14 @@ LDFLAGS = -lm -lpthread
 all: server.app test.app
 	./test.app
 
-server.app: main.o ${OBJ} ${LIBNETWORK} ${LIBJSON}
+server.app: main.o ${OBJS} ${LIBS}
 	${CXX} ${LDFLAGS} -o $@ $^
 
-test.app: test.o User.o ${LIBJSON}
+test.app: test.o ${OBJS} ${LIBS}
 	${CXX} ${LDFLAGS} -o $@ $^
 
 %.o: %.cpp
 	${CXX} ${CXXFLAGS} -c -o $@ $^
-
-${LIBNETWORK}:
-	cd ../common/network && make
-	
-${LIBJSON}:
-	cd ../common/json && make
 
 clean:
 	rm -f *.o
