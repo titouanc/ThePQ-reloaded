@@ -152,13 +152,13 @@ void Server::sendInstallationsList(int peer_id){
 }
 
 void Server::sendConnectedUsersList(int peer_id){
+	JSON::List list;
+	for (map<int, User*>::iterator it=_users.begin(); it!=_users.end(); it++)
+		list.append(it->second->getUsername());
+
 	JSON::Dict usersList;
 	usersList.set("type", MSG::CONNECTED_USERS_LIST);
-	usersList.set("data", JSON::List());
-	for (map<int, User*>::iterator it=_users.begin(); it!=_users.end(); it++){
-		LIST(usersList.get("data")).append(it->second->getUsername());
-	}
+	usersList.set("data", list);
 
-	//JSON::Value * installationsList = JSON::load(listPath);
-	_outbox.push(Message(peer_id, &usersList));
+	_outbox.push(Message(peer_id, usersList.clone()));
 }
