@@ -300,6 +300,15 @@ TEST(json_parse_empty_dict)
 	delete res;
 ENDTEST()
 
+TEST(json_parse_empty_list_in_dict)
+	JSON::Value *res = JSON::parse("{\"key\": []}");
+	ASSERT(res != NULL);
+	ASSERT(ISDICT(res));
+	ASSERT(ISLIST(DICT(res).get("key")));
+	ASSERT(LIST(DICT(res).get("key")).len() == 0);
+	delete res;
+ENDTEST()
+
 TEST(json_parse_dict_many_keys)
 	const char *repr = "{\"name\": \"Titou\", \"age\": 23, \"male\": true}";
 	JSON::Value *res = JSON::parse(repr);
@@ -492,6 +501,7 @@ int main(int argc, const char **argv)
 		ADDTEST(json_parse_empty_list),
 		ADDTEST(json_parse_dict),
 		ADDTEST(json_parse_empty_dict),
+		ADDTEST(json_parse_empty_list_in_dict),
 		ADDTEST(json_parse_dict_many_keys),
 		ADDTEST(json_parse_list_in_dict),
 		ADDTEST(json_load),
