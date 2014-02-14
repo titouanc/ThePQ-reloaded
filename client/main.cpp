@@ -2,7 +2,7 @@
 
 int main(int argc, char const *argv[])
 {
-	Client::run();
+	Client c;
 	
 	return 0;
 }

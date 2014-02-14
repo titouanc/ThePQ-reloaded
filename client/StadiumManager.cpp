@@ -2,12 +2,10 @@
 
 using namespace std;
 
-vector<Installation> StadiumManager::_installations;
-Connection *StadiumManager::_connection;
-
-void StadiumManager::setConnection(Connection* connection)
+StadiumManager::StadiumManager(Connection* connection)
 {
 	_connection = connection;	
+	loadInstallations();
 }
 
 void StadiumManager::printInstallationsList(){
