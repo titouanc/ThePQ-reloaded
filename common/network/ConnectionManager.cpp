@@ -72,6 +72,7 @@ JSON::Value *net::ConnectionManager::_addClient(void)
     JSON::Dict *msg = new JSON::Dict();
     msg->set("type", "CONNECT");
     msg->set("data", fd);
+    std::cout << "\033[34m * New client: " << fd << "\033[0m" << std::endl;
     return msg;
 }
 
@@ -99,7 +100,7 @@ JSON::Value *net::ConnectionManager::_readFrom(int fd)
 
     JSON::Value *res = JSON::parse(globalBuf.str().c_str());
     if (res)
-        std::cout << fd << " >> " << *res << std::endl;
+        std::cout << fd << " \033[33m>>\033[0m " << *res << std::endl;
     return res;
 }
 
@@ -112,6 +113,7 @@ JSON::Value *net::ConnectionManager::_removeClient(std::set<int>::iterator posit
     JSON::Dict *msg = new JSON::Dict();
     msg->set("type", "DISCONNECT");
     msg->set("data", client_id);
+    std::cout << "\033[35m * Wiped client: " << client_id << "\033[0m" << std::endl;
     return msg;
 }
 
@@ -129,7 +131,7 @@ bool net::ConnectionManager::_writeTo(int fd, JSON::Value *obj)
             if (r < 0)
                 return false;
         }
-        std::cout << fd << " << " << *obj << std::endl;
+        std::cout << fd << " \033[36m<<\033[0m " << *obj << std::endl;
     }
     return true;
 }
