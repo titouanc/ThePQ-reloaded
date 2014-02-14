@@ -1,11 +1,10 @@
 #include "Server.hpp"
 #include <stdexcept>
 #include <typeinfo>
+#include <cxxabi.h>
 
 using namespace std;
 using namespace net;
-
-#include <cxxabi.h>
 
 std::string humanExcName(const char *name)
 {
@@ -16,7 +15,10 @@ std::string humanExcName(const char *name)
 	return res;
 }
 
-Server::Server() : _connectionManager(_inbox, _outbox, "0.0.0.0", 32123), _users(){
+Server::Server(NetConfig const & config) : 
+	_inbox(), _outbox(), _users(),
+	_connectionManager(_inbox, _outbox, config.ip.c_str(), config.port, config.maxClients)
+{
 	_connectionManager.start();
 	cout << "Launched server on " << _connectionManager.ip() << ":" << _connectionManager.port() << endl;
 	run();

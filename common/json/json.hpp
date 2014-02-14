@@ -75,6 +75,7 @@ namespace JSON {
                 return out;
             }
             void save(const char *filename) const;
+            void save(std::string const & filename) const;
             bool isNumber() const {return (type()&(Integer_t|Float_t)) != 0;}
             bool isAtom() const {
                 return (type()&(Integer_t|Float_t|String_t|Boolean_t)) != 0;

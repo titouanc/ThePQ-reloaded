@@ -2,6 +2,11 @@
 
 int main(int argc, char const *argv[])
 {
-	Server s;
+	NetConfig config;
+	config.load();
+	config.save(); /* Create config file if inexistant */
+
+	Server s(config);
+
 	return 0;
 }
