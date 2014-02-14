@@ -1,7 +1,20 @@
 #include "Server.hpp"
+#include <stdexcept>
+#include <typeinfo>
 
 using namespace std;
 using namespace net;
+
+#include <cxxabi.h>
+
+std::string humanExcName(const char *name)
+{
+	int status;
+	char *str = abi::__cxa_demangle(name, 0, 0, &status);
+	std::string res(str);
+	free(str);
+	return res;
+}
 
 Server::Server() : _connectionManager(_inbox, _outbox, "0.0.0.0", 32123), _users(){
 	_connectionManager.start();
@@ -10,9 +23,17 @@ Server::Server() : _connectionManager(_inbox, _outbox, "0.0.0.0", 32123), _users
 }
 
 void Server::run(){
-	while (_connectionManager.isRunning()){
+	while (_connectionManager.isRunning() || _inbox.available()){
 		Message const & msg = _inbox.pop();
-		treatMessage(msg);
+		try {treatMessage(msg);}
+		catch (std::runtime_error & err){
+			cerr << "\033[31mError " << humanExcName(typeid(err).name()) << " in handler of " 
+			     << *(msg.data) << endl
+			     << "\t" << err.what() << "\033[0m" << endl;
+		} catch (...){
+			cerr << "\033[31mUnknow error in handler of " << *(msg.data) 
+				 << "\033[0m" << endl;
+		}
 	}
 }
 
