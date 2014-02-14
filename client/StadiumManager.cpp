@@ -5,6 +5,7 @@ using namespace std;
 StadiumManager::StadiumManager(Connection* connection)
 {
 	_connection = connection;	
+	loadInstallations();
 }
 
 void StadiumManager::printInstallationsList(){

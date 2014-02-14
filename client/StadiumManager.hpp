@@ -11,11 +11,13 @@ class StadiumManager {
 public:
 	StadiumManager(Connection* connection);
 	void printInstallationsList();
-	void loadInstallations();
+	
 	//~ static void upgradeInstallation(Installation i);
 	//~ static void downgradeInstallation(Installation i);
 
 private:
+	void loadInstallations();
+	
 	std::vector<Installation> _installations;
 	Connection *_connection;
 };
