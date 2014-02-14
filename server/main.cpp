@@ -4,9 +4,11 @@ int main(int argc, char const *argv[])
 {
 	NetConfig config;
 	config.load();
-	config.save(); /* Create config file if inexistant */
 
-	Server s(config);
+	Server serv(config);
+	config.save(); /* Create config file if inexistant */
+	
+	serv.run();
 
 	return 0;
 }

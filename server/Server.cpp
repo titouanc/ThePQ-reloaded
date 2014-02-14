@@ -21,7 +21,6 @@ Server::Server(NetConfig const & config) :
 {
 	_connectionManager.start();
 	cout << "Launched server on " << _connectionManager.ip() << ":" << _connectionManager.port() << endl;
-	run();
 }
 
 void Server::run(){
