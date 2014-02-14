@@ -34,6 +34,7 @@ void Server::run(){
 			cerr << "\033[31mUnknow error in handler of " << *(msg.data) 
 				 << "\033[0m" << endl;
 		}
+		delete msg.data;
 	}
 }
 
