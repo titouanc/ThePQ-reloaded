@@ -152,6 +152,24 @@ TEST(pitch)
     ASSERT(m2.getPosition() == Position(2, 0));
 ENDTEST()
 
+TEST(pitch_repr)
+    Pitch p(100, 36);
+    ASSERT(p.inEllipsis(0, 0));
+    ASSERT(p.inEllipsis(-25, 0));
+    ASSERT(p.inEllipsis(24, 0));
+    ASSERT(p.inEllipsis(0, 8));
+    ASSERT(p.inEllipsis(0, -9));
+
+    Position pos;
+    Moveable m("Titou", 0, 0, pos);
+    p.insert(&m);
+
+    pos = Position(2, 2);
+    Moveable n("Floflo", 0, 0, pos);
+    p.insert(&n);
+    cout << p;
+ENDTEST()
+
 int main(int argc, const char **argv)
 {
     TestFunc testSuite[] = {
@@ -169,7 +187,8 @@ int main(int argc, const char **argv)
         ADDTEST(displacement_from_json),
         ADDTEST(composite_displacement),
         ADDTEST(composite_invalid_displacement),
-        ADDTEST(pitch)
+        ADDTEST(pitch),
+        ADDTEST(pitch_repr)
     };
 
     return RUN(testSuite);

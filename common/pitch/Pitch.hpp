@@ -15,6 +15,15 @@ class Pitch {
 		Pitch(size_t width, size_t height);
 		~Pitch();
 
+		size_t width(void) const;
+		size_t height(void) const;
+
+		int xmin(void) const;
+		int xmax(void) const;
+
+		int ymin(void) const;
+		int ymax(void) const;
+
 		/*!
 		 * @meth Moveable * Pitch::getAt(int x, int y) const
 		 * @brief Get Moveable at position x,y
@@ -24,6 +33,12 @@ class Pitch {
 		 */
 		Moveable * getAt(int x, int y) const;
 
+		/*!
+		 * @meth bool Pitch::inEllipsis(int x, int y) const
+		 * @brief Return true if pos x,y is in the ellipsoidal pitch
+		 * @param x The column (the middle column is 0)
+		 * @param y The row (the middle row is 0)
+		 */
 		bool inEllipsis(int x, int y) const;
 		bool inEllipsis(Moveable *moveable) const;
 
@@ -44,5 +59,7 @@ class Pitch {
 		 */
 		void insert(Moveable *moveable);
 };
+
+std::ostream & operator<<(std::ostream & out, Pitch const & pitch);
 
 #endif

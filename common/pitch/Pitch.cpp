@@ -8,7 +8,7 @@ size_t Pitch::_index(int x, int y) const
 	y += _height/2;
 	assert(0<=x && x<(int)_width);
 	assert(0<=y && y<(int)_height);
-	return x*_width + y;
+	return y*_width + x;
 }
 
 Pitch::Pitch(size_t width, size_t height) : _width(width), _height(height)
@@ -22,6 +22,15 @@ Pitch::~Pitch()
 	delete[] _matrix;
 }
 
+size_t Pitch::width(void) const {return _width;}
+size_t Pitch::height(void) const {return _height;}
+
+int Pitch::xmin(void) const {return -xmax();}
+int Pitch::xmax(void) const {return _width/2;}
+
+int Pitch::ymin(void) const {return -ymax();}
+int Pitch::ymax(void) const {return _height/2;}
+
 Moveable * Pitch::getAt(int x, int y) const 
 {
 	return _matrix[_index(x, y)];
@@ -29,9 +38,9 @@ Moveable * Pitch::getAt(int x, int y) const
 
 bool Pitch::inEllipsis(int x, int y) const
 {
-	double k  = ((double) _width)/_height;
-	double dx = ((double) x)/k;
-	return (dx*dx + y*y) < _height*_height;
+	double k = ((double) _width)/_height;
+	double L = xmax();
+	return (x*x + k*k*y*y) <= L*L;
 }
 
 bool Pitch::inEllipsis(Moveable *moveable) const
@@ -60,4 +69,23 @@ void Pitch::setAt(Position const & pos, Moveable *moveable)
 void Pitch::insert(Moveable *moveable)
 {
 	setAt(moveable->getPosition(), moveable);
+}
+
+std::ostream & operator<<(std::ostream & out, Pitch const & pitch)
+{
+	for (int y=pitch.ymax()-1; y>=pitch.ymin(); y--){
+		for (int x=pitch.xmin(); x<pitch.xmax(); x++){
+			if (abs(x%2) != abs(y%2 )|| ! pitch.inEllipsis(x, y)){
+				out << " ";
+			} else {
+				if (pitch.getAt(x, y) == NULL){
+					out << ".";
+				} else {
+					out << "\033[31mo\033[0m";
+				}
+			}
+		}
+		out << endl;
+	}
+	return out;
 }
