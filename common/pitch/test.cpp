@@ -1,6 +1,7 @@
 #include <lighttest/lighttest.hpp>
 #include "Position.hpp"
 #include "Displacement.hpp"
+#include "Pitch.hpp"
 
 static Position West(-2, 0);
 static Position SouthWest(-1, -1); 
@@ -127,6 +128,45 @@ TEST(composite_invalid_displacement)
     ASSERT(fixtures && ISDICT(fixtures));
 
     ASSERT_THROWS(NotADirection, Displacement d(LIST(fixtures->get("displacement"))));
+    delete fixtures;
+ENDTEST()
+
+TEST(pitch)
+    Position p1, p2(2, 0);
+    Moveable m1("1", 0, 0, p1), m2("2", 0, 0, p2);
+    Pitch p(10, 10);
+    p.insert(&m1);
+    p.insert(&m2);
+
+    ASSERT(p.getAt(0, 0) == &m1);
+    ASSERT(p.getAt(2, 0) == &m2);
+    ASSERT(m1.getPosition() == Position(0, 0));
+    ASSERT(m2.getPosition() == Position(2, 0));
+
+    /* Move m1 from 0,0 to 1,1 */
+    p.setAt(1, 1, p.getAt(0, 0));
+    ASSERT(p.getAt(1, 1) == &m1);
+
+    ASSERT(m1.getPosition() == Position(0, 0));
+    ASSERT(m2.getPosition() == Position(2, 0));
+ENDTEST()
+
+TEST(pitch_repr)
+    Pitch p(100, 36);
+    ASSERT(p.inEllipsis(0, 0));
+    ASSERT(p.inEllipsis(-25, 0));
+    ASSERT(p.inEllipsis(24, 0));
+    ASSERT(p.inEllipsis(0, 8));
+    ASSERT(p.inEllipsis(0, -9));
+
+    Position pos;
+    Moveable m("Titou", 0, 0, pos);
+    p.insert(&m);
+
+    pos = Position(2, 2);
+    Moveable n("Floflo", 0, 0, pos);
+    p.insert(&n);
+    cout << p;
 ENDTEST()
 
 int main(int argc, const char **argv)
@@ -145,7 +185,9 @@ int main(int argc, const char **argv)
         ADDTEST(displacement_to_json),
         ADDTEST(displacement_from_json),
         ADDTEST(composite_displacement),
-        ADDTEST(composite_invalid_displacement)
+        ADDTEST(composite_invalid_displacement),
+        ADDTEST(pitch),
+        ADDTEST(pitch_repr)
     };
 
     return RUN(testSuite);

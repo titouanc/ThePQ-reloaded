@@ -18,7 +18,8 @@ class Position {
         /* Accessors */
         int x(void) const;
         int y(void) const;
-        bool operator==(Position const & other);
+        bool operator==(Position const & other) const;
+        bool operator!=(Position const & other) const {return ! (*this == other);}
         unsigned int length(void) const; //Distance, in cells, from 0,0 to this pos
         bool isDirection(void) const;
 

@@ -50,4 +50,5 @@ private:
 	map<int, User*> _users;
 	net::ConnectionManager _connectionManager;
 };
+
 #endif
