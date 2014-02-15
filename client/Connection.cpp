@@ -2,7 +2,8 @@
 
 using namespace std;
 
-Connection::Connection(std::string host, int port) : _connectionManager(_inbox, _outbox, host.c_str(), port)
+Connection::Connection(std::string host, int port) : _inbox(), _outbox(),
+_connectionManager(_inbox, _outbox, host.c_str(), port)
 {
 	//~ _socket.connect(host, port);
 	_connectionManager.start();
@@ -21,8 +22,7 @@ void Connection::loginUser(string username, string passwd)
 	toSend.set("type", net::MSG::LOGIN_QUERY);
 	toSend.set("data", credentials);
 	//~ _socket.send(&toSend);
-	net::Message msg(
-	_sockfd, toSend.clone());
+	net::Message msg(0, toSend.clone());
 	_outbox.push(msg);
 
 	JSON::Value *serverMessage = _inbox.pop().data;	// receiving server response
