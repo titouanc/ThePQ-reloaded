@@ -2,7 +2,7 @@
 
 using namespace std;
 
-Connection::Connection(std::string host, int port)
+Connection::Connection(std::string host, int port) : _connectionManager(_inbox, _outbox, host.c_str(), port)
 {
 	_socket.connect(host, port);
 }

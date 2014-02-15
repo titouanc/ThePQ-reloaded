@@ -3,7 +3,7 @@
 
 #include "Gear.hpp"
 #include "Sponsor.hpp"
-#include "Installation.hpp"
+#include <Installation.hpp>
 #include <string>
 #include <list>
 

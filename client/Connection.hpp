@@ -2,6 +2,7 @@
 #define CONNECTION_HPP
 
 #include <network/TcpSocket.hpp>
+#include <network/ConnectionManager.hpp>
 #include <json/json.hpp>
 #include "Exception.hpp"
 #include <Constants.hpp>
@@ -25,6 +26,8 @@ public:
 	
 private:
 	net::TcpSocket _socket;
+	net::ClientConnectionManager _connectionManager;
+	SharedQueue<net::Message> _inbox, _outbox;
 };
 
 #endif
