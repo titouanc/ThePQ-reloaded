@@ -1,19 +1,10 @@
-OBJ=Installation.o InstallationTest.o
-CXX=g++
-CFLAGS=-std=c++11 -pedantic -Wall -Wextra -I..
-LDFLAGS= ../json/libjson.a
+OBJS = Installation.o
+CPPFLAGS = -I..
+LIBS = ../json/libjson.a
 
-all: test.app
-	./test.app
-	
-test.app: ${OBJ}
-	${CXX} ${LDFLAGS} -o $@ $^
-	
-%.o: %.cpp
-	${CXX} ${CFLAGS} -c -o $@ $^
+all: test.ok libmodel.a
 
-clean:
-	rm -f ${OBJ}
-	
-mrproper: clean
-	rm -f test.app
+libmodel.a: ${OBJS}
+	ar r $@ $^
+
+include ../../Makefile.includes

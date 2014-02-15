@@ -108,8 +108,12 @@ void Client::stadiumMenu()
 	string message;
 	message+= "You can : \n";
 	message+= "    - (v)iew your installations\n";
+	message+= "    - (u)pgrade an installation\n";
+	message+= "    - (d)owngrade an installation\n";
 	message+= "    - (q)uit to management menu\n";
 	stadium.addOption('v', new ClassCallback<StadiumManager>(&stadiumMgr, &StadiumManager::printInstallationsList));
+	stadium.addOption('u', new ClassCallback<StadiumManager>(&stadiumMgr, &StadiumManager::upgradeInstallation));
+	stadium.addOption('d', new ClassCallback<StadiumManager>(&stadiumMgr, &StadiumManager::downgradeInstallation));
 	stadium.setMessage(message);
 	// TODO : stadium menu
 	stadium.run();

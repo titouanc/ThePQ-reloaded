@@ -9,10 +9,10 @@ using namespace std;
 class Moveable {
 public:
 	// CONSTRUCTORS
-	Moveable(): _name("NoName"), _uniqueID(0), _speed(0), _position(Position(0,0)){}
+	Moveable(): _name("NoName"), _uniqueID(0), _speed(0), _position(0, 0){}
 	Moveable(string name, unsigned int id, float speed, Position &position): 
 				_name(name), _uniqueID(id), _speed(speed), _position(position){}
-	Moveable(JSON::Dict const & json){
+	Moveable(JSON::Dict const & json) : Moveable() {
 		if (ISSTR(json.get("name"))) _name = STR(json.get("name")).value();
 		if (ISINT(json.get("ID"))) _uniqueID = INT(json.get("ID")).value();
 		if (ISLIST(json.get("position"))) _position = Position(LIST(json.get("position")));

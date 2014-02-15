@@ -1,31 +1,9 @@
-CXX = g++
-CXXFLAGS = -std=c++11 -pedantic -Wall -Wextra
-INCLUDES = -I../lighttest
-LDFLAGS = -lm
-HEADERS = $(shell ${CXX} ${CXXFLAGS} -MM *.cpp | sed -E 's/.+\.[^h]pp//g')
+CPPFLAGS = -I../lighttest
 OBJS = parser.o string.o list.o dict.o value.o number.o load.o
-LIB = libjson.a
 
-all: ${LIB} test.ok
+all: libjson.a test.ok
 
-test.ok: test
-	./$< && touch $@
-
-%: %.cpp
-
-%.o: %.cpp ${HEADERS}
-	${CXX} ${INCLUDES} ${CXXFLAGS} -c -o $@ $<
-
-%.a: ${OBJS}
+libjson.a: ${OBJS}
 	ar r $@ $^
 
-%: %.o ${LIB}
-	${CXX} ${LDFLAGS} -o $@ $^
-
-.PRECIOUS: ${OBJS}
-.PHONY: clean mrproper
-clean:
-	rm -f *.o *.ok
-
-mrproper: clean
-	rm -f test jsondump ${LIB}
+include ../../Makefile.includes

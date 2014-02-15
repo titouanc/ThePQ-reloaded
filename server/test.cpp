@@ -1,8 +1,9 @@
 #include "User.hpp"
 #include <json/json.hpp>
 #include <lighttest/lighttest.hpp>
+#include "MatchManager.hpp"
 
-TEST(USER)
+TEST(user)
 	User user("usertest", "passwdtest");
 	ASSERT(user.getUsername() == "usertest");
 	ASSERT(user.getPassword() == "passwdtest");
@@ -19,10 +20,38 @@ TEST(USER)
 	delete test;
 ENDTEST()
 
+TEST(squad)
+	JSON::Value *json = JSON::load("fixtures/squad1.json");
+	ASSERT(ISDICT(json));
+
+	Squad sq(DICT(json));
+	delete json;
+
+	for (size_t i=0; i<7; i++){
+		ASSERT(sq.players[i].getName()[0] == 'A'+(char)i);
+		ASSERT(sq.players[i].getSpeed() == 7);
+		ASSERT(sq.players[i].getPosition() == Position(0, 0));
+		ASSERT(sq.players[i].getID() == 0);
+	}
+ENDTEST()
+
+TEST(matchmanager)
+	JSON::Value *A = JSON::load("fixtures/squad1.json");
+	ASSERT(ISDICT(A));
+	JSON::Value *B = JSON::load("fixtures/squad2.json");
+	ASSERT(ISDICT(B));
+
+	MatchManager m(DICT(A), DICT(B));
+	delete A;
+	delete B;
+ENDTEST()
+
 int main(int argc, const char **argv)
 {
 	TestFunc tests[] = {
-		ADDTEST(USER)
+		ADDTEST(user),
+		ADDTEST(squad),
+		ADDTEST(matchmanager)
 	};
 	return RUN(tests);
 }

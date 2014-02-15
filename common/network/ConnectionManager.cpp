@@ -15,17 +15,245 @@ extern "C" {
     #include <fcntl.h>
 }
 
-net::ConnectionManager::ConnectionManager( 
+using namespace net;
+
+/* ===== BaseConnectionManager ===== */
+BaseConnectionManager::BaseConnectionManager( 
+    SharedQueue<Message> & incoming_queue,
+    SharedQueue<Message> & outgoing_queue
+) : _incoming(incoming_queue), _outgoing(outgoing_queue)
+{
+    pthread_mutex_init(&_mutex, NULL);
+    pthread_mutex_init(&_fdset_mutex, NULL);
+}
+
+BaseConnectionManager::~BaseConnectionManager()
+{
+    stop();
+    std::set<int>::iterator it;
+    for (it=_clients.begin(); it!=_clients.end(); it++)
+        _doDisconnect(*it);
+    pthread_mutex_destroy(&_mutex);
+    pthread_mutex_destroy(&_fdset_mutex);
+}
+
+bool BaseConnectionManager::_doWrite(int fd, JSON::Value *obj)
+{
+    if (obj != NULL){
+        std::string const & repr = obj->dumps();
+        uint32_t msglen = htonl(repr.length());
+        int r = send(fd, &msglen, 4, 0);
+        if (r != 4)
+            return false;
+
+        for (size_t i=0; i<repr.length(); i+=r){
+            r = send(fd, repr.c_str()+i, repr.length()-i, 0);
+            if (r < 0)
+                return false;
+        }
+        std::cout << "\033[1m" << fd << " \033[36m<<\033[0m " << *obj << std::endl;
+    }
+    return true;
+}
+
+#define BUFSIZE 0x1000
+bool BaseConnectionManager::_doRead(int fd)
+{
+    std::stringstream globalBuf;
+    char buffer[BUFSIZE+1];
+    int r, i=0;
+
+    uint32_t msglen;
+    r = recv(fd, &msglen, 4, 0);
+    if (r != 4)
+        return false;
+    msglen = ntohl(msglen);
+
+    while (msglen > 0 && (r = recv(fd, buffer, BUFSIZE, 0)) > 0){
+        buffer[r] = '\0';
+        globalBuf << buffer;
+        i++;
+        msglen -= r;
+    }
+    if (r < 0 || i == 0)
+        return false;
+
+    JSON::Value *res = JSON::parse(globalBuf.str().c_str());
+    if (res != NULL){
+        _incoming.push(Message(fd, res));
+        std::cout << "\033[1m" << fd << " \033[33m>>\033[0m " << *res << std::endl;
+    }
+
+    return true;
+}
+
+void BaseConnectionManager::_doDisconnect(int fd)
+{
+    close(fd);
+    removeClient(fd);
+    JSON::Dict msgdata;
+    msgdata.set("type", "DISCONNECT");
+    msgdata.set("client_id", fd);
+    _incoming.push(Message(fd, msgdata.clone()));
+    std::cout << "\033[1m" << fd << " \033[35m disconnected\033[0m" << std::endl;
+}
+
+void BaseConnectionManager::_doConnect(int fd)
+{
+    addClient(fd);
+    JSON::Dict msgdata;
+    msgdata.set("type", "CONNECT");
+    msgdata.set("client_id", fd);
+    _incoming.push(Message(fd, msgdata.clone()));
+    std::cout << "\033[1m" << fd << " \033[34m connected\033[0m" << std::endl;
+}
+
+int BaseConnectionManager::_doSelect(int fdmax, fd_set *readable)
+{
+    pthread_mutex_lock(&_fdset_mutex);
+    std::set<int>::iterator it;
+    for (it=_clients.begin(); it!=_clients.end(); it++){
+        FD_SET(*it, readable);
+        if (*it > fdmax)
+            fdmax = *it;
+    }
+    pthread_mutex_unlock(&_fdset_mutex);
+
+    int res = select(fdmax+1, readable, NULL, NULL, NULL);
+
+    if (res > 0){
+        pthread_mutex_lock(&_fdset_mutex);
+        for (it=_clients.begin(); it!=_clients.end(); ){
+            int fd = *it;
+            it++; /* Increment iterator before eventually removing client */
+            if (FD_ISSET(fd, readable) && ! _doRead(fd)){
+                /* FD ready but read error: close connection */
+                pthread_mutex_unlock(&_fdset_mutex);
+                _doDisconnect(fd);
+                pthread_mutex_lock(&_fdset_mutex);
+            }
+        }
+        pthread_mutex_unlock(&_fdset_mutex);
+    }
+
+    return res;
+}
+
+void BaseConnectionManager::_mainloop_in(void)
+{
+    fd_set readable;
+
+    while (isRunning()){
+        FD_ZERO(&readable);
+        _doSelect(0, &readable);
+    }
+}
+
+void BaseConnectionManager::_mainloop_out(void)
+{
+    while (isRunning()){
+        Message const & to_send = _outgoing.pop();
+        pthread_mutex_lock(&_fdset_mutex);
+        std::set<int>::iterator pos = _clients.find(to_send.peer_id);
+        if (pos != _clients.end())
+            _doWrite(to_send.peer_id, to_send.data);
+        pthread_mutex_unlock(&_fdset_mutex);
+        delete to_send.data;
+    }
+}
+
+void BaseConnectionManager::addClient(int fd)
+{
+    pthread_mutex_lock(&_fdset_mutex);
+    _clients.insert(fd);
+    pthread_mutex_unlock(&_fdset_mutex);
+}
+
+bool BaseConnectionManager::removeClient(int fd)
+{
+    bool res = false;
+    pthread_mutex_lock(&_fdset_mutex);
+    if (_clients.find(fd) != _clients.end()){
+        _clients.erase(fd);
+        res = true;
+    }
+    pthread_mutex_unlock(&_fdset_mutex);
+    return res;
+}
+
+/* PThread routines */
+typedef void*(*pthread_routine_t)(void*);
+static void runConnectionManagerIn(void *args)
+{
+    BaseConnectionManager *manager = (BaseConnectionManager*) args;
+    manager->_mainloop_in();
+    pthread_exit(NULL);
+}
+
+static void runConnectionManagerOut(void *args)
+{
+    BaseConnectionManager *manager = (BaseConnectionManager*) args;
+    manager->_mainloop_out();
+    pthread_exit(NULL);
+}
+
+bool BaseConnectionManager::start(void)
+{
+    bool res = false;
+    int lock = pthread_mutex_lock(&_mutex);
+    if (lock == 0){
+        if (! _running){
+            _running = true;
+            int r = pthread_create(
+                &_in_thread, NULL, 
+                (pthread_routine_t) runConnectionManagerIn, this
+            );
+            if (r == 0)
+                r = pthread_create(
+                    &_out_thread, NULL,
+                    (pthread_routine_t) runConnectionManagerOut, this
+                );
+            res = (r == 0);
+        }
+        pthread_mutex_unlock(&_mutex);
+    }
+    return res;
+}
+
+bool BaseConnectionManager::stop(void)
+{
+    bool res = false;
+    int lock = pthread_mutex_lock(&_mutex);
+    if (lock == 0){
+        _running = false;
+        pthread_mutex_unlock(&_mutex);
+        res = true;
+    }
+    return res;
+}
+
+bool BaseConnectionManager::isRunning(void)
+{
+    bool res = false;
+    int lock = pthread_mutex_lock(&_mutex);
+    if (lock == 0){
+        res = _running;
+        pthread_mutex_unlock(&_mutex);
+    }
+    return res;
+}
+
+/* ===== ConnectionManager ===== */
+ConnectionManager::ConnectionManager( 
     SharedQueue<Message> & incoming_queue,
     SharedQueue<Message> & outgoing_queue,
     const char *bind_addr_repr, 
     unsigned short bind_port,
     int max_clients
-) : _sockfd(-1), _clients(), _running(false), 
-    _incoming(incoming_queue), _outgoing(outgoing_queue)
+) : BaseConnectionManager::BaseConnectionManager(incoming_queue, outgoing_queue),
+   _sockfd(-1)
 {
     int yes = 1;
-    pthread_mutex_init(&_mutex, NULL);
 
     _sockfd = socket(AF_INET, SOCK_STREAM, 0);
     if (_sockfd < 0)
@@ -54,216 +282,72 @@ net::ConnectionManager::ConnectionManager(
     }
 }
 
-net::ConnectionManager::~ConnectionManager()
+ConnectionManager::~ConnectionManager()
 {
-    std::set<int>::iterator it;
-    for (it=_clients.begin(); it!=_clients.end(); it++){
-        close(*it);
-    }
-    pthread_mutex_destroy(&_mutex);
+    close(_sockfd);
 }
 
-JSON::Value *net::ConnectionManager::_addClient(void)
-{
-    int fd = accept(_sockfd, NULL, NULL);
-    if (fd < 0)
-        throw ConnectionFailedException();
-    _clients.insert(_clients.begin(), fd);
-    JSON::Dict *msg = new JSON::Dict();
-    msg->set("type", "CONNECT");
-    msg->set("data", fd);
-    std::cout << "\033[34m * New client: " << fd << "\033[0m" << std::endl;
-    return msg;
-}
-
-#define BUFSIZE 0x1000
-JSON::Value *net::ConnectionManager::_readFrom(int fd)
-{
-    std::stringstream globalBuf;
-    char buffer[BUFSIZE+1];
-    int r, i=0;
-
-    uint32_t msglen;
-    r = recv(fd, &msglen, 4, 0);
-    if (r != 4)
-        return NULL;
-    msglen = ntohl(msglen);
-
-    while (msglen > 0 && (r = recv(fd, buffer, BUFSIZE, 0)) > 0){
-        buffer[r] = '\0';
-        globalBuf << buffer;
-        i++;
-        msglen -= r;
-    }
-    if (r < 0 || i == 0)
-        return NULL;
-
-    JSON::Value *res = JSON::parse(globalBuf.str().c_str());
-    if (res)
-        std::cout << "\033[1m" << fd << " \033[33m>>\033[0m " << *res << std::endl;
-    return res;
-}
-
-JSON::Value *net::ConnectionManager::_removeClient(std::set<int>::iterator position)
-{
-    int client_id = *position;
-    close(client_id);
-    _clients.erase(position);
-
-    JSON::Dict *msg = new JSON::Dict();
-    msg->set("type", "DISCONNECT");
-    msg->set("data", client_id);
-    std::cout << "\033[35m * Wiped client: " << client_id << "\033[0m" << std::endl;
-    return msg;
-}
-
-bool net::ConnectionManager::_writeTo(int fd, JSON::Value *obj)
-{
-    if (obj != NULL){
-        std::string const & repr = obj->dumps();
-        uint32_t msglen = htonl(repr.length());
-        int r = send(fd, &msglen, 4, 0);
-        if (r != 4)
-            return false;
-
-        for (size_t i=0; i<repr.length(); i+=r){
-            r = send(fd, repr.c_str()+i, repr.length()-i, 0);
-            if (r < 0)
-                return false;
-        }
-        std::cout << "\033[1m" << fd << " \033[36m<<\033[0m " << *obj << std::endl;
-    }
-    return true;
-}
-
-void net::ConnectionManager::_mainloop_in(void)
+void ConnectionManager::_mainloop_in(void)
 {
     fd_set readable;
-    std::set<int>::iterator it;
-    int fdmax;
 
     while (isRunning()){
-        fdmax = _sockfd;
         FD_ZERO(&readable);
         FD_SET(_sockfd, &readable);
-
-        for (it=_clients.begin(); it!=_clients.end(); it++){
-            FD_SET(*it, &readable);
-            if (*it > fdmax)
-                fdmax = *it;
+        _doSelect(_sockfd, &readable);
+        if (FD_ISSET(_sockfd, &readable)){
+            int fd = accept(_sockfd, NULL, NULL);
+            if (fd > 0){
+                _doConnect(fd);
+            }
         }
-
-        if (select(fdmax+1, &readable, NULL, NULL, NULL) > 0){
-            if (FD_ISSET(_sockfd, &readable)){
-                JSON::Value *msg = _addClient();
-                if (msg){
-                    _incoming.push(Message(INT(DICT(msg).get("data")), msg));
-                }
-            }
-            for (it=_clients.begin(); it!=_clients.end();){
-                if (! FD_ISSET(*it, &readable))
-                    it++; /* fd not set; examine next */
-                else {
-                    try {
-                        JSON::Value *msg = _readFrom(*it);
-                        if (msg){
-                            _incoming.push(Message(*it, msg));
-                            it++;
-                        } else {
-                            /* select() returned ready for read, but nothing has 
-                               been read => close connection */
-                            std::set<int>::iterator to_remove = it;
-                            it++;
-                            int the_client_id = *to_remove;
-                            msg = _removeClient(to_remove);
-                            if (msg)
-                                _incoming.push(Message(the_client_id, msg));
-                        }
-                    } catch (JSON::ParseError &err) {}
-                }
-            }
-        } 
     }
 }
 
-void net::ConnectionManager::_mainloop_out(void)
-{
-    while (isRunning()){
-        Message const & to_send = _outgoing.pop();
-        std::set<int>::iterator pos = _clients.find(to_send.peer_id);
-        if (pos != _clients.end())
-            _writeTo(to_send.peer_id, to_send.data);
-        delete to_send.data;
-    }
-}
-
-const char *net::ConnectionManager::ip(void) const
+const char *ConnectionManager::ip(void) const
 {
     return inet_ntoa(_bind_addr.sin_addr);
 }
 
-unsigned short net::ConnectionManager::port(void) const
+unsigned short ConnectionManager::port(void) const
 {
     return ntohs(_bind_addr.sin_port);
 }
 
-typedef void*(*pthread_routine_t)(void*);
-static void runConnectionManagerIn(void *args)
-{
-    net::ConnectionManager *manager = (net::ConnectionManager*) args;
-    manager->_mainloop_in();
-    pthread_exit(NULL);
-}
+/* ===== SubConnectionManager ===== */
+SubConnectionManager::SubConnectionManager(
+    SharedQueue<Message> & incoming_queue,
+    SharedQueue<Message> & outgoing_queue,
+    BaseConnectionManager & parent
+) : 
+BaseConnectionManager(incoming_queue, outgoing_queue), _parent(parent)
+{}
 
-static void runConnectionManagerOut(void *args)
+bool SubConnectionManager::acquireClient(int client_id)
 {
-    net::ConnectionManager *manager = (net::ConnectionManager*) args;
-    manager->_mainloop_out();
-    pthread_exit(NULL);
-}
-
-bool net::ConnectionManager::start(void)
-{
-    bool res = false;
-    int lock = pthread_mutex_lock(&_mutex);
-    if (lock == 0){
-        if (! _running){
-            _running = true;
-            int r = pthread_create(
-                &_in_thread, NULL, 
-                (pthread_routine_t) runConnectionManagerIn, this
-            );
-            if (r == 0)
-                r = pthread_create(
-                    &_out_thread, NULL,
-                    (pthread_routine_t) runConnectionManagerOut, this
-                );
-            res = (r == 0);
-        }
-        pthread_mutex_unlock(&_mutex);
+    if (_parent.removeClient(client_id)){
+        addClient(client_id);
+        return true;
     }
-    return res;
+    return false;
 }
 
-bool net::ConnectionManager::stop(void)
+bool SubConnectionManager::releaseClient(int client_id)
 {
-    bool res = false;
-    int lock = pthread_mutex_lock(&_mutex);
-    if (lock == 0){
-        _running = false;
-        pthread_mutex_unlock(&_mutex);
-        res = true;
+    if (removeClient(client_id)){
+        _parent.addClient(client_id);
+        return true;
     }
-    return res;
+    return false;
 }
 
-bool net::ConnectionManager::isRunning(void)
+SubConnectionManager::~SubConnectionManager()
 {
-    bool res = false;
-    int lock = pthread_mutex_lock(&_mutex);
-    if (lock == 0){
-        res = _running;
-        pthread_mutex_unlock(&_mutex);
+    /* Give back fd to parent connection on destruction */
+    for (iterator client=_iterClients(); client!=_iterEnd();){
+        iterator next = client;
+        next++;
+        releaseClient(*client);
+        client = next;
     }
-    return res;
 }

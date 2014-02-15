@@ -1,27 +1,8 @@
-OBJ= Menu.o StadiumManager.o Message.o Connection.o Client.o FriendlyGameManager.o main.o 
-MAIN=client.app
-CXX=g++
-CFLAGS=-std=c++11 -pedantic -Wall -Wextra -I../common
-LDFLAGS= 
-LIBNETWORK=../common/network/libnetwork.a
-LIBJSON=../common/json/libjson.a
+OBJS = Message.o Connection.o Client.o StadiumManager.o FriendlyGameManager.o
+LIBS = ../common/json/libjson.a ../common/network/libnetwork.a ../common/model/libmodel.a
+CPPFLAGS = -I../common
 
-all: ${MAIN}
-
-${MAIN}: ${OBJ} ${LIBNETWORK} ${LIBJSON}
+client.app: main.o ${OBJS} ${LIBS}
 	${CXX} ${LDFLAGS} -o $@ $^
 
-%.o: %.cpp
-	${CXX} ${CFLAGS} -c -o $@ $^
-
-${LIBNETWORK}:
-	cd ../common/network && make
-	
-${LIBJSON}:
-	cd ../common/json && make
-
-clean:
-	rm -rf *.o
-
-mrproper: clean
-	rm -rf ${MAIN}
+include ../Makefile.includes

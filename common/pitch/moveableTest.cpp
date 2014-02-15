@@ -41,6 +41,7 @@ TEST(serialize)
 	Moveable titou("Titouan", 12, 32.1, pos);
 
 	JSON::Dict const & repr = titou.toJson();
+	cout << repr << endl;
 	Moveable copy(repr);
 
 	ASSERT(copy.getPosition() == titou.getPosition());

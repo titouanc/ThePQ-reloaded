@@ -1,5 +1,7 @@
 make.ok: server/make.ok client/make.ok
 	touch $@
+	uname -a
+	${CXX} --version
 
 common/make.ok: common
 	make -C $<
