@@ -41,6 +41,11 @@ namespace net {
 			void _doDisconnect(int fd);
 			/* Add client to managed clients and emit CONNECT message */
 			void _doConnect(int fd);
+			
+			/* iterator on managed clients */
+			typedef std::set<int>::iterator iterator;
+			iterator _iterClients(void){return _clients.begin();}
+			iterator _iterEnd(void){return _clients.end();}
 		public:
 			explicit BaseConnectionManager(
 				SharedQueue<Message> & incoming_queue,
@@ -69,15 +74,6 @@ namespace net {
 			void _mainloop_out(void);
 	};
 
-	class SubConnectionManager : public BaseConnectionManager {
-		private:
-			BaseConnectionManager & parent;
-		public:
-			SubConnectionManager(BaseConnectionManager & parent);
-			bool acquireClient(int client_id);
-			~SubConnectionManager();
-	};
-
 	class ConnectionManager : public BaseConnectionManager {
 		private:
 			/* Bound IP structure */
@@ -99,6 +95,25 @@ namespace net {
 			/* Getters */
 			const char *ip(void) const;
 			unsigned short port(void) const;
+	};
+
+	class SubConnectionManager : public BaseConnectionManager {
+		private:
+			BaseConnectionManager & _parent;
+		public:
+			/* ConnectionManager which takes its managed clients from a parent
+			   ConnectionManager. It cannot accept connections by itself. */
+			SubConnectionManager(
+			    SharedQueue<Message> & incoming_queue,
+			    SharedQueue<Message> & outgoing_queue,
+			    BaseConnectionManager & parent
+			);
+			/* Remove client_id from parent (if any) and add to self. */
+			bool acquireClient(int client_id);
+			/* Remove client_id from self (if any) and add to parent. */
+			bool releaseClient(int client_id);
+			/* Remove all managed clients before destroying. */
+			~SubConnectionManager();
 	};
 }
 
