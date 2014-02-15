@@ -163,3 +163,7 @@ void Server::sendConnectedUsersList(int peer_id){
 
 	_outbox.push(Message(peer_id, usersList.clone()));
 }
+
+void Server::sendPlayersOnMarketList(int peer_id){}
+
+void Server::addPlayerOnMarket(const JSON::Dict &player, int peer_id){}

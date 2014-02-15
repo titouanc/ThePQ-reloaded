@@ -45,6 +45,9 @@ public:
 	void checkIfUserExists(string username, int peer_id);
 	void sendInstallationsList(int peer_id);
 	void sendConnectedUsersList(int peer_id);
+    void sendPlayersOnMarketList(int peer_id);
+    void addPlayerOnMarket(const JSON::Dict &bid, int peer_id);
+    void placeBidOnPlayer(const JSON::DICT &bid, int peer_id);
 private:
 	SharedQueue<net::Message> _inbox, _outbox;
 	map<int, User*> _users;
