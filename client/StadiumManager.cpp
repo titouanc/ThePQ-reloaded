@@ -27,7 +27,7 @@ void StadiumManager::printInstallationsList(){
 void StadiumManager::upgradeInstallation()
 {
 	size_t choice;
-	cout << "Enter the number of the installation you want to upgrade" << endl;
+	cout << "Enter the number of the installation you want to upgrade" << endl << ">";
 	cin >> choice;
 	if (choice < _installations.size())
 	{
@@ -36,12 +36,16 @@ void StadiumManager::upgradeInstallation()
 			_installations[choice].upgrade();
 		}
 	}
+	else
+	{
+		cout << "The number you entered is wrong" << endl;
+	}
 }
 
 void StadiumManager::downgradeInstallation()
 {
 	size_t choice;
-	cout << "Enter the number of the installation you want to downgrade" << endl;
+	cout << "Enter the number of the installation you want to downgrade" << endl << ">";
 	cin >> choice;
 	if (choice < _installations.size())
 	{
@@ -49,5 +53,9 @@ void StadiumManager::downgradeInstallation()
 		{
 			_installations[choice].downgrade();
 		}
+	}
+	else
+	{
+		cout << "The number you entered is wrong" << endl;
 	}
 }
