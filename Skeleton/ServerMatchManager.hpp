@@ -1,7 +1,7 @@
 #ifndef ServerMatchManager_hpp
 #define ServerMatchManager_hpp
 
-#include "MatchManager.h"
+#include "MatchManager.hpp"
 
 class ServerMatchManager : MatchManager {
 public:

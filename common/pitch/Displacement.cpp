@@ -1,4 +1,4 @@
-#include "displacement.h"
+#include "Displacement.hpp"
 #include <cassert>
 
 Displacement::Displacement() : _moves()
@@ -12,12 +12,16 @@ Displacement::Displacement(JSON::List const & list) : Displacement()
     }
 }
 
-Position Displacement::position(double t, Position const & initial) const 
+Position Displacement::position(double t, size_t speed) const 
 {
     assert(0 <= t && t <= 1);
-    Position res(initial);
+    assert(speed <= length());
+    Position res;
     double begin=0, end=0;
-    t *= length();
+
+    if (speed==0)
+        speed = length();
+    t *= speed;
     for (size_t i=0; i<count(); i++){
         end = begin + _moves[i].length();
         if (end <= t){
@@ -30,6 +34,16 @@ Position Displacement::position(double t, Position const & initial) const
         }
     }
     return res;
+}
+
+Position Displacement::position(double t, Position const & initial) const
+{
+    return initial+position(t, length());
+}
+
+Position Displacement::position(double t, Moveable const & moveable) const 
+{
+    return moveable.getPosition()+position(t, moveable.getSpeed());
 }
 
 void Displacement::addMove(Position const & move) 

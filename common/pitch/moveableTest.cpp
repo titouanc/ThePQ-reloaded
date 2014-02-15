@@ -1,6 +1,6 @@
 #include <string>
 #include "Moveable.hpp"
-#include "../lighttest/lighttest.h"
+#include <lighttest/lighttest.hpp>
 
 TEST(constructor_without_parameters)
 	Moveable m;
@@ -36,13 +36,25 @@ TEST(setters)
 	ASSERT(m.getPosition().y() == 2);
 ENDTEST()
 
+TEST(serialize)
+	Position pos(1, 2);
+	Moveable titou("Titouan", 12, 32.1, pos);
 
+	JSON::Dict const & repr = titou.toJson();
+	Moveable copy(repr);
+
+	ASSERT(copy.getPosition() == titou.getPosition());
+	ASSERT(copy.getName() == titou.getName());
+	ASSERT(copy.getSpeed() == titou.getSpeed());
+	ASSERT(copy.getID() == titou.getID());
+ENDTEST()
 
 int main(int argc, const char **argv){
 	TestFunc tests[] = {
 		ADDTEST(constructor_without_parameters),
 		ADDTEST(constructor_with_parameters),
-		ADDTEST(setters)
+		ADDTEST(setters),
+		ADDTEST(serialize)
 	};
 	return RUN(tests);
 }

@@ -1,4 +1,4 @@
-#include "json.h"
+#include "json.hpp"
 #include <cmath>
 #include <sstream>
 
@@ -11,6 +11,22 @@ List::~List()
 {
     for (size_t i=0; i<len(); i++)
         delete _content[i];
+}
+
+List::List(List const & other) : List()
+{
+    for (size_t i=0; i<other.len(); i++)
+        appendPtr(other[i]->clone());
+}
+
+List & List::operator=(List const & other)
+{
+    for (size_t i=0; i<len(); i++)
+        delete _content[i];
+    _content.clear();
+    for (size_t i=0; i<other.len(); i++)
+        appendPtr(other[i]->clone());
+    return *this;
 }
 
 Type List::type(void) const 

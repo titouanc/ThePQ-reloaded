@@ -1,4 +1,4 @@
-#include "json.h"
+#include "json.hpp"
 #include <sstream>
 #include <cstdlib>
 
@@ -35,4 +35,9 @@ void Value::save(const char *filename) const
 	}
 
 	close(fd);
+}
+
+void Value::save(std::string const & filename) const 
+{
+	save(filename.c_str());
 }

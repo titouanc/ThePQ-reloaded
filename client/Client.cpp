@@ -2,16 +2,17 @@
 
 using namespace std;
 
-string Client::_userChoice;
-Connection Client::_connection;
-string Client::_prompt = ">";
+Client::Client(NetConfig const &config) : _prompt(">"), _connection(config.host, config.port)
+{
+	
+}
 
 void Client::run()
 {
 	cout << Message::splashScreen();
 
 	/* user menu */
-	Menu loginMenu;
+	Menu<Client> loginMenu;
 	string message;
 	message+= "You can : \n";
 	message+= "   - (l)ogin\n";
@@ -19,8 +20,8 @@ void Client::run()
 	message+= "   - (q)uit\n";
 	message+= _prompt;
 	loginMenu.setMessage(message);
-	loginMenu.addOption('l', login);
-	loginMenu.addOption('r', registerUser);
+	loginMenu.addOption('l', new ClassCallback<Client>(this,&Client::login));
+	loginMenu.addOption('r', new ClassCallback<Client>(this,&Client::registerUser));
 	loginMenu.run();
 
 	cout << Message::goodBye();
@@ -32,6 +33,7 @@ void Client::login(){
 	string password = askForUserData("Password : ");
 	
 	try {
+		cout << "Please wait..." << endl;
 		_connection.loginUser(username, password);
 		cout << "You have successfully logged in! Welcome! :)" << endl;
 		mainMenu();
@@ -47,20 +49,30 @@ void Client::login(){
 }
 
 void Client::registerUser(){
-	string username = askForUserData("Pick a username : ");
-	if (_connection.doesUserExist(username))
-		cout << "User name already exists. Try again with a different username." << endl;
-	else {
-		string password = askForNewPassword();
-		_connection.registerUser(username, password);
-		cout << "You have successfully registered! You can now login." << endl;
+	bool registered = false;
+	for (int i = 0; i < 3 && ! registered; ++i)
+	{
+		string username = askForUserData("Pick a username : ");
+		try {
+			cout << "Please wait..." << endl;
+			_connection.doesUserExist(username);
+			string password = askForNewPassword();
+			cout << "Please wait..." << endl;
+			_connection.registerUser(username, password);
+			registered = true;
+			cout << "You have successfully registered! You can now login." << endl;
+		}
+		catch (UserAlreadyExistsException e) {
+			cout << "User name already exists. Try again with a different username." << endl;		
+		}
 	}
 }
+	
 
 /* main menu */
 void Client::mainMenu()
 {
-	Menu main;
+	Menu<Client> main;
 	string message;
 	message+= "You can : \n";
 	message+= "   - (m)anage your team and stadium\n";
@@ -68,15 +80,15 @@ void Client::mainMenu()
 	message+= "   - (q)uit\n";
 	message+= _prompt;
 	main.setMessage(message);
-	main.addOption('m', managmentMenu);
-	main.addOption('p', friendlyMatchMenu);
+	main.addOption('m', new ClassCallback<Client>(this, &Client::managementMenu));
+	main.addOption('p', new ClassCallback<Client>(this, &Client::friendlyMatchMenu));
 	main.run();
 }
 
-/* Managment menu */
-void Client::managmentMenu()
+/* Management menu */
+void Client::managementMenu()
 {
-	Menu mgt;
+	Menu<Client> mgt;
 	string message;
 	message+= "You can : \n";
 	message+= "   - manage your (s)tadium and installations\n";
@@ -84,17 +96,20 @@ void Client::managmentMenu()
 	message+= "   - (q)uit to main menu\n";
 	message+= _prompt;
 	mgt.setMessage(message);
-	mgt.addOption('s', stadiumMenu);
-	mgt.addOption('p', playersMenu);
+	mgt.addOption('s', new ClassCallback<Client>(this, &Client::stadiumMenu));
+	mgt.addOption('p', new ClassCallback<Client>(this, &Client::playersMenu));
 	mgt.run();
 }
 
 void Client::stadiumMenu()
 {
-	Menu stadium;
+	StadiumManager stadiumMgr(&_connection);
+	Menu<StadiumManager> stadium;
 	string message;
 	message+= "You can : \n";
-	message+= "    - (q)uit to managment menu\n";
+	message+= "    - (v)iew your installations\n";
+	message+= "    - (q)uit to management menu\n";
+	stadium.addOption('v', new ClassCallback<StadiumManager>(&stadiumMgr, &StadiumManager::printInstallationsList));
 	stadium.setMessage(message);
 	// TODO : stadium menu
 	stadium.run();
@@ -102,10 +117,10 @@ void Client::stadiumMenu()
 
 void Client::playersMenu()
 {
-	Menu players;
+	Menu<Client> players;
 	string message;
 	message+= "You can : \n";
-	message+= "    - (q)uit to managment menu\n";
+	message+= "    - (q)uit to management menu\n";
 	players.setMessage(message);
 	// TODO : players menu
 	players.run();
@@ -114,7 +129,7 @@ void Client::playersMenu()
 /* Friendly match menu */
 void Client::friendlyMatchMenu()
 {
-	Menu friendly;
+	Menu<Client> friendly;
 	string message;
 	message+= "You can : \n";
 	message+= "   - (l)ist all connected players\n";
@@ -122,14 +137,15 @@ void Client::friendlyMatchMenu()
 	message+= "   - (q)uit to main menu\n";
 	message+= _prompt;
 	friendly.setMessage(message);
-	friendly.addOption('l', listUsers);
-	friendly.addOption('c', chooseUser);
+	friendly.addOption('l', new ClassCallback<Client>(this, &Client::listUsers));
+	friendly.addOption('c', new ClassCallback<Client>(this, &Client::chooseUser));
 	friendly.run();
 }
 
 void Client::listUsers()
 {
-	// TODO : list users for friendly match
+	FriendlyGameManager::loadConnectedUsersList(&_connection);
+	FriendlyGameManager::printConnectedUsersList();
 }
 
 void Client::chooseUser()

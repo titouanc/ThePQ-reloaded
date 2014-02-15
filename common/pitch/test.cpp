@@ -1,6 +1,6 @@
-#include <lighttest.h>
-#include "position.h"
-#include "displacement.h"
+#include <lighttest/lighttest.hpp>
+#include "Position.hpp"
+#include "Displacement.hpp"
 
 static Position West(-2, 0);
 static Position SouthWest(-1, -1); 

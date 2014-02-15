@@ -1,25 +1,27 @@
 #ifndef CONNECTION_HPP
 #define CONNECTION_HPP
 
-#include "../common/network/net.hpp"
-#include "../common/json/json.h"
+#include <network/TcpSocket.hpp>
+#include <json/json.hpp>
 #include "Exception.hpp"
-#include "../common/Constants.hpp"
+#include <Constants.hpp>
 #include <string>
+#include <vector>
+#include "model/Installation.hpp"
 
 class Connection
 {
 public:
-	Connection();
+	Connection(std::string host, int port);
 	
 	void loginUser(std::string username, std::string passwd);
-	bool doesUserExist(std::string username);
+	void doesUserExist(std::string username);
 	void registerUser(std::string username, std::string passwd);
 	
-	bool isLogged();
+	std::vector<Installation> getInstallationsList();
+	void getConnectedUsersList(std::vector<std::string> &users);
 	
 private:
-	bool _isLogged;
 	net::TcpSocket _socket;
 };
 

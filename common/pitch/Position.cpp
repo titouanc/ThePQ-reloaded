@@ -1,4 +1,4 @@
-#include "position.h"
+#include "Position.hpp"
 #include <cassert>
 
 Position::Position(int x, int y) : _x(x), _y(y)
@@ -37,7 +37,7 @@ bool Position::isDirection(void) const
     return (abs(_x)==abs(_y) || abs(_y)==0) && (_x+_y)%2 == 0;
 }
 
-Position Position::operator+(Position const & other)
+Position Position::operator+(Position const & other) const
 {
     return Position(_x+other.x(), _y+other.y());
 }

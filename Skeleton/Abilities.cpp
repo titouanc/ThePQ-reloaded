@@ -2,7 +2,8 @@
 
 using namespace std;
 
-Abilities::Abilities (){
+Abilities::Abilities () : strength(5), constitution(5), magic(5), spirit(5), velocity(5), precision(5), chance(5){
+
 }
 
 int Abilities::getStrength (){

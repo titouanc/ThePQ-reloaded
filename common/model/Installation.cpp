@@ -6,7 +6,7 @@ int Installation::getMaintenanceCost(){
 }
 
 int Installation::getValueAtLevel(int level){
-	return level ? (getBaseValue() * pow(2, level-1)) : 0;
+	return level ? (getBaseValue() * pow(2, level+1)) : 0;
 }
 
 int Installation::getUpgradeCost(){
@@ -34,7 +34,6 @@ void Installation::upgrade(){
 	 */
 	if (getLevel() < getMaxLevel()){
 		setLevel( getLevel() + 1 );
-		setCurrentValue(getValueAtLevel(getLevel()));
 	}
 }
 
@@ -43,7 +42,6 @@ void Installation::downgrade(){
 	 */
 	if (getLevel() > 0){
 		setLevel( getLevel() - 1 );
-		setCurrentValue(getValueAtLevel(getLevel()));
 	}
 }
 

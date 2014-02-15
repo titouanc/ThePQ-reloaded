@@ -1,9 +1,9 @@
-OBJ= test.o TcpSocket.o connectionmanager.o
+OBJ= test.o TcpSocket.o ConnectionManager.o
 LIBNETWORK=libnetwork.a
 LIBJSON=../json/libjson.a
 
 CXX = g++
-CXXFLAGS = -std=c++11 -pedantic -Wall -Wextra -pthread -I../json
+CXXFLAGS = -std=c++11 -pedantic -Wall -Wextra -pthread -I../
 LDFLAGS = -lm -lpthread
 
 all: test.app

@@ -43,17 +43,21 @@ namespace JSON {
         Boolean_t = 0x20
     };
 
+    class Error : public std::runtime_error {
+        public: using std::runtime_error::runtime_error;
+    };
+
     /* JSON errors */
-    class KeyError : public std::runtime_error {
-        public: using std::runtime_error::runtime_error;
+    class KeyError : public Error {
+        public: using Error::Error;
     };
 
-    class ParseError : public std::runtime_error {
-        public: using std::runtime_error::runtime_error;
+    class ParseError : public Error {
+        public: using Error::Error;
     };
 
-    class IOError : std::runtime_error {
-        using std::runtime_error::runtime_error;
+    class IOError : public Error {
+        public: using Error::Error;
     };
 
     /* Abstract common ancestor for all JSON types */
@@ -71,6 +75,7 @@ namespace JSON {
                 return out;
             }
             void save(const char *filename) const;
+            void save(std::string const & filename) const;
             bool isNumber() const {return (type()&(Integer_t|Float_t)) != 0;}
             bool isAtom() const {
                 return (type()&(Integer_t|Float_t|String_t|Boolean_t)) != 0;
@@ -78,7 +83,7 @@ namespace JSON {
             bool isSequence() const {return (type()&(Dict_t|List_t)) != 0;}
     };
 
-    #include "number.h"
+    #include "number.hpp"
     
     class String : public Value {
         private:
@@ -90,6 +95,8 @@ namespace JSON {
             Value * clone(void) const;
             virtual void _writeTo(std::ostream & out) const;
             std::string const & value(void) const;
+            operator std::string const &(){return value();}
+            operator const char *(){return value().c_str();}
     };
 
     class List : public Value {
@@ -98,6 +105,9 @@ namespace JSON {
         public:
             List();
             ~List();
+            List(List const & other);
+            List & operator=(List const & other);
+
             Type type(void) const;
             Value * clone(void) const;
             virtual void _writeTo(std::ostream & out) const;
@@ -119,6 +129,9 @@ namespace JSON {
         public:
             Dict();
             ~Dict();
+            Dict(Dict const & other);
+            Dict & operator=(Dict const & other);
+
             Type type(void) const;
             Value * clone(void) const;
             virtual void _writeTo(std::ostream & out) const;
@@ -127,6 +140,7 @@ namespace JSON {
             void set(std::string const & key, Value const & val);
             const Value * get(std::string const & key) const;
             Value * steal(std::string const & key);
+            size_t len(void) const;
             
             /* Fast setters */
             void set(std::string const & key, double val);
@@ -143,6 +157,7 @@ namespace JSON {
     Value *parse(const char *str, char **eptr=NULL);
 
     Value *load(const char *filename);
+    Value *load(std::string filename);
 }
 
 #endif

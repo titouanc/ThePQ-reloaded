@@ -1,4 +1,4 @@
-#include "net.hpp"
+#include "TcpSocket.hpp"
 #include <cstring>
 
 void net::TcpSocket::connect(const std::string ipAddr, int portNo)
@@ -24,7 +24,7 @@ void net::TcpSocket::send(const char *data, size_t len)
 {
     if (::send(_sockfd, data, len, 0) <= 0)
     {
-		throw SendFailedException();
+		throw DisconnectedException();
 	}
 }
 
@@ -35,7 +35,7 @@ void net::TcpSocket::recv(char *data, size_t len, size_t & received)
     received = ::recv(_sockfd, data, len, 0);
     if (received <= 0)
     {
-		throw RecvFailedException();
+		throw DisconnectedException();
 	}
 	data[received] = '\0';
 }
@@ -44,9 +44,13 @@ void net::TcpSocket::send(const JSON::Value *json)
 {
 	std::string dump = json->dumps();
 	const char* data = (dump.c_str());
+	uint32_t len = htonl(dump.length());
+	int r = ::send (_sockfd, &len, 4, 0);
+	if (r != 4)
+		throw DisconnectedException();
     if (::send(_sockfd, data, dump.length(), 0) <= 0)
     {
-		throw SendFailedException();
+		throw DisconnectedException();
 	}
 }
 
@@ -56,10 +60,15 @@ JSON::Value* net::TcpSocket::recv()
 	char* data = new char[MSG_SIZE];
 	size_t received;
 	bzero(data, MSG_SIZE);
-    received = ::recv(_sockfd, data, MSG_SIZE, 0);
-    if (received <= 0)
+	uint32_t len = 0;
+	int r = ::recv(_sockfd, &len, 4, 0);
+	len = ntohl(len);
+	if (r != 4)
+		throw DisconnectedException();
+    received = ::recv(_sockfd, data, len, 0);
+    if (received != len)
     {
-		throw RecvFailedException();
+		throw DisconnectedException();
 	}
 	data[received] = '\0';
 	json = JSON::parse(data);
