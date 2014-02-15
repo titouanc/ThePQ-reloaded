@@ -4,7 +4,13 @@ using namespace std;
 
 Connection::Connection(std::string host, int port) : _connectionManager(_inbox, _outbox, host.c_str(), port)
 {
-	_socket.connect(host, port);
+	//~ _socket.connect(host, port);
+	_connectionManager.start();
+}
+
+Connection::~Connection()
+{
+	_connectionManager.stop();
 }
 
 void Connection::loginUser(string username, string passwd)
@@ -14,9 +20,12 @@ void Connection::loginUser(string username, string passwd)
 	credentials.set(net::MSG::PASSWORD, passwd);
 	toSend.set("type", net::MSG::LOGIN_QUERY);
 	toSend.set("data", credentials);
-	_socket.send(&toSend);
+	//~ _socket.send(&toSend);
+	net::Message msg(
+	_sockfd, toSend.clone());
+	_outbox.push(msg);
 
-	JSON::Value *serverMessage = _socket.recv();	// receiving server response
+	JSON::Value *serverMessage = _inbox.pop().data;	// receiving server response
 
 	if (ISDICT(serverMessage)){
 		JSON::Dict const &received = DICT(serverMessage);
