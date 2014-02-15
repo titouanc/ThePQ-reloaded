@@ -20,8 +20,9 @@ using namespace net;
 /* ===== BaseConnectionManager ===== */
 BaseConnectionManager::BaseConnectionManager( 
     SharedQueue<Message> & incoming_queue,
-    SharedQueue<Message> & outgoing_queue
-) : _incoming(incoming_queue), _outgoing(outgoing_queue)
+    SharedQueue<Message> & outgoing_queue,
+    bool logger
+) : _incoming(incoming_queue), _outgoing(outgoing_queue), _logger(logger)
 {
     pthread_mutex_init(&_mutex, NULL);
     pthread_mutex_init(&_fdset_mutex, NULL);
@@ -51,7 +52,9 @@ bool BaseConnectionManager::_doWrite(int fd, JSON::Value *obj)
             if (r < 0)
                 return false;
         }
-        std::cout << "\033[1m" << fd << " \033[36m<<\033[0m " << *obj << std::endl;
+        if (_logger)
+            std::cout << "\033[1m" << fd << " \033[36m<<\033[0m " 
+                      << *obj << std::endl;
     }
     return true;
 }
@@ -81,7 +84,9 @@ bool BaseConnectionManager::_doRead(int fd)
     JSON::Value *res = JSON::parse(globalBuf.str().c_str());
     if (res != NULL){
         _incoming.push(Message(fd, res));
-        std::cout << "\033[1m" << fd << " \033[33m>>\033[0m " << *res << std::endl;
+        if (_logger)
+            std::cout << "\033[1m" << fd << " \033[33m>>\033[0m " 
+                      << *res << std::endl;
     }
 
     return true;
@@ -250,7 +255,7 @@ ConnectionManager::ConnectionManager(
     const char *bind_addr_repr, 
     unsigned short bind_port,
     int max_clients
-) : BaseConnectionManager::BaseConnectionManager(incoming_queue, outgoing_queue),
+) : BaseConnectionManager::BaseConnectionManager(incoming_queue, outgoing_queue, true),
    _sockfd(-1)
 {
     int yes = 1;
@@ -357,7 +362,7 @@ ClientConnectionManager::ClientConnectionManager(
 				SharedQueue<Message> & outgoing_queue,
 				const char *host_addr, 
 				unsigned short host_port
-) : BaseConnectionManager::BaseConnectionManager(incoming_queue, outgoing_queue),
+) : BaseConnectionManager::BaseConnectionManager(incoming_queue, outgoing_queue, false),
 	_sockfd(-1)
 {
     _sockfd = socket(AF_INET, SOCK_STREAM, 0);

@@ -29,7 +29,9 @@ namespace net {
 			std::set<int> _clients;
 		protected:
 			/* Incoming message queue */
-			SharedQueue<Message> & _incoming, &_outgoing;
+			SharedQueue<Message> & _incoming, & _outgoing;
+			/* Log exchanged messages */
+			bool _logger;
 			/* Call to select, and read from all known selected clients */
 			int  _doSelect(int fdmax, fd_set *readable);
 			/* Write obj to fd */
@@ -49,7 +51,8 @@ namespace net {
 		public:
 			explicit BaseConnectionManager(
 				SharedQueue<Message> & incoming_queue,
-				SharedQueue<Message> & outgoing_queue
+				SharedQueue<Message> & outgoing_queue,
+				bool logger=true
 			);
 			~BaseConnectionManager();
 
