@@ -351,3 +351,50 @@ SubConnectionManager::~SubConnectionManager()
         client = next;
     }
 }
+
+ClientConnectionManager::ClientConnectionManager(
+				SharedQueue<Message> & incoming_queue,
+				SharedQueue<Message> & outgoing_queue,
+				const char *host_addr, 
+				unsigned short host_port
+) : BaseConnectionManager::BaseConnectionManager(incoming_queue, outgoing_queue),
+	_sockfd(-1)
+{
+    _sockfd = socket(AF_INET, SOCK_STREAM, 0);
+    if (_sockfd < 0)
+        throw ConnectionFailedException();
+
+	int yes = 1;
+    if (setsockopt(_sockfd, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(int)) == -1){
+		close(_sockfd);
+        throw ConnectionFailedException();
+    }
+
+    memset(&_host_addr, 0, sizeof(struct sockaddr_in));
+    
+    _host_addr.sin_family = AF_INET;
+    _host_addr.sin_addr.s_addr = inet_addr(host_addr);
+    _host_addr.sin_port = htons(host_port);
+
+    if (connect(_sockfd, (struct sockaddr *) &_host_addr,
+		sizeof(_host_addr)) < 0)
+	{
+		close(_sockfd);
+		throw ConnectionFailedException();
+	}
+}
+
+ClientConnectionManager::~ClientConnectionManager()
+{
+	close(_sockfd);
+}
+
+const char *ClientConnectionManager::ip(void) const
+{
+    return inet_ntoa(_host_addr.sin_addr);
+}
+
+unsigned short ClientConnectionManager::port(void) const
+{
+    return ntohs(_host_addr.sin_port);
+}

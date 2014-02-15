@@ -115,6 +115,24 @@ namespace net {
 			/* Remove all managed clients before destroying. */
 			~SubConnectionManager();
 	};
+	
+	class ClientConnectionManager : public BaseConnectionManager {
+		private:
+			struct sockaddr_in _host_addr;
+			int _sockfd;
+		public:
+			explicit ClientConnectionManager(
+				SharedQueue<Message> & incoming_queue,
+				SharedQueue<Message> & outgoing_queue,
+				const char *host_addr="127.0.0.1", 
+				unsigned short host_port=32123
+			);
+			~ClientConnectionManager();
+
+			/* Getters */
+			const char *ip(void) const;
+			unsigned short port(void) const;
+	};
 }
 
 #endif
