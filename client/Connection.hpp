@@ -12,7 +12,7 @@
 class Connection
 {
 public:
-	Connection();
+	Connection(std::string host, int port);
 	
 	void loginUser(std::string username, std::string passwd);
 	void doesUserExist(std::string username);
