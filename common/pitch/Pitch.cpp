@@ -36,6 +36,11 @@ Moveable * Pitch::getAt(int x, int y) const
 	return _matrix[_index(x, y)];
 }
 
+Moveable * Pitch::getAt(Position const & pos) const
+{
+	return getAt(pos.x(), pos.y());
+}
+
 bool Pitch::inEllipsis(int x, int y) const
 {
 	double k = ((double) _width)/_height;

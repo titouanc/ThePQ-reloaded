@@ -32,6 +32,7 @@ class Pitch {
 		 * @param y The row (the middle row is 0)
 		 */
 		Moveable * getAt(int x, int y) const;
+		Moveable * getAt(Position const & pos) const;
 
 		/*!
 		 * @meth bool Pitch::inEllipsis(int x, int y) const
