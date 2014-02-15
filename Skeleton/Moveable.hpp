@@ -2,12 +2,13 @@
 #define Moveable_hpp
 
 #include "Constants.hpp"
+#include "Position.hpp"
 
 class Moveable {
 public:
 	// CONSTRUCTORS
 	Moveable();
-	Moveable(string name, unsigned int id, float speed);
+	Moveable(std::string name, unsigned int id, float speed);
 	~Moveable();
 
 	// GETTERS + SETTERS
@@ -18,10 +19,10 @@ public:
 	void setSpeed();
 
 	unsigned int getID();
-	void setID()
+	void setID();
 
 private:
-	string _name;
+    std::string _name;
 	unsigned int _uniqueID;
 	float _speed;
 };
