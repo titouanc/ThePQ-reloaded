@@ -20,24 +20,22 @@ std::string Player::getName() const{
     return name;
 }
 
-Broomstick Player::getBroomstick () const{
-    return broomstick;
-}
-
 void Player::equipBroomstick (Broomstick aBroom){
-    improveVelocity(-1 * broomstick.getVelocity());
+    improveVelocity(-1 * broomstick->getVelocityBonus());
     improveVelocity(aBroom.getVelocityBonus());
+    *broomstick = aBroom;
 }
 
 Jersey Player::equipJersey (Jersey aJersey){
-    improveStrength(-1 * jersey.getStrengthBonus());
-    improveConstitution(-1 * jersey.getConstitutionBonus());
-    improveMagic(-1 * jersey.getMagicBonus());
-    improveSpirit(-1 * jersey.getSpiritBonus());
+    improveStrength(-1 * jersey->getStrengthBonus());
+    improveConstitution(-1 * jersey->getConstitutionBonus());
+    improveMagic(-1 * jersey->getMagicBonus());
+    improveSpirit(-1 * jersey->getSpiritBonus());
     improveStrength(aJersey.getStrengthBonus());
     improveConstitution(aJersey.getConstitutionBonus());
     improveMagic(aJersey.getMagicBonus());
     improveSpirit(aJersey.getSpiritBonus());
+    *jersey = aJersey;
 }
 
 void Player::recoverLife (){

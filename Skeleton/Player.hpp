@@ -13,7 +13,6 @@ public:
 	int getRemainingLife () const;
 	int getRemainingMana ()const;
     std::string getName() const;
-	Broomstick getBroomstick () const;
     void equipBroomstick (Broomstick aBroom);
 	Jersey equipJersey (Jersey aJersey);
 	void recoverLife ();
@@ -43,8 +42,8 @@ private:
     int maxMana;
 	int lifeBar;
 	int manaBar;
-	Broomstick broomstick;
-    Jersey jersey;
+	Broomstick * broomstick;
+    Jersey * jersey;
 	int strength;
 	int constitution;
 	int magic;
