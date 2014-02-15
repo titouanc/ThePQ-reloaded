@@ -19,6 +19,8 @@ public:
 	void registerUser(std::string username, std::string passwd);
 	
 	std::vector<Installation> getInstallationsList();
+	bool upgradeInstallation(size_t i);
+	bool downgradeInstallation(size_t i);
 	void getConnectedUsersList(std::vector<std::string> &users);
 	
 private:

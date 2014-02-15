@@ -98,6 +98,16 @@ vector<Installation> Connection::getInstallationsList(){
 	return vec;
 }
 
+bool Connection::upgradeInstallation(size_t i)
+{
+	
+}
+
+bool Connection::downgradeInstallation(size_t i)
+{
+	
+}
+
 void Connection::getConnectedUsersList(vector<string> &users){
 	JSON::Dict query;
 	query.set("type", net::MSG::DATA_QUERY);
