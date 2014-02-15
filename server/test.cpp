@@ -31,6 +31,7 @@ TEST(squad)
 		ASSERT(sq.players[i]->getName()[0] == 'A'+(char)i);
 		ASSERT(sq.players[i]->getSpeed() == 7);
 		ASSERT(sq.players[i]->getPosition() == Position(0, 0));
+		ASSERT(sq.players[i]->getID() == 0);
 	}
 ENDTEST()
 
