@@ -3,10 +3,15 @@
 
 #include "Player.hpp"
 
-class Chaser : Player 
+class Chaser : public Player 
 {
 public:
 	bool isChaser () const;
+    int speed ();
+    int collisionner ();
+    int anticollision ();
+    int pass ();
+    int shoot ();
 };
 
 #endif

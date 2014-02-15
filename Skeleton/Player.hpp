@@ -36,7 +36,7 @@ public:
 	void improveSpirit (int added);
 	void improveVelocity (int added);
 	void improvePrecision (int added);
-private:
+protected:
     std::string name;
     int maxLife;
     int maxMana;
