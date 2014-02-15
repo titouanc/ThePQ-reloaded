@@ -32,9 +32,6 @@ HEADERS = $(shell ${CXX} ${CXXFLAGS} ${CPPFLAGS} -MM *.cpp | sed -E 's/.+\.[^h]p
 %.o: %.cpp ${HEADERS}
 	${CXX} ${CXXFLAGS} ${CPPFLAGS} -c -o $@ $<
 
-%.a: ${OBJS}
-	ar r $@ $^
-
 clean:
 	rm -f *.o *.ok
 
