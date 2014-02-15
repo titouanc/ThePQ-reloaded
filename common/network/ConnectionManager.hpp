@@ -74,7 +74,7 @@ namespace net {
 			/* Main in loop: feed incoming queue */
 			virtual void _mainloop_in(void);
 			/* Main out loop: eat outgoing queue */
-			void _mainloop_out(void);
+			virtual void _mainloop_out(void);
 	};
 
 	class ConnectionManager : public BaseConnectionManager {
@@ -131,6 +131,8 @@ namespace net {
 				unsigned short host_port=32123
 			);
 			~ClientConnectionManager();
+
+			void _mainloop_out(void);
 
 			/* Getters */
 			const char *ip(void) const;

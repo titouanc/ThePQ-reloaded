@@ -387,6 +387,17 @@ ClientConnectionManager::ClientConnectionManager(
 		close(_sockfd);
 		throw ConnectionFailedException();
 	}
+
+    addClient(_sockfd);
+}
+
+void ClientConnectionManager::_mainloop_out()
+{
+    while (isRunning()){
+        Message const & msg = _outgoing.pop();
+        _doWrite(_sockfd, msg.data);
+        delete msg.data;
+    }
 }
 
 ClientConnectionManager::~ClientConnectionManager()
