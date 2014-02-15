@@ -16,6 +16,7 @@ public:
   virtual void operator()(){
     (_classPtr->*_cbProc)();
   }
+  virtual ~ClassCallback() {}
 };
 
 template<typename T>
@@ -23,6 +24,7 @@ class Menu
 {
 public:
 	Menu();
+	~Menu();
 	void setMessage(std::string message);
 	void addOption(char choice, ClassCallback<T>* callback);
 	void run();
@@ -39,6 +41,18 @@ template<typename T>
 Menu<T>::Menu()
 {
 	_message = "";
+}
+
+template<typename T>
+Menu<T>::~Menu()
+{
+	typename
+	std::map<char, ClassCallback<T>*>::iterator it = _options.begin();
+	while (it != _options.end())
+	{
+		delete it->second;
+		it++;
+	}
 }
 
 template<typename T>
