@@ -1,0 +1,12 @@
+{
+	"squad_id" : 42,
+	"players" : [
+		{"name": "T", "speed": 4},
+		{"name": "U", "speed": 5},
+		{"name": "V", "speed": 7},
+		{"name": "W", "speed": 2},
+		{"name": "X", "speed": 3},
+		{"name": "Y", "speed": 6},
+		{"name": "Z", "speed": 1}
+	]
+}
