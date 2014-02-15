@@ -2,10 +2,9 @@
 
 using namespace std;
 
-Client::Client()
+Client::Client(NetConfig const &config) : _prompt(">"), _connection(config.host, config.port)
 {
-	_prompt = ">";
-	run();
+	
 }
 
 void Client::run()

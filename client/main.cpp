@@ -2,7 +2,13 @@
 
 int main(int argc, char const *argv[])
 {
-	Client c;
+	NetConfig config;
+	config.load();
+	
+	Client client(config);
+	config.save();
+	
+	client.run();
 	
 	return 0;
 }

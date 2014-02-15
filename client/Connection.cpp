@@ -2,9 +2,9 @@
 
 using namespace std;
 
-Connection::Connection()
+Connection::Connection(std::string host, int port)
 {
-	_socket.connect("0.0.0.0", 32123);
+	_socket.connect(host, port);
 }
 
 void Connection::loginUser(string username, string passwd)
