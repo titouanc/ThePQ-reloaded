@@ -28,15 +28,22 @@ TEST(squad)
 	delete json;
 
 	for (size_t i=0; i<7; i++){
-		ASSERT(sq.players[i]->getName()[0] == 'A'+(char)i);
-		ASSERT(sq.players[i]->getSpeed() == 7);
-		ASSERT(sq.players[i]->getPosition() == Position(0, 0));
-		ASSERT(sq.players[i]->getID() == 0);
+		ASSERT(sq.players[i].getName()[0] == 'A'+(char)i);
+		ASSERT(sq.players[i].getSpeed() == 7);
+		ASSERT(sq.players[i].getPosition() == Position(0, 0));
+		ASSERT(sq.players[i].getID() == 0);
 	}
 ENDTEST()
 
 TEST(matchmanager)
-	MatchManager m;
+	JSON::Value *A = JSON::load("fixtures/squad1.json");
+	ASSERT(ISDICT(A));
+	JSON::Value *B = JSON::load("fixtures/squad2.json");
+	ASSERT(ISDICT(B));
+
+	MatchManager m(DICT(A), DICT(B));
+	delete A;
+	delete B;
 ENDTEST()
 
 int main(int argc, const char **argv)

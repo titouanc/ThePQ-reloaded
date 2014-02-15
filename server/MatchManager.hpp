@@ -23,8 +23,8 @@ struct Stroke {
 
 struct Squad {
 	int squad_id;
-	Player *players[7];
-	Squad(){memset(players, 0, 7*sizeof(Player*));}
+	Player players[7];
+	Squad(){}
 	Squad(JSON::Dict const & json){
 		if (! ISINT(json.get("squad_id")))
 			throw JSON::KeyError("A squad should have an ID");
@@ -37,17 +37,16 @@ struct Squad {
 		for (size_t i=0; i<7; i++){
 			if (! ISDICT(list[i]))
 				throw JSON::TypeError("Expecting JSON::Dict for player");
-			players[i] = new Player(DICT(list[i]));
+			players[i] = Player(DICT(list[i]));
 		}
 	}
-	~Squad(){
-		for (size_t i=0; i<7; i++)
-			delete players[i];
-	}
-	JSON::List toJson(){
-		JSON::List res;
+	JSON::Dict toJson(){
+		JSON::List list;
 		for (int i=0; i<7; i++)
-			res.append(players[i]->toJson());
+			list.append(players[i].toJson());
+		JSON::Dict res;
+		res.set("players", list);
+		res.set("squad_id", squad_id);
 		return res;
 	}
 };
@@ -56,32 +55,24 @@ class MatchManager {
 	private:
 		std::queue<Stroke> _strokes;
 		Squad _squads[2];
-		Ball *_balls[4];
-		Pitch _pitch;
+		Ball   _balls[4];
+		Pitch  _pitch;
 	public:
-		MatchManager() : _strokes(), _pitch(100, 36) {
+		MatchManager(Squad const & squadA, Squad const & squadB) : 
+		_strokes(), _pitch(100, 36) {
 			for (int i=0; i<4; i++)
-				_balls[i] = new Ball();
-			cout << _pitch;
+				_balls[i].setID(100+i+1); /* Balls IDs: 101..104*/
+			_squads[0] = squadA;
+			_squads[1] = squadB;
+
+			for (int i=0; i<2; i++){
+				for (int j=0; j<7; j++){
+					/* Players IDs: 1..7 and 11..16*/
+					_squads[i].players[j].setID(10*i+j+1);
+				}
+			}
 		}
 		~MatchManager(){}
-
-		/*!
-		 * @meth void MatchManager::addStroke(Stroke const & stroke)
-		 * @brief Add a stroke to the current turn
-		 */
-		void addStroke(Stroke const & stroke){
-			bool found = false;
-			for (int s=0; !found && s<2; s++)
-				for (int i=0; !found && i<7; i++)
-					if (stroke.moveable.getID() == _squads[s].players[i]->getID())
-						found = true;
-			for (int i=0; !found && i<4; i++)
-				if (stroke.moveable.getID() == _balls[i]->getID())
-					found = true;
-			if (found)
-				_strokes.push(stroke);
-		}
 
 		/*!
 		 * @meth void MatchManager::playStrokes(void)
@@ -100,7 +91,8 @@ class MatchManager {
 			}
 
 			for (double t=1.0/maxlen; t<=1; t+=1.0/maxlen){
-				for (i=0; i<_strokes.size(); i++){
+				size_t n_strokes = _strokes.size();
+				for (i=0; i<n_strokes; i++){
 					Stroke &stroke = _strokes.front();
 					_strokes.pop();
 					_strokes.push(stroke);
