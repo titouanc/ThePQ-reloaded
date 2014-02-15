@@ -1,8 +1,9 @@
 #include "User.hpp"
 #include <json/json.hpp>
 #include <lighttest/lighttest.hpp>
+#include "MatchManager.hpp"
 
-TEST(USER)
+TEST(user)
 	User user("usertest", "passwdtest");
 	ASSERT(user.getUsername() == "usertest");
 	ASSERT(user.getPassword() == "passwdtest");
@@ -19,10 +20,15 @@ TEST(USER)
 	delete test;
 ENDTEST()
 
+TEST(matchmanager)
+	MatchManager m;
+ENDTEST()
+
 int main(int argc, const char **argv)
 {
 	TestFunc tests[] = {
-		ADDTEST(USER)
+		ADDTEST(user),
+		ADDTEST(matchmanager)
 	};
 	return RUN(tests);
 }

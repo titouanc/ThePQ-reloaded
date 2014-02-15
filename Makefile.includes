@@ -1,0 +1,45 @@
+# Make recipes to be imported in subdirectories Makefiles
+# A Makefile should define the following variables:
+# * OBJS: Object files shared across all targets
+# * LIBS: Static libs (.a) paths (passed to linker)
+
+# Set C++ compiler if not defined
+ifeq (${CXX},)
+	CXX = g++
+endif
+
+# Set C++ compiler options if not defined
+ifeq (${CXXFLAGS},)
+	CXXFLAGS = -std=c++11 -pedantic -Wall -Wextra -pthread
+endif
+
+# Set C++ linker options if not defined
+ifeq (${LDFLAGS},)
+	LDFLAGS = -lm -lpthread
+endif
+
+# Find all headers dependencies in cpp files
+HEADERS = $(shell ${CXX} ${CXXFLAGS} ${CPPFLAGS} -MM *.cpp | sed -E 's/.+\.[^h]pp|\\//g' | tr -s ' ' '\n' | sort | uniq)
+
+%.ok: %.app
+	./$< && touch $@
+
+%.app: %.o ${OBJS} ${LIBS}
+	${CXX} ${LDFLAGS} -o $@ $^
+
+%.o: %.cpp
+
+%.o: %.cpp ${HEADERS}
+	${CXX} ${CXXFLAGS} ${CPPFLAGS} -c -o $@ $<
+
+%.a: ${OBJS}
+	ar r $@ $^
+
+clean:
+	rm -f *.o *.ok
+
+mrproper: clean
+	rm -f *.app
+
+.PHONY: all clean mrproper
+.PRECIOUS: ${OBJS}
