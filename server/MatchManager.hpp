@@ -2,9 +2,9 @@
 #define DEFINE_MATCHMANAGER_HEADER 
 
 #include <queue>
-#include <pitch/Moveable.hpp>
-#include <pitch/Displacement.hpp>
-#include <pitch/Pitch.hpp>
+#include <model/Moveable.hpp>
+#include <model/Displacement.hpp>
+#include <model/Pitch.hpp>
 #include <cstring>
 #include "User.hpp"
 
