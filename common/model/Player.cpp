@@ -60,3 +60,26 @@ int Beater::anticollision (){
 int Beater::shootBludger (){ 
     return static_cast<int>( (float) getStrength() * .5 + (float) getPrecision() * .35 + (float) getMagic() * .1 + (float) getChance() * .05 ) * 100;
 }
+
+// CHASER ----------------------------------------------------------------------
+int Chaser::speed (){
+    return static_cast<int>( (float) getVelocity() * .85 + (float) getStrength() * .1 + (float) getChance() * .05 ) * 100;
+}
+
+int Chaser::collisionner (){
+    return static_cast<int>( (float) getStrength() * .65 + (float) getMagic() * .3 + (float) getChance() * .05 ) * 100;
+}
+
+int Chaser::anticollision (){
+    return static_cast<int>( (float) getConstitution() * .65 + (float) getSpirit() * .3 + (float) getChance() * .05 ) * 100 ;
+}
+
+int Chaser::pass (){
+    return static_cast<int>( (float) getStrength() * .4 + (float) getPrecision() * .5 + (float) getChance() * 0.1 ) * 100 ;
+}
+
+int Chaser::shoot (){
+    return static_cast<int>( (float) getStrength() * .6 + (float) getPrecision() * .35 + (float) getChance() * .05 ) *100 ;
+}
+
+

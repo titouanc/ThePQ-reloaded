@@ -56,7 +56,7 @@ protected:
 	int _chance;
 };
 
-
+// BEATER ----------------------------------------------------------------------
 class Beater : public Player 
 {
 public:
@@ -69,6 +69,19 @@ public:
     int shootBludger ();
 private:
 	Bat * _bat;
+};
+
+// CHASER ----------------------------------------------------------------------
+class Chaser : public Player 
+{
+public:
+    Chaser(): Player();
+    bool isChaser () const; { return true; }
+    int speed ();
+    int collisionner ();
+    int anticollision ();
+    int pass ();
+    int shoot ();
 };
 
 
