@@ -2,6 +2,7 @@
 #define Team_hpp
 
 #include "Player.hpp"
+#include "Coach.hpp"
 #include "Gear.hpp"
 #include "Sponsor.hpp"
 #include "Installation.hpp"
@@ -31,7 +32,7 @@ private:
 	std::list<Player> _players;
 	std::list<Coach> _coaches;
 	std::list<Gear> _gear;
-	Stadium _stadium;
+	//Stadium _stadium; // TODO delete?
 	Sponsor _sponsor;
 	int _fame;
 	int _funds;
@@ -55,7 +56,7 @@ public:
 	int getWins(){return _nbrWins;}
 	int getPlayed(){return _nbrPlayed;}
 	float getRatio (){return _nbrWins/_nbrPlayed;}
-	Stadium getStadium(){return _stadium;}
+	//Stadium getStadium(){return _stadium;} // TODO delete?
 	Sponsor getSponsor(){return _sponsor;}
 	std::list<Player> getPlayers(){return _players;}
 	std::list<Coach> getCoaches(){return _coaches;}

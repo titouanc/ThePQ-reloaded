@@ -1,4 +1,4 @@
-OBJS = Position.o Displacement.o Pitch.o Player.o Coach.o Installation.o Sponsor.o Team.o
+OBJS = Position.o Displacement.o Pitch.o Player.o Coach.o Installation.o 
 CPPFLAGS = -I..
 LIBS = ../json/libjson.a
 
