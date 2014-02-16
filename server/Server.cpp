@@ -69,9 +69,9 @@ void Server::treatMessage(const Message &message){
 			} else if (ISINT(received.get("data"))) {
 				int data = INT(received.get("data"));
 				if (messageType == MSG::INSTALLATION_UPGRADE) {
-					upgradeInstallation(data);
+					upgradeInstallation(message.peer_id, data);
 				} else if (messageType == MSG::INSTALLATION_DOWNGRADE) {
-					downgradeInstallation(data);
+					downgradeInstallation(message.peer_id, data);
 				}
 			}
 		}
@@ -159,14 +159,14 @@ void Server::sendInstallationsList(int peer_id){
 	_outbox.push(Message(peer_id, installationsList));
 }
 
-void Server::upgradeInstallation(size_t i)
+void Server::upgradeInstallation(int peer_id, size_t i)
 {
-	
+	_users[peer_id]->getInstallations()[i].upgrade();
 }
 
-void Server::downgradeInstallation(size_t i)
+void Server::downgradeInstallation(int peer_id, size_t i)
 {
-	
+	_users[peer_id]->getInstallations()[i].downgrade();	
 }
 
 void Server::sendConnectedUsersList(int peer_id){

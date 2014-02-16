@@ -1,6 +1,6 @@
 #include "User.hpp"
 
-User::User(const string& username, const string& password)
+User::User(const string& username, const string& password) : _installations()
 {
 	setUsername(username);
 	setPassword(password);
@@ -44,6 +44,22 @@ void User::save()
 	JSON::Dict json = *this;
 	mkdir(getUserDirectoryPath().c_str(), 0755);
 	json.save(string(getUserDirectoryPath() + "user.json").c_str());
+}
+
+vector<Installation>& User::getInstallations()
+{
+	if (_installations.empty())
+	{
+		string listPath = getUserDirectoryPath() + "installations.json";
+		JSON::Value* json = JSON::load(listPath);
+		JSON::List installationsList = LIST(json);
+		for (size_t i = 0; i < installationsList.len(); ++i)
+		{
+			_installations.push_back(DICT(installationsList[i]));
+		}
+		delete json;
+	}
+	return _installations;
 }
 
 // TODO add User.delete
