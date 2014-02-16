@@ -20,6 +20,7 @@ void StadiumManager::printInstallationsList(){
 		cout << "      Level : 				" << _installations[i].getLevel() << endl;
 		cout << "      Current Value : 		" << _installations[i].getCurrentValue() << endl;
 		cout << "      Upgrade Cost : 		" << _installations[i].getUpgradeCost() << endl;
+		cout << "      Refund Ratio :       " << _installations[i].getRefundRatio() << endl;
 		cout << "      Downgrade Refunds : 	" << _installations[i].getDowngradeRefunds() << endl;
 	}
 }

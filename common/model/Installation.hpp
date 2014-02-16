@@ -17,15 +17,16 @@ public:
 	Installation(JSON::Dict json) : _name(STR(json.get("name")).value()),
 									   _level(INT(json.get("level"))), 
 									   _baseValue(INT(json.get("baseValue"))),
-									   _refundRatio(INT(json.get("refundRatio")))
+									   _refundRatio(FLOAT(json.get("refundRatio")))
 	{}
 	
 	operator JSON::Dict()
 	{
 		JSON::Dict json;
+		json.set("name", _name);
 		json.set("level", _level);
 		json.set("baseValue", _baseValue);
-		json.set("refundRation", _refundRatio);
+		json.set("refundRatio", _refundRatio);
 		return json;
 	}
 	

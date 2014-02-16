@@ -163,12 +163,21 @@ void Server::upgradeInstallation(int peer_id, size_t i)
 {
 	_users[peer_id]->getInstallations()[i].upgrade();
 	_users[peer_id]->saveInstallations();
+	JSON::Dict msg;
+	msg.set("type", net::MSG::INSTALLATION_UPGRADE);
+	msg.set("data", JSON::Bool(true));
+	_outbox.push(Message(peer_id, msg.clone()));
 }
 
 void Server::downgradeInstallation(int peer_id, size_t i)
 {
 	_users[peer_id]->getInstallations()[i].downgrade();	
 	_users[peer_id]->saveInstallations();
+	JSON::Dict msg;
+	msg.set("type", net::MSG::INSTALLATION_DOWNGRADE);
+	msg.set("data", JSON::Bool(true));
+	cout << msg.dumps() << endl;
+	_outbox.push(Message(peer_id, msg.clone()));
 }
 
 void Server::sendConnectedUsersList(int peer_id){
