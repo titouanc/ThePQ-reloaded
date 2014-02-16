@@ -4,7 +4,10 @@
 #include "Broomstick.hpp"
 #include "Jersey.hpp"
 
-Player::Player ():Member(), maxLife(100), maxMana(100), lifeBar(100), manaBar(100), broomstick(new Broomstick(5,50)), jersey(new Jersey()), strength(5), constitution(5), magic(5), spirit(5), velocity(5), precision(5), chance(5){
+Player::Player ():  Member(), maxLife(100), maxMana(100), lifeBar(100), 
+                    manaBar(100), broomstick(new Broomstick(5,50)), 
+                    jersey(new Jersey()), strength(5), constitution(5), 
+                    magic(5), spirit(5), velocity(5), precision(5), chance(5){
     
 }
 
