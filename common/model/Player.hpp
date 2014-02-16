@@ -2,8 +2,7 @@
 #define __PLAYER_HPP
 
 #include "Member.hpp"
-#include "Broomstick.hpp"
-#include "Jersey.hpp"
+#include "Gear.hpp"
 #include "Moveable.hpp"
 
 class Player : public Member, public Moveable 
