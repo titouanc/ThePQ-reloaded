@@ -46,6 +46,14 @@ void User::save()
 	json.save(string(getUserDirectoryPath() + "user.json").c_str());
 	JSON::Dict installations;
 	installations.save(string(getUserDirectoryPath()+ "installations.json").c_str());
+	JSON::Dict baseSquad;
+	generateBaseSquad(baseSquad);
+	baseSquad.save(string(getUserDirectoryPath()+ "players.json").c_str());
+}
+
+
+void User::generateBaseSquad(JSON::Dict &toFill){
+	// TODO generate basesquad
 }
 
 // TODO add User.delete

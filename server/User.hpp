@@ -30,6 +30,8 @@ public:
 	void save();
 	
 	static User* load(string username);
+
+	void generateBaseSquad(JSON::Dict &toFill);
 };
 
 #endif
