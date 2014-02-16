@@ -4,14 +4,18 @@
 #include "Player.hpp"
 #include "Bat.hpp"
 
-class Beater : Player 
+class Beater : public Player 
 {
 public:
+    Beater();
 	bool isBeater () const;
 	void equipBat (Bat aBat);
     void unequipBat ();
+    int collision ();
+    int anticollision ();
+    int shootBludger ();
 private:
-	Bat bat;
+	Bat * bat;
 };
 
 #endif
