@@ -56,4 +56,20 @@ protected:
 	int _chance;
 };
 
+
+class Beater : public Player 
+{
+public:
+    Beater() : Player(), _bat(new Bat(5, 5));
+	bool isBeater () const { return true; }
+	void equipBat (Bat aBat);
+    void unequipBat ();
+    int collision ();
+    int anticollision ();
+    int shootBludger ();
+private:
+	Bat * _bat;
+};
+
+
 #endif
