@@ -23,9 +23,10 @@ public:
 	operator JSON::Dict()
 	{
 		JSON::Dict json;
+		json.set("name", _name);
 		json.set("level", _level);
 		json.set("baseValue", _baseValue);
-		json.set("refundRation", _refundRatio);
+		json.set("refundRatio", _refundRatio);
 		return json;
 	}
 	
