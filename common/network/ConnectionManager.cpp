@@ -367,7 +367,7 @@ ClientConnectionManager::ClientConnectionManager(
 				SharedQueue<Message> & outgoing_queue,
 				const char *host_addr, 
 				unsigned short host_port
-) : BaseConnectionManager::BaseConnectionManager(incoming_queue, outgoing_queue, true),
+) : BaseConnectionManager::BaseConnectionManager(incoming_queue, outgoing_queue, false),
 	_sockfd(-1)
 {
 	// TODO log is activated
