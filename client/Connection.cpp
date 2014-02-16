@@ -5,7 +5,6 @@ using namespace std;
 Connection::Connection(std::string host, int port) : _inbox(), _outbox(),
 _connectionManager(_inbox, _outbox, host.c_str(), port)
 {
-	//~ _socket.connect(host, port);
 	_connectionManager.start();
 }
 
@@ -21,7 +20,6 @@ void Connection::loginUser(string username, string passwd)
 	credentials.set(net::MSG::PASSWORD, passwd);
 	toSend.set("type", net::MSG::LOGIN_QUERY);
 	toSend.set("data", credentials);
-	//~ _socket.send(&toSend);
 	net::Message msg(0, toSend.clone());
 	_outbox.push(msg);
 
@@ -47,9 +45,10 @@ void Connection::doesUserExist(string username){
 	JSON::Dict toSend;
 	toSend.set("type", net::MSG::USER_EXISTS_QUERY);
 	toSend.set("data", username);
-	_socket.send(&toSend);
+	net::Message msg(0, toSend.clone());
+	_outbox.push(msg);
 
-	JSON::Value *serverMessage = _socket.recv(); // receiving server response
+	JSON::Value *serverMessage = _inbox.pop().data; // receiving server response
 
 	if(ISDICT(serverMessage)){
 		JSON::Dict const &received = DICT(serverMessage);
@@ -70,9 +69,10 @@ void Connection::registerUser(string username, string passwd)
 	credentials.set(net::MSG::PASSWORD, passwd);
 	toSend.set("type", net::MSG::REGISTER_QUERY);
 	toSend.set("data", credentials);
-	_socket.send(&toSend);
+	net::Message msg(0, toSend.clone());
+	_outbox.push(msg);
 
-	JSON::Value *serverMessage = _socket.recv();	// receiving server response
+	JSON::Value *serverMessage = _inbox.pop().data;	// receiving server response
 
 	if (ISDICT(serverMessage)){
 		JSON::Dict const &received = DICT(serverMessage);

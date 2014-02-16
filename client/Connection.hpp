@@ -27,8 +27,8 @@ public:
 	
 private:
 	net::TcpSocket _socket;
-	net::ClientConnectionManager _connectionManager;
 	SharedQueue<net::Message> _inbox, _outbox;
+	net::ClientConnectionManager _connectionManager;
 };
 
 #endif
