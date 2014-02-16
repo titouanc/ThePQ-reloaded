@@ -33,6 +33,7 @@ namespace net
 		static const std::string USER_EXISTS_QUERY = "Q_U";
 		static const std::string CONNECTION_STATUS = "Q_S";
 		static const std::string DATA_QUERY = "Q_D";
+		static const std::string ADD_PLAYER_ON_MARKET_QUERY = "Q_A_P_OM";
 		
 		// DATA ----------------------------------------------
 		// connection + register
@@ -43,11 +44,15 @@ namespace net
 		static const std::string USER_NOT_FOUND = "U_NF";
 		static const std::string USER_EXISTS = "U_E";
 		static const std::string USER_REGISTERED = "U_R";
+		static const std::string PLAYER_ID = "P_ID";
 		// data queries
 		static const std::string INSTALLATIONS_LIST = "DQ_I_L";
 		static const std::string INSTALLATION_UPGRADE = "DQ_I_U";
 		static const std::string INSTALLATION_DOWNGRADE = "DQ_I_D";
 		static const std::string CONNECTED_USERS_LIST = "DQ_CU_L";
+		//player market
+		static const std::string PLAYER_ON_MARKET = "PM_P_OM";
+		static const std::string PLAYER_ADDED_ON_MARKET = "PM_P_A_OM";
 
 	}
 	
