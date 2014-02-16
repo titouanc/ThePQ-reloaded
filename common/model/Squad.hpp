@@ -1,5 +1,5 @@
-#ifndef Squad_hpp
-#define Squad_hpp
+#ifndef __SQUAD_HPP
+#define __SQUAD_HPP
 
 #include "Constants.hpp"
 #include "Player.hpp"

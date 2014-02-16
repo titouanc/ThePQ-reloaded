@@ -1,5 +1,5 @@
-#ifndef Keeper_hpp
-#define Keeper_hpp
+#ifndef __KEEPER_HPP
+#define __KEEPER_HPP
 
 #include "Player.hpp"
 

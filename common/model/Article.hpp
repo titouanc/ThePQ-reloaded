@@ -1,5 +1,5 @@
-#ifndef Article_hpp
-#define Article_hpp
+#ifndef __ARTICLE_HPP
+#define __ARTICLE_HPP
 
 class Article 
 {

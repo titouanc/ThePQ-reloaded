@@ -1,5 +1,5 @@
-#ifndef Team_hpp
-#define Team_hpp
+#ifndef __TEAM_HPP
+#define __TEAM_HPP
 
 #include "Gear.hpp"
 #include "Sponsor.hpp"

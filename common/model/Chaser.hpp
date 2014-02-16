@@ -1,5 +1,5 @@
-#ifndef Chaser_hpp
-#define Chaser_hpp
+#ifndef __CHASER_HPP
+#define __CHASER_HPP
 
 #include "Player.hpp"
 

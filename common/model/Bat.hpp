@@ -1,5 +1,5 @@
-#ifndef Bat_hpp
-#define Bat_hpp
+#ifndef __BAT_HPP
+#define __BAT_HPP
 
 #include "Gear.hpp"
 #include "Player.hpp"

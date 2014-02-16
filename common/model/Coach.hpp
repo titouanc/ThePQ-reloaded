@@ -1,5 +1,5 @@
-#ifndef Coach_hpp
-#define Coach_hpp
+#ifndef __COACH_HPP
+#define __COACH_HPP
 
 #include "Member.hpp"
 

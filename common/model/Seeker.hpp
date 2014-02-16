@@ -1,5 +1,5 @@
-#ifndef Seeker_hpp
-#define Seeker_hpp
+#ifndef __SEEKER_HPP
+#define __SEEKER_HPP
 
 #include "Player.hpp"
 

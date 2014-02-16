@@ -1,5 +1,5 @@
-#ifndef Gear_hpp
-#define Gear_hpp
+#ifndef __GEAR_HPP
+#define __GEAR_HPP
 
 class Gear 
 {

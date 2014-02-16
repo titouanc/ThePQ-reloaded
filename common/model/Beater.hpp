@@ -1,5 +1,5 @@
-#ifndef Beater_hpp
-#define Beater_hpp
+#ifndef __BEATER_HPP
+#define __BEATER_HPP
 
 #include "Player.hpp"
 #include "Bat.hpp"

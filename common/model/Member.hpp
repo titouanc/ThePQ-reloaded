@@ -1,5 +1,5 @@
-#ifndef Member_hpp
-#define Member_hpp  
+#ifndef __MEMBER_HPP
+#define __MEMBER_HPP  
 
 #include "Team.hpp"
 

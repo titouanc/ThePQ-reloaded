@@ -1,5 +1,5 @@
-#ifndef Broomstick_hpp
-#define Broomstick_hpp
+#ifndef __BROOMSTICK_HPP
+#define __BROOMSTICK_HPP
 
 #include "Gear.hpp"
 #include "Player.hpp"

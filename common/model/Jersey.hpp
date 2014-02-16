@@ -1,5 +1,5 @@
-#ifndef Jersey_hpp
-#define Jersey_hpp
+#ifndef __JERSEY_HPP
+#define __JERSEY_HPP
 
 #include "Gear.hpp"
 #include "Player.hpp"
