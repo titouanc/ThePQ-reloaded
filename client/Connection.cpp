@@ -111,7 +111,23 @@ vector<Installation> Connection::getInstallationsList(){
 
 bool Connection::upgradeInstallation(size_t i)
 {
+	JSON::Dict query;
+	query.set("type", net::MSG::INSTALLATION_UPGRADE);
+	query.set("data", i);
+	net::Message msg(0, query.clone());
+	_outbox.push(msg);
 	
+	JSON::Value *serverResponse = _inbox.pop().data;
+	if (ISDICT(serverResponse))
+	{
+		JSON::Dict received = DICT(serverResponse);
+		if (ISSTR(received.get("type")) && ISBOOL(received.get("data"))
+			&& STR(received.get("type")).value() == net::MSG::INSTALLATION_UPGRADE)
+		{
+			return BOOL(serverResponse);
+		}
+	}
+	return false;
 }
 
 bool Connection::downgradeInstallation(size_t i)
