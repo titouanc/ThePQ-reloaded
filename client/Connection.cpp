@@ -92,9 +92,10 @@ vector<Installation> Connection::getInstallationsList(){
 	JSON::List toFill;
 	query.set("type", net::MSG::DATA_QUERY);
 	query.set("data", net::MSG::INSTALLATIONS_LIST);
-	_socket.send(&query);
+	net::Message msg(0, query.clone());
+	_outbox.push(msg);
 
-	JSON::Value *serverResponse = _socket.recv();
+	JSON::Value *serverResponse = _inbox.pop().data;
 	if (ISLIST(serverResponse))
 	{
 		toFill = LIST(serverResponse);
