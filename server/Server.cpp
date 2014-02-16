@@ -162,11 +162,13 @@ void Server::sendInstallationsList(int peer_id){
 void Server::upgradeInstallation(int peer_id, size_t i)
 {
 	_users[peer_id]->getInstallations()[i].upgrade();
+	_users[peer_id]->saveInstallations();
 }
 
 void Server::downgradeInstallation(int peer_id, size_t i)
 {
 	_users[peer_id]->getInstallations()[i].downgrade();	
+	_users[peer_id]->saveInstallations();
 }
 
 void Server::sendConnectedUsersList(int peer_id){
