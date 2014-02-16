@@ -67,9 +67,11 @@ void User::saveInstallations()
 	JSON::List json;
 	for (size_t i = 0; i < _installations.size(); ++i)
 	{
-		json.append(DICT(&_installations[i]));
+		JSON::Dict install = _installations[i];
+		json.append(install);
 	}
 	string path = getUserDirectoryPath() + "installations.json";
+	cout << json.dumps() << endl;
 	json.save(path.c_str());
 }
 
