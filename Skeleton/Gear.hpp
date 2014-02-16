@@ -13,4 +13,4 @@ private:
 	int const price;
 };
 
-#ifndef
+#endif
