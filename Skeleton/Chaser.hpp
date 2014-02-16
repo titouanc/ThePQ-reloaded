@@ -6,6 +6,7 @@
 class Chaser : public Player 
 {
 public:
+    Chaser();
 	bool isChaser () const;
     int speed ();
     int collisionner ();

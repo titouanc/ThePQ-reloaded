@@ -1,6 +1,10 @@
 #include "Chaser.hpp"
 #include "Player.hpp"
 
+Chaser::Chaser() : Player(){
+
+}
+
 bool Chaser::isChaser()const {
     return true;
 }
