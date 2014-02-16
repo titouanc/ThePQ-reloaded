@@ -6,6 +6,7 @@
 #include <network/TcpSocket.hpp>
 #include "sys/stat.h"
 #include "RandomNameGenerator.hpp"
+//#include "../Skeleton/Player.hpp"
 
 using namespace std;
 
@@ -29,6 +30,7 @@ public:
 	
 	string getUserDirectoryPath();
 	void save();
+	void createUser();
 	
 	static User* load(string username);
 

@@ -44,6 +44,12 @@ void User::save()
 	JSON::Dict json = *this;
 	mkdir(getUserDirectoryPath().c_str(), 0755);
 	json.save(string(getUserDirectoryPath() + "user.json").c_str());
+}
+
+void User::createUser(){
+	JSON::Dict json = *this;
+	mkdir(getUserDirectoryPath().c_str(), 0755);
+	json.save(string(getUserDirectoryPath() + "user.json").c_str());
 	JSON::Dict installations;
 	installations.save(string(getUserDirectoryPath()+ "installations.json").c_str());
 	JSON::Dict baseSquad;
@@ -53,7 +59,19 @@ void User::save()
 
 
 void User::generateBaseSquad(JSON::Dict &toFill){
-	// TODO generate basesquad
+	RandomNameGenerator gen;
+	toFill.set("players", JSON::List());
+	for (int i=0; i<7; i++){
+		/* TODO
+		Player p;
+		p.setName(gen.getRandomName());
+		LIST(toFill.get("players")).append(p.toJson().clone());
+		*/
+		JSON::Dict toSave;
+		toSave.set("name", gen.getRandomName());
+		toSave.set("id", 123);
+		LIST(toFill.get("players")).append(toSave);
+	}
 }
 
 // TODO add User.delete
