@@ -5,6 +5,7 @@
 #include <cstdint>
 
 extern "C" {
+    #include <netdb.h>
     #include <unistd.h>
     #include <sys/types.h>
     #include <sys/stat.h>
@@ -367,25 +368,25 @@ ClientConnectionManager::ClientConnectionManager(
 				SharedQueue<Message> & outgoing_queue,
 				const char *host_addr, 
 				unsigned short host_port
-) : BaseConnectionManager::BaseConnectionManager(incoming_queue, outgoing_queue, true),
+) : BaseConnectionManager::BaseConnectionManager(incoming_queue, outgoing_queue, false),
 	_sockfd(-1)
 {
-	// TODO log is activated
+    struct hostent *host = gethostbyname(host_addr);
+    if (host == NULL){
+        throw ConnectionFailedException(
+            std::string("Could not resolve host ")+host_addr
+        );
+    }
+
     _sockfd = socket(AF_INET, SOCK_STREAM, 0);
     if (_sockfd < 0)
         throw ConnectionFailedException();
 
-	int yes = 1;
-    if (setsockopt(_sockfd, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(int)) == -1){
-		close(_sockfd);
-        throw ConnectionFailedException();
-    }
-
     memset(&_host_addr, 0, sizeof(struct sockaddr_in));
     
     _host_addr.sin_family = AF_INET;
-    _host_addr.sin_addr.s_addr = inet_addr(host_addr);
     _host_addr.sin_port = htons(host_port);
+    _host_addr.sin_addr = *((struct in_addr*) *(host->h_addr_list));
 
     if (connect(_sockfd, (struct sockaddr *) &_host_addr,
 		sizeof(_host_addr)) < 0)
