@@ -1,7 +1,7 @@
-#ifndef Squad_hpp
-#define Squad_hpp
+#ifndef __SQUAD_HPP
+#define __SQUAD_HPP
 
-#include "Constants.hpp"
+#include "Constants.hpp" // TODO have a single constants file
 #include "Player.hpp"
 
 class Squad {

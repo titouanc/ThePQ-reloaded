@@ -1,7 +1,9 @@
-#ifndef Sponsor_hpp
-#define Sponsor_hpp
+#ifndef __SPONSOR_HPP
+#define __SPONSOR_HPP
 
-#include "Team.hpp"
+#include <string>
+
+using namespace std;
 
 class Sponsor 
 {
