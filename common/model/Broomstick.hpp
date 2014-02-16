@@ -2,17 +2,17 @@
 #define __BROOMSTICK_HPP
 
 #include "Gear.hpp"
-#include "Player.hpp"
 
 class Broomstick : Gear 
 {
 public:
-    Broomstick(const int const nCases, const int const velocity);
-	int getCases () const ;
-	int getVelocityBonus () const ;
+    Broomstick(const int nCases, const int velocity):	_cases(nCases), 
+    													_velocityBonus(velocity){}
+	int getCases () const 			{ return _cases; }
+	int getVelocityBonus () const  	{ return _velocityBonus; }
 private:
-	int const cases;
-	int const velocityBonus;
+	const int _cases;
+	const int _velocityBonus;
 };
 
 #endif
