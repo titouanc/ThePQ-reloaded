@@ -42,8 +42,10 @@ User* User::load(string username)
 void User::save()
 {
 	JSON::Dict json = *this;
-	mkdir(getUserDirectoryPath().c_str(), 0644);
+	mkdir(getUserDirectoryPath().c_str(), 0755);
 	json.save(string(getUserDirectoryPath() + "user.json").c_str());
+	JSON::Dict installations;
+	installations.save(string(getUserDirectoryPath()+ "installations.json").c_str());
 }
 
 // TODO add User.delete

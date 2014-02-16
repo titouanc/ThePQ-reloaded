@@ -78,13 +78,13 @@ void Server::registerUser(const JSON::Dict &credentials, int peer_id){
 
 		JSON::Dict response = JSON::Dict();
 		response.set("type", MSG::CONNECTION_STATUS);
-
+		
 		User* newUser = User::load(username);
 		if (newUser != NULL){
 			response.set("data", MSG::USER_EXISTS);
 		} else { // User doesnt exist
 			newUser = new User(username, password);
-			newUser->save(); // TODO catch exception
+			newUser->save(); 
 			response.set("data", MSG::USER_REGISTERED);
 		}
 
