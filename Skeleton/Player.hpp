@@ -37,7 +37,6 @@ public:
 	void improveVelocity (int added);
 	void improvePrecision (int added);
 protected:
-    std::string name;
     int maxLife;
     int maxMana;
 	int lifeBar;

@@ -1,6 +1,8 @@
 #ifndef Gear_hpp
 #define Gear_hpp
 
+#include <string>
+
 class Gear 
 {
 public:
