@@ -3,7 +3,7 @@
 
 #include "Player.hpp"
 
-class Keeper : Player 
+class Keeper : public Player 
 {
 public:
 	bool isKeeper ();
