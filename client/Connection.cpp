@@ -96,9 +96,13 @@ vector<Installation> Connection::getInstallationsList(){
 	_outbox.push(msg);
 
 	JSON::Value *serverResponse = _inbox.pop().data;
-	if (ISLIST(serverResponse))
+	if (ISDICT(serverResponse))
 	{
-		toFill = LIST(serverResponse);
+		JSON::Dict response = DICT(serverResponse);
+		if (ISLIST(response.get("data")))
+		{
+			toFill = LIST(response.get("data"));
+		}
 	}
 	vector<Installation> vec;
 	for (size_t i = 0; i < toFill.len(); ++i)

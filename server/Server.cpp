@@ -156,7 +156,10 @@ void Server::checkIfUserExists(string username, int peer_id){
 void Server::sendInstallationsList(int peer_id){
 	string listPath = _users[peer_id]->getUserDirectoryPath() + "installations.json";
 	JSON::Value * installationsList = JSON::load(listPath);
-	_outbox.push(Message(peer_id, installationsList));
+	JSON::Dict msg;
+	msg.set("type", net::MSG::DATA_SEND);
+	msg.set("data", *installationsList);
+	_outbox.push(Message(peer_id, msg.clone()));
 }
 
 void Server::upgradeInstallation(int peer_id, size_t i)
