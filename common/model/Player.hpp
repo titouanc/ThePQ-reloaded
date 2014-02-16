@@ -1,5 +1,5 @@
-#ifndef Player_hpp
-#define Player_hpp
+#ifndef __PLAYER_HPP
+#define __PLAYER_HPP
 
 #include "Member.hpp"
 #include "Broomstick.hpp"
@@ -9,7 +9,11 @@
 class Player : public Member, public Moveable 
 {
 public:
-	Player ();
+	Player ():  Member(), _maxLife(100), _maxMana(100), _lifeBar(100), 
+                _manaBar(100), _broomstick(new Broomstick(5,50)), 
+                _jersey(new Jersey()), _strength(5), _constitution(5), 
+                _magic(5), _spirit(5), _velocity(5), _precision(5), _chance(5){}
+
 	int getRemainingLife () const;	{ return _lifeBar; }
 	int getRemainingMana ()const;	{ return _manaBar; }
 	string getName() const 			{ return Member::getName(); }
