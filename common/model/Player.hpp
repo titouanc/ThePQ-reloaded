@@ -12,7 +12,6 @@ public:
 	Player ();
 	int getRemainingLife () const;
 	int getRemainingMana ()const;
-    std::string getName() const;
     void equipBroomstick (Broomstick aBroom);
 	Jersey equipJersey (Jersey aJersey);
 	void recoverLife ();
@@ -37,7 +36,6 @@ public:
 	void improveVelocity (int added);
 	void improvePrecision (int added);
 protected:
-    std::string name;
     int maxLife;
     int maxMana;
 	int lifeBar;
