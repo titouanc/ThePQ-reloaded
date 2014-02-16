@@ -3,7 +3,6 @@
 using namespace std;
 
 string RandomNameGenerator::getRandomName(){
-	srand(time(NULL));
 	string res = "Michel Michel";
 	JSON::Value* loaded = JSON::load("names.json");
 	if (ISDICT(loaded)){

@@ -4,6 +4,7 @@
 #include <json/json.hpp>
 
 class RandomNameGenerator {
+public:
 	RandomNameGenerator() {srand(time(NULL)); }
 	std::string getRandomName();
 };
