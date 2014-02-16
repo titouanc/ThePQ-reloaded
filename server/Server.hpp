@@ -3,8 +3,6 @@
 
 #include <iostream>
 #include <string>
-#include <stdlib.h>
-#include <time.h>
 #include <map>
 #include <network/ConnectionManager.hpp>
 #include <network/TcpSocket.hpp>
