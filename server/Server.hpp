@@ -3,6 +3,8 @@
 
 #include <iostream>
 #include <string>
+#include <stdlib.h>
+#include <time.h>
 #include <map>
 #include <network/ConnectionManager.hpp>
 #include <network/TcpSocket.hpp>
@@ -45,6 +47,8 @@ public:
 	void checkIfUserExists(string username, int peer_id);
 	void sendInstallationsList(int peer_id);
 	void sendConnectedUsersList(int peer_id);
+
+    string getRandomName();
 private:
 	SharedQueue<net::Message> _inbox, _outbox;
 	map<int, User*> _users;

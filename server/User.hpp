@@ -30,6 +30,8 @@ public:
 	void save();
 	
 	static User* load(string username);
+
+	string getRandomName();
 };
 
 #endif
