@@ -1,4 +1,4 @@
 [
-	{"baseValue": 200, "level": 2, "refundRation": 4602678819172646912}, 
-	{"baseValue": 100, "level": 1, "refundRation": 4602678819172646912}
+	{"name": "Medical Center", "baseValue": 200, "level": 2, "refundRatio": 0.5}, 
+	{"name": "Gear Shop", "baseValue": 100, "level": 1, "refundRatio": 0.5}
 ]

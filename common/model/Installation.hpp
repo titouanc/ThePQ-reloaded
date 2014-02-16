@@ -17,7 +17,7 @@ public:
 	Installation(JSON::Dict json) : _name(STR(json.get("name")).value()),
 									   _level(INT(json.get("level"))), 
 									   _baseValue(INT(json.get("baseValue"))),
-									   _refundRatio(INT(json.get("refundRatio")))
+									   _refundRatio(FLOAT(json.get("refundRatio")))
 	{}
 	
 	operator JSON::Dict()

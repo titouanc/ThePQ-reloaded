@@ -39,7 +39,9 @@ ENDTEST()
 
 TEST(downgrade_installation)
 	Installation inst("name", 100, 0);
-	for (int i = 0; i < 5; ++i){
+	inst.upgrade();
+	ASSERT(inst.getDowngradeRefunds() == 200);
+	for (int i = 0; i < 4; ++i){
 		inst.upgrade();
 	}
 	for (int i = 0; i < 4; ++i)
