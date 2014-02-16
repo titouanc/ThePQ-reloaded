@@ -22,13 +22,13 @@ public:
 	bool isChaser () const;
 	bool isKeeper () const;
 	bool isSeeker () const;
-	int getStrength () const;
-	int getConstitution () const;
-	int getMagic () const;
-	int getSpirit () const;
-	int getVelocity () const;
-	int getPrecision () const;
-	int getChance () const;
+	int getStrength () const 		{ return _strength; }
+	int getConstitution () const 	{ return _constitution; }
+	int getMagic () const 			{ return _magic; }
+	int getSpirit () const 			{ return _spirit; }
+	int getVelocity () const 		{ return _velocity; }
+	int getPrecision () const 		{ return _precision; }
+	int getChance () const 			{ return _chance; }
 	void improveStrength (int added);
 	void improveConstitution (int added);
 	void improveMagic (int added);
@@ -36,19 +36,19 @@ public:
 	void improveVelocity (int added);
 	void improvePrecision (int added);
 protected:
-    int maxLife;
-    int maxMana;
-	int lifeBar;
-	int manaBar;
-	Broomstick * broomstick;
-    Jersey * jersey;
-	int strength;
-	int constitution;
-	int magic;
-	int spirit;
-	int velocity;
-	int precision;
-	int chance;
+    int _maxLife;
+    int _maxMana;
+	int _lifeBar;
+	int _manaBar;
+	Broomstick * _broomstick;
+    Jersey * _jersey;
+	int _strength;
+	int _constitution;
+	int _magic;
+	int _spirit;
+	int _velocity;
+	int _precision;
+	int _chance;
 };
 
 #endif
