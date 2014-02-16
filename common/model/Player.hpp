@@ -13,8 +13,8 @@ public:
                 _jersey(new Jersey()), _strength(5), _constitution(5), 
                 _magic(5), _spirit(5), _velocity(5), _precision(5), _chance(5){}
 
-	int getRemainingLife () const;	{ return _lifeBar; }
-	int getRemainingMana ()const;	{ return _manaBar; }
+	int getRemainingLife () const	{ return _lifeBar; }
+	int getRemainingMana ()const	{ return _manaBar; }
 	string getName() const 			{ return Member::getName(); }
     void equipBroomstick (Broomstick aBroom);
 	Jersey equipJersey (Jersey aJersey);
