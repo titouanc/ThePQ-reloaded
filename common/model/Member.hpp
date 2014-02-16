@@ -2,6 +2,7 @@
 #define __MEMBER_HPP  
 
 #include "Team.hpp"
+#include <string>
 
 class Member 
 {
