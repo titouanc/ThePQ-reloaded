@@ -1,4 +1,4 @@
-OBJS= Server.o User.o MatchManager.o
+OBJS= Server.o User.o MatchManager.o RandomNameGenerator.o
 LIBS = ../common/network/libnetwork.a ../common/json/libjson.a ../common/pitch/libpitch.a
 CPPFLAGS = -I../common/
 

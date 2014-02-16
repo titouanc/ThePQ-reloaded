@@ -5,6 +5,7 @@
 #include <json/json.hpp>
 #include <network/TcpSocket.hpp>
 #include "sys/stat.h"
+#include "RandomNameGenerator.hpp"
 
 using namespace std;
 
