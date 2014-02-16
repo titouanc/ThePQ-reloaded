@@ -31,9 +31,13 @@ BaseConnectionManager::BaseConnectionManager(
 BaseConnectionManager::~BaseConnectionManager()
 {
     stop();
-    std::set<int>::iterator it;
-    for (it=_clients.begin(); it!=_clients.end(); it++)
+    std::set<int>::iterator it, next;
+    for (it=_clients.begin(); it!=_clients.end();) {
+		next = it;
+		next++;
         _doDisconnect(*it);
+		it = next;
+    }
     pthread_mutex_destroy(&_mutex);
     pthread_mutex_destroy(&_fdset_mutex);
 }
@@ -100,7 +104,8 @@ void BaseConnectionManager::_doDisconnect(int fd)
     msgdata.set("type", "DISCONNECT");
     msgdata.set("client_id", fd);
     _incoming.push(Message(fd, msgdata.clone()));
-    std::cout << "\033[1m" << fd << " \033[35m disconnected\033[0m" << std::endl;
+    if (_logger)
+		std::cout << "\033[1m" << fd << " \033[35m disconnected\033[0m" << std::endl;
 }
 
 void BaseConnectionManager::_doConnect(int fd)
@@ -362,9 +367,10 @@ ClientConnectionManager::ClientConnectionManager(
 				SharedQueue<Message> & outgoing_queue,
 				const char *host_addr, 
 				unsigned short host_port
-) : BaseConnectionManager::BaseConnectionManager(incoming_queue, outgoing_queue, false),
+) : BaseConnectionManager::BaseConnectionManager(incoming_queue, outgoing_queue, true),
 	_sockfd(-1)
 {
+	// TODO log is activated
     _sockfd = socket(AF_INET, SOCK_STREAM, 0);
     if (_sockfd < 0)
         throw ConnectionFailedException();
@@ -391,6 +397,18 @@ ClientConnectionManager::ClientConnectionManager(
     addClient(_sockfd);
 }
 
+void ClientConnectionManager::_mainloop_in()
+{
+	while(isRunning())
+	{
+		if(_doRead(_sockfd) == false)
+		{
+			_doDisconnect(_sockfd);
+			stop();
+		}
+	}
+}
+
 void ClientConnectionManager::_mainloop_out()
 {
     while (isRunning()){
@@ -398,11 +416,6 @@ void ClientConnectionManager::_mainloop_out()
         _doWrite(_sockfd, msg.data);
         delete msg.data;
     }
-}
-
-ClientConnectionManager::~ClientConnectionManager()
-{
-	close(_sockfd);
 }
 
 const char *ClientConnectionManager::ip(void) const

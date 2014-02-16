@@ -130,9 +130,9 @@ namespace net {
 				const char *host_addr="127.0.0.1", 
 				unsigned short host_port=32123
 			);
-			~ClientConnectionManager();
 
 			void _mainloop_out(void);
+			void _mainloop_in(void);
 
 			/* Getters */
 			const char *ip(void) const;
