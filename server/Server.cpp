@@ -164,7 +164,9 @@ void Server::sendConnectedUsersList(int peer_id){
 	_outbox.push(Message(peer_id, usersList.clone()));
 }
 
-void Server::sendPlayersOnMarketList(int peer_id){}
+void Server::sendPlayersOnMarketList(int peer_id){
+	
+}
 void Server::addPlayerOnMarket(const JSON::Dict &bid, int peer_id){
 	if (ISSTR(bid.get(MSG::PLAYER_ID)){std::string const & playerid = STR(bid.get(MSG::PLAYER_ID));}
 	std::string fileName = "data/playerMarket/" + "bid_" + playerid + ".json";

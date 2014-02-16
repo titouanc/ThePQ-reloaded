@@ -8,9 +8,9 @@
 #include <json/json.hpp>
 #include <network/TcpSocket.hpp>
 
-#define FIRST_TURN 600 //10 min
+#define FIRST_TURN 600 	//10 min
 #define TURN_TIME 30
-#define BIDRATIO 0.05 //5%
+#define BIDRATIO 0.05 	//5%
 class Sale{
 private:
 	list<Team> _turnTeams;
@@ -22,7 +22,10 @@ private:
 	time_t _begin;
 	Player _player;
 public:
-	Sale(): {}
+	Sale(const JSON::Dict *json): {
+		LIST(json->get("turn_Teams"));
+	}
+	void run();
 	void save();
 	Sale load(std::string playerid);
 };
