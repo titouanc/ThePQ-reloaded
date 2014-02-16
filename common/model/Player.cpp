@@ -73,27 +73,3 @@ bool Player::isKeeper () const{
 bool Player::isSeeker () const{
     return false;
 }
-
-void Player::improveStrength (int added){
-    strength+=added;
-}
-
-void Player::improveConstitution (int added){
-    constitution+=added;
-}
-
-void Player::improveMagic (int added){
-    magic+=added;
-}
-
-void Player::improveSpirit (int added){
-    spirit+=added;
-}
-
-void Player::improveVelocity (int added){
-    velocity+=added;
-}
-
-void Player::improvePrecision (int added){
-    chance+=added;
-}

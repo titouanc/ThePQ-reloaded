@@ -29,12 +29,12 @@ public:
 	int getVelocity () const 		{ return _velocity; }
 	int getPrecision () const 		{ return _precision; }
 	int getChance () const 			{ return _chance; }
-	void improveStrength (int added);
-	void improveConstitution (int added);
-	void improveMagic (int added);
-	void improveSpirit (int added);
-	void improveVelocity (int added);
-	void improvePrecision (int added);
+	void improveStrength (int added) 		{ _strength+=added; }
+	void improveConstitution (int added) 	{ _constitution+=added; }
+	void improveMagic (int added) 			{ _magic+=added; }
+	void improveSpirit (int added) 			{ _spirit+=added; }
+	void improveVelocity (int added) 		{ _velocity+=added; }
+	void improvePrecision (int added) 		{ _precision+=added; }
 protected:
     int _maxLife;
     int _maxMana;
