@@ -3,15 +3,17 @@
 
 #include <string>
 
+using namespace std;
+
 class Food 
 {
 public:
 	Food(string name, int price): _name(name), _price(price){}
-    std::string getName () const 	{ return _name; }
+    string getName () const 	{ return _name; }
 	int getPrice () const 			{ return _price; }
 	void setPrice (int newPrice)	{ _price = newPrice; }
 private:
-    std::string const _name;
+    const string _name;
 	int _price;
 };
 
