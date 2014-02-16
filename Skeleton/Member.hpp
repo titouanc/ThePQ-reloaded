@@ -16,7 +16,7 @@ private:
     std::string name;
 	int salary;
 	int price;
-	Team owner;
+	Team * owner;
 };
 
 #endif
