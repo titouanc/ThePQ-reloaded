@@ -47,8 +47,8 @@ public:
 	int getCases () const 			{ return _cases; }
 	int getVelocityBonus () const  	{ return _velocityBonus; }
 private:
-	const int _cases;
-	const int _velocityBonus;
+	int _cases;
+	int _velocityBonus;
 };
 
 

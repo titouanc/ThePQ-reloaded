@@ -15,9 +15,9 @@ public:
 
 	int getRemainingLife () const	{ return _lifeBar; }
 	int getRemainingMana ()const	{ return _manaBar; }
-	string getName() const 			{ return Member::getName(); }
+	string getName() 	 			{ return Member::getName(); }
     void equipBroomstick (Broomstick aBroom);
-	Jersey equipJersey (Jersey aJersey);
+	void equipJersey (Jersey aJersey);
 	void recoverLife ();
 	void loseLife (int damage);
 	void recoverMana ();
@@ -75,7 +75,7 @@ class Chaser : public Player
 {
 public:
     Chaser(): Player(){}
-    bool isChaser () const; { return true; }
+    bool isChaser () const { return true; }
     int speed ();
     int collisionner ();
     int anticollision ();

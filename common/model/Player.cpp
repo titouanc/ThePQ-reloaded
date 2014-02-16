@@ -6,7 +6,7 @@ void Player::equipBroomstick (Broomstick aBroom){
     *_broomstick = aBroom;
 }
 
-Jersey Player::equipJersey (Jersey aJersey){
+void Player::equipJersey (Jersey aJersey){
     improveStrength(-1 * _jersey->getStrengthBonus());
     improveConstitution(-1 * _jersey->getConstitutionBonus());
     improveMagic(-1 * _jersey->getMagicBonus());
@@ -42,12 +42,12 @@ void Player::loseMana (int spelled){
 void Beater::equipBat(Bat aBat){
     _strength += (aBat.getStrengthBonus());
     _precision += (aBat.getPrecisionBonus());
-    *bat = aBat;
+    *_bat = aBat;
 }
 
 void Beater::unequipBat(){
-    _strength -= bat->getStrengthBonus();
-    _precision -= bat->getPrecisionBonus();
+    _strength -= _bat->getStrengthBonus();
+    _precision -= _bat->getPrecisionBonus();
 }
 
 int Beater::collision (){
