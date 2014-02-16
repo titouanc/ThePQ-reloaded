@@ -479,6 +479,14 @@ TEST(dict_assign)
 	delete parsed;
 ENDTEST()
 
+TEST(dict_with_bool)
+	/* 16/02/2014: JSON::Bool are sent as integer */
+	JSON::Dict d;
+	d.set("key", JSON::Bool(true));
+	ASSERT(ISBOOL(d.get("key")));
+	ASSERT(d.dumps() == "{\"key\": true}");
+ENDTEST()
+
 int main(int argc, const char **argv)
 {
 	TestFunc testSuite[] = {
@@ -522,7 +530,8 @@ int main(int argc, const char **argv)
 		ADDTEST(json_macros),
 		ADDTEST(conversion_operators),
 		ADDTEST(list_assign),
-		ADDTEST(dict_assign)
+		ADDTEST(dict_assign),
+		ADDTEST(dict_with_bool)
 	};
 
 	return RUN(testSuite);
