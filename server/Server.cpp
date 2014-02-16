@@ -163,12 +163,14 @@ void Server::upgradeInstallation(int peer_id, size_t i)
 {
 	_users[peer_id]->getInstallations()[i].upgrade();
 	_users[peer_id]->saveInstallations();
+	_outbox.push(Message(peer_id, JSON::Bool(true)));
 }
 
 void Server::downgradeInstallation(int peer_id, size_t i)
 {
 	_users[peer_id]->getInstallations()[i].downgrade();	
 	_users[peer_id]->saveInstallations();
+	_outbox.push(Message(peer_id, JSON::Bool(true)));
 }
 
 void Server::sendConnectedUsersList(int peer_id){
