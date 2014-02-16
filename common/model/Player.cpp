@@ -91,5 +91,11 @@ int Keeper::pass (){
     return static_cast<int>( (float) getStrength() * .65 + (float) getPrecision() * .25 + (float) getChance() * .1) * 100 ;
 }
 
+// KEEPER ----------------------------------------------------------------------
+int Seeker::catchGS (){
+    return static_cast<int>( (float) getPrecision() * .50 + (float) getVelocity() * .20 + (float) getStrength() * .10 + (float) getMagic() * .1 + (float) getChance() * .1 ) * 100 ;
+}
+
+
 
 

@@ -96,5 +96,15 @@ public:
     int pass ();
 };
 
+// SEEKER ----------------------------------------------------------------------
+class Seeker : public Player 
+{
+public:
+    Seeker() : Player() {}
+	bool isSeeker () const { return true; }
+    int catchGS ();
+
+};
+
 
 #endif
