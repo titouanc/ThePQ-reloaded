@@ -17,7 +17,7 @@ int Player::getRemainingMana () const{
 }
 
 std::string Player::getName() const{
-    return name;
+    return Member::getName();
 }
 
 void Player::equipBroomstick (Broomstick aBroom){
