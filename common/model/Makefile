@@ -1,4 +1,4 @@
-OBJS = Installation.o
+OBJS = Position.o Displacement.o Pitch.o Player.o Installation.o 
 CPPFLAGS = -I..
 LIBS = ../json/libjson.a
 

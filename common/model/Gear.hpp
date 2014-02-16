@@ -8,16 +8,19 @@ using namespace std;
 class Gear 
 {
 public:
-	Gear(string name, string description, int price): 	_name(name), 
-														_description(description),
-														_price(price) {}
+	Gear(): _name("NoName"), 
+			_description("NoDescription"),
+			_price(0) {}
     string getName () const 		{ return _name; }
     string getDescription () const	{ return _description; }
-	int getPrice () const;			{ return _price; }
+	int getPrice () const			{ return _price; }
+	void setName(string name)				{ _name = name; }
+	void setDescription(string description)	{ _description = description; }
+	void setPrice(int price)				{ _price = price; }
 private:
-    string const _name;
-    string const _description;
-	int const _price;
+    string  _name;
+    string  _description;
+	int  _price;
 };
 
 
@@ -25,13 +28,13 @@ private:
 class Bat : Gear 
 {
 public:
-    Bat(const int const strength, const int const precision) : 	_strengthBonus(strength),
-    															_precisionBonus(precision){}
+    Bat(const int strength, const int precision) : 	_strengthBonus(strength),
+    												_precisionBonus(precision){}
 	int getStrengthBonus () const	{ return _strengthBonus; }
 	int getPrecisionBonus () const	{ return _precisionBonus; }
 private:
-	int const _strengthBonus;
-	int const _precisionBonus;
+	int _strengthBonus;
+	int _precisionBonus;
 };
 
 
@@ -53,14 +56,13 @@ private:
 class Jersey : Gear 
 {
 public:
-	Jersey():strengthBonus(0), constitutionBonus(0), magicBonus(0), spiritBonus(0){}
+	Jersey():_strengthBonus(0), _constitutionBonus(0), _magicBonus(0), _spiritBonus(0){}
 
 	int getStrengthBonus () const 		{ return _strengthBonus; }
-	int getConstitutionBonus () const 	{ return _; }
+	int getConstitutionBonus () const 	{ return _constitutionBonus; }
 	int getMagicBonus () const 			{ return _magicBonus; }
 	int getSpiritBonus () const 		{ return _spiritBonus; }
 private:
-    Jersey();
 	int _strengthBonus;
 	int _constitutionBonus;
 	int _magicBonus;
