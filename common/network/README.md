@@ -55,6 +55,18 @@ Comme BaseConnectionManager, mais accepte les connexion entrantes (appels systè
 
 Un objet de cette classe est un BaseConnectionManager qui emprunte des clients à un autre BaseConnectionManager *(le parent)*. Lorsqu'il est détruit, il rend automatiquement les clients à son parent. Cette classe permet de créer des sous-connexions (par exemple lors d'un match) avec des queues  d'entrée/sortie séparées.
 
+### Exemple
+
+	SharedQueue<Message> match_in, match_out;
+	SubConnectionManager matchClients(match_in, match_out, connection);
+
+	/* Acquisition des clients 7 et 19 */
+	matchClients.acquireClient(7);
+	matchClients.acquireClient(19);
+	matchClients.start();
+	/* Ensuite comme les exemples ci-dessus */
+
+
 ## ClientConnectionManager
 
 Comme BaseConnectionManager, mais initialise une connection sortante (appel système `connect`) à la construction. Tous les messages écrit depuis la queue de sortie sont écrit vers le FD créé à la connexion (le champ `peer_id` du message est ignoré).
