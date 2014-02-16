@@ -1,6 +1,10 @@
 #include "Seeker.hpp"
 #include "Player.hpp"
 
+Seeker::Seeker() : Player(){
+
+}
+
 bool Seeker::isSeeker() const {
     return true;
 }

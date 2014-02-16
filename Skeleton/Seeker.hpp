@@ -6,6 +6,7 @@
 class Seeker : public Player 
 {
 public:
+    Seeker();
 	bool isSeeker () const;
     int catchGS ();
 
