@@ -2,16 +2,26 @@
 
 using namespace std;
 
-string Client::_userChoice;
-Connection Client::_connection;
-string Client::_prompt = " > ";
+std::string humanExcName(const char *name)
+{
+	int status;
+	char *str = abi::__cxa_demangle(name, 0, 0, &status);
+	std::string res(str);
+	free(str);
+	return res;
+}
+
+Client::Client(NetConfig const &config) : _prompt(">"), _connection(config.host, config.port)
+{
+	
+}
 
 void Client::run()
 {
 	cout << Message::splashScreen();
 
 	/* user menu */
-	Menu loginMenu;
+	Menu<Client> loginMenu;
 	string message;
 	message+= "You can : \n";
 	message+= "   - (l)ogin\n";
@@ -19,9 +29,24 @@ void Client::run()
 	message+= "   - (q)uit\n";
 	message+= _prompt;
 	loginMenu.setMessage(message);
-	loginMenu.addOption('l', login);
-	loginMenu.addOption('r', registerUser);
-	loginMenu.run();
+	loginMenu.addOption('l', new ClassCallback<Client>(this,&Client::login));
+	loginMenu.addOption('r', new ClassCallback<Client>(this,&Client::registerUser));
+
+	bool error = false;
+	do {
+		try{ 
+			error = false;
+			loginMenu.run(); 
+		} catch (std::runtime_error &err){
+			error = true;
+			cerr << "\033[31mError " << humanExcName(typeid(err).name()) 
+				     << "\t" << err.what() << "\033[0m" << endl;
+		} catch (...){
+			error = true;
+			cerr << "\033[31mUnknow error "
+				 << "\033[0m" << endl;
+		}
+	} while (error);
 
 	cout << Message::goodBye();
 }
@@ -71,7 +96,7 @@ void Client::registerUser(){
 /* main menu */
 void Client::mainMenu()
 {
-	Menu main;
+	Menu<Client> main;
 	string message;
 	message+= "You can : \n";
 	message+= "   - (m)anage your team and stadium\n";
@@ -79,15 +104,15 @@ void Client::mainMenu()
 	message+= "   - (q)uit\n";
 	message+= _prompt;
 	main.setMessage(message);
-	main.addOption('m', managementMenu);
-	main.addOption('p', friendlyMatchMenu);
+	main.addOption('m', new ClassCallback<Client>(this, &Client::managementMenu));
+	main.addOption('p', new ClassCallback<Client>(this, &Client::friendlyMatchMenu));
 	main.run();
 }
 
 /* Management menu */
 void Client::managementMenu()
 {
-	Menu mgt;
+	Menu<Client> mgt;
 	string message;
 	message+= "You can : \n";
 	message+= "   - manage your (s)tadium and installations\n";
@@ -95,21 +120,24 @@ void Client::managementMenu()
 	message+= "   - (q)uit to main menu\n";
 	message+= _prompt;
 	mgt.setMessage(message);
-	mgt.addOption('s', stadiumMenu);
-	mgt.addOption('p', playersMenu);
+	mgt.addOption('s', new ClassCallback<Client>(this, &Client::stadiumMenu));
+	mgt.addOption('p', new ClassCallback<Client>(this, &Client::playersMenu));
 	mgt.run();
 }
 
 void Client::stadiumMenu()
 {
-	StadiumManager::setConnection(&_connection);
-	StadiumManager::loadInstallations();
-	Menu stadium;
+	StadiumManager stadiumMgr(&_connection);
+	Menu<StadiumManager> stadium;
 	string message;
 	message+= "You can : \n";
 	message+= "    - (v)iew your installations\n";
+	message+= "    - (u)pgrade an installation\n";
+	message+= "    - (d)owngrade an installation\n";
 	message+= "    - (q)uit to management menu\n";
-	stadium.addOption('v', StadiumManager::printInstallationsList);
+	stadium.addOption('v', new ClassCallback<StadiumManager>(&stadiumMgr, &StadiumManager::printInstallationsList));
+	stadium.addOption('u', new ClassCallback<StadiumManager>(&stadiumMgr, &StadiumManager::upgradeInstallation));
+	stadium.addOption('d', new ClassCallback<StadiumManager>(&stadiumMgr, &StadiumManager::downgradeInstallation));
 	stadium.setMessage(message);
 	// TODO : stadium menu
 	stadium.run();
@@ -117,7 +145,7 @@ void Client::stadiumMenu()
 
 void Client::playersMenu()
 {
-	Menu players;
+	Menu<Client> players;
 	string message;
 	message+= "You can : \n";
 	message+= "    - (q)uit to management menu\n";
@@ -129,7 +157,7 @@ void Client::playersMenu()
 /* Friendly match menu */
 void Client::friendlyMatchMenu()
 {
-	Menu friendly;
+	Menu<Client> friendly;
 	string message;
 	message+= "You can : \n";
 	message+= "   - (l)ist all connected players\n";
@@ -137,8 +165,8 @@ void Client::friendlyMatchMenu()
 	message+= "   - (q)uit to main menu\n";
 	message+= _prompt;
 	friendly.setMessage(message);
-	friendly.addOption('l', listUsers);
-	friendly.addOption('c', chooseUser);
+	friendly.addOption('l', new ClassCallback<Client>(this, &Client::listUsers));
+	friendly.addOption('c', new ClassCallback<Client>(this, &Client::chooseUser));
 	friendly.run();
 }
 

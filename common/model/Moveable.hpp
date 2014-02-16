@@ -1,5 +1,5 @@
-#ifndef MOVEABLE_HPP
-#define MOVEABLE_HPP
+#ifndef __MOVEABLE_HPP
+#define __MOVEABLE_HPP
 
 #include <string>
 #include "Position.hpp"

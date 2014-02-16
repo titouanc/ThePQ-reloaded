@@ -1,5 +1,5 @@
-OBJS = Menu.o Message.o Connection.o Client.o StadiumManager.o FriendlyGameManager.o
-LIBS = ../common/json/libjson.a ../common/network/libnetwork.a
+OBJS = Message.o Connection.o Client.o StadiumManager.o FriendlyGameManager.o
+LIBS = ../common/json/libjson.a ../common/network/libnetwork.a ../common/model/libmodel.a
 CPPFLAGS = -I../common
 
 client.app: main.o ${OBJS} ${LIBS}

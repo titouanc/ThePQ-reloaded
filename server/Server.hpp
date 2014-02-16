@@ -44,7 +44,11 @@ public:
 	void logUserIn(const JSON::Dict &credentials, int peer_id);
 	void checkIfUserExists(string username, int peer_id);
 	void sendInstallationsList(int peer_id);
+	void upgradeInstallation(int peer_id, size_t i);
+	void downgradeInstallation(int peer_id, size_t i);
 	void sendConnectedUsersList(int peer_id);
+
+    string getRandomName();
 private:
 	SharedQueue<net::Message> _inbox, _outbox;
 	map<int, User*> _users;

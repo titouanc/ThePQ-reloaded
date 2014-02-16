@@ -23,7 +23,7 @@ void Value::save(const char *filename) const
 {
 	int fd, r=0;
 
-	fd = open(filename, O_WRONLY|O_CREAT, 0644);
+	fd = open(filename, O_WRONLY|O_CREAT|O_TRUNC, 0644);
 	if (fd < 0)
 		throw IOError(strerror(errno));
 

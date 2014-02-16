@@ -29,7 +29,9 @@ namespace net {
 			std::set<int> _clients;
 		protected:
 			/* Incoming message queue */
-			SharedQueue<Message> & _incoming, &_outgoing;
+			SharedQueue<Message> & _incoming, & _outgoing;
+			/* Log exchanged messages */
+			bool _logger;
 			/* Call to select, and read from all known selected clients */
 			int  _doSelect(int fdmax, fd_set *readable);
 			/* Write obj to fd */
@@ -49,7 +51,8 @@ namespace net {
 		public:
 			explicit BaseConnectionManager(
 				SharedQueue<Message> & incoming_queue,
-				SharedQueue<Message> & outgoing_queue
+				SharedQueue<Message> & outgoing_queue,
+				bool logger=true
 			);
 			~BaseConnectionManager();
 
@@ -71,7 +74,7 @@ namespace net {
 			/* Main in loop: feed incoming queue */
 			virtual void _mainloop_in(void);
 			/* Main out loop: eat outgoing queue */
-			void _mainloop_out(void);
+			virtual void _mainloop_out(void);
 	};
 
 	class ConnectionManager : public BaseConnectionManager {
@@ -114,6 +117,26 @@ namespace net {
 			bool releaseClient(int client_id);
 			/* Remove all managed clients before destroying. */
 			~SubConnectionManager();
+	};
+	
+	class ClientConnectionManager : public BaseConnectionManager {
+		private:
+			struct sockaddr_in _host_addr;
+			int _sockfd;
+		public:
+			explicit ClientConnectionManager(
+				SharedQueue<Message> & incoming_queue,
+				SharedQueue<Message> & outgoing_queue,
+				const char *host_addr="127.0.0.1", 
+				unsigned short host_port=32123
+			);
+
+			void _mainloop_out(void);
+			void _mainloop_in(void);
+
+			/* Getters */
+			const char *ip(void) const;
+			unsigned short port(void) const;
 	};
 }
 

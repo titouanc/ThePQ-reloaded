@@ -309,6 +309,15 @@ TEST(json_parse_empty_list_in_dict)
 	delete res;
 ENDTEST()
 
+TEST(json_parse_empty_dict_in_list)
+	JSON::Value *res = JSON::parse("[{}]");
+	ASSERT(res != NULL);
+	ASSERT(ISLIST(res));
+	ASSERT(ISDICT(LIST(res)[0]));
+	ASSERT(DICT(LIST(res)[0]).len() == 0);
+	delete res;
+ENDTEST()
+
 TEST(json_parse_dict_many_keys)
 	const char *repr = "{\"name\": \"Titou\", \"age\": 23, \"male\": true}";
 	JSON::Value *res = JSON::parse(repr);
@@ -470,6 +479,14 @@ TEST(dict_assign)
 	delete parsed;
 ENDTEST()
 
+TEST(dict_with_bool)
+	/* 16/02/2014: JSON::Bool are sent as integer */
+	JSON::Dict d;
+	d.set("key", JSON::Bool(true));
+	ASSERT(ISBOOL(d.get("key")));
+	ASSERT(d.dumps() == "{\"key\": true}");
+ENDTEST()
+
 int main(int argc, const char **argv)
 {
 	TestFunc testSuite[] = {
@@ -502,6 +519,7 @@ int main(int argc, const char **argv)
 		ADDTEST(json_parse_dict),
 		ADDTEST(json_parse_empty_dict),
 		ADDTEST(json_parse_empty_list_in_dict),
+		ADDTEST(json_parse_empty_dict_in_list),
 		ADDTEST(json_parse_dict_many_keys),
 		ADDTEST(json_parse_list_in_dict),
 		ADDTEST(json_load),
@@ -512,7 +530,8 @@ int main(int argc, const char **argv)
 		ADDTEST(json_macros),
 		ADDTEST(conversion_operators),
 		ADDTEST(list_assign),
-		ADDTEST(dict_assign)
+		ADDTEST(dict_assign),
+		ADDTEST(dict_with_bool)
 	};
 
 	return RUN(testSuite);

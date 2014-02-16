@@ -56,22 +56,24 @@ void net::TcpSocket::send(const JSON::Value *json)
 
 JSON::Value* net::TcpSocket::recv()
 {
-	JSON::Value* json;
 	char* data = new char[MSG_SIZE];
-	size_t received;
 	bzero(data, MSG_SIZE);
 	uint32_t len = 0;
 	int r = ::recv(_sockfd, &len, 4, 0);
 	len = ntohl(len);
 	if (r != 4)
+	{
+		delete[] data;
 		throw DisconnectedException();
-    received = ::recv(_sockfd, data, len, 0);
+	}
+    size_t received = ::recv(_sockfd, data, len, 0);
     if (received != len)
     {
+		delete[] data;
 		throw DisconnectedException();
 	}
 	data[received] = '\0';
-	json = JSON::parse(data);
+	JSON::Value* json = JSON::parse(data);
 	delete[] data;
 	return json;
 }
