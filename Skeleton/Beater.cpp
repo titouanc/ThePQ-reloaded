@@ -2,6 +2,10 @@
 #include "Player.hpp"
 #include "Bat.hpp"
 
+Beater::Beater() : Player(), bat(new Bat(5,5)){
+
+}
+
 bool Beater::isBeater() const{
     return true;
 }
