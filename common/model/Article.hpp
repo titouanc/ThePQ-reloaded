@@ -6,7 +6,7 @@ class Article
 public:
 	Article (std::string name, int price, std::string description):	_name(name),
 																	_price(price),
-																	description(description){}
+																	_description(description){}
     std::string getName () const 			{ return _name; }
 	int getPrice () const					{ return _price; }
     std::string getDescription () const;	{ return _description; }   
