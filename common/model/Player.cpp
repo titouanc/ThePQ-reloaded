@@ -82,4 +82,14 @@ int Chaser::shoot (){
     return static_cast<int>( (float) getStrength() * .6 + (float) getPrecision() * .35 + (float) getChance() * .05 ) *100 ;
 }
 
+// KEEPER ----------------------------------------------------------------------
+int Keeper::catchBall (){
+    return static_cast<int>( (float) getVelocity() * .65 + (float) getPrecision() * .3 + (float) getChance() * .05 ) * 100;
+}
+
+int Keeper::pass (){
+    return static_cast<int>( (float) getStrength() * .65 + (float) getPrecision() * .25 + (float) getChance() * .1) * 100 ;
+}
+
+
 

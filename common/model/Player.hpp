@@ -60,7 +60,7 @@ protected:
 class Beater : public Player 
 {
 public:
-    Beater() : Player(), _bat(new Bat(5, 5));
+    Beater() : Player(), _bat(new Bat(5, 5)){}
 	bool isBeater () const { return true; }
 	void equipBat (Bat aBat);
     void unequipBat ();
@@ -75,13 +75,25 @@ private:
 class Chaser : public Player 
 {
 public:
-    Chaser(): Player();
+    Chaser(): Player(){}
     bool isChaser () const; { return true; }
     int speed ();
     int collisionner ();
     int anticollision ();
     int pass ();
     int shoot ();
+};
+
+#include "Player.hpp"
+
+// CHASER ----------------------------------------------------------------------
+class Keeper : public Player 
+{
+public:
+    Keeper() : Player(){}
+	bool isKeeper () { return true; }
+    int catchBall ();
+    int pass ();
 };
 
 
