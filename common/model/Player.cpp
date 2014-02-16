@@ -8,18 +8,6 @@ Player::Player ():Member(), maxLife(100), maxMana(100), lifeBar(100), manaBar(10
     
 }
 
-int Player::getRemainingLife () const{
-    return lifeBar;
-}
-
-int Player::getRemainingMana () const{
-    return manaBar;
-}
-
-std::string Player::getName() const{
-    return Member::getName();
-}
-
 void Player::equipBroomstick (Broomstick aBroom){
     improveVelocity(-1 * broomstick->getVelocityBonus());
     improveVelocity(aBroom.getVelocityBonus());

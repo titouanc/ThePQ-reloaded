@@ -10,8 +10,9 @@ class Player : public Member, public Moveable
 {
 public:
 	Player ();
-	int getRemainingLife () const;
-	int getRemainingMana ()const;
+	int getRemainingLife () const;	{ return _lifeBar; }
+	int getRemainingMana ()const;	{ return _manaBar; }
+	string getName() const 			{ return Member::getName(); }
     void equipBroomstick (Broomstick aBroom);
 	Jersey equipJersey (Jersey aJersey);
 	void recoverLife ();
