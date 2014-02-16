@@ -2,9 +2,15 @@
 
 using namespace std;
 
-Connection::Connection(std::string host, int port)
+Connection::Connection(std::string host, int port) : _inbox(), _outbox(),
+_connectionManager(_inbox, _outbox, host.c_str(), port)
 {
-	_socket.connect(host, port);
+	_connectionManager.start();
+}
+
+Connection::~Connection()
+{
+	_connectionManager.stop();
 }
 
 void Connection::loginUser(string username, string passwd)
@@ -14,9 +20,10 @@ void Connection::loginUser(string username, string passwd)
 	credentials.set(net::MSG::PASSWORD, passwd);
 	toSend.set("type", net::MSG::LOGIN_QUERY);
 	toSend.set("data", credentials);
-	_socket.send(&toSend);
+	net::Message msg(0, toSend.clone());
+	_outbox.push(msg);
 
-	JSON::Value *serverMessage = _socket.recv();	// receiving server response
+	JSON::Value *serverMessage = _inbox.pop().data;	// receiving server response
 
 	if (ISDICT(serverMessage)){
 		JSON::Dict const &received = DICT(serverMessage);
@@ -38,9 +45,10 @@ void Connection::doesUserExist(string username){
 	JSON::Dict toSend;
 	toSend.set("type", net::MSG::USER_EXISTS_QUERY);
 	toSend.set("data", username);
-	_socket.send(&toSend);
+	net::Message msg(0, toSend.clone());
+	_outbox.push(msg);
 
-	JSON::Value *serverMessage = _socket.recv(); // receiving server response
+	JSON::Value *serverMessage = _inbox.pop().data; // receiving server response
 
 	if(ISDICT(serverMessage)){
 		JSON::Dict const &received = DICT(serverMessage);
@@ -61,9 +69,10 @@ void Connection::registerUser(string username, string passwd)
 	credentials.set(net::MSG::PASSWORD, passwd);
 	toSend.set("type", net::MSG::REGISTER_QUERY);
 	toSend.set("data", credentials);
-	_socket.send(&toSend);
+	net::Message msg(0, toSend.clone());
+	_outbox.push(msg);
 
-	JSON::Value *serverMessage = _socket.recv();	// receiving server response
+	JSON::Value *serverMessage = _inbox.pop().data;	// receiving server response
 
 	if (ISDICT(serverMessage)){
 		JSON::Dict const &received = DICT(serverMessage);
@@ -83,9 +92,10 @@ vector<Installation> Connection::getInstallationsList(){
 	JSON::List toFill;
 	query.set("type", net::MSG::DATA_QUERY);
 	query.set("data", net::MSG::INSTALLATIONS_LIST);
-	_socket.send(&query);
+	net::Message msg(0, query.clone());
+	_outbox.push(msg);
 
-	JSON::Value *serverResponse = _socket.recv();
+	JSON::Value *serverResponse = _inbox.pop().data;
 	if (ISLIST(serverResponse))
 	{
 		toFill = LIST(serverResponse);
@@ -101,21 +111,54 @@ vector<Installation> Connection::getInstallationsList(){
 
 bool Connection::upgradeInstallation(size_t i)
 {
+	JSON::Dict query;
+	query.set("type", net::MSG::INSTALLATION_UPGRADE);
+	query.set("data", i);
+	net::Message msg(0, query.clone());
+	_outbox.push(msg);
 	
+	JSON::Value *serverResponse = _inbox.pop().data;
+	if (ISDICT(serverResponse))
+	{
+		JSON::Dict received = DICT(serverResponse);
+		if (ISSTR(received.get("type")) && ISBOOL(received.get("data"))
+			&& STR(received.get("type")).value() == net::MSG::INSTALLATION_UPGRADE)
+		{
+			return BOOL(serverResponse);
+		}
+	}
+	return false;
 }
 
 bool Connection::downgradeInstallation(size_t i)
 {
+	JSON::Dict query;
+	query.set("type", net::MSG::INSTALLATION_DOWNGRADE);
+	query.set("data", i);
+	net::Message msg(0, query.clone());
+	_outbox.push(msg);
 	
+	JSON::Value *serverResponse = _inbox.pop().data;
+	if (ISDICT(serverResponse))
+	{
+		JSON::Dict received = DICT(serverResponse);
+		if (ISSTR(received.get("type")) && ISBOOL(received.get("data"))
+			&& STR(received.get("type")).value() == net::MSG::INSTALLATION_DOWNGRADE)
+		{
+			return BOOL(serverResponse);
+		}
+	}
+	return false;
 }
 
 void Connection::getConnectedUsersList(vector<string> &users){
 	JSON::Dict query;
 	query.set("type", net::MSG::DATA_QUERY);
 	query.set("data", net::MSG::CONNECTED_USERS_LIST);
-	_socket.send(&query);
+	net::Message msg(0, query.clone());
+	_outbox.push(msg);
 
-	JSON::Value *serverResponse = _socket.recv();
+	JSON::Value *serverResponse = _inbox.pop().data;
 	if (ISDICT(serverResponse)){
 		JSON::Dict received = DICT(serverResponse);
 		if (ISSTR(received.get("type")) && ISLIST(received.get("data"))){

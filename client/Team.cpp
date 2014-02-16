@@ -2,7 +2,7 @@
 #include "Gear.hpp"
 #include "Sponsor.hpp"
 #include "Installation.hpp"
-#include "Member.hpp"
+#include <Member.hpp>
 
 void Team::createStartingPlayers(){
 	Player keeper("keeper");

@@ -2,6 +2,7 @@
 #define CONNECTION_HPP
 
 #include <network/TcpSocket.hpp>
+#include <network/ConnectionManager.hpp>
 #include <json/json.hpp>
 #include "Exception.hpp"
 #include <Constants.hpp>
@@ -13,6 +14,7 @@ class Connection
 {
 public:
 	Connection(std::string host, int port);
+	~Connection();
 	
 	void loginUser(std::string username, std::string passwd);
 	void doesUserExist(std::string username);
@@ -25,6 +27,8 @@ public:
 	
 private:
 	net::TcpSocket _socket;
+	SharedQueue<net::Message> _inbox, _outbox;
+	net::ClientConnectionManager _connectionManager;
 };
 
 #endif

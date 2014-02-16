@@ -20,8 +20,9 @@ using namespace net;
 /* ===== BaseConnectionManager ===== */
 BaseConnectionManager::BaseConnectionManager( 
     SharedQueue<Message> & incoming_queue,
-    SharedQueue<Message> & outgoing_queue
-) : _incoming(incoming_queue), _outgoing(outgoing_queue)
+    SharedQueue<Message> & outgoing_queue,
+    bool logger
+) : _incoming(incoming_queue), _outgoing(outgoing_queue), _logger(logger)
 {
     pthread_mutex_init(&_mutex, NULL);
     pthread_mutex_init(&_fdset_mutex, NULL);
@@ -30,9 +31,13 @@ BaseConnectionManager::BaseConnectionManager(
 BaseConnectionManager::~BaseConnectionManager()
 {
     stop();
-    std::set<int>::iterator it;
-    for (it=_clients.begin(); it!=_clients.end(); it++)
+    std::set<int>::iterator it, next;
+    for (it=_clients.begin(); it!=_clients.end();) {
+		next = it;
+		next++;
         _doDisconnect(*it);
+		it = next;
+    }
     pthread_mutex_destroy(&_mutex);
     pthread_mutex_destroy(&_fdset_mutex);
 }
@@ -51,7 +56,9 @@ bool BaseConnectionManager::_doWrite(int fd, JSON::Value *obj)
             if (r < 0)
                 return false;
         }
-        std::cout << "\033[1m" << fd << " \033[36m<<\033[0m " << *obj << std::endl;
+        if (_logger)
+            std::cout << "\033[1m" << fd << " \033[36m<<\033[0m " 
+                      << *obj << std::endl;
     }
     return true;
 }
@@ -81,7 +88,9 @@ bool BaseConnectionManager::_doRead(int fd)
     JSON::Value *res = JSON::parse(globalBuf.str().c_str());
     if (res != NULL){
         _incoming.push(Message(fd, res));
-        std::cout << "\033[1m" << fd << " \033[33m>>\033[0m " << *res << std::endl;
+        if (_logger)
+            std::cout << "\033[1m" << fd << " \033[33m>>\033[0m " 
+                      << *res << std::endl;
     }
 
     return true;
@@ -95,7 +104,8 @@ void BaseConnectionManager::_doDisconnect(int fd)
     msgdata.set("type", "DISCONNECT");
     msgdata.set("client_id", fd);
     _incoming.push(Message(fd, msgdata.clone()));
-    std::cout << "\033[1m" << fd << " \033[35m disconnected\033[0m" << std::endl;
+    if (_logger)
+		std::cout << "\033[1m" << fd << " \033[35m disconnected\033[0m" << std::endl;
 }
 
 void BaseConnectionManager::_doConnect(int fd)
@@ -250,7 +260,7 @@ ConnectionManager::ConnectionManager(
     const char *bind_addr_repr, 
     unsigned short bind_port,
     int max_clients
-) : BaseConnectionManager::BaseConnectionManager(incoming_queue, outgoing_queue),
+) : BaseConnectionManager::BaseConnectionManager(incoming_queue, outgoing_queue, true),
    _sockfd(-1)
 {
     int yes = 1;
@@ -350,4 +360,70 @@ SubConnectionManager::~SubConnectionManager()
         releaseClient(*client);
         client = next;
     }
+}
+
+ClientConnectionManager::ClientConnectionManager(
+				SharedQueue<Message> & incoming_queue,
+				SharedQueue<Message> & outgoing_queue,
+				const char *host_addr, 
+				unsigned short host_port
+) : BaseConnectionManager::BaseConnectionManager(incoming_queue, outgoing_queue, true),
+	_sockfd(-1)
+{
+	// TODO log is activated
+    _sockfd = socket(AF_INET, SOCK_STREAM, 0);
+    if (_sockfd < 0)
+        throw ConnectionFailedException();
+
+	int yes = 1;
+    if (setsockopt(_sockfd, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(int)) == -1){
+		close(_sockfd);
+        throw ConnectionFailedException();
+    }
+
+    memset(&_host_addr, 0, sizeof(struct sockaddr_in));
+    
+    _host_addr.sin_family = AF_INET;
+    _host_addr.sin_addr.s_addr = inet_addr(host_addr);
+    _host_addr.sin_port = htons(host_port);
+
+    if (connect(_sockfd, (struct sockaddr *) &_host_addr,
+		sizeof(_host_addr)) < 0)
+	{
+		close(_sockfd);
+		throw ConnectionFailedException();
+	}
+
+    addClient(_sockfd);
+}
+
+void ClientConnectionManager::_mainloop_in()
+{
+	while(isRunning())
+	{
+		if(_doRead(_sockfd) == false)
+		{
+			_doDisconnect(_sockfd);
+			stop();
+		}
+	}
+}
+
+void ClientConnectionManager::_mainloop_out()
+{
+    while (isRunning()){
+        Message const & msg = _outgoing.pop();
+        _doWrite(_sockfd, msg.data);
+        delete msg.data;
+    }
+}
+
+const char *ClientConnectionManager::ip(void) const
+{
+    return inet_ntoa(_host_addr.sin_addr);
+}
+
+unsigned short ClientConnectionManager::port(void) const
+{
+    return ntohs(_host_addr.sin_port);
 }
