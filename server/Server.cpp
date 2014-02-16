@@ -84,7 +84,7 @@ void Server::registerUser(const JSON::Dict &credentials, int peer_id){
 			response.set("data", MSG::USER_EXISTS);
 		} else { // User doesnt exist
 			newUser = new User(username, password);
-			newUser->save();
+			newUser->save(); // TODO catch exception
 			response.set("data", MSG::USER_REGISTERED);
 		}
 
