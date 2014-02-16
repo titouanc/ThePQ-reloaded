@@ -7,11 +7,24 @@ bool Beater::isBeater() const{
 }
 
 void Beater::equipBat(Bat aBat){
-    improveStrength(aBat.getStrengthBonus);
-    improvePrecision(aBat.getPrecisionBonus);
+    strength += (aBat.getStrengthBonus());
+    precision += (aBat.getPrecisionBonus());
+    *bat = aBat;
 }
 
 void Beater::unequipBat(){
-    improveStrength(-1 * bat->getStrengthBonus);
-    improvePrecision(-1 * bat->getPrecisionBonus);
+    strength -= bat->getStrengthBonus();
+    precision -= bat->getPrecisionBonus();
 }
+
+int Beater::collision (){
+    return static_cast<int>( (float) strength * .85 + (float) magic * .1 + (float) chance * .05) * 100; 
+}
+int Beater::anticollision (){
+    return static_cast<int>( (float) constitution * .85 + (float) magic * .1 + (float) chance * .05) * 100;
+}
+
+int Beater::shootBludger (){ 
+    return static_cast<int>( (float) strength * .5 + (float) precision * .35 + (float) magic * .1 + (float) chance * .05 ) * 100;
+}
+
