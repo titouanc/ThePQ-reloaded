@@ -7,6 +7,8 @@ class Keeper : public Player
 {
 public:
 	bool isKeeper ();
+    int catchBall ();
+    int pass ();
 };
 
 #endif
