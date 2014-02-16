@@ -1,16 +1,23 @@
 #ifndef __GEAR_HPP
 #define __GEAR_HPP
 
+#include <string>
+
+using namespace std;
+
 class Gear 
 {
 public:
-    std::string getName () const ;
-    std::string getDescription () const;
-	int getPrice () const;
+	Gear(string name, string description, int price): 	_name(name), 
+														_description(description),
+														_price(price) {}
+    string getName () const 		{ return _name; }
+    string getDescription () const	{ return _description; }
+	int getPrice () const;				{ return _price; }
 private:
-    std::string const name;
-    std::string const description;
-	int const price;
+    string const _name;
+    string const _description;
+	int const _price;
 };
 
 #endif
