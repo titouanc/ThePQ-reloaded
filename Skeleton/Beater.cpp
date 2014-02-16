@@ -2,18 +2,16 @@
 #include "Player.hpp"
 #include "Bat.hpp"
 
-using namespace std;
-
 bool Beater::isBeater() const{
-    return True;
+    return true;
 }
 
 void Beater::equipBat(Bat aBat){
-    abilities.improveStrength(aBat.getStrengthBonus);
-    abilities.improvePrecision(aBat.getPrecisionBonus);
+    improveStrength(aBat.getStrengthBonus);
+    improvePrecision(aBat.getPrecisionBonus);
 }
 
 void Beater::unequipBat(){
-    abilities.improveStrength(-1 * bat.getStrengthBonus);
-    abilities.improvePrecision(-1 * bat.getPrecisionBonus);
+    improveStrength(-1 * bat->getStrengthBonus);
+    improvePrecision(-1 * bat->getPrecisionBonus);
 }
