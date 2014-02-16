@@ -36,6 +36,7 @@ public:
 	
 	/* Installations */
 	vector<Installation>& getInstallations();
+	void saveInstallations();
 };
 
 #endif

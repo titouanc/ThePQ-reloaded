@@ -62,4 +62,15 @@ vector<Installation>& User::getInstallations()
 	return _installations;
 }
 
+void User::saveInstallations()
+{
+	JSON::List json;
+	for (size_t i = 0; i < _installations.size(); ++i)
+	{
+		json.append(DICT(&_installations[i]));
+	}
+	string path = getUserDirectoryPath() + "installations.json";
+	json.save(path.c_str());
+}
+
 // TODO add User.delete
