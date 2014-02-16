@@ -1,6 +1,10 @@
 #include "Keeper.hpp"
 #include "Player.hpp"
 
+Keeper::Keeper() : Player(){
+
+}
+
 bool Keeper::isKeeper(){
     return true;
 }
