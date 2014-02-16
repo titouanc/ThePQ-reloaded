@@ -1,4 +1,5 @@
 #include "Server.hpp"
+#include "MatchManager.hpp"
 #include <stdexcept>
 #include <typeinfo>
 #include <cxxabi.h>
@@ -37,6 +38,30 @@ void Server::run(){
 		}
 		delete msg.data;
 	}
+}
+
+void Server::startMatch(int client_idA, int client_idB)
+{
+	if (_users.find(client_idA) == _users.end() || 
+		_users.find(client_idB) == _users.end()){
+		return;
+	}
+	JSON::Value *json = JSON::load("fixtures/squad1.json");
+	if (! ISDICT(json))
+		return;
+	Squad squad1(DICT(json));
+	squad1.client_id = client_idA;
+	delete json;
+
+	json = JSON::load("fixtures/squad2.json");
+	if (! ISDICT(json))
+		return;
+	Squad squad2(DICT(json));
+	squad2.client_id = client_idB;
+	delete json;
+
+	MatchManager match(_connectionManager, squad1, squad2);
+	match.run();
 }
 
 void Server::treatMessage(const Message &message){

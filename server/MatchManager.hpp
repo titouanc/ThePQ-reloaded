@@ -7,6 +7,10 @@
 #include <model/Pitch.hpp>
 #include <cstring>
 #include "User.hpp"
+#include <network/ConnectionManager.hpp>
+#include <network/TcpSocket.hpp>
+
+using namespace net;
 
 class Player : public Moveable {
 	using Moveable::Moveable;
@@ -23,6 +27,7 @@ struct Stroke {
 
 struct Squad {
 	int squad_id;
+	int client_id;
 	Player players[7];
 	Squad(){}
 	Squad(JSON::Dict const & json){
@@ -49,6 +54,7 @@ struct Squad {
 		res.set("squad_id", squad_id);
 		return res;
 	}
+	operator JSON::Dict(){return toJson();}
 };
 
 class MatchManager {
@@ -57,9 +63,15 @@ class MatchManager {
 		Squad _squads[2];
 		Ball   _balls[4];
 		Pitch  _pitch;
+		SharedQueue<Message> _inbox, _outbox;
+		SubConnectionManager _net;
 	public:
-		MatchManager(Squad const & squadA, Squad const & squadB) : 
-		_strokes(), _pitch(100, 36) {
+		MatchManager(
+			BaseConnectionManager & connections, 
+			Squad const & squadA, Squad const & squadB
+		) : _strokes(), _pitch(100, 36), _inbox(), _outbox(), 
+		   _net(_inbox, _outbox, connections)
+		{
 			for (int i=0; i<4; i++)
 				_balls[i].setID(100+i+1); /* Balls IDs: 101..104*/
 			_squads[0] = squadA;
@@ -71,8 +83,30 @@ class MatchManager {
 					_squads[i].players[j].setID(10*i+j+1);
 				}
 			}
+
+			_net.acquireClient(squadA.client_id);
+			_net.acquireClient(squadB.client_id);
+			_net.start();
 		}
 		~MatchManager(){}
+
+		void run(){
+			sendSquads();
+		}
+
+		void sendSquads(void){
+			int i;
+			JSON::List *list = new JSON::List();
+			for (i=0; i<2; i++)
+				list->append(_squads[i].toJson());
+			
+			JSON::Dict msgdata;
+			msgdata.setPtr("squads", list);
+			msgdata.set("type", MSG::MATCH_SQUADS);
+
+			for (i=0; i<2; i++)
+				_outbox.push(Message(_squads[i].client_id, msgdata.clone()));
+		}
 
 		/*!
 		 * @meth void MatchManager::playStrokes(void)

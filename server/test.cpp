@@ -41,8 +41,6 @@ TEST(matchmanager)
 	ASSERT(ISDICT(A));
 	JSON::Value *B = JSON::load("fixtures/squad2.json");
 	ASSERT(ISDICT(B));
-
-	MatchManager m(DICT(A), DICT(B));
 	delete A;
 	delete B;
 ENDTEST()

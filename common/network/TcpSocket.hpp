@@ -49,6 +49,8 @@ namespace net
 		static const std::string INSTALLATIONS_LIST = "DQ_I_L";
 		static const std::string CONNECTED_USERS_LIST = "DQ_CU_L";
 
+		// MATCH --------------------------------------------
+		static const std::string MATCH_SQUADS = "D_M_S";
 	}
 	
 	class TcpSocket {
