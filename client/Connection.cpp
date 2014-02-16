@@ -123,9 +123,10 @@ void Connection::getConnectedUsersList(vector<string> &users){
 	JSON::Dict query;
 	query.set("type", net::MSG::DATA_QUERY);
 	query.set("data", net::MSG::CONNECTED_USERS_LIST);
-	_socket.send(&query);
+	net::Message msg(0, query.clone());
+	_outbox.push(msg);
 
-	JSON::Value *serverResponse = _socket.recv();
+	JSON::Value *serverResponse = _inbox.pop().data;
 	if (ISDICT(serverResponse)){
 		JSON::Dict received = DICT(serverResponse);
 		if (ISSTR(received.get("type")) && ISLIST(received.get("data"))){
