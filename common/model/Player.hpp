@@ -19,10 +19,10 @@ public:
 	void loseLife (int damage);
 	void recoverMana ();
 	void loseMana (int spelled);
-	bool isBeater () const;
-	bool isChaser () const;
-	bool isKeeper () const;
-	bool isSeeker () const;
+	virtual bool isBeater () const { return false; }
+	virtual bool isChaser () const { return false; }
+	virtual bool isKeeper () const { return false; }
+	virtual bool isSeeker () const { return false; }
 	int getStrength () const 		{ return _strength; }
 	int getConstitution () const 	{ return _constitution; }
 	int getMagic () const 			{ return _magic; }

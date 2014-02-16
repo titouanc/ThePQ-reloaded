@@ -45,19 +45,3 @@ void Player::loseMana (int spelled){
     if (manaBar < 0)
         manaBar = 0;
 }
-
-bool Player::isBeater () const{
-    return false;
-}
-
-bool Player::isChaser () const{
-    return false;
-}
-
-bool Player::isKeeper () const{
-    return false;
-}
-
-bool Player::isSeeker () const{
-    return false;
-}
