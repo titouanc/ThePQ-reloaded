@@ -1,5 +1,5 @@
-#ifndef USER_HPP
-#define USER_HPP 
+#ifndef SALE_HPP
+#define SALE_HPP 
 
 #include <string>
 #include <list>
