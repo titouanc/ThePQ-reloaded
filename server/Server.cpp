@@ -66,6 +66,13 @@ void Server::treatMessage(const Message &message){
 					else if(data == MSG::CONNECTED_USERS_LIST)
 						sendConnectedUsersList(message.peer_id);
 				}
+			} else if (ISINT(received.get("data"))) {
+				int data = INT(received.get("data"));
+				if (messageType == MSG::INSTALLATION_UPGRADE) {
+					upgradeInstallation(data);
+				} else if (messageType == MSG::INSTALLATION_DOWNGRADE) {
+					downgradeInstallation(data);
+				}
 			}
 		}
 	}
@@ -150,6 +157,16 @@ void Server::sendInstallationsList(int peer_id){
 	string listPath = _users[peer_id]->getUserDirectoryPath() + "installations.json";
 	JSON::Value * installationsList = JSON::load(listPath);
 	_outbox.push(Message(peer_id, installationsList));
+}
+
+void Server::upgradeInstallation(size_t i)
+{
+	
+}
+
+void Server::downgradeInstallation(size_t i)
+{
+	
 }
 
 void Server::sendConnectedUsersList(int peer_id){

@@ -44,6 +44,8 @@ public:
 	void logUserIn(const JSON::Dict &credentials, int peer_id);
 	void checkIfUserExists(string username, int peer_id);
 	void sendInstallationsList(int peer_id);
+	void upgradeInstallation(size_t i);
+	void downgradeInstallation(size_t i);
 	void sendConnectedUsersList(int peer_id);
 
     string getRandomName();
