@@ -74,34 +74,6 @@ bool Player::isSeeker () const{
     return false;
 }
 
-int Player::getStrength () const{
-    return strength;
-}
-
-int Player::getConstitution () const{
-    return constitution;
-}
-
-int Player::getMagic () const{
-    return magic;
-}
-
-int Player::getSpirit () const{
-    return spirit;
-}
-
-int Player::getVelocity () const{
-    return velocity;
-}
-
-int Player::getPrecision () const{
-    return precision;
-}
-
-int Player::getChance () const{
-    return chance;
-}
-
 void Player::improveStrength (int added){
     strength+=added;
 }
