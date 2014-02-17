@@ -34,7 +34,7 @@ public:
 	unsigned int getID() const { return _uniqueID; }
 	void setID(unsigned int newID) { _uniqueID = newID; }
 
-	JSON::Dict toJson(void) const {
+	JSON::Dict toJson() const {
 		JSON::Dict res;
 		res.set("speed", _speed);
 		res.set("position", _position.toJson());
