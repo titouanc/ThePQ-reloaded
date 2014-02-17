@@ -2,6 +2,13 @@
 #include <cassert>
 #include <cstring>
 
+const Position Pitch::West(-2, 0);
+const Position Pitch::East(2, 0);
+const Position Pitch::NorthWest(-1, 1);
+const Position Pitch::SouthWest(-1, -1);
+const Position Pitch::NorthEast(1, 1);
+const Position Pitch::SouthEast(1, -1);
+
 size_t Pitch::_index(int x, int y) const 
 {
 	x += _width/2;
@@ -30,6 +37,8 @@ int Pitch::xmax(void) const {return _width/2;}
 
 int Pitch::ymin(void) const {return -ymax();}
 int Pitch::ymax(void) const {return _height/2;}
+
+Position Pitch::center(void) const {return Position(0, 0);}
 
 Moveable * Pitch::getAt(int x, int y) const 
 {

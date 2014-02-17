@@ -12,6 +12,13 @@ class Pitch {
 		/* Translate x,y position to index in inner representation */
 		size_t _index(int x, int y) const;
 	public:
+		static const Position West;
+		static const Position East;
+		static const Position NorthWest;
+		static const Position SouthWest;
+		static const Position NorthEast;
+		static const Position SouthEast;
+
 		Pitch(size_t width, size_t height);
 		~Pitch();
 
@@ -23,6 +30,8 @@ class Pitch {
 
 		int ymin(void) const;
 		int ymax(void) const;
+
+		Position center(void) const;
 
 		/*!
 		 * @meth Moveable * Pitch::getAt(int x, int y) const
