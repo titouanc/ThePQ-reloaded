@@ -2,6 +2,7 @@
 #define __GEAR_HPP
 
 #include <string>
+#include <json/json.hpp>
 
 using namespace std;
 
@@ -11,6 +12,18 @@ public:
 	Gear(): _name("NoName"), 
 			_description("NoDescription"),
 			_price(0) {}
+	Gear(JSON::Dict const &json): Gear() {
+		if (ISSTR(json.get("name"))) _name = STR(json.get("name")).value();
+		if (ISSTR(json.get("description"))) _description = STR(json.get("description")).value();
+		if (ISINT(json.get("price"))) _price = INT(json.get("price")).value();		
+	}
+	operator JSON::Dict(){
+		JSON::Dict res;
+		res.set("name", _name);
+		res.set("description", _description);
+		res.set("price", _price);
+		return res;
+	}
     string getName () const 		{ return _name; }
     string getDescription () const	{ return _description; }
 	int getPrice () const			{ return _price; }
@@ -30,6 +43,16 @@ class Bat : Gear
 public:
     Bat(const int strength, const int precision) : 	_strengthBonus(strength),
     												_precisionBonus(precision){}
+    Bat(JSON::Dict const &json): Gear(json) {
+		if (ISINT(json.get("strengthBonus"))) _strengthBonus = INT(json.get("strengthBonus")).value();		
+		if (ISINT(json.get("precisionBonus"))) _precisionBonus = INT(json.get("precisionBonus")).value();		
+	}
+	operator JSON::Dict(){
+		JSON::Dict res = JSON::Dict((Gear)*this);
+		res.set("strengthBonus", _strengthBonus);
+		res.set("precisionBonus", _precisionBonus);
+		return res;
+	}												
 	int getStrengthBonus () const	{ return _strengthBonus; }
 	int getPrecisionBonus () const	{ return _precisionBonus; }
 private:
