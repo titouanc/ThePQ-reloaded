@@ -12,8 +12,10 @@
 class PlayerMarket{
 private:
 	std::vector<Sale> _sales;
+	std::vector<JSON::Dict*> _jsonSales;
 public:
-	PlayerMarket(){}
+	PlayerMarket(): _sales(), _jsonSales(){}
+
 	bool exists(int player_id){
 		for(int i = 0; i<_sales.size();++i){
 			if(_sales[i].getID() == player_id){return true;}
@@ -22,9 +24,11 @@ public:
 	}
 
 	JSON::Dict allSales(){
-		for(i=0;i<_sales.size();++i){
-			
+		JSON::Dict tmp; 
+		for(i=0;i<_jsonSales.size();++i){
+			tmp.set.(_jsonSales[i]->get("ID"), *(_jsonSales[i]));
 		}
+		return tmp;
 	}
 
 	JSON::Dict addPlayer(const JSON::Dict &json){
@@ -35,6 +39,7 @@ public:
 		else{
 			std::string fileName = MARKET_DATA_DIR + "sale_" + player_id + ".json";
 			_sales.push_back(Sale(json));
+			_jsonSales.set(String(player_id), _sales[_sales.size()-1].getDict());
 			_sales[_sales.size()-1].save();
 			_sales[_sales.size()-1].start();
 			response.set("data", net::MSG::PLAYER_ADDED_ON_MARKET);
@@ -58,7 +63,7 @@ public:
 		return response;
 	}
 
-	void bid(JSON::Dict *json);
+	void bid(JSON::Dict &json);
 
 
 };

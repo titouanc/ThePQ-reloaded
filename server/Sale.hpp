@@ -22,6 +22,7 @@ private:
 	int _turn;
 	time_t _begin;
 	Player _player;
+	JSON::Dict _repr; 
 	pthread_t thread;
 	static void * staticSaleStart(void * p);
 	void saleStart();
@@ -30,7 +31,7 @@ public:
 	void start();
 	Sale(const JSON::Dict & json);
 	void save();
-	Sale load(std::string playerid);
+	Sale load(int playerid);
 };
 
 Sale::Sale(const JSON::Dict & json): _bidValue(INT(json->get("bidValue").value())), _bidRatio(BIDRATIO), 
