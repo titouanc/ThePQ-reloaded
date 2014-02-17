@@ -17,7 +17,7 @@ class Config {
         Config(std::string const & filename) : _filename(filename){}
 
         /*! Attempt to load from disk */
-        bool load(void){
+        bool load(){
             JSON::Value *dict = NULL;
             bool res = false;
             try {
@@ -30,6 +30,11 @@ class Config {
             if (dict)
                 delete dict;
             return res;
+        }
+
+        bool load(std::string filename){
+            _filename = filename;
+            return load();
         }
 
         /*! Save config to disk */
