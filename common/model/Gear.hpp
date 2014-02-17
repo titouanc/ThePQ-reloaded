@@ -38,7 +38,7 @@ private:
 
 
 // BAT -------------------------------------------------------------------------
-class Bat : Gear 
+class Bat : public Gear 
 {
 public:
     Bat(const int strength, const int precision) : 	_strengthBonus(strength),
@@ -62,7 +62,7 @@ private:
 
 
 // BROOMSTICK ------------------------------------------------------------------
-class Broomstick : Gear 
+class Broomstick : public Gear 
 {
 public:
     Broomstick(const int nCases, const int velocity):	_cases(nCases), 
@@ -76,7 +76,7 @@ private:
 
 
 // JERSEY ----------------------------------------------------------------------
-class Jersey : Gear 
+class Jersey : public Gear 
 {
 public:
 	Jersey():_strengthBonus(0), _constitutionBonus(0), _magicBonus(0), _spiritBonus(0){}
