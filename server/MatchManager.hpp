@@ -5,16 +5,12 @@
 #include <model/Moveable.hpp>
 #include <model/Displacement.hpp>
 #include <model/Pitch.hpp>
+#include <model/Player.hpp>
+#include <model/Ball.hpp>
 #include <cstring>
 #include "User.hpp"
 
-class Player : public Moveable {
-	using Moveable::Moveable;
-};
 
-class Ball : public Moveable {
-	using Moveable::Moveable;
-};
 
 struct Stroke {
 	Moveable & moveable;
