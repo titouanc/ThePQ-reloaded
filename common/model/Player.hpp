@@ -1,6 +1,8 @@
 #ifndef __PLAYER_HPP
 #define __PLAYER_HPP
 
+#include <json/json.hpp>
+#include <string>
 #include "Member.hpp"
 #include "Gear.hpp"
 #include "Moveable.hpp"
@@ -12,6 +14,9 @@ public:
                 _manaBar(100), _broomstick(new Broomstick(5,50)), 
                 _jersey(new Jersey()), _strength(5), _constitution(5), 
                 _magic(5), _spirit(5), _velocity(5), _precision(5), _chance(5){}
+
+    Player(JSON::Dict const & json);
+    operator JSON::Dict();
 
 	int getRemainingLife () const	{ return _lifeBar; }
 	int getRemainingMana ()const	{ return _manaBar; }

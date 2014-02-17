@@ -1,5 +1,40 @@
 #include "Player.hpp"
 
+Player::Player(JSON::Dict const & json) : Member(json), Moveable(json){
+        if (ISINT(json.get("maxLife"))) _maxLife = INT(json.get("maxLife")).value();
+        if (ISINT(json.get("maxMana"))) _maxMana = INT(json.get("maxMana")).value();
+        if (ISINT(json.get("lifeBar"))) _lifeBar = INT(json.get("lifeBar")).value();
+        if (ISINT(json.get("manaBar"))) _manaBar = INT(json.get("manaBar")).value();
+        if (ISDICT(json.get("broomstick"))) *_broomstick = DICT(json.get("broomstick"));
+        if (ISDICT(json.get("jersey"))) *_jersey = DICT(json.get("jersey"));
+        if (ISINT(json.get("strength"))) _strength = INT(json.get("strength")).value();
+        if (ISINT(json.get("constitution"))) _constitution = INT(json.get("constitution")).value();
+        if (ISINT(json.get("magic"))) _magic = INT(json.get("magic")).value();
+        if (ISINT(json.get("spirit"))) _spirit = INT(json.get("spirit")).value();
+        if (ISINT(json.get("velocity"))) _velocity = INT(json.get("velocity")).value();
+        if (ISINT(json.get("precision"))) _precision = INT(json.get("precision")).value();
+        if (ISINT(json.get("chance"))) _chance = INT(json.get("chance")).value();
+}
+
+Player::operator JSON::Dict(){
+    JSON::Dict res = (Member)*this; // TODO add keys from Moveable
+    res.set("maxLife", _maxLife);
+    res.set("maxMana", _maxMana);
+    res.set("lifeBar", _lifeBar);
+    res.set("manaBar", _manaBar);
+    res.set("broomstick", JSON::Dict(*_broomstick));
+    res.set("jersey", JSON::Dict(*_jersey));
+    res.set("strength", _strength);
+    res.set("constitution", _constitution);
+    res.set("magic", _magic);
+    res.set("spirit", _spirit);
+    res.set("velocity", _velocity);
+    res.set("precision", _precision);
+    res.set("chance", _precision);
+}
+
+
+
 void Player::equipBroomstick (Broomstick aBroom){
     improveVelocity(-1 * _broomstick->getVelocityBonus());
     improveVelocity(aBroom.getVelocityBonus());
