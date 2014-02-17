@@ -17,7 +17,9 @@ Player::Player(JSON::Dict const & json) : Member(json), Moveable(json){
 }
 
 Player::operator JSON::Dict(){
-    JSON::Dict res = (Member)*this; // TODO add keys from Moveable
+    JSON::Dict res = (Member)*this; 
+    JSON::Dict subres = (Moveable)*this;
+    res.stealMerge(subres);
     res.set("maxLife", _maxLife);
     res.set("maxMana", _maxMana);
     res.set("lifeBar", _lifeBar);
@@ -31,6 +33,7 @@ Player::operator JSON::Dict(){
     res.set("velocity", _velocity);
     res.set("precision", _precision);
     res.set("chance", _precision);
+    return res;
 }
 
 
