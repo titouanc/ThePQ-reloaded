@@ -67,6 +67,16 @@ class Broomstick : public Gear
 public:
     Broomstick(const int nCases, const int velocity):	_cases(nCases), 
     													_velocityBonus(velocity){}
+	Broomstick(JSON::Dict const &json): Gear(json) {
+		if (ISINT(json.get("cases"))) _cases = INT(json.get("cases")).value();		
+		if (ISINT(json.get("velocityBonus"))) _velocityBonus = INT(json.get("velocityBonus")).value();		
+	}
+	operator JSON::Dict(){
+		JSON::Dict res = JSON::Dict((Gear)*this);
+		res.set("cases", _cases);
+		res.set("velocityBonus", _velocityBonus);
+		return res;
+	}	
 	int getCases () const 			{ return _cases; }
 	int getVelocityBonus () const  	{ return _velocityBonus; }
 private:
@@ -81,6 +91,20 @@ class Jersey : public Gear
 public:
 	Jersey():_strengthBonus(0), _constitutionBonus(0), _magicBonus(0), _spiritBonus(0){}
 
+	Jersey(JSON::Dict const &json): Gear(json) {
+		if (ISINT(json.get("strengthBonus"))) _strengthBonus = INT(json.get("strengthBonus")).value();		
+		if (ISINT(json.get("constitutionBonus"))) _constitutionBonus = INT(json.get("constitutionBonus")).value();		
+		if (ISINT(json.get("magicBonus"))) _magicBonus = INT(json.get("magicBonus")).value();		
+		if (ISINT(json.get("spiritBonus"))) _spiritBonus = INT(json.get("spiritBonus")).value();		
+	}
+	operator JSON::Dict(){
+		JSON::Dict res = JSON::Dict((Gear)*this);
+		res.set("strengthBonus", _strengthBonus);
+		res.set("constitutionBonus", _constitutionBonus);
+		res.set("magicBonus", _magicBonus);
+		res.set("spiritBonus", _spiritBonus);
+		return res;
+	}	
 	int getStrengthBonus () const 		{ return _strengthBonus; }
 	int getConstitutionBonus () const 	{ return _constitutionBonus; }
 	int getMagicBonus () const 			{ return _magicBonus; }

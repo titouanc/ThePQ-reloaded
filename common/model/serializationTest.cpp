@@ -19,6 +19,7 @@ TEST(bat_serialization)
 	JSON::Dict d = JSON::Dict(b);
 	Bat c(d);
 	ASSERT(c.getName() == "SuperBat");
+	ASSERT(c.getDescription() == "NoDescription");
 	ASSERT(c.getStrengthBonus() == 123);
 	ASSERT(c.getPrecisionBonus() == 456);
 ENDTEST()
