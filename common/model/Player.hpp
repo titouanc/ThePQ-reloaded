@@ -49,6 +49,25 @@ public:
 	void improveSpirit (int added) 			{ _spirit+=added; }
 	void improveVelocity (int added) 		{ _velocity+=added; }
 	void improvePrecision (int added) 		{ _precision+=added; }
+
+	Player &operator=(Player const & player){
+		Moveable::operator=(player);
+		Member::operator=(player);
+		_maxLife = player._maxLife;
+		_maxMana = player._maxMana;
+		_lifeBar = player._lifeBar;
+		_manaBar = player._manaBar;
+		_broomstick = new Broomstick(*(player._broomstick));
+		_jersey = new Jersey(*(player._jersey));
+		_strength = player._strength;
+		_constitution = player._constitution;
+		_magic = player._magic;
+		_spirit = player._spirit;
+		_velocity = player._velocity;
+		_precision = player._precision;
+		_chance = player._chance;
+		return *this;
+	}
 protected:
     int _maxLife;
     int _maxMana;
