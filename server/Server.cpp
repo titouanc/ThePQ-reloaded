@@ -76,8 +76,10 @@ void Server::treatMessage(const Message &message){
 					_users.erase(it);
 				}
 			} else if (ISDICT(received.get("data"))){
+				/* Login */
 				if (messageType == MSG::LOGIN_QUERY)
 					logUserIn(DICT(received.get("data")), message.peer_id);
+				/* Register */
 				else if (messageType == MSG::REGISTER_QUERY) 
 					registerUser(DICT(received.get("data")), message.peer_id);
 			} else if (ISSTR(received.get("data"))){
@@ -97,6 +99,19 @@ void Server::treatMessage(const Message &message){
 					upgradeInstallation(message.peer_id, data);
 				} else if (messageType == MSG::INSTALLATION_DOWNGRADE) {
 					downgradeInstallation(message.peer_id, data);
+				}
+			} else if (messageType == "42"){
+				if (_users.size() >= 2){
+					std::map<int, User*>::iterator i;
+					int other = -1;
+					for (i=_users.begin(); i!=_users.end(); i++){
+						if (i->first != message.peer_id){
+							other = i->first;
+							break;
+						}
+					}
+					if (other > 0)
+						startMatch(message.peer_id, other);
 				}
 			}
 		}
