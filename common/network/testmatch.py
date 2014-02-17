@@ -1,5 +1,15 @@
 from client import Client
 
+def printMessage(msg):
+	if msg['type'] == 'M!!!':
+		print "ERROR  :", msg['data']
+	elif msg['type'] == 'MACK':
+		print "CONFIRM:", msg['data']
+	elif msg['type'] == 'MSTART':
+		print "Match start !!!"
+	else:
+		print msg
+
 c = Client()
 d = Client()
 
@@ -32,4 +42,6 @@ c.sendObj({
 		"move": [[1, 1], [2, 0]]
 	}
 })
-while True: print c.recvObj()
+while True: 
+	printMessage(c.recvObj())
+
