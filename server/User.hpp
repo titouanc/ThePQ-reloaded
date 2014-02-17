@@ -3,7 +3,7 @@
 
 #include <string>
 #include <json/json.hpp>
-#include <network/TcpSocket.hpp>
+#include <network/ConnectionManager.hpp>
 #include "sys/stat.h"
 #include "RandomNameGenerator.hpp"
 #include <model/Installation.hpp>
