@@ -8,6 +8,7 @@
 #include <network/TcpSocket.hpp>
 #include "User.hpp"
 #include <Config.hpp>
+#include "PlayerMarket.hpp"
 
 using namespace std;
 
@@ -47,7 +48,7 @@ public:
 	void sendConnectedUsersList(int peer_id);
     void sendPlayersOnMarketList(int peer_id);
     void addPlayerOnMarket(const JSON::Dict &bid, int peer_id);
-    void placeBidOnPlayer(const JSON::DICT &bid, int peer_id);
+    void placeBidOnPlayer(const JSON::Dict &bid, int peer_id);
 private:
 	SharedQueue<net::Message> _inbox, _outbox;
 	map<int, User*> _users;
