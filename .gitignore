@@ -1,4 +1,5 @@
-.make_flags
+client/netconfig.json
+server/netconfig.json
 *.ok
 
 # Compiled Object files

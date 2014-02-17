@@ -8,9 +8,6 @@ int main(int argc, char const *argv[])
 	else
 		config.load();
 	
-
-	config.load();
-	
 	Client client(config);
 	config.save();
 	
