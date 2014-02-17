@@ -115,6 +115,7 @@ vector<Installation> Connection::getInstallationsList(){
 
 bool Connection::upgradeInstallation(size_t i)
 {
+	bool ret = false;
 	JSON::Dict query;
 	query.set("type", net::MSG::INSTALLATION_UPGRADE);
 	query.set("data", i);
@@ -124,18 +125,19 @@ bool Connection::upgradeInstallation(size_t i)
 	JSON::Value *serverResponse = _inbox.pop().data;
 	if (ISDICT(serverResponse))
 	{
-		JSON::Dict received = DICT(serverResponse);
+		JSON::Dict const & received = DICT(serverResponse);
 		if (ISSTR(received.get("type")) && ISBOOL(received.get("data"))
 			&& STR(received.get("type")).value() == net::MSG::INSTALLATION_UPGRADE)
 		{
-			return received.get("data");
+			ret = received.get("data");
 		}
 	}
-	return false;
+	return ret;
 }
 
 bool Connection::downgradeInstallation(size_t i)
 {
+	bool ret = false;
 	JSON::Dict query;
 	query.set("type", net::MSG::INSTALLATION_DOWNGRADE);
 	query.set("data", i);
@@ -145,14 +147,16 @@ bool Connection::downgradeInstallation(size_t i)
 	JSON::Value *serverResponse = _inbox.pop().data;
 	if (ISDICT(serverResponse))
 	{
-		JSON::Dict received = DICT(serverResponse);
+		JSON::Dict const &received = DICT(serverResponse);
+		
 		if (ISSTR(received.get("type")) && ISBOOL(received.get("data"))
 			&& STR(received.get("type")).value() == net::MSG::INSTALLATION_DOWNGRADE)
 		{
-			return received.get("data");
+			ret = received.get("data");
 		}
 	}
-	return false;
+	delete serverResponse;
+	return ret;
 }
 
 void Connection::getConnectedUsersList(vector<string> &users){
