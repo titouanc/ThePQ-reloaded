@@ -4,22 +4,26 @@
 
 using namespace std;
 
-ParticipatingTeam getTeam1 (){
-
+ChampionshipGame::ChampionshipGame(){
+	/*Constructor for the object CHampionshipGame*/
 }
 
-ParticipatingTeam getTeam2 (){
-
+ParticipatingTeam ChampionshipGame::getTeam1 (){
+	/**Method returning <<team1>> playing a match*/
 }
 
-Date getDate (){
-
+ParticipatingTeam ChampionshipGame::getTeam2 (){
+	/**Method returning <<team2>> playing a match*/
 }
 
-int getTeam1Score(){
-
+Date ChampionshipGame::getDate (){
+	/*Method returning the date of the match*/
 }
 
-int getTeam2Score(){
+int ChampionshipGame::getTeam1Score(){
+	/**Method returning the score of <<team1>>*/
+}
 
+int ChampionshipGame::getTeam2Score(){
+	/**Method returning the score of <<team2>>*/
 }
