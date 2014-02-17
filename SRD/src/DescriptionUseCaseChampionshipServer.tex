@@ -7,7 +7,7 @@
   \caption{\label{fig:UCS:championshipManagement}Cas d'utilisation: Système - championnat}
 \end{figure}
 
-\subsubsection{Recevoir une inscription}
+\subsubsection{Recevoir une inscription (receive inscription)}
 \label{UCS:receiveInscription}
 \paragraph{Relations avec d'autres cas d'utilisation}
 Reçoit un message de \ref{UCS:sendInscription}.\\
@@ -23,7 +23,7 @@ Le serveur reçoit une demande d'inscription à un championnat, cette demande ve
 \item{Une demande d'inscription doit être traitée.}
 \end{list}
 
-\subsubsection{Envoyer une requête d'inscription.}
+\subsubsection{Envoyer une requête d'inscription (send inscription request)}
 \label{UCS:sendInscription}
 \paragraph{Relations avec d'autres cas d'utilisation}
 Envoie un message à \ref{UCS:receiveInscription}.
@@ -33,7 +33,7 @@ Envoie un message à \ref{UCS:receiveInscription}.
 \item{Une requête d'inscription à un championnat est envoyée au serveur.}
 \end{list}
 
-\subsubsection{Rechercher un championnat approprié}
+\subsubsection{Rechercher un championnat approprié (search adapted championship)}
 \label{UCS:searchChampionship}
 \paragraph{Relations avec d'autres cas d'utilisation}
 Inclus par \ref{UCS:receiveInscription}.\\
@@ -45,7 +45,7 @@ Inclut \ref{UCS:createChampionship} et \ref{UCS:addTeam}.
 \paragraph{Cas général}
 Le serveur effectue une recherche parmi tous les championnats dont le niveau est plus ou moins équivalent à celui de l'équipe de l'utilisateur effectuant la demande.
 
-\subsubsection{Créer un nouveau championnat}
+\subsubsection{Créer un nouveau championnat (create new championship)}
 \label{UCS:createChampionship}
 \paragraph{Relations avec d'autres cas d'utilisation}
 Inclus par \ref{UCS:searchChampionship}.\\
@@ -62,7 +62,7 @@ Le serveur n'a pas trouvé de championnat correspondant au niveau de l'équipe e
 \item{Un nouveau championnat dont le niveau est mis à celui de l'équipe effectuant la demande d'inscription est créé.}
 \end{list}
 
-\subsubsection{Ajouter l'équipe dans le championnat}
+\subsubsection{Ajouter l'équipe dans le championnat (add user team in championship)}
 \label{UCS:addTeam}
 \paragraph{Relations avec d'autres cas d'utilisation}
 Est inclus par \ref{UCS:searchChampionship} et \ref{UCS:createChampionship}.\\
@@ -78,7 +78,7 @@ L'équipe recherchant un championnat adéquat est ajouté au championnat trouvé
 \item{Le championnat trouvé possède une équipe en plus.}
 \end{list}
 
-\subsubsection{Démarrer le championnat}
+\subsubsection{Démarrer le championnat (start championship)}
 \label{UCS:startChampionship}
 \paragraph{Relations avec d'autres cas d'utilisation}
 Est inclus par \ref{UCS:addTeam}.\\
@@ -94,7 +94,7 @@ L'équipe qui recherchait un championnat adéquat est ajouté à celui-ci. Si ce
 \item{Le championnat est démarré.}
 \end{list}
 
-\subsubsection{Créer programme des matches et le classement}
+\subsubsection{Créer programme des matches et le classement (create scheduling and starting)}
 \label{UCS:createST}
 \paragraph{Relations avec d'autres cas d'utilisation}
 Inclus par \ref{UCS:startChampionship}.
