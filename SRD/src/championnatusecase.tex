@@ -7,39 +7,39 @@
 \end{figure}
 
 %-----
-\subsubsection{Inscription à un championnat}
+\subsubsection{Inscription à un championnat (championship entry)}
 \paragraph{Précondition}
 L'utilisateur n'est pas inscrit à un autre championnat et  le niveau de l'équipe de l'utilisateur est inclus entre les bornes de niveau définies par le championnat.
 \paragraph{Cas général} L'utilisateur s'inscrit dans un championnat spécifique.
 
 %-----
-\subsubsection{Vue des informations du championnat}
+\subsubsection{Vue des informations du championnat (championship info)}
 	\paragraph{Précondition} L'utilisateur est inscrit à ce championnat.
 	\paragraph{Cas général} Le joueur a accès aux informations des équipes concurrentes 
 		  (nom et niveau de l'équipe, listing des joueurs,...).
 
 %-----
-\subsubsection{Désinscription d'une équipe}
+\subsubsection{Désinscription d'une équipe (unsubscribe)}
 	\paragraph{Précondition} L'utilisateur est inscrit, le championnat n'est pas encore 
 		  complet et n'a pas encore commencé.
 	\paragraph{Cas général} L'utilisateur retire son équipe du championnat.
 	\paragraph{Postcondition} L'utilisateur ne participe plus au championnat et n'a plus accès à toutes les informations dudit championnat.
 
 %-----
-\subsubsection{Réception de la grille des matches}
+\subsubsection{Réception de la grille des matches (games schedule)}
 	\paragraph{Précondition} L'utilisateur est inscrit au championnat et le nombre 
 	      d'équipes est au complet.
 	\paragraph{Cas général} Chaque équipe reçoit la grille des matches qui contient la date, l'heure et l'adversaire de chaque match.
 
 %-----
-\subsubsection{Jeu des matches}
+\subsubsection{Jeu des matches (play)}
 	\paragraph{Précondition} Le nombre d'équipes est au complet et la grille de matches a été distribuée.
 	\paragraph{Cas général} Les utilisateurs disputent un match aller et un match retour l'un  après l'autre.
 	\paragraph{Cas exceptionnels} Un des utilisateurs n'est pas présent : l'ordinateur résout le jeu automatiquement.
 	\paragraph{Postcondition} Le vainqueur d'un match gagne 3 points au classement général, le perdant ne gagne aucun point, et les 2 équipes gagnent 1 point en cas de match nul. Les aptitudes des joueurs s'améliorent.
 
 %-----
-\subsubsection{Réception des résultats}
+\subsubsection{Réception des résultats (results)}
 	\paragraph{Précondition} Tous les matches ont été joués.
 	\paragraph{Cas général} L'utilisateur voit le classement général des matches et reçoit éventuellement des prix, de l'expérience et de l'argent.
 
@@ -51,26 +51,26 @@ L'utilisateur n'est pas inscrit à un autre championnat et  le niveau de l'équi
 \end{figure}
 
 %-----
-\subsubsection{Recherche d'un utilisateur}
+\subsubsection{Recherche d'un utilisateur (search for spec. user)}
 \paragraph{Cas général} L'utilisateur peut entrer le nom d'un autre utilisateur et lancer sa recherche parmi tous les utilisateurs du jeu, connectés ou non.
 \paragraph{Postcondition} Une liste des utilisateurs pouvant correspondre à la recherche est affichée.
 
 %-----
-\subsubsection{Trouver un utilisateur aléatoire}
+\subsubsection{Trouver un utilisateur aléatoire (find random user)}
 \paragraph{Cas général} L'utilisateur demande un autre utilisateur aléatoire, qui a plus ou moins son niveau et qui est connecté au jeu.
 \paragraph{Postcondition} Un utilisateur aléatoire connecté, s'il y en a, est affiché.
 
-\subsubsection{Inviter un utilisateur}
+\subsubsection{Inviter un utilisateur (invite user)}
 
 \paragraph{Cas général} L'utilisateur envoie une invitation à jouer un match amical à un autre utilisateur.
 \paragraph{Postcondition} L'invitation est en attente chez l'autre utilisateur.
 
-\subsubsection{Accepter une invitation}
+\subsubsection{Accepter une invitation (accept invite)}
 
 \paragraph{Précondition} Un autre utilisateur a invité l'utilisateur courant à jouer, et cet utilisateur est en ligne.
 \paragraph{Cas général} L'utilisateur accepte cette invitation.
 
-\subsubsection{Jouer une partie}
+\subsubsection{Jouer une partie (play game)}
 
 \paragraph{Précondition} Les deux utilisateurs ont accepté de jouer ensemble et sont tous les deux connectés.
 \paragraph{Cas général} La partie commence.
