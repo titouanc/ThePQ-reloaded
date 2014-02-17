@@ -21,6 +21,7 @@ public:
 	int getRemainingLife () const	{ return _lifeBar; }
 	int getRemainingMana ()const	{ return _manaBar; }
 	string getName() 	 			{ return Member::getName(); }
+    void setName(string name) { _name = name; }
     void equipBroomstick (Broomstick aBroom);
 	void equipJersey (Jersey aJersey);
 	void recoverLife ();
