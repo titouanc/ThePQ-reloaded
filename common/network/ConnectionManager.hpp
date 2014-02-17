@@ -6,11 +6,13 @@
 #include <stdexcept>
 #include <netinet/in.h>
 #include <pthread.h>
+#include <Constants.hpp>
 #include <sharedqueue.hpp>
 #include <json/json.hpp>
 #include "Exception.hpp"
 
 namespace net {
+	
 	struct Message {
 		int peer_id;
 		JSON::Value *data;

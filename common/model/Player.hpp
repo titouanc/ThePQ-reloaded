@@ -1,6 +1,8 @@
 #ifndef __PLAYER_HPP
 #define __PLAYER_HPP
 
+#include <json/json.hpp>
+#include <string>
 #include "Member.hpp"
 #include "Gear.hpp"
 #include "Moveable.hpp"
@@ -13,9 +15,17 @@ public:
                 _jersey(new Jersey()), _strength(5), _constitution(5), 
                 _magic(5), _spirit(5), _velocity(5), _precision(5), _chance(5){}
 
+    Player(JSON::Dict const & json);
+    ~Player(){ 
+    	if (_broomstick != NULL) delete _broomstick; 
+    	if (_jersey != NULL) delete _jersey; 
+    }
+    operator JSON::Dict();
+
 	int getRemainingLife () const	{ return _lifeBar; }
 	int getRemainingMana ()const	{ return _manaBar; }
 	string getName() 	 			{ return Member::getName(); }
+    void setName(string name) { _name = name; }
     void equipBroomstick (Broomstick aBroom);
 	void equipJersey (Jersey aJersey);
 	void recoverLife ();

@@ -491,6 +491,26 @@ TEST(dict_with_bool)
 	ASSERT(d.dumps() == "{\"key\": true}");
 ENDTEST()
 
+TEST(stealmerge)
+	JSON::Dict d1, d2;
+	d1.set("a", 1);
+	d1.set("b", 2);
+	d2.set("c", 3);
+
+	ASSERT(d1.hasKey("a"));
+	ASSERT(d1.hasKey("b"));
+	ASSERT(d2.hasKey("c"));
+
+	d2.stealMerge(d1);
+	ASSERT(d2.hasKey("a"));
+	ASSERT(d2.hasKey("b"));
+	ASSERT(d2.hasKey("c"));
+
+	ASSERT(! d1.hasKey("a"));
+	ASSERT(! d1.hasKey("b"));
+	ASSERT(d1.len() == 0);
+ENDTEST()
+
 int main(int argc, const char **argv)
 {
 	TestFunc testSuite[] = {
@@ -535,7 +555,8 @@ int main(int argc, const char **argv)
 		ADDTEST(conversion_operators),
 		ADDTEST(list_assign),
 		ADDTEST(dict_assign),
-		ADDTEST(dict_with_bool)
+		ADDTEST(dict_with_bool),
+		ADDTEST(stealmerge)
 	};
 
 	return RUN(testSuite);

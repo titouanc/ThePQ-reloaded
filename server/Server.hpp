@@ -5,7 +5,6 @@
 #include <string>
 #include <map>
 #include <network/ConnectionManager.hpp>
-#include <network/TcpSocket.hpp>
 #include "User.hpp"
 #include <Config.hpp>
 

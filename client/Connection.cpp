@@ -8,11 +8,6 @@ _connectionManager(_inbox, _outbox, host.c_str(), port)
 	_connectionManager.start();
 }
 
-Connection::~Connection()
-{
-	_connectionManager.stop();
-}
-
 void Connection::loginUser(string username, string passwd)
 {
 	JSON::Dict toSend, credentials;
@@ -27,17 +22,23 @@ void Connection::loginUser(string username, string passwd)
 
 	if (ISDICT(serverMessage)){
 		JSON::Dict const &received = DICT(serverMessage);
-		delete serverMessage;
 		if (received.hasKey("type") && ISSTR(received.get("type")) 
 			&& STR(received.get("type")).value() == net::MSG::CONNECTION_STATUS){
 			if (received.hasKey("data") && ISSTR(received.get("data"))) {
 				if (STR(received.get("data")).value() == net::MSG::PASSWORD_ERROR)
+				{
+					delete serverMessage;
 					throw WrongPasswordException();
+				}
 				else if (STR(received.get("data")).value() == net::MSG::USER_NOT_FOUND)
+				{
+					delete serverMessage;
 					throw UserNotFoundException();
+				}
 			}
 		}
 	}
+	delete serverMessage;
 	// User is logged in at this point.
 }
 
@@ -96,9 +97,13 @@ vector<Installation> Connection::getInstallationsList(){
 	_outbox.push(msg);
 
 	JSON::Value *serverResponse = _inbox.pop().data;
-	if (ISLIST(serverResponse))
+	if (ISDICT(serverResponse))
 	{
-		toFill = LIST(serverResponse);
+		JSON::Dict response = DICT(serverResponse);
+		if (ISLIST(response.get("data")))
+		{
+			toFill = LIST(response.get("data"));
+		}
 	}
 	vector<Installation> vec;
 	for (size_t i = 0; i < toFill.len(); ++i)
@@ -111,6 +116,7 @@ vector<Installation> Connection::getInstallationsList(){
 
 bool Connection::upgradeInstallation(size_t i)
 {
+	bool ret = false;
 	JSON::Dict query;
 	query.set("type", net::MSG::INSTALLATION_UPGRADE);
 	query.set("data", i);
@@ -120,18 +126,19 @@ bool Connection::upgradeInstallation(size_t i)
 	JSON::Value *serverResponse = _inbox.pop().data;
 	if (ISDICT(serverResponse))
 	{
-		JSON::Dict received = DICT(serverResponse);
+		JSON::Dict const & received = DICT(serverResponse);
 		if (ISSTR(received.get("type")) && ISBOOL(received.get("data"))
 			&& STR(received.get("type")).value() == net::MSG::INSTALLATION_UPGRADE)
 		{
-			return BOOL(serverResponse);
+			ret = received.get("data");
 		}
 	}
-	return false;
+	return ret;
 }
 
 bool Connection::downgradeInstallation(size_t i)
 {
+	bool ret = false;
 	JSON::Dict query;
 	query.set("type", net::MSG::INSTALLATION_DOWNGRADE);
 	query.set("data", i);
@@ -141,14 +148,16 @@ bool Connection::downgradeInstallation(size_t i)
 	JSON::Value *serverResponse = _inbox.pop().data;
 	if (ISDICT(serverResponse))
 	{
-		JSON::Dict received = DICT(serverResponse);
+		JSON::Dict const &received = DICT(serverResponse);
+		
 		if (ISSTR(received.get("type")) && ISBOOL(received.get("data"))
 			&& STR(received.get("type")).value() == net::MSG::INSTALLATION_DOWNGRADE)
 		{
-			return BOOL(serverResponse);
+			ret = received.get("data");
 		}
 	}
-	return false;
+	delete serverResponse;
+	return ret;
 }
 
 void Connection::getConnectedUsersList(vector<string> &users){

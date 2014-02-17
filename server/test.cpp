@@ -21,6 +21,7 @@ TEST(user)
 	delete test;
 ENDTEST()
 
+/*
 TEST(squad)
 	JSON::Value *json = JSON::load("fixtures/squad1.json");
 	ASSERT(ISDICT(json));
@@ -36,6 +37,7 @@ TEST(squad)
 	}
 ENDTEST()
 
+
 TEST(matchmanager)
 	JSON::Value *A = JSON::load("fixtures/squad1.json");
 	ASSERT(ISDICT(A));
@@ -44,7 +46,7 @@ TEST(matchmanager)
 	delete A;
 	delete B;
 ENDTEST()
-
+*/
 TEST(randomname)
 	RandomNameGenerator r;
 	for (int i=0; i<10; i++){
@@ -62,8 +64,8 @@ int main(int argc, const char **argv)
 {
 	TestFunc tests[] = {
 		ADDTEST(user),
-		ADDTEST(squad),
-		ADDTEST(matchmanager),
+		//ADDTEST(squad),
+		//ADDTEST(matchmanager),
 		ADDTEST(randomname)
 	};
 	return RUN(tests);
