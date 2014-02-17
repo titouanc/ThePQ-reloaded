@@ -52,6 +52,7 @@ private:
 	SharedQueue<net::Message> _inbox, _outbox;
 	map<int, User*> _users;
 	net::ConnectionManager _connectionManager;
+    PlayerMarket market;
 };
 
 #endif

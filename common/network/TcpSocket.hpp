@@ -33,7 +33,9 @@ namespace net
 		static const std::string USER_EXISTS_QUERY = "Q_U";
 		static const std::string CONNECTION_STATUS = "Q_S";
 		static const std::string DATA_QUERY = "Q_D";
+
 		static const std::string ADD_PLAYER_ON_MARKET_QUERY = "Q_A_P_OM";
+		static const std::string DELETE_PLAYER_ON_MARKET_QUERY = "Q_D_P_OM";
 		
 		// DATA ----------------------------------------------
 		// connection + register
@@ -53,7 +55,8 @@ namespace net
 		//player market
 		static const std::string PLAYER_ON_MARKET = "PM_P_OM";
 		static const std::string PLAYER_ADDED_ON_MARKET = "PM_P_A_OM";
-
+		static const std::string PLAYER_DELETED_OF_MARKET = "PM_D_OM";
+		static const std::string PLAYER_NOT_ON_MARKET = "PM_N_OM";
 	}
 	
 	class TcpSocket {

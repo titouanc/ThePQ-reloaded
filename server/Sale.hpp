@@ -26,14 +26,15 @@ private:
 	static void * staticSaleStart(void * p);
 	void saleStart();
 public:
+	int getID();
 	void start();
-	Sale(const JSON::Dict *json);
+	Sale(const JSON::Dict & json);
 	void save();
 	Sale load(std::string playerid);
 };
 
-Sale::Sale(const JSON::Dict *json): _bidValue(INT(json->get("bidValue").value())), _bidRatio(BIDRATIO), 
-	_turn(1), _begin(std::time(NULL), _player(json->get("player").value()){}
+Sale::Sale(const JSON::Dict & json): _bidValue(INT(json->get("bidValue").value())), _bidRatio(BIDRATIO), 
+	_turn(1), _begin(std::time(NULL), _player(json.get("player").value()){}
 
 void Sale::start(){
 	if(pthread_create(&thread, NULL, Sale::staticSaleStart, this) != 0){throw "Error occured when creating sale thread";

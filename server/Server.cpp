@@ -164,24 +164,17 @@ void Server::sendConnectedUsersList(int peer_id){
 	_outbox.push(Message(peer_id, usersList.clone()));
 }
 
+void Server::deletePlayerOfMarket(const JSON::Dict &sale){
+	Message status(peer_id, market.deletePlayer(&sale).clone());
+	_outbox.push(status);
+}
+
+void Server::addPlayerOnMarket(const JSON::Dict &sale, int peer_id){
+	Message status(peer_id, market.addPlayer(&sale).clone());
+	_outbox.push(status);
+}
 void Server::sendPlayersOnMarketList(int peer_id){
 	
 }
-void Server::addPlayerOnMarket(const JSON::Dict &bid, int peer_id){
-	if (ISSTR(bid.get(MSG::PLAYER_ID)){std::string const & playerid = STR(bid.get(MSG::PLAYER_ID));}
-	std::string fileName = "data/playerMarket/" + "bid_" + playerid + ".json";
-	JSON::Dict response = JSON::Dict();
-	response.set("type", MSG::ADD_PLAYER_ON_MARKET_QUERY);
-	try {
-		JSON::Value* json = JSON::load(fileName.c_str());
-		response.set("data", MSG::PLAYER_ON_MARKET);
-		delete json;
-	}
-	catch (JSON::IOError e){
-		bid.save(fileName.c_str());
-		response.set("data", MSG::PLAYER_ADDED_ON_MARKET);
-	}
-	Message status(peer_id, response.clone());
-	_outbox.push(status);
-}
+
 void Server::placeBidOnPlayer(const JSON::DICT &bid, int peer_id){}
