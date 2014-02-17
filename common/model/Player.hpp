@@ -70,6 +70,12 @@ class Beater : public Player
 {
 public:
     Beater() : Player(), _bat(new Bat(5, 5)){}
+    Beater(JSON::Dict const & json) : Player(json){
+    	if (ISDICT(json.get("bat")))
+    		_bat = new Bat(DICT(json.get("bat")));
+    	else
+    		_bat = new Bat(5, 5); /* TODO: Too much magic here !!! */
+    }
 	bool isBeater () const { return true; }
 	void equipBat (Bat aBat);
     void unequipBat ();
@@ -84,7 +90,7 @@ private:
 class Chaser : public Player 
 {
 public:
-    Chaser(): Player(){}
+	using Player::Player;
     bool isChaser () const { return true; }
     int speed ();
     int collisionner ();
@@ -99,7 +105,7 @@ public:
 class Keeper : public Player 
 {
 public:
-    Keeper() : Player(){}
+    using Player::Player;
 	bool isKeeper () { return true; }
     int catchBall ();
     int pass ();
@@ -109,7 +115,7 @@ public:
 class Seeker : public Player 
 {
 public:
-    Seeker() : Player() {}
+    using Player::Player;
 	bool isSeeker () const { return true; }
     int catchGS ();
 

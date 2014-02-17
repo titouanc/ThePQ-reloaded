@@ -3,6 +3,7 @@
 
 #include <cassert>
 
+#include <sys/select.h>
 #include <queue>
 #include <model/Moveable.hpp>
 #include <model/Displacement.hpp>
@@ -12,12 +13,9 @@
 #include <cstring>
 #include "User.hpp"
 #include <network/ConnectionManager.hpp>
-#include <network/TcpSocket.hpp>
 #include <model/Player.hpp>
 
 using namespace net;
-
-
 
 struct Stroke {
 	Moveable & moveable;
@@ -28,36 +26,54 @@ struct Stroke {
 struct Squad {
 	int squad_id;
 	int client_id;
-	Seeker seekers[3];
-	Beater beeters[2];
-	Chaser chaser;
+	Chaser chasers[3];
+	Beater beaters[2];
+	Seeker seeker;
 	Keeper keeper;
-	Squad(){}
-	Squad(JSON::Dict const & json){
-		if (! ISINT(json.get("squad_id")))
-			throw JSON::KeyError("A squad should have an ID");
-		if (! ISLIST(json.get("players")))
-			throw JSON::KeyError("A squad should contain players");
+	Player *players[7];
 
-		JSON::List const & list = LIST(json.get("players"));
-		if (list.len() != 7)
-			throw JSON::KeyError("A Squad should contain exactly 7 players");
-		for (size_t i=0; i<7; i++){
-			if (! ISDICT(list[i]))
-				throw JSON::TypeError("Expecting JSON::Dict for player");
-			players[i] = Player(DICT(list[i]));
-		}
+	Squad(){
+		for (int i=0; i<3; i++)
+			players[i] = &(chasers[i]);
+		for (int i=0; i<2; i++)
+			players[i+3] = &(beaters[i]);
+		players[5] = &seeker;
+		players[6] = &keeper;
 	}
-	JSON::Dict toJson(){
-		JSON::List list;
-		for (int i=0; i<7; i++)
-			list.append(JSON::Dict(players[i]));
+	Squad(JSON::Dict const & json){
+		if (ISLIST(json.get("chasers")) && LIST(json.get("chasers")).len() == 3){
+			JSON::List const & list = LIST(json.get("chasers"));
+			for (int i=0; i<3; i++)
+				chasers[i] = Chaser(DICT(list[i]));
+		}
+		if (ISLIST(json.get("beaters")) && LIST(json.get("beaters")).len() == 2){
+			JSON::List const & list = LIST(json.get("beaters"));
+			for (int i=0; i<2; i++)
+				beaters[i] = Beater(DICT(list[i]));
+		}
+		if (ISDICT(json.get("seeker")))
+			seeker = Seeker(DICT(json.get("seeker")));
+		if (ISDICT(json.get("keeper")))
+			keeper = Keeper(DICT(json.get("keeper")));
+
+	}
+	operator JSON::Dict(){
 		JSON::Dict res;
-		res.set("players", list);
 		res.set("squad_id", squad_id);
+		res.set("seeker", JSON::Dict(seeker));
+		res.set("keeper", JSON::Dict(keeper));
+
+		JSON::List b;
+		for (int i=0; i<2; i++)
+			b.append(JSON::Dict(beaters[i]));
+		res.set("beaters", b);
+
+		JSON::List c;
+		for (int i=0; i<3; i++)
+			c.append(JSON::Dict(chasers[i]));
+		res.set("chasers", c);
 		return res;
 	}
-	operator JSON::Dict(){return toJson();}
 };
 
 /* TODO: mettre ca dans un fichier de constantes */
@@ -93,7 +109,7 @@ class MatchManager {
 			for (int i=0; i<2; i++){
 				for (int j=0; j<7; j++){
 					/* Players IDs: 1..7 and 11..16*/
-					_squads[i].players[j].setID(10*i+j+1);
+					_squads[i].players[j]->setID(10*i+j+1);
 				}
 			}
 
@@ -135,7 +151,7 @@ class MatchManager {
 				return reply(msg, MATCH_ERROR, "No displacement found");
 			
 			_strokes.push(Stroke(
-				_squads[squad].players[player], 
+				*(_squads[squad].players[player]), 
 				Displacement(LIST(data.get("move")))
 			));
 			reply(msg, MATCH_ACK, data);
@@ -219,7 +235,7 @@ class MatchManager {
 			int i;
 			JSON::List *list = new JSON::List();
 			for (i=0; i<2; i++)
-				list->append(_squads[i].toJson());
+				list->append(JSON::Dict(_squads[i]));
 			
 			JSON::Dict msg;
 			msg.setPtr("squads", list);
