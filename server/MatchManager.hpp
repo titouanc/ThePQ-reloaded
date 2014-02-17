@@ -40,7 +40,7 @@ struct Squad {
 		players[5] = &seeker;
 		players[6] = &keeper;
 	}
-	Squad(JSON::Dict const & json){
+	Squad(JSON::Dict const & json) :  Squad() {
 		if (ISLIST(json.get("chasers")) && LIST(json.get("chasers")).len() == 3){
 			JSON::List const & list = LIST(json.get("chasers"));
 			for (int i=0; i<3; i++)
