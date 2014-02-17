@@ -5,8 +5,9 @@ Player::Player(JSON::Dict const & json) : Member(json), Moveable(json){
         if (ISINT(json.get("maxMana"))) _maxMana = INT(json.get("maxMana")).value();
         if (ISINT(json.get("lifeBar"))) _lifeBar = INT(json.get("lifeBar")).value();
         if (ISINT(json.get("manaBar"))) _manaBar = INT(json.get("manaBar")).value();
-        if (ISDICT(json.get("broomstick"))) *_broomstick = DICT(json.get("broomstick"));
-        if (ISDICT(json.get("jersey"))) *_jersey = DICT(json.get("jersey"));
+        cout << "broomstick : "<< DICT(json.get("broomstick")) << endl;
+        if (ISDICT(json.get("broomstick"))) _broomstick = new Broomstick(DICT(json.get("broomstick")));
+        if (ISDICT(json.get("jersey"))) _jersey = new Jersey(DICT(json.get("jersey")));
         if (ISINT(json.get("strength"))) _strength = INT(json.get("strength")).value();
         if (ISINT(json.get("constitution"))) _constitution = INT(json.get("constitution")).value();
         if (ISINT(json.get("magic"))) _magic = INT(json.get("magic")).value();
