@@ -13,7 +13,8 @@ class Connection
 {
 public:
 	Connection(std::string host, int port);
-	
+	~Connection();
+
 	void loginUser(std::string username, std::string passwd);
 	void doesUserExist(std::string username);
 	void registerUser(std::string username, std::string passwd);
