@@ -1,4 +1,4 @@
-make.ok: json/libjson.a network/libnetwork.a pitch/libpitch.a model/libmodel.a
+make.ok: json/libjson.a network/libnetwork.a model/libmodel.a
 	touch $@
 
 json/libjson.a: json
@@ -8,9 +8,6 @@ network/libnetwork.a: network json/libjson.a
 	make -C $<
 
 model/libmodel.a: model json/libjson.a
-	make -C $<
-
-pitch/libpitch.a: pitch json/libjson.a model/libmodel.a
 	make -C $<
 
 clean:
