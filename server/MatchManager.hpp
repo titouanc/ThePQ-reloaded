@@ -165,10 +165,12 @@ class MatchManager {
 		void run(){
 			sendSquads();
 			sendSignal(MATCH_START);
-			time_t tick = time(NULL);
+			time_t tick;
 
 			while (true){
 				sendSignal(MATCH_PROMPT);
+				tick = time(NULL);
+
 				do {
 					if (_inbox.available()){
 						Message const & msg = _inbox.pop();
@@ -181,8 +183,8 @@ class MatchManager {
 						minisleep(0.1);
 					}
 				} while (time(NULL) - tick < 30);
+				
 				sendSignal(MATCH_TIMEOUT);
-				tick = time(NULL);
 				playStrokes();
 			}
 		}
