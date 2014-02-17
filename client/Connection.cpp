@@ -128,7 +128,7 @@ bool Connection::upgradeInstallation(size_t i)
 		if (ISSTR(received.get("type")) && ISBOOL(received.get("data"))
 			&& STR(received.get("type")).value() == net::MSG::INSTALLATION_UPGRADE)
 		{
-			return BOOL(serverResponse);
+			return received.get("data");
 		}
 	}
 	return false;
@@ -149,7 +149,7 @@ bool Connection::downgradeInstallation(size_t i)
 		if (ISSTR(received.get("type")) && ISBOOL(received.get("data"))
 			&& STR(received.get("type")).value() == net::MSG::INSTALLATION_DOWNGRADE)
 		{
-			return BOOL(serverResponse);
+			return received.get("data");
 		}
 	}
 	return false;
