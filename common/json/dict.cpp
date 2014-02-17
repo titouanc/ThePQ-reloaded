@@ -30,6 +30,18 @@ Dict & Dict::operator=(const Dict & other)
     return *this;
 }
 
+Dict & Dict::stealMerge(Dict & other)
+{
+    Dict::iterator it, next;
+    for (it=other.begin(); it!=other.end();){
+        next = it;
+        next++;
+        setPtr(it->first, other.steal(it->first));
+        it = next;
+    }
+    return *this;
+}
+
 Type Dict::type(void) const 
 {
 	return Dict_t;
