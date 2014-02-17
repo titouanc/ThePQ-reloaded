@@ -17,15 +17,16 @@ public:
 	Installation(JSON::Dict json) : _name(STR(json.get("name")).value()),
 									   _level(INT(json.get("level"))), 
 									   _baseValue(INT(json.get("baseValue"))),
-									   _refundRatio(INT(json.get("refundRatio")))
+									   _refundRatio(FLOAT(json.get("refundRatio")))
 	{}
 	
 	operator JSON::Dict()
 	{
 		JSON::Dict json;
+		json.set("name", _name);
 		json.set("level", _level);
 		json.set("baseValue", _baseValue);
-		json.set("refundRation", _refundRatio);
+		json.set("refundRatio", _refundRatio);
 		return json;
 	}
 	
@@ -36,28 +37,28 @@ public:
 			_baseValue(baseValue), _refundRatio(refundRatio){}
 
 	// GETTERS + SETTERS
-	int getLevel() { return _level; }
+	int getLevel() const { return _level; }
 	void setLevel(int level) { if (level < getMaxLevel()) _level = level; }
 
-	int getCurrentValue() { return getValueAtLevel(getLevel()); }
+	int getCurrentValue() const { return getValueAtLevel(getLevel()); }
 
-	int getBaseValue() { return _baseValue; }
+	int getBaseValue() const { return _baseValue; }
 	void setBaseValue(int newValue) { _baseValue = newValue; }
 
-	float getRefundRatio() { return _refundRatio; }
+	float getRefundRatio() const { return _refundRatio; }
 	void setRefundRatio(float refundRatio) { _refundRatio = refundRatio; } 
 	
 	std::string getName() const { return _name; }
 	void setName(std::string name) { _name = name; }
 	// -----------------
 
-	int getMaintenanceCost();
+	int getMaintenanceCost() const ;
 
-	int getValueAtLevel(int level);
+	int getValueAtLevel(int level) const ;
 
-	int getUpgradeCost();	// returns a positive value that represents the cost 
+	int getUpgradeCost() const ;	// returns a positive value that represents the cost 
 							// of an upgrade to the next level.
-	int getDowngradeRefunds();	// returns a positive value that represents the
+	int getDowngradeRefunds() const ;	// returns a positive value that represents the
 								// funds that will be refunded when downgraded 1 level.
 	
 	void upgrade();

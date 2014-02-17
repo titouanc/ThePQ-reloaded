@@ -39,10 +39,13 @@ ENDTEST()
 
 TEST(downgrade_installation)
 	Installation inst("name", 100, 0);
-	for (int i = 0; i < 5; ++i){
+	inst.upgrade();
+	ASSERT(inst.getDowngradeRefunds() == 200);
+	for (int i = 0; i < 4; ++i){
 		inst.upgrade();
 	}
-	for (int i = 0; i < 4; ++i){
+	for (int i = 0; i < 4; ++i)
+	{
 		inst.downgrade();
 		ASSERT(inst.getValueAtLevel(inst.getLevel())-inst.getValueAtLevel(inst.getLevel()-1) 
 				== inst.getDowngradeRefunds()/inst.getRefundRatio())
@@ -51,6 +54,7 @@ TEST(downgrade_installation)
 	}
 	cout << inst.getLevel() << inst.getBaseValue();
 	ASSERT(inst.getValueAtLevel(inst.getLevel()) == 400);
+	ASSERT(inst.getDowngradeRefunds() == 200);
 	inst.downgrade();
 	ASSERT(inst.getLevel() == 0);
 	ASSERT(inst.getCurrentValue() == 0);

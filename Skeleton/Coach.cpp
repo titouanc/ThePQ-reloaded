@@ -1,5 +1,4 @@
 #include "Coach.hpp"
-#include "Member.hpp"
 
 using namespace std;
 

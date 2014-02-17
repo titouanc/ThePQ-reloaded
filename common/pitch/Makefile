@@ -1,6 +1,6 @@
 CPPFLAGS = -I../
-OBJS = Position.o Displacement.o Pitch.o
-LIBS = ../json/libjson.a
+OBJS = 
+LIBS = ../json/libjson.a ../model/libmodel.a
 
 all: libpitch.a test.ok moveableTest.ok
 

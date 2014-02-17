@@ -1,5 +1,5 @@
-#ifndef TrainingGroup_hpp
-#define TrainingGroup_hpp
+#ifndef __TRAINING_GROUP_HPP
+#define __TRAINING_GROUP_HPP
 
 #include "Coach.hpp"
 #include "Player.hpp"

@@ -1,4 +1,5 @@
 #include "Server.hpp"
+#include "MatchManager.hpp"
 #include <stdexcept>
 #include <typeinfo>
 #include <cxxabi.h>
@@ -39,6 +40,30 @@ void Server::run(){
 	}
 }
 
+void Server::startMatch(int client_idA, int client_idB)
+{
+	if (_users.find(client_idA) == _users.end() || 
+		_users.find(client_idB) == _users.end()){
+		return;
+	}
+	JSON::Value *json = JSON::load("fixtures/squad1.json");
+	if (! ISDICT(json))
+		return;
+	Squad squad1(DICT(json));
+	squad1.client_id = client_idA;
+	delete json;
+
+	json = JSON::load("fixtures/squad2.json");
+	if (! ISDICT(json))
+		return;
+	Squad squad2(DICT(json));
+	squad2.client_id = client_idB;
+	delete json;
+
+	MatchManager match(_connectionManager, squad1, squad2);
+	match.run();
+}
+
 void Server::treatMessage(const Message &message){
 	if (ISDICT(message.data)){
 		JSON::Dict const &received = DICT(message.data);
@@ -51,8 +76,10 @@ void Server::treatMessage(const Message &message){
 					_users.erase(it);
 				}
 			} else if (ISDICT(received.get("data"))){
+				/* Login */
 				if (messageType == MSG::LOGIN_QUERY)
 					logUserIn(DICT(received.get("data")), message.peer_id);
+				/* Register */
 				else if (messageType == MSG::REGISTER_QUERY) 
 					registerUser(DICT(received.get("data")), message.peer_id);
 			} else if (ISSTR(received.get("data"))){
@@ -65,6 +92,26 @@ void Server::treatMessage(const Message &message){
 						sendInstallationsList(message.peer_id);
 					else if(data == MSG::CONNECTED_USERS_LIST)
 						sendConnectedUsersList(message.peer_id);
+				}
+			} else if (ISINT(received.get("data"))) {
+				int data = INT(received.get("data"));
+				if (messageType == MSG::INSTALLATION_UPGRADE) {
+					upgradeInstallation(message.peer_id, data);
+				} else if (messageType == MSG::INSTALLATION_DOWNGRADE) {
+					downgradeInstallation(message.peer_id, data);
+				}
+			} else if (messageType == "42"){
+				if (_users.size() >= 2){
+					std::map<int, User*>::iterator i;
+					int other = -1;
+					for (i=_users.begin(); i!=_users.end(); i++){
+						if (i->first != message.peer_id){
+							other = i->first;
+							break;
+						}
+					}
+					if (other > 0)
+						startMatch(message.peer_id, other);
 				}
 			}
 		}
@@ -150,6 +197,27 @@ void Server::sendInstallationsList(int peer_id){
 	string listPath = _users[peer_id]->getUserDirectoryPath() + "installations.json";
 	JSON::Value * installationsList = JSON::load(listPath);
 	_outbox.push(Message(peer_id, installationsList));
+}
+
+void Server::upgradeInstallation(int peer_id, size_t i)
+{
+	_users[peer_id]->getInstallations()[i].upgrade();
+	_users[peer_id]->saveInstallations();
+	JSON::Dict msg;
+	msg.set("type", net::MSG::INSTALLATION_UPGRADE);
+	msg.set("data", JSON::Bool(true));
+	_outbox.push(Message(peer_id, msg.clone()));
+}
+
+void Server::downgradeInstallation(int peer_id, size_t i)
+{
+	_users[peer_id]->getInstallations()[i].downgrade();	
+	_users[peer_id]->saveInstallations();
+	JSON::Dict msg;
+	msg.set("type", net::MSG::INSTALLATION_DOWNGRADE);
+	msg.set("data", JSON::Bool(true));
+	cout << msg.dumps() << endl;
+	_outbox.push(Message(peer_id, msg.clone()));
 }
 
 void Server::sendConnectedUsersList(int peer_id){

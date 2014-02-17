@@ -1,5 +1,5 @@
 #include <string>
-#include "Moveable.hpp"
+#include <model/Moveable.hpp>
 #include <lighttest/lighttest.hpp>
 
 TEST(constructor_without_parameters)

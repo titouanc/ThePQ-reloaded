@@ -3,42 +3,62 @@
 
 #include <iostream>
 #include <string>
+#include <typeinfo>
+#include <cxxabi.h>
 #include "Message.hpp"
 #include "Connection.hpp"
 #include "Exception.hpp"
 #include "Menu.hpp"
 #include "StadiumManager.hpp"
 #include "FriendlyGameManager.hpp"
+#include <Config.hpp>
 
+struct NetConfig : public Config {
+    std::string host;
+    unsigned short port;
+
+    NetConfig() : Config("netconfig.json"), host("127.0.0.1"), port(32123){}
+    void fromDict(JSON::Dict const & json){
+        if (ISSTR(json.get("host")))
+            host = STR(json.get("host")).value();
+        if (ISINT(json.get("port")))
+            port = INT(json.get("port"));
+    }
+    operator JSON::Dict() const{
+        JSON::Dict res;
+        res.set("host", host);
+        res.set("port", port);
+        return res;
+    }
+};
 
 class Client
 {
 public:
-	static void run();
+	Client(NetConfig const &config);
+	void run();
 
 private:
-	Client()
-	{}
-	static std::string _userChoice;
-	static Connection _connection;
-	static std::string _prompt;
+	std::string _userChoice;
+	std::string _prompt;
+	Connection _connection;
 	
 	// User menu
-	static void registerUser();
-	static void login();
+	void registerUser();
+	void login();
 	
 	// Menus
-	static void mainMenu();
-	static void managementMenu();
-	static void stadiumMenu();
-	static void playersMenu();
-	static void friendlyMatchMenu();
-	static void listUsers();
-	static void chooseUser();
+	void mainMenu();
+	void managementMenu();
+	void stadiumMenu();
+	void playersMenu();
+	void friendlyMatchMenu();
+	void listUsers();
+	void chooseUser();
 	
 	// utils
-	static std::string askForUserData(std::string prompt); // returns the user input.
-	static std::string askForNewPassword(); // prompts the user to create a new password with 
+	std::string askForUserData(std::string prompt); // returns the user input.
+	std::string askForNewPassword(); // prompts the user to create a new password with 
 							// confirmation. returns the password.
 };
 

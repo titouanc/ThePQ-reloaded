@@ -1,7 +1,7 @@
 #include <lighttest/lighttest.hpp>
-#include "Position.hpp"
-#include "Displacement.hpp"
-#include "Pitch.hpp"
+#include <model/Position.hpp>
+#include <model/Displacement.hpp>
+#include <model/Pitch.hpp>
 
 static Position West(-2, 0);
 static Position SouthWest(-1, -1); 

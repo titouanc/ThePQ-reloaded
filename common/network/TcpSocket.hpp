@@ -33,6 +33,8 @@ namespace net
 		static const std::string USER_EXISTS_QUERY = "Q_U";
 		static const std::string CONNECTION_STATUS = "Q_S";
 		static const std::string DATA_QUERY = "Q_D";
+		static const std::string INSTALLATION_UPGRADE = "AQ_I_U";
+		static const std::string INSTALLATION_DOWNGRADE = "AQ_I_D";
 		
 		// DATA ----------------------------------------------
 		// connection + register
@@ -46,7 +48,6 @@ namespace net
 		// data queries
 		static const std::string INSTALLATIONS_LIST = "DQ_I_L";
 		static const std::string CONNECTED_USERS_LIST = "DQ_CU_L";
-
 	}
 	
 	class TcpSocket {

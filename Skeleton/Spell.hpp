@@ -1,5 +1,5 @@
-#ifndef Spell_hpp
-#define Spell_hpp 
+#ifndef __SPELL_HPP
+#define __SPELL_HPP 
 
 class Spell : Action {
 public:
