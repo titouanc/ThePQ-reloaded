@@ -23,7 +23,7 @@ public:
 	virtual string getName() { return ""; }
 
 	Position getPosition() const { return _position; }
-	void setPosition(Position &position) { _position = position; }
+	void setPosition(Position const & position) { _position = position; }
 
 	float getSpeed() const { return _speed; }
 	void setSpeed(float speed) { _speed = speed; }
