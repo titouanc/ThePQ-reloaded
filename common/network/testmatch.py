@@ -11,6 +11,15 @@ def printMessage(msg):
 		print "\033[1mMatch start !!!\033[0m"
 	elif msg['type'] == 'MTOUT':
 		print "\033[1mTimeout\033[0m"
+	elif msg['type'] == 'MSQUADS':
+		for squad in msg['data']:
+			print "SQUAD", squad['squad_id']
+			for ptype in ('chasers', 'beaters'):
+				for player in squad[ptype]:
+					print "\t", player['name'], player['position']
+			print "\t", squad['seeker']['name'], squad['seeker']['position']
+			print "\t", squad['keeper']['name'], squad['keeper']['position']
+
 	else:
 		print msg
 
