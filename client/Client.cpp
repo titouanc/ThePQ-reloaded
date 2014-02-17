@@ -12,9 +12,7 @@ std::string humanExcName(const char *name)
 }
 
 Client::Client(NetConfig const &config) : _prompt(">"), _connection(config.host, config.port)
-{
-	
-}
+{}
 
 void Client::run()
 {

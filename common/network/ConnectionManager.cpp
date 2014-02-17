@@ -173,6 +173,11 @@ void BaseConnectionManager::_mainloop_out(void)
     }
 }
 
+size_t BaseConnectionManager::nClients(void)
+{
+    return _clients.size();
+}
+
 void BaseConnectionManager::addClient(int fd)
 {
     pthread_mutex_lock(&_fdset_mutex);

@@ -24,7 +24,8 @@ Server::Server(NetConfig const & config) :
 	cout << "Launched server on " << _connectionManager.ip() << ":" << _connectionManager.port() << endl;
 }
 
-void Server::run(){
+void Server::run()
+{
 	while (_connectionManager.isRunning() || _inbox.available()){
 		Message const & msg = _inbox.pop();
 		try {treatMessage(msg);}
@@ -61,10 +62,14 @@ void Server::startMatch(int client_idA, int client_idB)
 	delete json;
 
 	MatchManager match(_connectionManager, squad1, squad2);
+	cout << "START DA MATCH" << endl;
 	match.run();
+
+	cout << "DA MATCH STOPZ" << endl;
 }
 
-void Server::treatMessage(const Message &message){
+void Server::treatMessage(const Message &message)
+{
 	if (ISDICT(message.data)){
 		JSON::Dict const &received = DICT(message.data);
 		if (ISSTR(received.get("type"))) {
@@ -113,12 +118,19 @@ void Server::treatMessage(const Message &message){
 					if (other > 0)
 						startMatch(message.peer_id, other);
 				}
+				else {
+					cout << "NOT ENOUGH PLAYERS" << endl;
+					std::map<int, User*>::iterator it;
+					for (it=_users.begin(); it!=_users.end(); it++)
+						cout << it->first << ": " << it->second->getUsername() << endl;
+				}
 			}
 		}
 	}
 }
 
-void Server::registerUser(const JSON::Dict &credentials, int peer_id){
+void Server::registerUser(const JSON::Dict &credentials, int peer_id)
+{
 	if (ISSTR(credentials.get(MSG::USERNAME)) && ISSTR(credentials.get(MSG::PASSWORD))){
 		std::string const & username = STR(credentials.get(MSG::USERNAME));
 		std::string const & password = STR(credentials.get(MSG::PASSWORD));
@@ -146,7 +158,8 @@ void Server::registerUser(const JSON::Dict &credentials, int peer_id){
 	}
 }
 
-void Server::logUserIn(const JSON::Dict &credentials, int peer_id){
+void Server::logUserIn(const JSON::Dict &credentials, int peer_id)
+{
 	if (ISSTR(credentials.get(MSG::USERNAME)) && ISSTR(credentials.get(MSG::PASSWORD))){
 		std::string const & username = STR(credentials.get(MSG::USERNAME));
 		std::string const & password = STR(credentials.get(MSG::PASSWORD));
@@ -175,7 +188,8 @@ void Server::logUserIn(const JSON::Dict &credentials, int peer_id){
 	}
 }
 
-void Server::checkIfUserExists(string username, int peer_id){
+void Server::checkIfUserExists(string username, int peer_id)
+{
 	User *user = User::load(username);
 	JSON::Dict response;
 	response.set("type", MSG::CONNECTION_STATUS);
@@ -193,7 +207,8 @@ void Server::checkIfUserExists(string username, int peer_id){
 	delete user;
 }
 
-void Server::sendInstallationsList(int peer_id){
+void Server::sendInstallationsList(int peer_id)
+{
 	string listPath = _users[peer_id]->getUserDirectoryPath() + "installations.json";
 	JSON::Value * installationsList = JSON::load(listPath);
 	JSON::Dict msg;
@@ -222,7 +237,8 @@ void Server::downgradeInstallation(int peer_id, size_t i)
 	_outbox.push(Message(peer_id, msg.clone()));
 }
 
-void Server::sendConnectedUsersList(int peer_id){
+void Server::sendConnectedUsersList(int peer_id)
+{
 	JSON::List list;
 	for (map<int, User*>::iterator it=_users.begin(); it!=_users.end(); it++)
 		list.append(it->second->getUsername());

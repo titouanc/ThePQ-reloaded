@@ -8,6 +8,15 @@ _connectionManager(_inbox, _outbox, host.c_str(), port)
 	_connectionManager.start();
 }
 
+Connection::~Connection()
+{
+	_connectionManager.stop();
+	while (_inbox.available()){
+		net::Message const & msg = _inbox.pop();
+		delete msg.data;
+	}
+}
+
 void Connection::loginUser(string username, string passwd)
 {
 	JSON::Dict toSend, credentials;

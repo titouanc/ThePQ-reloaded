@@ -13,6 +13,7 @@
 #include "User.hpp"
 #include <network/ConnectionManager.hpp>
 #include <network/TcpSocket.hpp>
+#include <model/Player.hpp>
 
 using namespace net;
 
@@ -27,7 +28,10 @@ struct Stroke {
 struct Squad {
 	int squad_id;
 	int client_id;
-	Player players[7];
+	Seeker seekers[3];
+	Beater beeters[2];
+	Chaser chaser;
+	Keeper keeper;
 	Squad(){}
 	Squad(JSON::Dict const & json){
 		if (! ISINT(json.get("squad_id")))
@@ -98,7 +102,8 @@ class MatchManager {
 			_net.acquireClient(squadB.client_id);
 			_net.start();
 		}
-		~MatchManager(){
+		~MatchManager()
+		{
 			while (_outbox.available());
 			std::cout << "GOT HERE" << endl;
 		}
@@ -106,8 +111,8 @@ class MatchManager {
 		void minisleep(double secs)
 		{
 			assert(secs >= 0);
-			unsigned int seconds = secs;
-			unsigned int micros  = secs*1000000 - seconds;
+			int seconds = secs;
+			int micros  = secs*1000000 - seconds;
 
 			struct timeval interval = {seconds, micros};
 			select(1, NULL, NULL, NULL, &interval);
@@ -132,7 +137,6 @@ class MatchManager {
 			_strokes.push(Stroke(
 				_squads[squad].players[player], 
 				Displacement(LIST(data.get("move")))
-
 			));
 			reply(msg, MATCH_ACK, data);
 		}
@@ -163,7 +167,7 @@ class MatchManager {
 			sendSignal(MATCH_START);
 			time_t tick;
 
-			while (true){
+			while (_net.nClients() > 0){
 				sendSignal(MATCH_PROMPT);
 				tick = time(NULL);
 
@@ -270,7 +274,8 @@ class MatchManager {
 		 * @param s Stroke object for the 2nd player on the conflicting cell
 		 * @param conflict The conflicting cell position
 		 */
-		virtual void onCollision(Stroke & s, Position &conflict){
+		virtual void onCollision(Stroke & s, Position &conflict)
+		{
 			std::cout << "Collision " << s.moveable.getName() << " & "
 			          << _pitch.getAt(conflict)->getName() 
 			          << " => " << conflict.toJson() << std::endl;

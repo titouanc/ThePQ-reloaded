@@ -73,6 +73,9 @@ namespace net {
 			/* Are the I/O threads up ? */
 			bool isRunning(void);
 
+			/* Number of connected clients */
+			size_t nClients(void);
+
 			/* Main in loop: feed incoming queue */
 			virtual void _mainloop_in(void);
 			/* Main out loop: eat outgoing queue */
