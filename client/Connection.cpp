@@ -8,11 +8,6 @@ _connectionManager(_inbox, _outbox, host.c_str(), port)
 	_connectionManager.start();
 }
 
-Connection::~Connection()
-{
-	_connectionManager.stop();
-}
-
 void Connection::loginUser(string username, string passwd)
 {
 	JSON::Dict toSend, credentials;
@@ -27,14 +22,19 @@ void Connection::loginUser(string username, string passwd)
 
 	if (ISDICT(serverMessage)){
 		JSON::Dict const &received = DICT(serverMessage);
-		delete serverMessage;
 		if (received.hasKey("type") && ISSTR(received.get("type")) 
 			&& STR(received.get("type")).value() == net::MSG::CONNECTION_STATUS){
 			if (received.hasKey("data") && ISSTR(received.get("data"))) {
 				if (STR(received.get("data")).value() == net::MSG::PASSWORD_ERROR)
+				{
+					delete serverMessage;
 					throw WrongPasswordException();
+				}
 				else if (STR(received.get("data")).value() == net::MSG::USER_NOT_FOUND)
+				{
+					delete serverMessage;
 					throw UserNotFoundException();
+				}
 			}
 		}
 	}
