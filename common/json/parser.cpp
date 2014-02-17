@@ -99,35 +99,41 @@ static Dict *parseDict(const char *str, char **endptr)
     Dict *res = new Dict();
 
     while (*str && *str != '}'){
-        /* find key */
-        str = lstrip(str+1);
-        if (*str == '}')
-            break; /* empty dict */
-        if (*str != '"')
-            throw ParseError(
-                "Missing key (already have "+res->dumps()+
-                ") Trailing: "+str
-            );
-        std::string key = parseString(str, endptr);
-        
-        /* find value */
-        str = lstrip(*endptr);
-        if (*str != ':') /* No key:value association */
-            throw ParseError("Missing key:val separator");
-        Value *val = parse(str+1, endptr);
-        if (! val)
-            throw ParseError("Missing value for key "+key);
+        try {
+            /* find key */
+            str = lstrip(str+1);
+            if (*str == '}')
+                break; /* empty dict */
+            if (*str != '"')
+                throw ParseError(
+                    "Missing key (already have "+res->dumps()+
+                    ") Trailing: "+str
+                );
+            std::string key = parseString(str, endptr);
+            
+            /* find value */
+            str = lstrip(*endptr);
+            if (*str != ':') /* No key:value association */
+                throw ParseError("Missing key:val separator");
 
-        /* Insert in result */
-        res->setPtr(key, val);
+            Value *val = parse(str+1, endptr);
+            if (! val)
+                throw ParseError("Missing value for key "+key);
 
-        /* Find next element separator */
-        str = lstrip(*endptr);
-        if (*str != ',' && *str != '}')
-            throw ParseError(
-                "Expecting dict separator (trailing \""+
-                std::string(str) + "\")"
-            );
+            /* Insert in result */
+            res->setPtr(key, val);
+
+            /* Find next element separator */
+            str = lstrip(*endptr);
+            if (*str != ',' && *str != '}')
+                throw ParseError(
+                    "Expecting dict separator (trailing \""+
+                    std::string(str) + "\")"
+                );
+        } catch (ParseError & err){
+            delete res;
+            throw err;
+        }
     }
     *endptr = (char*) str + (*str ? 1 : 0);
     return res;
@@ -144,17 +150,22 @@ static List *parseList(const char *str, char **endptr)
         *endptr = (char *) str + 2;
     else {
         while (*str && *str != ']'){
-            Value *item = parse(str+1, endptr);
-            if (item)
-                res->appendPtr(item);
+            try {
+                Value *item = parse(str+1, endptr);
+                if (item)
+                    res->appendPtr(item);
 
-            /* Find next element sepatator */
-            str = lstrip(*endptr);
-            if (*str != ',' && *str != ']')
-                throw ParseError(
-                    "Expecting list separator (trailing \""+
-                    std::string(str) + "\")"
-                );
+                /* Find next element sepatator */
+                str = lstrip(*endptr);
+                if (*str != ',' && *str != ']')
+                    throw ParseError(
+                        "Expecting list separator (trailing \""+
+                        std::string(str) + "\")"
+                    );
+            } catch (ParseError & err) {
+                delete res;
+                throw err;
+            }
         }
         *endptr = (char*) str + (*str ? 1 : 0);
     }

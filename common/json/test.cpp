@@ -164,6 +164,8 @@ TEST(json_dict_repr)
 	JSON::Value *copy = d.clone();
 	ASSERT(copy != NULL);
 	ASSERT(d.dumps() == copy->dumps());
+
+	delete copy;
 ENDTEST()
 
 TEST(json_parse_error)
@@ -454,6 +456,8 @@ TEST(list_assign)
 		ASSERT(ISINT(l1[i])); /* But same val */
 		ASSERT(INT(l1[i]).value() == INT(l2[i]).value());
 	}
+
+	delete parsed;
 ENDTEST()
 
 TEST(dict_assign)
