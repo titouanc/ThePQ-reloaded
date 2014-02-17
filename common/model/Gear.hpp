@@ -89,6 +89,7 @@ private:
 class Jersey : public Gear 
 {
 public:
+	// TODO : we have to be able to set all the attributes of Jersey
 	Jersey():_strengthBonus(0), _constitutionBonus(0), _magicBonus(0), _spiritBonus(0){}
 
 	Jersey(JSON::Dict const &json): Gear(json) {

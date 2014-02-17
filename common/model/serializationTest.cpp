@@ -18,17 +18,29 @@ TEST(bat_serialization)
 	b.setName("SuperBat");
 	JSON::Dict d = JSON::Dict(b);
 	Bat c(d);
+	cout << "Bat serialized : " << d << endl;
 	ASSERT(c.getName() == "SuperBat");
 	ASSERT(c.getDescription() == "NoDescription");
 	ASSERT(c.getStrengthBonus() == 123);
 	ASSERT(c.getPrecisionBonus() == 456);
 ENDTEST()
 
+TEST(jersey_serialization)
+	Jersey j;
+	j.setName("SuperJersey");
+	JSON::Dict d = j;
+	Jersey k(d);
+	cout << "Jersey serialized : " << d << endl;
+	ASSERT(k.getName() == "SuperJersey");
+	ASSERT(k.getStrengthBonus() == 0);
+ENDTEST()
+
 
 int main(int argc, const char **argv){
 	TestFunc tests[] = {
 		ADDTEST(gear_serialization),
-		ADDTEST(bat_serialization)
+		ADDTEST(bat_serialization),
+		ADDTEST(jersey_serialization)
 	};
 	return RUN(tests);
 }
