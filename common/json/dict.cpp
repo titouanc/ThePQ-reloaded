@@ -36,7 +36,8 @@ Dict & Dict::stealMerge(Dict & other)
     for (it=other.begin(); it!=other.end();){
         next = it;
         next++;
-        setPtr(it->first, other.steal(it->first));
+        std::string key = it->first;
+        setPtr(key, other.steal(key));
         it = next;
     }
     return *this;
