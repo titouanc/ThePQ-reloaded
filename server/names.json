@@ -12,7 +12,10 @@
 		"Frances","Grace","Helen","Irene","Jane","Jean","Jill","Judith","Julia",
 		"Kate","Katherine","Laura","Louisa","Lucy","Madeline","Margaret",
 		"Maria","Marian","Martha","Mary","Olivia","Pamela","Patricia","Rachel",
-		"Rebecca","Rose","Ruth","Sally","Sarah","Sophia","Susannah","Victoria"
+		"Rebecca","Rose","Ruth","Sally","Sarah","Sophia","Susannah","Victoria",
+		"Dylan", "Jason", "Magali", "Kimberley", "Michel-Michel", "Brandon", 
+		"Kevin", "Jean-Kevin", "Natasha", "Mohamed", "Yvon", "Ignace", "Gertrude",
+		"Bashar", "Jeroen", "Bob"
 	],
 	"LastNames" : [
 		"Hennecker", "Hellinckx", "Caccia", "Christophe", "Carpentier", "Mudura",
@@ -28,6 +31,7 @@
 		"Ramirez","James","Watson","Brooks","Kelly","Sanders","Price","Bennett",
 		"Wood","Barnes","Ross","Henderson","Coleman","Jenkins","Perry","Powell",
 		"Long","Patterson","Hughes","Flores","Washington","Butler","Simmons",
-		"Foster","Gonzales"
+		"Foster","Gonzales", "de la Roseraie Flamboyante", "Collignon", 
+		"de Saxe-Cobourg Gotha", "Guetta", "l'Eponge", "Puissant"
 	]
 }
