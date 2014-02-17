@@ -7,6 +7,8 @@
 #include <network/TcpSocket.hpp>
 #include <stdio.h>
 
+#include "Sale.hpp"
+
 #define MARKET_DATA_DIR "data/playerMarket/"
 
 class PlayerMarket{
