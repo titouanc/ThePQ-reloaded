@@ -29,7 +29,7 @@ public:
 	int getPrice () 	{ return _price; }
 	//Team getOwner () 	{ return _owner; } // TODO
 	//void setOwner (Team aTeam) { _owner = aTeam; } // TODO
-private:
+protected:
     string _name;
 	int _salary;
 	int _price;
