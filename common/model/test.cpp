@@ -1,5 +1,6 @@
 #include "lighttest/lighttest.hpp"
 #include "Installation.hpp"
+#include "Player.hpp"
 #include <cmath>
 
 TEST(default_constructor)
@@ -61,6 +62,25 @@ TEST(downgrade_installation)
 	ASSERT(inst.getValueAtLevel(0) == 0);
 ENDTEST()
 
+TEST(player_instanciation)
+	JSON::Value *json = JSON::load("fixtures/chaser.json");
+	if (ISDICT(json)){
+		Player p(DICT(json));
+		cout << JSON::Dict(p) << endl;
+	}
+	if (json)
+		delete json;
+ENDTEST()
+
+TEST(beaters_instanciation)
+	JSON::Value *json = JSON::load("fixtures/beater.json");
+	if (ISDICT(json)){
+		Beater b(DICT(json));
+		cout << JSON::Dict(b) << endl;
+	}
+	if (json)
+		delete json;
+ENDTEST()
 
 int main(int argc, const char **argv){
 	TestFunc tests[] = {
@@ -68,7 +88,9 @@ int main(int argc, const char **argv){
 		ADDTEST(parameters_constructor_and_getters),
 		ADDTEST(setters), 
 		ADDTEST(upgrade_installation),
-		ADDTEST(downgrade_installation)
+		ADDTEST(downgrade_installation),
+		ADDTEST(player_instanciation),
+		ADDTEST(beaters_instanciation)
 	};
 	return RUN(tests);
 }
