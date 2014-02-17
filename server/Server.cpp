@@ -44,7 +44,7 @@ void Server::treatMessage(const Message &message){
 		JSON::Dict const &received = DICT(message.data);
 		if (ISSTR(received.get("type"))) {
 			string messageType = STR(received.get("type")).value();
-			if (messageType == "DISCONNECT"){
+			if (messageType == MSG::DISCONNECT){
 				map<int, User*>::iterator it = _users.find(message.peer_id);
 				if (it != _users.end()){
 					delete it->second;
