@@ -35,7 +35,9 @@ namespace net
 		static const std::string DATA_QUERY = "Q_D";
 
 		static const std::string ADD_PLAYER_ON_MARKET_QUERY = "Q_A_P_OM";
-		static const std::string DELETE_PLAYER_ON_MARKET_QUERY = "Q_D_P_OM";
+		static const std::string DELETE_PLAYER_OF_MARKET_QUERY = "Q_D_P_OM";
+		static const std::string PLAYERS_ON_MARKET_LIST_QUERY = "Q_P_OM_L";
+		static const std::string BID_ON_PLAYER_QUERY = "Q_B_OP"; 
 		
 		// DATA ----------------------------------------------
 		// connection + register
@@ -46,17 +48,21 @@ namespace net
 		static const std::string USER_NOT_FOUND = "U_NF";
 		static const std::string USER_EXISTS = "U_E";
 		static const std::string USER_REGISTERED = "U_R";
+
 		static const std::string PLAYER_ID = "P_ID";
+		static const std::string TEAM_ID = "T_ID";
 		// data queries
 		static const std::string INSTALLATIONS_LIST = "DQ_I_L";
 		static const std::string INSTALLATION_UPGRADE = "DQ_I_U";
 		static const std::string INSTALLATION_DOWNGRADE = "DQ_I_D";
 		static const std::string CONNECTED_USERS_LIST = "DQ_CU_L";
+
 		//player market
-		static const std::string PLAYER_ON_MARKET = "PM_P_OM";
-		static const std::string PLAYER_ADDED_ON_MARKET = "PM_P_A_OM";
+		static const std::string PLAYER_ALREADY_ON_MARKET = "PM_P_A_OM";
+		static const std::string PLAYER_ADDED_ON_MARKET = "PM_PA_OM";
 		static const std::string PLAYER_DELETED_OF_MARKET = "PM_D_OM";
 		static const std::string PLAYER_NOT_ON_MARKET = "PM_N_OM";
+		static const std::string PLAYERS_ON_MARKET_LIST = "PM_L";
 	}
 	
 	class TcpSocket {

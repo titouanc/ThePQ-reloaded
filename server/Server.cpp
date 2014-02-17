@@ -164,17 +164,18 @@ void Server::sendConnectedUsersList(int peer_id){
 	_outbox.push(Message(peer_id, usersList.clone()));
 }
 
-void Server::deletePlayerOfMarket(const JSON::Dict &sale){
-	Message status(peer_id, market.deletePlayer(&sale).clone());
+void Server::deletePlayerOfMarket(const JSON::Dict &sale, int peer_id){
+	Message status(peer_id, market.deletePlayer(sale).clone());
 	_outbox.push(status);
 }
 
 void Server::addPlayerOnMarket(const JSON::Dict &sale, int peer_id){
-	Message status(peer_id, market.addPlayer(&sale).clone());
+	Message status(peer_id, market.addPlayer(sale).clone());
 	_outbox.push(status);
 }
-void Server::sendPlayersOnMarketList(int peer_id){
-	
-}
 
-void Server::placeBidOnPlayer(const JSON::DICT &bid, int peer_id){}
+void Server::sendPlayersOnMarketList(int peer_id){
+	Message status(peer_id, market.allSales().clone());
+	_outbox.push(status);
+}
+void Server::placeBidOnPlayer(const JSON::Dict &bid, int peer_id){}
