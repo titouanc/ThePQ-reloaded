@@ -20,6 +20,8 @@ public:
 	}
 	~Moveable(){}
 
+	virtual string getName() { return ""; }
+
 	Position getPosition() const { return _position; }
 
 	float getSpeed() const { return _speed; }
@@ -28,7 +30,7 @@ public:
 	unsigned int getID() const { return _uniqueID; }
 	void setID(unsigned int newID) { _uniqueID = newID; }
 
-	JSON::Dict toJson() const {
+	operator JSON::Dict() const {
 		JSON::Dict res;
 		res.set("speed", _speed);
 		res.set("position", _position.toJson());
