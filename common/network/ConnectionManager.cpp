@@ -23,7 +23,7 @@ BaseConnectionManager::BaseConnectionManager(
     SharedQueue<Message> & incoming_queue,
     SharedQueue<Message> & outgoing_queue,
     bool logger
-) : _incoming(incoming_queue), _outgoing(outgoing_queue), _logger(logger)
+) : _running(false), _incoming(incoming_queue), _outgoing(outgoing_queue), _logger(logger)
 {
     pthread_mutex_init(&_mutex, NULL);
     pthread_mutex_init(&_fdset_mutex, NULL);

@@ -38,6 +38,7 @@ void Connection::loginUser(string username, string passwd)
 			}
 		}
 	}
+	delete serverMessage;
 	// User is logged in at this point.
 }
 
