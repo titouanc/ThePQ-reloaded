@@ -16,7 +16,10 @@ public:
                 _magic(5), _spirit(5), _velocity(5), _precision(5), _chance(5){}
 
     Player(JSON::Dict const & json);
-    ~Player(){ delete _broomstick; delete _jersey; }
+    ~Player(){ 
+    	if (_broomstick != NULL) delete _broomstick; 
+    	if (_jersey != NULL) delete _jersey; 
+    }
     operator JSON::Dict();
 
 	int getRemainingLife () const	{ return _lifeBar; }
