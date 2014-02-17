@@ -13,10 +13,21 @@ TEST(gear_serialization)
 	ASSERT(h.getPrice() == 1299);
 ENDTEST()
 
+TEST(bat_serialization)
+	Bat b(123, 456);
+	b.setName("SuperBat");
+	JSON::Dict d = JSON::Dict(b);
+	Bat c(d);
+	ASSERT(c.getName() == "SuperBat");
+	ASSERT(c.getStrengthBonus() == 123);
+	ASSERT(c.getPrecisionBonus() == 456);
+ENDTEST()
+
 
 int main(int argc, const char **argv){
 	TestFunc tests[] = {
 		ADDTEST(gear_serialization),
+		ADDTEST(bat_serialization)
 	};
 	return RUN(tests);
 }
