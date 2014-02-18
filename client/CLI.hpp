@@ -54,7 +54,7 @@ private:
 	void stadiumMenu();
 	void playersMenu();
 	void friendlyMatchMenu();
-	
+	void marketMenu();
 	// utils
 	std::string askForUserData(std::string prompt); // returns the user input.
 	std::string askForNewPassword(); // prompts the user to create a new password with 

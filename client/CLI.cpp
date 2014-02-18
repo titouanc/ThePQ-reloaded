@@ -111,11 +111,13 @@ void CLI::mainMenu()
 	string message;
 	message+= "You can : \n";
 	message+= "   - (m)anage your team and stadium\n";
+	message+= "   - (a)ccess market\n";
 	message+= "   - (p)lay a friendly game\n";
 	message+= "   - (q)uit\n";
 	message+= _prompt;
 	main.setMessage(message);
 	main.addOption('m', new ClassCallback<CLI>(this, &CLI::managementMenu));
+	main.addOption('a', new ClassCallback<CLI>(this, &CLI::marketMenu));
 	main.addOption('p', new ClassCallback<CLI>(this, &CLI::friendlyMatchMenu));
 	main.run();
 }
@@ -162,6 +164,21 @@ void CLI::playersMenu()
 	players.setMessage(message);
 	// TODO : players menu
 	players.run();
+}
+
+/* Market menu */
+void CLI::marketMenu(){
+	Menu market;
+	string message;
+	message+="You can : \n";
+	message+="   - (p)ut a player on sale\n";
+	message+="   - (s)ee the players on sale\n";
+	message+="   - (q)uit to main menu\n";
+	message+= _prompt;
+	market.setMessage(message);
+	market.addOption('p', new ClassCallback<CLI>(this, &CLI::printPlayersOnSale));
+	market.addOption('s', new ClassCallback<CLI>(this, &CLI::salePlayer));
+	market.run();
 }
 
 /* Friendly match menu */
