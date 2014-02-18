@@ -1,5 +1,5 @@
 #include "json.hpp"
-
+/*==Library performing conversion from objects from std library to JSON objects==*/
 using namespace JSON;
 
 /* ===== Integer ===== */

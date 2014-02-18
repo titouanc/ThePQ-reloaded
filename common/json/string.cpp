@@ -3,24 +3,30 @@
 using namespace JSON;
 
 String::String(std::string str) : _content(str)
-{}
+{/*Constructor for String object*/}
 
-String::~String()
+String::~String()//Destructor for String object
 {}
 
 Type String::type(void) const 
 {
+	/*Method returning the type of the object*/
 	return String_t;
 }
 
 Value * String::clone(void) const 
 {
+	/*Method returning a pointer to the content of object String*/
 	return new String(value());
 }
 
 void String::_writeTo(std::ostream & out) const 
 {
-	/* out << "\"" << _content << "\"";*/
+	/*Method for putting <<out>> to the 
+	 *ofstream buffer
+	 *eg buff: "\ _content \"
+	 *out<<buff
+	 */
 	out << "\"";
 	for (size_t i=0; i<_content.length(); i++){
 		switch (_content[i]){
@@ -43,5 +49,6 @@ void String::_writeTo(std::ostream & out) const
 
 std::string const & String::value(void) const 
 {
+	/*Method returning a const reference du the value of String*/
 	return _content;
 }

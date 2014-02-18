@@ -7,6 +7,7 @@ extern "C" {
 
 void iThrow(void)
 {
+	/*Geek joke, please laugh if it doesn't come naturally*/
 	throw "Hello, I'm an exception :)S";
 }
 

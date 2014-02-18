@@ -17,7 +17,7 @@ class Number : public Value {
         Value *clone(void) const;
         operator T const &(){return value();}
 };
-
+/*==Define std::objects to JSON format==*/
 class Integer : public Number<long int> {
     public:
         using Number<long int>::Number;
