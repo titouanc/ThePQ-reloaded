@@ -52,6 +52,12 @@ class Pitch {
 		bool inEllipsis(int x, int y) const;
 		bool inEllipsis(Moveable *moveable) const;
 
+		// TODO DOC
+		bool isInWestKeeperZone(int x, int y) const;
+		bool isInWestKeeperZone(Moveable *moveable) const;
+		bool isInEastKeeperZone(int x, int y) const;
+		bool isInEastKeeperZone(Moveable *moveable) const;
+
 		/*!
 		 * @meth void Pitch::setAt(int x, int y, Moveable *moveable)
 		 * @brief Set Moveable at position x,y

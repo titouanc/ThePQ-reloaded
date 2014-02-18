@@ -62,6 +62,31 @@ bool Pitch::inEllipsis(Moveable *moveable) const
 	return inEllipsis(moveable->getPosition().x(), moveable->getPosition().y());
 }
 
+bool Pitch::isInWestKeeperZone(int x, int y) const{
+	bool res = false;
+	if (inEllipsis(x, y) && (x < -int(width()/6)))
+		res = true;
+	return res;
+}
+bool Pitch::isInWestKeeperZone(Moveable *moveable) const{
+	bool res = false;
+	if (inEllipsis(moveable) && (moveable->getPosition().x() < -int(width()/6)))
+		res = true;
+	return res;
+}
+bool Pitch::isInEastKeeperZone(int x, int y) const{
+	bool res = false;
+	if (inEllipsis(x, y) && (x > int(width()/6)))
+		res = true;
+	return res;
+}
+bool Pitch::isInEastKeeperZone(Moveable *moveable) const{
+	bool res = false;
+	if (inEllipsis(moveable) && (moveable->getPosition().x() > int(width()/6)))
+		res = true;
+	return res;
+}
+
 bool Pitch::setAt(int x, int y, Moveable *moveable)
 {
 	if (inEllipsis(x, y)){
