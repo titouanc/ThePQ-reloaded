@@ -50,16 +50,26 @@ class MatchManager {
 		void minisleep(double secs);
 
 		/* Processing of incoming messages*/
-		void processStroke(Message const & msg, JSON::Dict const & data);
 		void processMessage(Message const & msg);
+		/* Process incoming message with given data (a JSON::Dict)
+		   Could not be made by Stroke(JSON::Dict) because we have to map
+		   moveable_id -> Moveable */
+		void processStroke(Message const & msg, JSON::Dict const & data);
 
 		/* Send messages to clients */
 		void sendToAll(JSON::Value const & data);
+		/* Send {"type": "<signal>", "data": true} to everyone */
 		void sendSignal(std::string const & sig);
+		/* Send message to <msg> sender with given <type> and payload */
 		void reply(Message const & msg, std::string type, JSON::Value const & data);
+		/* Like ^ but data set to "<text>" */
 		void reply(Message const & msg, std::string type, const char *text);
+		/* Send squads composition to everyone */
 		void sendSquads(void);
+
+		/* Resolve strokes */
 		void playStrokes(void);
+		/* *SMASH* */
 		void onCollision(double t, Stroke & s, Position &conflict);
 	public:
 		MatchManager(
