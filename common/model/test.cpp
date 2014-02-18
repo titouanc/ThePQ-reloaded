@@ -84,7 +84,7 @@ ENDTEST()
 
 TEST(collision_score)
 	Player p;
-	cout << p.collisionScore() << endl;
+	cout << p.collisionScore() << ", " <<p.collisionScore() << ", "  << p.collisionScore() << endl;
 ENDTEST()
 
 int main(int argc, const char **argv){

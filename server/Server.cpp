@@ -1,5 +1,7 @@
 #include "Server.hpp"
 #include "MatchManager.hpp"
+#include <stdlib.h>
+#include <time.h>
 #include <stdexcept>
 #include <typeinfo>
 #include <cxxabi.h>
@@ -26,6 +28,7 @@ Server::Server(NetConfig const & config) :
 
 void Server::run()
 {
+	srand(time(NULL));	// rand() is used throughout some modules
 	while (_connectionManager.isRunning() || _inbox.available()){
 		Message const & msg = _inbox.pop();
 		try {treatMessage(msg);}
