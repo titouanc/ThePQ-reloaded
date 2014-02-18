@@ -199,6 +199,7 @@ void MatchManager::playStrokes(void)
 	}
 
 	/* For each step in time interval... */
+	double last_t = 0;
 	for (double t=1.0/maxlen; t<=1; t+=1.0/maxlen){
 		size_t n_strokes = _strokes.size();
 		/* For each stroke */
@@ -209,13 +210,21 @@ void MatchManager::playStrokes(void)
 			
 			/* Where the moveable would be */
 			Position newPos = stroke.move.position(t, stroke.moveable);
+			Position oldPos = stroke.move.position(last_t, stroke.moveable);
+
 			/* Who's there ? */
 			Moveable *atPos = _pitch.getAt(newPos);
+			cout << stroke.moveable.getName() << " " 
+			     << oldPos.toJson()
+			     << " -> " << newPos.toJson() << endl;
 			if (atPos)
-				onCollision(stroke, newPos);
-			else
+				onCollision(t, stroke, newPos);
+			else {
 				_pitch.setAt(newPos, &(stroke.moveable));
+				_pitch.setAt(oldPos, NULL);
+			}
 		}
+		last_t = t;
 	}
 
 	while (! _strokes.empty())
@@ -229,7 +238,7 @@ void MatchManager::playStrokes(void)
  * @param s Stroke object for the 2nd player on the conflicting cell
  * @param conflict The conflicting cell position
  */
-void MatchManager::onCollision(Stroke & s, Position &conflict)
+void MatchManager::onCollision(double t, Stroke & s, Position &conflict)
 {
 	std::cout << "Collision " << s.moveable.getName() << " & "
 	          << _pitch.getAt(conflict)->getName() 

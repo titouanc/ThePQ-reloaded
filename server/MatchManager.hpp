@@ -66,7 +66,7 @@ class MatchManager {
 		void reply(Message const & msg, std::string type, const char *text);
 		void sendSquads(void);
 		void playStrokes(void);
-		virtual void onCollision(Stroke & s, Position &conflict);
+		void onCollision(double t, Stroke & s, Position &conflict);
 };
 
 #endif
