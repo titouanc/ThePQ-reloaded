@@ -19,7 +19,8 @@ def printMessage(msg):
 					print "\t", player['name'], player['position']
 			print "\t", squad['seeker']['name'], squad['seeker']['position']
 			print "\t", squad['keeper']['name'], squad['keeper']['position']
-
+	elif msg['type'] == 'MEND':
+		exit()
 	else:
 		print msg
 

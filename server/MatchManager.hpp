@@ -26,6 +26,7 @@ struct Stroke {
 
 /* TODO: mettre ca dans un fichier de constantes */
 #define MATCH_START   "MSTART"
+#define MATCH_END     "MEND"
 #define MATCH_SQUADS  "MSQUADS"
 #define MATCH_PROMPT  "M?"
 #define MATCH_TIMEOUT "MTOUT"
