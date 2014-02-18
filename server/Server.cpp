@@ -2,6 +2,7 @@
 #include <stdexcept>
 #include <typeinfo>
 #include <cxxabi.h>
+#include <Constants.hpp>
 
 using namespace std;
 using namespace net;

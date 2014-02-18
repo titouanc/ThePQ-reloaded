@@ -1,6 +1,8 @@
 #include "Sale.hpp"
+#include <Constants.hpp>
 
-//thread creation
+//Thread
+
 void * Sale::staticSaleStart(void * p){
 	((Sale *) p)->saleStart();
 	return NULL;
@@ -24,6 +26,8 @@ void Sale::saleStart(){
 	resolveEndOfSale();
 }
 
+//Sale managers
+
 void Sale::resolveEndOfSale(){
 	lock();
 	if (_currentBidder != 0){
@@ -43,7 +47,6 @@ void Sale::resolveEndOfTurn(){
 	save();
 	unlock();
 }
-//mutexes
 
 Sale::Sale(const JSON::Dict & json, PlayerMarket *market): _market(market), _currentBidder(0), 
 _mymutex(PTHREAD_MUTEX_INITIALIZER), _playerPath("data/players/"), _marketPath("data/playerMarket/"), 
@@ -53,19 +56,22 @@ _repr(json) {
 	save();
 }
 
-
-
+//Test functions
 bool Sale::isSaler(int team_id){
 	return (team_id == getOwner());
 }
 
-bool Sale::canBid(int team_id){
-	for(int i;i<_canBidTeams.size();++i){
-		if(_canBidTeams[i] == team_id){return true;}
+bool Sale::allowedToBidForThisTurn(int team_id){
+	if(_turn == 1){return true;}
+	else{
+		for(int i;i<_canBidTeams.size();++i){
+			if(_canBidTeams[i] == team_id){return true;}
+		}
 	}
 	return false;
 }
 
+//Services
 void Sale::placeBid(int team_id, int bid_value){
 	_currentBidder = team_id;
 	_turnTeams.push_back(team_id);

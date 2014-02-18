@@ -1,4 +1,5 @@
 #include "PlayerMarket.hpp"
+#include <Constants.hpp>
 
 void PlayerMarket::deleteSale(Sale * sale){
 	std::string fileName = getSalePath(sale->getID());
@@ -81,9 +82,9 @@ JSON::Dict PlayerMarket::bid(const JSON::Dict &json){
 	if(sale != NULL){
 		if(sale->isSaler(team_id)) {response.set("data", net::MSG::CANNOT_BID_ON_YOUR_PLAYER);}
 		else{
-			if(!(sale->canBid(team_id))) {response.set("data", net::MSG::BID_TURN_ERROR);}
+			if(!(sale->allowedToBidForThisTurn(team_id))) {response.set("data", net::MSG::BID_TURN_ERROR);}
 			else{
-				if(sale->currentBidder() == team_id){response.set("data", net::MSG::LAST_BIDDER);}
+				if(sale->getCurrentBidder() == team_id){response.set("data", net::MSG::LAST_BIDDER);}
 				else{
 					if(sale->getNextBidValue() != bid_value){response.set("data", net::MSG::BID_VALUE_NOT_UPDATED);}
 					else{

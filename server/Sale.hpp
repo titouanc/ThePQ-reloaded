@@ -7,7 +7,6 @@
 #include <unistd.h>
 #include <pthread.h>
 #include <json/json.hpp>
-#include <network/TcpSocket.hpp>
 #include "PlayerMarket.hpp"
 
 /*
@@ -40,6 +39,7 @@ private:
 
 	static void * staticSaleStart(void * p);
 	void saleStart();
+	void start();
 	void resolveEndOfSale();
 	void resolveEndOfTurn();
 	void lock(){pthread_mutex_lock(&_mymutex);}
@@ -48,7 +48,7 @@ public:
 	Sale(const JSON::Dict & json, PlayerMarket *market);
 	std::string getSalePath(){return (_marketPath + "sale_" + std::to_string(_saleID) + ".json");}
 	std::string getPlayerPath(){return (_playerPath + std::to_string(_saleID) + ".json");}
-	int currentBidder(){return _currentBidder;}
+	int getCurrentBidder(){return _currentBidder;}
 	int getID(){return _saleID;}
 	int getOwner(){return _owner;}
 	JSON::Dict * getDict(){return &_repr;}
@@ -58,8 +58,7 @@ public:
 		else{return TURN_TIME;}
 	}
 	bool isSaler(int team_id);
-	bool canBid(int team_id);
-	void start();
+	bool allowedToBidForThisTurn(int team_id);
 	void placeBid(int team_id, int bid_value);
 	JSON::Dict loadPlayerInfos(int player_id);
 	void updateDict();
