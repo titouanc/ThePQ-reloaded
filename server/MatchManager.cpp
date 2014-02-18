@@ -39,6 +39,8 @@ void MatchManager::initPositions(void)
 		_squads[i].beaters[1].setPosition(c + k*Pitch::West + k*Pitch::NorthWest);
 		_squads[i].seeker.setPosition(c + 2*k*Pitch::West);
 		_squads[i].keeper.setPosition(c + 10*k*Pitch::West);
+		for (int j=0; j<7; j++)
+			_pitch.insert(_squads[i].players[j]);
 	}
 }
 
