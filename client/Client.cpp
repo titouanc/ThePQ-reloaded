@@ -175,15 +175,9 @@ void Client::friendlyMatchMenu()
 	message+= "   - (q)uit to main menu\n";
 	message+= _prompt;
 	friendly.setMessage(message);
-	friendly.addOption('l', new ClassCallback<Client>(this, &Client::listUsers));
+	friendly.addOption('l', new ClassCallback<Client>(this, &Client::printConnectedUsersList));
 	friendly.addOption('c', new ClassCallback<Client>(this, &Client::chooseUser));
 	friendly.run();
-}
-
-void Client::listUsers()
-{
-	FriendlyGameManager::loadConnectedUsersList(&_connection);
-	FriendlyGameManager::printConnectedUsersList();
 }
 
 void Client::chooseUser()
@@ -246,6 +240,15 @@ void Client::downgradeInstallation()
 		cout << "The number you entered is wrong" << endl;
 	}
 }
+
+void Client::printConnectedUsersList(){
+	vector<std::string> connectedUsers = _connection.getConnectedUsersList();
+	cout << "Here are all the connected users : " << endl;
+ 	for (size_t i=0; i < connectedUsers.size(); ++i)
+ 		cout << "  - " << connectedUsers[i] << endl;
+}
+
+
 /* Private methods */
 
 string Client::askForUserData(string prompt){

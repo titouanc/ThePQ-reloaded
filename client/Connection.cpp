@@ -160,7 +160,8 @@ bool Connection::downgradeInstallation(size_t i)
 	return ret;
 }
 
-void Connection::getConnectedUsersList(vector<string> &users){
+vector<std::string> Connection::getConnectedUsersList(){
+	vector<std::string> res;
 	JSON::Dict query;
 	query.set("type", net::MSG::CONNECTED_USERS_LIST);
 	query.set("data", "");
@@ -173,7 +174,8 @@ void Connection::getConnectedUsersList(vector<string> &users){
 		if (ISSTR(received.get("type")) && ISLIST(received.get("data"))){
 			JSON::List & connectedUsers = LIST(received.get("data"));
 			for (size_t i = 0; i<connectedUsers.len(); ++i)
-				users.push_back(STR(connectedUsers[i]));
+				res.push_back(STR(connectedUsers[i]));
 		}
 	}
+	return res;
 }

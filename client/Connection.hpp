@@ -21,7 +21,7 @@ public:
 	std::vector<Installation> getInstallationsList();
 	bool upgradeInstallation(size_t i);
 	bool downgradeInstallation(size_t i);
-	void getConnectedUsersList(std::vector<std::string> &users);
+	std::vector<std::string> getConnectedUsersList();
 	
 private:
 	SharedQueue<net::Message> _inbox, _outbox;

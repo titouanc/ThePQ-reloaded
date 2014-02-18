@@ -9,7 +9,6 @@
 #include "Connection.hpp"
 #include "Exception.hpp"
 #include "Menu.hpp"
-#include "FriendlyGameManager.hpp"
 #include <Config.hpp>
 
 struct NetConfig : public Config {
@@ -42,6 +41,7 @@ private:
 	std::string _userChoice;
 	std::string _prompt;
 	Connection _connection;
+	std::vector<Installation> _installations;
 	
 	// User menu
 	void registerUser();
@@ -54,8 +54,6 @@ private:
 	void stadiumMenu();
 	void playersMenu();
 	void friendlyMatchMenu();
-	void listUsers();
-	void chooseUser();
 	
 	// utils
 	std::string askForUserData(std::string prompt); // returns the user input.
@@ -72,7 +70,9 @@ public:
 private:
 	void loadInstallations();
 	
-	std::vector<Installation> _installations;
+	// Match
+	void printConnectedUsersList();
+	void chooseUser();
 };
 
 #endif // __CLIENT_HPP
