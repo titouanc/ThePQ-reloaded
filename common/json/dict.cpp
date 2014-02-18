@@ -8,7 +8,7 @@ Dict::Dict() : _content()
 
 Dict::~Dict() 
 {
-    std::map<std::string, Value*>::iterator elem;
+    std::unordered_map<std::string, Value*>::iterator elem;
     for (elem=_content.begin(); elem!=_content.end(); elem++)
         delete elem->second;
     _content.clear();
@@ -58,7 +58,7 @@ Value * Dict::clone(void) const
 
 void Dict::_writeTo(std::ostream & out) const
 {
-    std::map<std::string, Value*>::const_iterator it;
+    std::unordered_map<std::string, Value*>::const_iterator it;
     out << "{";
     for (it=_content.begin(); it!=_content.end(); it++){
         if (it != _content.begin())
@@ -75,7 +75,7 @@ bool Dict::hasKey(std::string const & key) const
 
 void Dict::setPtr(std::string const & key, Value *ptr)
 {
-    std::map<std::string, Value*>::iterator pos = _content.find(key);
+    std::unordered_map<std::string, Value*>::iterator pos = _content.find(key);
     if (pos != _content.end()){
         delete pos->second;
         pos->second = ptr;
@@ -94,7 +94,7 @@ void Dict::set(std::string const & key, Value const & val)
 
 const Value * Dict::get(std::string const & key) const
 {
-    std::map<std::string, Value*>::const_iterator elem;
+    std::unordered_map<std::string, Value*>::const_iterator elem;
     elem = _content.find(key);
     if (elem == _content.end()) 
         return NULL;
@@ -103,7 +103,7 @@ const Value * Dict::get(std::string const & key) const
 
 Value * Dict::steal(std::string const & key)
 {
-    std::map<std::string, Value*>::const_iterator elem;
+    std::unordered_map<std::string, Value*>::const_iterator elem;
     elem = _content.find(key);
     if (elem == _content.end()) 
         throw KeyError(key);
