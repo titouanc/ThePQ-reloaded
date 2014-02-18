@@ -38,11 +38,12 @@ L'utilisateur clique sur un des noms de la liste affichée après avoir choisi "
 Un membre est sélectionné, ce membre peut être soit un coach, soit un joueur, 
 et de nouvelles actions pour ce membre sont disponibles.
 
-\subsubsection{Sélectionner un coach (select coach}
+\subsubsection{Sélectionner un coach (select coach)} 
 \label{UC:selectCoach}
 \paragraph{Relations avec d'autres cas d'utilisations}
 Spécialise \ref{UC:selectMember}.\\
-Étendu par \ref{UC:seeAptitudes} et \ref{UC:fire}. 
+Étendu par \ref{UC:seeAptitudes} et \ref{UC:fire}.\\
+(Fonctionnalité non implémentée)
 \paragraph{Pré-conditions}
 \begin{list}{\labelitemi}{\leftmargin=1.5em}
 \item{L'utilisateur a sélectionné un membre, il s'agit d'un coach.}
@@ -180,6 +181,7 @@ L'utilisateur souhaite améliorer une installation, après avoir sélectionné l
 \label{UC:downgrade}
 \paragraph{Relations avec d'autres cas d'utilisations}
 Étend \ref{UC:selectSpot}.
+\\(Fonctionnalité non implémentée)
 \paragraph{Pré-conditions}
 \begin{list}{\labelitemi}{\leftmargin=1.5em}
 \item{Un endroit est sélectionné.}
@@ -231,6 +233,7 @@ L'utilisateur souhaite soigner un joueur blessé, après avoir sélectionné le 
 \label{UC:setFoodPrice}
 \paragraph{Relations avec d'autres cas d'utilisations}
 Étend \ref{UC:selectSpot}.
+\\(Fonctionnalité non implémentée)
 \paragraph{Pré-conditions}
 \begin{list}{\labelitemi}{\leftmargin=1.5em}
 \item{Le service d'alimentation est sélectionné.}
@@ -293,6 +296,7 @@ Aucun groupe d'entrainement n'a encore été créé, ne s'affiche en conséquenc
 \paragraph{Relations avec d'autres cas d'utilisations}
 Étend \ref{UC:trainingManagement}.\\
 Inclut \ref{UC:chooseTrainingCoach}, \ref{UC:chooseAptitudesTrained} et \ref{UC:addPlayerToGroup}.
+\\(Fonctionnalité non implémentée)
 \paragraph{Pré-conditions}
 \begin{list}{\labelitemi}{\leftmargin=1.5em}
 \item{L'utilisateur à précédemment choisit "gestion des entrainements".}
@@ -317,6 +321,7 @@ Après avoir sélectionner "gestion des entrainements", si l'utilisateur choisit
 \paragraph{Relations avec d'autres cas d'utilisations}
 Étend \ref{UC:trainingManagement}.\\
 Est inclus par \ref{UC:createTraining}.
+\\(Fonctionnalité non implémentée)
 \paragraph{Pré-conditions}
 \begin{list}{\labelitemi}{\leftmargin=1.5em}
 \item{L'utilisateur se situe dans "gestion des entrainements" ou "créer un groupe d'entrainement ou "sélectionner un groupe".}
@@ -334,6 +339,7 @@ Voir les cas exceptionnels pour "créer un groupe d'entrainement" (\ref{UC:creat
 \label{UC:TrainingHistory}
 \paragraph{Relations avec d'autres cas d'utilisations}
 Étend \ref{UC:trainingManagement}
+\\(Fonctionnalité non implémentée)
 \paragraph{Pré-conditions}
 \begin{list}{\labelitemi}{\leftmargin=1.5em}
 \item{L'utilisateur se situe dans "gestion des entrainements".}
@@ -351,6 +357,7 @@ L'utilisateur souhaite s'informer sur l'efficacité des groupes d'entraînements
 \paragraph{Relations avec d'autres cas d'utilisations}
 Étend \ref{UC:trainingManagement}.\\
 Étendu par \ref{UC:chooseTrainingCoach}, \ref{UC:chooseAptitudesTrained}.
+\\(Fonctionnalité non implémentée)
 \paragraph{Pré-conditions}
 \begin{list}{\labelitemi}{\leftmargin=1.5em}
 \item{L'utilisateur se situe dans "gestion des entrainements."}
@@ -367,6 +374,7 @@ L'utilisateur sélectionne un groupe d'entrainement parmi une liste des groupes 
 \label{UC:chooseAptitudesTrained}
 \paragraph{Relations avec d'autres cas d'utilisations}
 Étend \ref{UC:createTraining}, \ref{UC:selectTrainingGroup}.
+\\(Fonctionnalité non implémentée)
 \paragraph{Pré-conditions}
 \begin{list}{\labelitemi}{\leftmargin=1.5em}
 \item{L'utilisateur crée un groupe d'entrainement ou a sélectionné un groupe d'entrainement.}
@@ -382,6 +390,7 @@ L'utilisateur sélectionne un nombre d'aptitudes (à déterminer) parmi toutes l
 \label{UC:chooseTrainingCoach}
 \paragraph{Relations avec d'autres cas d'utilisations}
 Étend \ref{UC:createTraining}, \ref{UC:selectTrainingGroup}.
+\\(Fonctionnalité non implémentée)
 \paragraph{Pré-conditions}
 \begin{list}{\labelitemi}{\leftmargin=1.5em}
 \item{L'utilisateur a sélectionné un groupe d'entrainement ou crée un nouveau groupe.}
@@ -418,6 +427,7 @@ L'utilisateur clique sur l'icône "Aller aux Transferts", et a ensuite la possib
 \label{UC:transfersHistory}
 \paragraph{Relations avec d'autres cas d'utilisations}
 Étend \ref{UC:gotoTransfers}.
+\\(Fonctionnalité non implémentée)
 \paragraph{Pré-conditions}
 \begin{list}{\labelitemi}{\leftmargin=1.5em}
 \item{L'utilisateur se situe dans "aller aux transferts".}
@@ -477,6 +487,7 @@ Si aucun joueur n'est disponible à l'achat, rien n'apparaît.
 \paragraph{Relations avec d'autres cas d'utilisations}
 Spécialise \ref{UC:seeMarket}.\\
 Étendu par \ref{UC:hireCoach}.
+\\(Fonctionnalité non implémentée)
 \paragraph{Pré-conditions}
 \begin{list}{\labelitemi}{\leftmargin=1.5em}
 \item{L'utilisateur a choisi de voir le marché des transferts}
@@ -494,6 +505,7 @@ Si aucun coach n'est disponible à l'engagement, rien n'apparaît.
 \label{UC:hireCoach}
 \paragraph{Relations avec d'autres cas d'utilisations}
 Étend \ref{UC:seeCoachMarket}.
+\\(Fonctionnalité non implémentée)
 \paragraph{Pré-conditions}
 \begin{list}{\labelitemi}{\leftmargin=1.5em}
 \item{L'utilisateur se situe dans le marché des coachs.}
