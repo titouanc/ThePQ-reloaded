@@ -16,10 +16,20 @@ Client::Client(NetConfig const &config) : _prompt(">"), _connection(config.host,
 	
 }
 
+Client::~Client()
+{
+	delete _menu;
+}
+
 void Client::run()
 {
 	cout << Message::splashScreen();
-
+	_menu = new ClassCallback<Client>(this, &Client::loginMenu);
+	
+	while(true)
+	{
+		(*_menu)();
+	}
 
 	cout << Message::goodBye();
 }

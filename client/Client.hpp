@@ -36,6 +36,7 @@ class Client
 {
 public:
 	Client(NetConfig const &config);
+	~Client();
 	void run();
 
 private:
