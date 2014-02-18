@@ -52,9 +52,9 @@ Moveable * Pitch::getAt(Position const & pos) const
 
 bool Pitch::inEllipsis(int x, int y) const
 {
-	double k = ((double) _width)/_height;
-	double L = xmax();
-	return (x*x + k*k*y*y) <= L*L;
+	double k = ((double) _width)/((double)_height);
+	double L = xmax(); 
+	return (x*x + k*k*y*y) < L*L;
 }
 
 bool Pitch::inEllipsis(Moveable *moveable) const
