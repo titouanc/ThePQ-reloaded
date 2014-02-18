@@ -39,6 +39,9 @@ public:
 	void run();
 
 private:
+	Callback* _menu;
+	std::map<std::string, Callback*> _callbacks;
+
 	std::string _userChoice;
 	std::string _prompt;
 	Connection _connection;
@@ -48,6 +51,7 @@ private:
 	void login();
 	
 	// Menus
+	void loginMenu();
 	void mainMenu();
 	void managementMenu();
 	void stadiumMenu();

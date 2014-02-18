@@ -20,6 +20,12 @@ void Client::run()
 {
 	cout << Message::splashScreen();
 
+
+	cout << Message::goodBye();
+}
+
+void Client::loginMenu()
+{
 	/* user menu */
 	Menu loginMenu;
 	string message;
@@ -47,8 +53,6 @@ void Client::run()
 				 << "\033[0m" << endl;
 		}
 	} while (error);
-
-	cout << Message::goodBye();
 }
 
 void Client::login(){
