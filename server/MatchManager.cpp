@@ -1,5 +1,8 @@
 #include "MatchManager.hpp"
 
+/* TODO: read from config file */
+#define STROKES_TIMEOUT_SECONDS 5
+
 MatchManager::MatchManager(
 	BaseConnectionManager & connections, 
 	Squad const & squadA, Squad const & squadB
@@ -125,10 +128,11 @@ void MatchManager::run()
 			} else {
 				minisleep(0.1);
 			}
-		} while (time(NULL) - tick < 30);
+		} while (time(NULL) - tick < STROKES_TIMEOUT_SECONDS);
 		
 		sendSignal(MATCH_TIMEOUT);
 		playStrokes();
+		break;
 	}
 }
 
@@ -215,6 +219,7 @@ void MatchManager::playStrokes(void)
 
 	while (! _strokes.empty())
 		_strokes.pop();
+	cout << "Processed moves !!!" << endl;
 }
 
 /*!
