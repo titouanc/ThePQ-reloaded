@@ -9,7 +9,6 @@
 #include "Connection.hpp"
 #include "Exception.hpp"
 #include "Menu.hpp"
-#include "StadiumManager.hpp"
 #include "FriendlyGameManager.hpp"
 #include <Config.hpp>
 
@@ -40,11 +39,6 @@ public:
 	void run();
 
 private:
-	Callback* _menu;
-	std::map<std::string, Callback*> _callbacks;
-	
-	bool _running;
-
 	std::string _userChoice;
 	std::string _prompt;
 	Connection _connection;
@@ -67,6 +61,18 @@ private:
 	std::string askForUserData(std::string prompt); // returns the user input.
 	std::string askForNewPassword(); // prompts the user to create a new password with 
 							// confirmation. returns the password.
+							
+	// Installations
+public:
+	void printInstallationsList();
+	
+	void upgradeInstallation();
+	void downgradeInstallation();
+
+private:
+	void loadInstallations();
+	
+	std::vector<Installation> _installations;
 };
 
 #endif // __CLIENT_HPP

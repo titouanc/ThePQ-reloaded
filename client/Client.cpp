@@ -11,14 +11,15 @@ std::string humanExcName(const char *name)
 	return res;
 }
 
-Client::Client(NetConfig const &config) : _running(true), _prompt(">"), _connection(config.host, config.port)
+Client::Client(NetConfig const &config) : 	_prompt(">"), 
+												_connection(config.host, config.port)
 {
 	
 }
 
 Client::~Client()
 {
-	delete _menu;
+	
 }
 
 void Client::run()
@@ -137,7 +138,6 @@ void Client::managementMenu()
 
 void Client::stadiumMenu()
 {
-	StadiumManager stadiumMgr(&_connection);
 	Menu stadium;
 	string message;
 	message+= "You can : \n";
@@ -145,9 +145,9 @@ void Client::stadiumMenu()
 	message+= "    - (u)pgrade an installation\n";
 	message+= "    - (d)owngrade an installation\n";
 	message+= "    - (q)uit to management menu\n";
-	stadium.addOption('v', new ClassCallback<StadiumManager>(&stadiumMgr, &StadiumManager::printInstallationsList));
-	stadium.addOption('u', new ClassCallback<StadiumManager>(&stadiumMgr, &StadiumManager::upgradeInstallation));
-	stadium.addOption('d', new ClassCallback<StadiumManager>(&stadiumMgr, &StadiumManager::downgradeInstallation));
+	stadium.addOption('v', new ClassCallback<Client>(this, &Client::printInstallationsList));
+	stadium.addOption('u', new ClassCallback<Client>(this, &Client::upgradeInstallation));
+	stadium.addOption('d', new ClassCallback<Client>(this, &Client::downgradeInstallation));
 	stadium.setMessage(message);
 	// TODO : stadium menu
 	stadium.run();
@@ -190,7 +190,62 @@ void Client::chooseUser()
 {
 	// TODO : choose user for friendly match
 }
+void Client::loadInstallations(){
+	_installations = _connection.getInstallationsList();
+}
 
+void Client::printInstallationsList(){
+	if (_installations.empty())
+	{
+		loadInstallations();
+	}
+	// TODO implement printInstallationsList
+	cout << "Here are all the installations you own :" << endl;
+	for (size_t i = 0; i < _installations.size(); ++i){
+		cout << i << " - " << _installations[i].getName() << endl;
+		cout << "      Level : 				" << _installations[i].getLevel() << endl;
+		cout << "      Current Value : 		" << _installations[i].getCurrentValue() << endl;
+		cout << "      Upgrade Cost : 		" << _installations[i].getUpgradeCost() << endl;
+		cout << "      Refund Ratio :       " << _installations[i].getRefundRatio() << endl;
+		cout << "      Downgrade Refunds : 	" << _installations[i].getDowngradeRefunds() << endl;
+	}
+}
+
+void Client::upgradeInstallation()
+{
+	size_t choice;
+	cout << "Enter the number of the installation you want to upgrade" << endl << ">";
+	cin >> choice;
+	if (choice < _installations.size())
+	{
+		if (_connection.upgradeInstallation(choice))
+		{
+			_installations[choice].upgrade();
+		}
+	}
+	else
+	{
+		cout << "The number you entered is wrong" << endl;
+	}
+}
+
+void Client::downgradeInstallation()
+{
+	size_t choice;
+	cout << "Enter the number of the installation you want to downgrade" << endl << ">";
+	cin >> choice;
+	if (choice < _installations.size())
+	{
+		if (_connection.downgradeInstallation(choice))
+		{
+			_installations[choice].downgrade();
+		}
+	}
+	else
+	{
+		cout << "The number you entered is wrong" << endl;
+	}
+}
 /* Private methods */
 
 string Client::askForUserData(string prompt){
