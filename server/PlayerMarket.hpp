@@ -7,7 +7,11 @@
 #include <network/TcpSocket.hpp>
 #include <stdio.h>
 #include "Sale.hpp"
-//todo : constructor loading all json files in memory (server crash ?)
+/*
+TODO : 
+- constructor loading all json files in memory (server crash ?)
+- transfert when sale over (if player sold)
+*/
 class PlayerMarket{
 	friend void Sale::resolveEndOfSale();
 private:
@@ -30,7 +34,9 @@ private:
 
 	void lockMutex(Sale *sale){sale->lock();}
 	void unlockMutex(Sale *sale){sale->unlock();}
-	void transfert(int from_team, int to_team, int player_id);
+	void transfert(int from_team, int to_team, int player_id){
+		//TODO 
+	}
 public:
 	PlayerMarket(): _sales(), _marketPath("data/playerMarket/") {}
 	std::string getSalePath(int id){return (_marketPath + "sale_" + std::to_string(id) + ".json");}

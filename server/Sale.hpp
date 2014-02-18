@@ -10,7 +10,8 @@
 #include <json/json.hpp>
 #include <network/TcpSocket.hpp>
 
-/*todo : à la construction : ajouter Player Dict dans _repr
+/*
+TODO :
 - Behaviour when player not sold ??
 - CONST /!\
 */
