@@ -57,6 +57,11 @@ bool Pitch::inEllipsis(int x, int y) const
 	return (x*x + k*k*y*y) < L*L;
 }
 
+bool Pitch::inEllipsis(Position position)
+{
+	return inEllipsis(position.x(), position.y());
+}
+
 bool Pitch::inEllipsis(Moveable *moveable) const
 {
 	return inEllipsis(moveable->getPosition().x(), moveable->getPosition().y());
@@ -98,6 +103,17 @@ bool Pitch::isEastGoal(int x, int y) const {
 	bool res = false;
 	if (inEllipsis(x, y) && x == int(20.5*width()/48.0) && y < 3 && y > -3)
 		res = true;
+	return res;
+}
+
+vector<Position> Pitch::freePositionsAround(Position &position){
+	vector<Position> res;
+	if (inEllipsis(position+West) && getAt(position+West) == NULL) res.push_back(position+West);
+	if (inEllipsis(position+NorthWest) && getAt(position+NorthWest) == NULL) res.push_back(position+NorthWest);
+	if (inEllipsis(position+NorthEast) && getAt(position+NorthEast) == NULL) res.push_back(position+NorthEast);
+	if (inEllipsis(position+East) && getAt(position+East) == NULL) res.push_back(position+East);
+	if (inEllipsis(position+SouthEast) && getAt(position+SouthEast) == NULL) res.push_back(position+SouthEast);
+	if (inEllipsis(position+SouthWest) && getAt(position+SouthWest) == NULL) res.push_back(position+SouthWest);
 	return res;
 }
 

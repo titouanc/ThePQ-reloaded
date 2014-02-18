@@ -39,11 +39,9 @@ print d.recvObj()
 c.sendObj({"type": "42"})
 
 # Receive match init sequence
-for i in range(3): 
-	printMessage(c.recvObj())
-	printMessage(d.recvObj())
+for i in range(3): printMessage(c.recvObj())
 
-d.sendObj({
+c.sendObj({
 	"type": "MSTROKE", 
 	"data": {
 		"moveable_id": 13, 
@@ -59,5 +57,4 @@ c.sendObj({
 })
 while True: 
 	printMessage(c.recvObj())
-	printMessage(d.recvObj())
 
