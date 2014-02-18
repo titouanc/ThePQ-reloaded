@@ -43,15 +43,8 @@ class MatchManager {
 		SharedQueue<Message> _inbox, _outbox;
 		SubConnectionManager _net;
 
+		/* initialise moveable positions */
 		void initPositions(void);
-	public:
-		MatchManager(
-			BaseConnectionManager & connections, 
-			Squad const & squadA, Squad const & squadB
-		);
-		~MatchManager();
-		/* Run dat shit */
-		void run();
 
 		/* Sleep with a microsecond resolution */
 		void minisleep(double secs);
@@ -68,6 +61,14 @@ class MatchManager {
 		void sendSquads(void);
 		void playStrokes(void);
 		void onCollision(double t, Stroke & s, Position &conflict);
+	public:
+		MatchManager(
+			BaseConnectionManager & connections, 
+			Squad const & squadA, Squad const & squadB
+		);
+		~MatchManager();
+		/* Run dat shit */
+		void run();
 };
 
 #endif
