@@ -31,6 +31,8 @@ public:
 	unsigned int getID() const { return _uniqueID; }
 	void setID(unsigned int newID) { _uniqueID = newID; }
 
+	virtual float collisionScore() { return 0; }
+
 	operator JSON::Dict() const {
 		JSON::Dict res;
 		res.set("speed", _speed);
