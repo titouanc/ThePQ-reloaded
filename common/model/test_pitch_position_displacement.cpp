@@ -2,6 +2,7 @@
 #include <model/Position.hpp>
 #include <model/Displacement.hpp>
 #include <model/Pitch.hpp>
+#include <vector>
 
 static Position West(-2, 0);
 static Position SouthWest(-1, -1); 
@@ -169,6 +170,25 @@ TEST(pitch_repr)
     cout << p;
 ENDTEST()
 
+TEST(free_position)
+    Pitch p(100, 36); 
+    Position pos(-48, 0);
+    Moveable m(0, 0, pos);
+    p.insert(&m);
+    std::vector<Position> free = p.freePositionsAround(pos);
+    ASSERT(free.size() == 5);
+    ASSERT(free[0].x() == -49);
+    ASSERT(free[0].y() == 1);
+    ASSERT(free[1].x() == -47);
+    ASSERT(free[1].y() == 1);
+    ASSERT(free[2].x() == -46);
+    ASSERT(free[2].y() == 0);
+    ASSERT(free[3].x() == -47);
+    ASSERT(free[3].y() == -1);
+    ASSERT(free[4].x() == -49);
+    ASSERT(free[4].y() == -1);
+ENDTEST()
+
 int main(int argc, const char **argv)
 {
     TestFunc testSuite[] = {
@@ -187,7 +207,8 @@ int main(int argc, const char **argv)
         ADDTEST(composite_displacement),
         ADDTEST(composite_invalid_displacement),
         ADDTEST(pitch),
-        ADDTEST(pitch_repr)
+        ADDTEST(pitch_repr),
+        ADDTEST(free_position)
     };
 
     return RUN(testSuite);

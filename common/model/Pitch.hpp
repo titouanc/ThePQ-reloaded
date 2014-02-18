@@ -2,6 +2,7 @@
 #define DEFINE_PITCH_HEADER 
 
 #include "Moveable.hpp"
+#include <vector>
 
 class Pitch {
 	private:
@@ -50,6 +51,7 @@ class Pitch {
 		 * @param y The row (the middle row is 0)
 		 */
 		bool inEllipsis(int x, int y) const;
+		bool inEllipsis(Position position);
 		bool inEllipsis(Moveable *moveable) const;
 
 		// TODO DOC
@@ -61,6 +63,9 @@ class Pitch {
 		// TODO DOC
 		bool isWestGoal(int x, int y) const;
 		bool isEastGoal(int x, int y) const;
+
+		// TODO DOC
+		std::vector<Position> freePositionsAround(Position &position);
 
 		/*!
 		 * @meth void Pitch::setAt(int x, int y, Moveable *moveable)
