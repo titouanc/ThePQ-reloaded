@@ -52,14 +52,53 @@ Moveable * Pitch::getAt(Position const & pos) const
 
 bool Pitch::inEllipsis(int x, int y) const
 {
-	double k = ((double) _width)/_height;
-	double L = xmax();
-	return (x*x + k*k*y*y) <= L*L;
+	double k = ((double) _width)/((double)_height);
+	double L = xmax(); 
+	return (x*x + k*k*y*y) < L*L;
 }
 
 bool Pitch::inEllipsis(Moveable *moveable) const
 {
 	return inEllipsis(moveable->getPosition().x(), moveable->getPosition().y());
+}
+
+bool Pitch::isInWestKeeperZone(int x, int y) const{
+	bool res = false;
+	if (inEllipsis(x, y) && (x < -int(width()/3.0)))
+		res = true;
+	return res;
+}
+bool Pitch::isInWestKeeperZone(Moveable *moveable) const{
+	bool res = false;
+	if (inEllipsis(moveable) && (moveable->getPosition().x() < -int(width()/3.0)))
+		res = true;
+	return res;
+}
+bool Pitch::isInEastKeeperZone(int x, int y) const{
+	bool res = false;
+	if (inEllipsis(x, y) && (x > int(width()/3.0)))
+		res = true;
+	return res;
+}
+bool Pitch::isInEastKeeperZone(Moveable *moveable) const{
+	bool res = false;
+	if (inEllipsis(moveable) && (moveable->getPosition().x() > int(width()/3.0)))
+		res = true;
+	return res;
+}
+
+bool Pitch::isWestGoal(int x, int y) const {
+	bool res = false;
+	if (inEllipsis(x, y) && x == -int(20.5*width()/48.0) && y < 3 && y > -3)
+		res = true;
+	return res;
+}
+
+bool Pitch::isEastGoal(int x, int y) const {
+	bool res = false;
+	if (inEllipsis(x, y) && x == int(20.5*width()/48.0) && y < 3 && y > -3)
+		res = true;
+	return res;
 }
 
 bool Pitch::setAt(int x, int y, Moveable *moveable)
@@ -89,7 +128,13 @@ std::ostream & operator<<(std::ostream & out, Pitch const & pitch)
 				out << " ";
 			} else {
 				if (pitch.getAt(x, y) == NULL){
-					out << ".";
+					if (pitch.isInEastKeeperZone(x, y) || pitch.isInWestKeeperZone(x, y))
+						if (pitch.isWestGoal(x, y) || pitch.isEastGoal(x, y))
+							out << "O";
+						else
+							out << ".";
+					else
+						out << "\033[32m.\033[0m";
 				} else {
 					out << "\033[31mo\033[0m";
 				}
