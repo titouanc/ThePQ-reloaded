@@ -12,7 +12,6 @@
 class PlayerMarket{
 private:
 	std::vector<Sale> _sales;
-	std::vector<JSON::Dict*> _jsonSales;
 	std::string _marketPath;
 
 	void delete(Sale * sale){
@@ -30,14 +29,8 @@ private:
 	}
 
 public:
-	PlayerMarket(): _sales(), _jsonSales(), _marketPath("data/playerMarket/") {}
+	PlayerMarket(): _sales(), _marketPath("data/playerMarket/") {}
 	std::string getSalePath(int id){return (_marketPath + "sale_" + std::to_string(id) + ".json");}
-	bool exists(int id){
-		for(int i = 0; i<_sales.size();++i){
-			if(_sales[i].getID() == id){return true;}
-		}
-		return false;
-	}
 	Sale * getSale(int id){
 		for(int i = 0; i<_sales.size();++i){
 			if(_sales[i].getID() == id){return &_sales[i];}
@@ -50,9 +43,9 @@ public:
 		response.set("type", net::MSG::PLAYERS_ON_MARKET_LIST);
 		response.set("data", JSON::List());
 		JSON::List & sales = LIST(response.get("data"));
-		for(int i=0;i<_jsonSales.size();++i){
+		for(int i=0;i<_sales.size();++i){
 			sales.append(JSON::Dict());
-			DICT(sales[i]) = *(_jsonSales[i]);
+			DICT(sales[i]) = *(_sales[i].getDict());
 		}
 		return response;
 	}
@@ -82,21 +75,32 @@ public:
 	}
 
 
-	void bid(JSON::Dict &json);
-
+	JSON::Dict bid(JSON::Dict &json){
+		JSON::Dict response = JSON::Dict();
+		response.set("type", net::MSG::BID_ON_PLAYER_QUERY);
+		int team_id = INT(json.get(net::MSG::TEAM_ID));
+		int player_id = INT(json.get(net::MSG::PLAYER_ID));
+		int bid_value = INT(json.get(NET::BID_VALUE));
+		Sale * sale = getSale(player_id);
+		if(sale != NULL){
+			if(sale->isSaler(team_id)) {response.set("data", net::MSG::CANNOT_BID_ON_YOUR_PLAYER);}
+			else{
+				if(!(sale->canBid(team_id))) {response.set("data", net::MSG::BID_TURN_ERROR);}
+				else{
+					if(sale->currentBidder() == team_id){response.set("data", net::MSG::LAST_BIDDER);}
+					else{
+						if(sale->getNextBidValue() != bid_value){response.set("data", net::MSG::BID_VALUE_NOT_UPDATED);}
+						else{
+							sale->placeBid(team_id, bid_value);
+							response.set("data", net::MSG::BID_PLACED);
+						}
+					}
+				}
+			}
+		} else{response.set("data", net::MSG::BID_ENDED);}
+		return response;
+	}
 
 };
-
-	// //---------------------------------TEST
-	// JSON::Dict client;//ce que le client envoie lorsqu'il met un joueur en vente
-	// client.set("player", JSON::Dict());
-	// client.set("bidValue","1000");
-	// DICT(client.get("player")).set("name","Michel Michel");
-	// DICT(client.get("player")).set("age","20");
-	// DICT(client.get("player")).set("team_id","1");
-	// DICT(client.get("player")).set("player_id","2342")
-	// DICT(client.get("player")).set("aptitudes",JSON::Dict());
-	// std::cout<<"JSON sale : "<<client<<std::endl;
-	// //---------------------------------TEST
 
 #endif

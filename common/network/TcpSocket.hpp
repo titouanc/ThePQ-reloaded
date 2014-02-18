@@ -36,7 +36,7 @@ namespace net
 
 		static const std::string ADD_PLAYER_ON_MARKET_QUERY = "Q_A_P_OM";
 		static const std::string DELETE_PLAYER_OF_MARKET_QUERY = "Q_D_P_OM";
-		static const std::string PLAYERS_ON_MARKET_LIST_QUERY = "Q_P_OM_L";
+
 		static const std::string BID_ON_PLAYER_QUERY = "Q_B_OP"; 
 		
 		// DATA ----------------------------------------------
@@ -57,12 +57,12 @@ namespace net
 		static const std::string INSTALLATION_DOWNGRADE = "DQ_I_D";
 		static const std::string CONNECTED_USERS_LIST = "DQ_CU_L";
 
+		static const std::string PLAYERS_ON_MARKET_LIST= "DQ_P_OM_L";
 		//player market
 		static const std::string PLAYER_ALREADY_ON_MARKET = "PM_P_A_OM";
 		static const std::string PLAYER_ADDED_ON_MARKET = "PM_PA_OM";
 		static const std::string PLAYER_DELETED_OF_MARKET = "PM_D_OM";
 		static const std::string PLAYER_NOT_ON_MARKET = "PM_N_OM";
-		static const std::string PLAYERS_ON_MARKET_LIST = "PM_L";
 	}
 	
 	class TcpSocket {

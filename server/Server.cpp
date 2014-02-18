@@ -55,6 +55,15 @@ void Server::treatMessage(const Message &message){
 					logUserIn(DICT(received.get("data")), message.peer_id);
 				else if (messageType == MSG::REGISTER_QUERY) 
 					registerUser(DICT(received.get("data")), message.peer_id);
+				else if (messageType == MSG::DELETE_PLAYER_OF_MARKET_QUERY){
+					deletePlayerOfMarket(DICT(received.get("data")), message.peer_id);
+				}
+				else if (messageType == MSG::ADD_PLAYER_ON_MARKET_QUERY){
+					addPlayerOnMarket(DICT(received.get("data")), message.peer_id);
+				}
+				else if (messageType == MSG::BID_ON_PLAYER_QUERY){
+					placeBidOnPlayer(DICT(received.get("data")), message.peer_id);
+				}
 			} else if (ISSTR(received.get("data"))){
 				string const & data = STR(received.get("data"));
 
@@ -65,6 +74,8 @@ void Server::treatMessage(const Message &message){
 						sendInstallationsList(message.peer_id);
 					else if(data == MSG::CONNECTED_USERS_LIST)
 						sendConnectedUsersList(message.peer_id);
+					else if(data == MSG::PLAYERS_ON_MARKET_LIST)
+						sendPlayersOnMarketList(message.peer_id);
 				}
 			}
 		}
