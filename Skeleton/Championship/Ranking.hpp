@@ -5,9 +5,13 @@
 
 class Ranking 
 {
+private:
+	ParticipatingTeam[] teams;
 public:
+	Ranking();
 	ParticipatingTeam[] getRanking ();
 	void update ();
+	~Ranking();
 };
 
 #endif
