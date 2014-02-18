@@ -30,7 +30,7 @@ void Sale::resolveEndOfSale(){
 		_market->transfert(_owner,_currentBidder,_saleID);
 	}
 	else{} //Player not sold. Behaviour ?  
-	_market->delete(this);
+	_market->deleteSale(this);
 	unlock();
 }
 	
@@ -61,7 +61,7 @@ bool Sale::isSaler(int team_id){
 
 bool Sale::canBid(int team_id){
 	for(int i;i<_canBidTeams.size();++i){
-		if(canBidTeams[i] == team_id){return true;}
+		if(_canBidTeams[i] == team_id){return true;}
 	}
 	return false;
 }

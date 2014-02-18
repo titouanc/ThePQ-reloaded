@@ -1,6 +1,6 @@
 #include "PlayerMarket.hpp"
 
-void PlayerMarket::delete(Sale * sale){
+void PlayerMarket::deleteSale(Sale * sale){
 	std::string fileName = getSalePath(sale->getID());
 	remove(fileName.c_str());
 	for(int i=0;i<_sales.size();++i){
@@ -10,7 +10,7 @@ void PlayerMarket::delete(Sale * sale){
 
 void PlayerMarket::createSale(const JSON::Dict &json){
 	std::string fileName = getSalePath(INT(json.get(net::MSG::PLAYER_ID)));
-	_sales.push_back(Sale(json));
+	_sales.push_back(Sale(json, this));
 	getSale(INT(json.get(net::MSG::PLAYER_ID)))->start(); //Could use _sales[_sales.size()-1]
 }
 void PlayerMarket::transfert(int from_team, int to_team, int player_id){
@@ -54,14 +54,14 @@ JSON::Dict PlayerMarket::addPlayer(const JSON::Dict &json){
 	return response;
 }
 
-JSON::DictPlayerMarket::deletePlayer(const JSON::Dict &json){
+JSON::Dict PlayerMarket::deletePlayer(const JSON::Dict &json){
 	JSON::Dict response = JSON::Dict();
-	response.set("type", net::MSG::DELETE_PLAYER_ON_MARKET_QUERY);
+	response.set("type", net::MSG::DELETE_PLAYER_OF_MARKET_QUERY);
 	Sale * sale = getSale(INT(json.get(net::MSG::PLAYER_ID)));
 	sale->lock();
 	if(sale != NULL){
 		if(sale->isSaler(INT(json.get(net::MSG::TEAM_ID)))) {
-			delete(sale);
+			deleteSale(sale);
 			response.set("data",net::MSG::PLAYER_DELETED_OF_MARKET);
 		} else{response.set("data",net::MSG::NOT_YOUR_SALE);}
 	} else{response.set("data",net::MSG::PLAYER_NOT_ON_MARKET);}
@@ -70,12 +70,12 @@ JSON::DictPlayerMarket::deletePlayer(const JSON::Dict &json){
 }
 
 
-JSON::Dict PlayerMarket::bid(JSON::Dict &json){
+JSON::Dict PlayerMarket::bid(const JSON::Dict &json){
 	JSON::Dict response = JSON::Dict();
 	response.set("type", net::MSG::BID_ON_PLAYER_QUERY);
 	int team_id = INT(json.get(net::MSG::TEAM_ID));
 	int player_id = INT(json.get(net::MSG::PLAYER_ID));
-	int bid_value = INT(json.get(net::BID_VALUE));
+	int bid_value = INT(json.get(net::MSG::BID_VALUE));
 	Sale * sale = getSale(player_id);
 	sale->lock();
 	if(sale != NULL){

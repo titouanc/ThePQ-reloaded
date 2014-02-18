@@ -48,8 +48,15 @@ namespace net
 		static const std::string USER_EXISTS = "U_E";
 		static const std::string USER_REGISTERED = "U_R";
 
+		static const std::string PLAYER = "P_DICT"; //JSON::Dict of players
 		static const std::string PLAYER_ID = "P_ID";							//<playermarket>
 		static const std::string TEAM_ID = "T_ID";								//<playermarket>
+		static const std::string BID_VALUE = "B_V";
+		static const std::string BID_TIMER = "B_T";
+		static const std::string TEAMS_BIDDING = "TS_B";
+		static const std::string CAN_BID_TEAMS = "C_B_T";
+		static const std::string TURN_NUMBER = "T_N";
+		static const std::string CURRENT_BIDDER = "C_B";
 		// data queries
 		static const std::string INSTALLATIONS_LIST = "DQ_I_L";
 		static const std::string INSTALLATION_UPGRADE = "DQ_I_U";
@@ -67,6 +74,9 @@ namespace net
 		static const std::string LAST_BIDDER = "PM_LB";							//<playermarket>
 		static const std::string BID_PLACED = "PM_BP";							//<playermarket>
 		static const std::string BID_ENDED = "PM_BE";							//<playermarket>
+		static const std::string BID_VALUE_NOT_UPDATED = "PM_B_V_NU";
+
+
 	}		
 	
 	class TcpSocket {

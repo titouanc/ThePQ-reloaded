@@ -189,4 +189,7 @@ void Server::sendPlayersOnMarketList(int peer_id){
 	Message status(peer_id, market.allSales().clone());
 	_outbox.push(status);
 }
-void Server::placeBidOnPlayer(const JSON::Dict &bid, int peer_id){}
+void Server::placeBidOnPlayer(const JSON::Dict &bid, int peer_id){
+	Message status(peer_id, market.bid(bid).clone());
+	_outbox.push(status);
+}

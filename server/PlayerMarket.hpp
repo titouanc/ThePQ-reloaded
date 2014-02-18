@@ -12,24 +12,23 @@ TODO :
 - constructor loading all json files in memory (server crash ?)
 - transfert when sale over (if player sold)
 */
-
+class Sale;
 class PlayerMarket{
-	friend void Sale::resolveEndOfSale();
 private:
 	std::vector<Sale> _sales;
 	std::string _marketPath;
-
-	void delete(Sale * sale);
-	void createSale(const JSON::Dict &json);
-	void transfert(int from_team, int to_team, int player_id);
 public:
 	PlayerMarket();
+	void deleteSale(Sale * sale);
+	void createSale(const JSON::Dict &json);
+	void transfert(int from_team, int to_team, int player_id);
 	std::string getSalePath(int id);
 	Sale * getSale(int id);
 	JSON::Dict allSales();
 	JSON::Dict addPlayer(const JSON::Dict &json);
 	JSON::Dict deletePlayer(const JSON::Dict &json);
-	JSON::Dict bid(JSON::Dict &json);
+	JSON::Dict bid(const JSON::Dict &json);
+
 };
 
 #endif

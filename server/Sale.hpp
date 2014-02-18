@@ -2,8 +2,7 @@
 #define SALE_HPP 
 
 #include <string>
-#include <list>
-#include <queue>
+#include <vector>
 #include <ctime>
 #include <unistd.h>
 #include <pthread.h>
@@ -18,12 +17,13 @@ TODO :
 */
 class PlayerMarket;
 class Sale{
+	friend class PlayerMarket;
 private:
 	#define FIRST_TURN 600 	//10 min
 	#define TURN_TIME 30
 	#define BIDRATIO 0.05 	//5%
-	vector<int> _turnTeams;		//Team id
-	vector<int> _canBidTeams;	//Team id
+	std::vector<int> _turnTeams;		//Team id
+	std::vector<int> _canBidTeams;	//Team id
 	int _bidValue;
 	float _bidRatio;
 	int _turn;
@@ -32,6 +32,7 @@ private:
 	int _timeLeft;
 	int _saleID;
 	std::string _marketPath;
+	std::string _playerPath;
 	JSON::Dict _repr; 
 	pthread_t _thread;
 	pthread_mutex_t _mymutex;
@@ -39,16 +40,14 @@ private:
 
 	static void * staticSaleStart(void * p);
 	void saleStart();
-	int getTotalTime();
 	void resolveEndOfSale();
 	void resolveEndOfTurn();
-
+	void lock(){pthread_mutex_lock(&_mymutex);}
+	void unlock(){pthread_mutex_unlock(&_mymutex);}
 public:
 	Sale(const JSON::Dict & json, PlayerMarket *market);
 	std::string getSalePath(){return (_marketPath + "sale_" + std::to_string(_saleID) + ".json");}
 	std::string getPlayerPath(){return (_playerPath + std::to_string(_saleID) + ".json");}
-	void lock(){pthread_mutex_lock(&_mymutex);}
-	void unlock(){pthread_mutex_unlock(&_mymutex);}
 	int currentBidder(){return _currentBidder;}
 	int getID(){return _saleID;}
 	int getOwner(){return _owner;}
