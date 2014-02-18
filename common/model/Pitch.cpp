@@ -64,25 +64,25 @@ bool Pitch::inEllipsis(Moveable *moveable) const
 
 bool Pitch::isInWestKeeperZone(int x, int y) const{
 	bool res = false;
-	if (inEllipsis(x, y) && (x < -int(width()/6)))
+	if (inEllipsis(x, y) && (x < -int(width()/3.0)))
 		res = true;
 	return res;
 }
 bool Pitch::isInWestKeeperZone(Moveable *moveable) const{
 	bool res = false;
-	if (inEllipsis(moveable) && (moveable->getPosition().x() < -int(width()/6)))
+	if (inEllipsis(moveable) && (moveable->getPosition().x() < -int(width()/3.0)))
 		res = true;
 	return res;
 }
 bool Pitch::isInEastKeeperZone(int x, int y) const{
 	bool res = false;
-	if (inEllipsis(x, y) && (x > int(width()/6)))
+	if (inEllipsis(x, y) && (x > int(width()/3.0)))
 		res = true;
 	return res;
 }
 bool Pitch::isInEastKeeperZone(Moveable *moveable) const{
 	bool res = false;
-	if (inEllipsis(moveable) && (moveable->getPosition().x() > int(width()/6)))
+	if (inEllipsis(moveable) && (moveable->getPosition().x() > int(width()/3.0)))
 		res = true;
 	return res;
 }
@@ -114,7 +114,10 @@ std::ostream & operator<<(std::ostream & out, Pitch const & pitch)
 				out << " ";
 			} else {
 				if (pitch.getAt(x, y) == NULL){
-					out << ".";
+					if (pitch.isInEastKeeperZone(x, y) || pitch.isInWestKeeperZone(x, y))
+						out << ".";
+					else
+						out << "\033[32m.\033[0m";
 				} else {
 					out << "\033[31mo\033[0m";
 				}
