@@ -13,7 +13,7 @@ void Connection::loginUser(string username, string passwd)
 	JSON::Dict toSend, credentials;
 	credentials.set(net::MSG::USERNAME, username);
 	credentials.set(net::MSG::PASSWORD, passwd);
-	toSend.set("type", net::MSG::LOGIN_QUERY);
+	toSend.set("type", net::MSG::LOGIN);
 	toSend.set("data", credentials);
 	net::Message msg(0, toSend.clone());
 	_outbox.push(msg);
@@ -23,7 +23,7 @@ void Connection::loginUser(string username, string passwd)
 	if (ISDICT(serverMessage)){
 		JSON::Dict const &received = DICT(serverMessage);
 		if (received.hasKey("type") && ISSTR(received.get("type")) 
-			&& STR(received.get("type")).value() == net::MSG::CONNECTION_STATUS){
+			&& STR(received.get("type")).value() == net::MSG::STATUS){
 			if (received.hasKey("data") && ISSTR(received.get("data"))) {
 				if (STR(received.get("data")).value() == net::MSG::PASSWORD_ERROR)
 				{
@@ -44,7 +44,7 @@ void Connection::loginUser(string username, string passwd)
 
 void Connection::doesUserExist(string username){
 	JSON::Dict toSend;
-	toSend.set("type", net::MSG::USER_EXISTS_QUERY);
+	toSend.set("type", net::MSG::USER_EXISTS);
 	toSend.set("data", username);
 	net::Message msg(0, toSend.clone());
 	_outbox.push(msg);
@@ -54,7 +54,7 @@ void Connection::doesUserExist(string username){
 	if(ISDICT(serverMessage)){
 		JSON::Dict const &received = DICT(serverMessage);
 		if (received.hasKey("type") && ISSTR(received.get("type")) 
-			&& STR(received.get("type")).value() == net::MSG::CONNECTION_STATUS){
+			&& STR(received.get("type")).value() == net::MSG::STATUS){
 			if (received.hasKey("data") && ISSTR(received.get("data")) 
 				&& STR(received.get("data")).value() == net::MSG::USER_EXISTS){
 				throw UserAlreadyExistsException();
@@ -68,7 +68,7 @@ void Connection::registerUser(string username, string passwd)
 	JSON::Dict toSend, received, credentials;
 	credentials.set(net::MSG::USERNAME, username);
 	credentials.set(net::MSG::PASSWORD, passwd);
-	toSend.set("type", net::MSG::REGISTER_QUERY);
+	toSend.set("type", net::MSG::REGISTER);
 	toSend.set("data", credentials);
 	net::Message msg(0, toSend.clone());
 	_outbox.push(msg);
@@ -78,7 +78,7 @@ void Connection::registerUser(string username, string passwd)
 	if (ISDICT(serverMessage)){
 		JSON::Dict const &received = DICT(serverMessage);
 		if (received.hasKey("type") && ISSTR(received.get("type")) 
-			&& STR(received.get("type")).value() == net::MSG::CONNECTION_STATUS){
+			&& STR(received.get("type")).value() == net::MSG::STATUS){
 			if (received.hasKey("data") && ISSTR(received.get("data"))) {
 				if (STR(received.get("data")).value() == net::MSG::USER_EXISTS)
 					throw UserAlreadyExistsException();
@@ -91,8 +91,8 @@ void Connection::registerUser(string username, string passwd)
 vector<Installation> Connection::getInstallationsList(){
 	JSON::Dict query;
 	JSON::List toFill;
-	query.set("type", net::MSG::DATA_QUERY);
-	query.set("data", net::MSG::INSTALLATIONS_LIST);
+	query.set("type", net::MSG::INSTALLATIONS_LIST);
+	query.set("data", "");
 	net::Message msg(0, query.clone());
 	_outbox.push(msg);
 
@@ -162,8 +162,8 @@ bool Connection::downgradeInstallation(size_t i)
 
 void Connection::getConnectedUsersList(vector<string> &users){
 	JSON::Dict query;
-	query.set("type", net::MSG::DATA_QUERY);
-	query.set("data", net::MSG::CONNECTED_USERS_LIST);
+	query.set("type", net::MSG::CONNECTED_USERS_LIST);
+	query.set("data", "");
 	net::Message msg(0, query.clone());
 	_outbox.push(msg);
 
