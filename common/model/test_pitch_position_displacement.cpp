@@ -174,19 +174,20 @@ TEST(free_position)
     Pitch p(100, 36); 
     Position pos(-48, 0);
     Moveable m(0, 0, pos);
+    Position pos2(-47, -1);
+    Moveable m2(0, 0, pos2);
     p.insert(&m);
+    p.insert(&m2);
     std::vector<Position> free = p.freePositionsAround(pos);
-    ASSERT(free.size() == 5);
+    ASSERT(free.size() == 4);
     ASSERT(free[0].x() == -49);
     ASSERT(free[0].y() == 1);
     ASSERT(free[1].x() == -47);
     ASSERT(free[1].y() == 1);
     ASSERT(free[2].x() == -46);
     ASSERT(free[2].y() == 0);
-    ASSERT(free[3].x() == -47);
+    ASSERT(free[3].x() == -49);
     ASSERT(free[3].y() == -1);
-    ASSERT(free[4].x() == -49);
-    ASSERT(free[4].y() == -1);
 ENDTEST()
 
 int main(int argc, const char **argv)
