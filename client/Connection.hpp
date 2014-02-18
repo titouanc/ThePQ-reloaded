@@ -1,7 +1,7 @@
 #ifndef CONNECTION_HPP
 #define CONNECTION_HPP
 
-#include <network/TcpSocket.hpp>
+#include <network/ConnectionManager.hpp>
 #include <json/json.hpp>
 #include "Exception.hpp"
 #include <Constants.hpp>
@@ -24,7 +24,8 @@ public:
 	void getConnectedUsersList(std::vector<std::string> &users);
 	
 private:
-	net::TcpSocket _socket;
+	SharedQueue<net::Message> _inbox, _outbox;
+	net::ClientConnectionManager _connectionManager;
 };
 
 #endif

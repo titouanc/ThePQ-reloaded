@@ -2,6 +2,15 @@
 
 using namespace std;
 
+std::string humanExcName(const char *name)
+{
+	int status;
+	char *str = abi::__cxa_demangle(name, 0, 0, &status);
+	std::string res(str);
+	free(str);
+	return res;
+}
+
 Client::Client(NetConfig const &config) : _prompt(">"), _connection(config.host, config.port)
 {
 	
@@ -22,7 +31,22 @@ void Client::run()
 	loginMenu.setMessage(message);
 	loginMenu.addOption('l', new ClassCallback<Client>(this,&Client::login));
 	loginMenu.addOption('r', new ClassCallback<Client>(this,&Client::registerUser));
-	loginMenu.run();
+
+	bool error = false;
+	do {
+		try{ 
+			error = false;
+			loginMenu.run(); 
+		} catch (std::runtime_error &err){
+			error = true;
+			cerr << "\033[31mError " << humanExcName(typeid(err).name()) 
+				     << "\t" << err.what() << "\033[0m" << endl;
+		} catch (...){
+			error = true;
+			cerr << "\033[31mUnknow error "
+				 << "\033[0m" << endl;
+		}
+	} while (error);
 
 	cout << Message::goodBye();
 }

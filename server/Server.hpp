@@ -5,7 +5,6 @@
 #include <string>
 #include <map>
 #include <network/ConnectionManager.hpp>
-#include <network/TcpSocket.hpp>
 #include "User.hpp"
 #include <Config.hpp>
 #include "PlayerMarket.hpp"
@@ -45,12 +44,15 @@ public:
 	void logUserIn(const JSON::Dict &credentials, int peer_id);
 	void checkIfUserExists(string username, int peer_id);
 	void sendInstallationsList(int peer_id);
+	void upgradeInstallation(int peer_id, size_t i);
+	void downgradeInstallation(int peer_id, size_t i);
 	void sendConnectedUsersList(int peer_id);
     //market
     void sendPlayersOnMarketList(int peer_id);
     void addPlayerOnMarket(const JSON::Dict &bid, int peer_id);
     void deletePlayerOfMarket(const JSON::Dict &bid, int peer_id);
     void placeBidOnPlayer(const JSON::Dict &bid, int peer_id);
+    string getRandomName();
 private:
 	SharedQueue<net::Message> _inbox, _outbox;
 	map<int, User*> _users;

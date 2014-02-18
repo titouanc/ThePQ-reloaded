@@ -77,6 +77,13 @@ void Server::treatMessage(const Message &message){
 					else if(data == MSG::PLAYERS_ON_MARKET_LIST)
 						sendPlayersOnMarketList(message.peer_id);
 				}
+			} else if (ISINT(received.get("data"))) {
+				int data = INT(received.get("data"));
+				if (messageType == MSG::INSTALLATION_UPGRADE) {
+					upgradeInstallation(message.peer_id, data);
+				} else if (messageType == MSG::INSTALLATION_DOWNGRADE) {
+					downgradeInstallation(message.peer_id, data);
+				}
 			}
 		}
 	}
@@ -160,7 +167,30 @@ void Server::checkIfUserExists(string username, int peer_id){
 void Server::sendInstallationsList(int peer_id){
 	string listPath = _users[peer_id]->getUserDirectoryPath() + "installations.json";
 	JSON::Value * installationsList = JSON::load(listPath);
-	_outbox.push(Message(peer_id, installationsList));
+	JSON::Dict msg;
+	msg.set("type", net::MSG::DATA_SEND);
+	msg.set("data", *installationsList);
+	_outbox.push(Message(peer_id, msg.clone()));
+}
+
+void Server::upgradeInstallation(int peer_id, size_t i)
+{
+	_users[peer_id]->getInstallations()[i].upgrade();
+	_users[peer_id]->saveInstallations();
+	JSON::Dict msg;
+	msg.set("type", net::MSG::INSTALLATION_UPGRADE);
+	msg.set("data", JSON::Bool(true));
+	_outbox.push(Message(peer_id, msg.clone()));
+}
+
+void Server::downgradeInstallation(int peer_id, size_t i)
+{
+	_users[peer_id]->getInstallations()[i].downgrade();	
+	_users[peer_id]->saveInstallations();
+	JSON::Dict msg;
+	msg.set("type", net::MSG::INSTALLATION_DOWNGRADE);
+	msg.set("data", JSON::Bool(true));
+	_outbox.push(Message(peer_id, msg.clone()));
 }
 
 void Server::sendConnectedUsersList(int peer_id){

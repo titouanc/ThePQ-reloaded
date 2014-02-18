@@ -1,6 +1,8 @@
 #ifndef Team_hpp
 #define Team_hpp
 
+#include "Player.hpp"
+#include "Coach.hpp"
 #include "Gear.hpp"
 #include "Sponsor.hpp"
 #include "Installation.hpp"
@@ -8,7 +10,7 @@
 #include <list>
 
 /*
-Think about :
+TODO Think about :
 - Determinate consts values
 - Already got a sponsor at start ? Coach ?
 - Nbr starting players ? (6?)
@@ -30,7 +32,7 @@ private:
 	std::list<Player> _players;
 	std::list<Coach> _coaches;
 	std::list<Gear> _gear;
-	Stadium _stadium;
+	//Stadium _stadium; // TODO delete?
 	Sponsor _sponsor;
 	int _fame;
 	int _funds;
@@ -41,11 +43,11 @@ private:
 	void createStartingPlayers();
 public:
 	//Constructors
-	Team::Team(): _name(UNNAMED_TEAM+_nbrUnnamedTeams), _fame(STARTING_FAME), _funds(STARTING_FUNDS), _nbrWin(0), _nbrPlayed(0){
+	Team(): _name(UNNAMED_TEAM+_nbrUnnamedTeams), _fame(STARTING_FAME), _funds(STARTING_FUNDS), _nbrWin(0), _nbrPlayed(0){
 		++_nbrUnnamedTeams;
 		createStartingPlayers();
 	}
-	Team::Team(name): _name(name), _fame(STARTING_FAME), _funds(STARTING_FUNDS), _nbrWins(0), _nbrPlayed(0){createStartingPlayers();}
+	Team(name): _name(name), _fame(STARTING_FAME), _funds(STARTING_FUNDS), _nbrWins(0), _nbrPlayed(0){createStartingPlayers();}
 
 	//Getters
 	std::string getName(){return _name;}
@@ -53,8 +55,8 @@ public:
 	int getFame(){return _fame;}
 	int getWins(){return _nbrWins;}
 	int getPlayed(){return _nbrPlayed;}
-	float getRatio (){return nbrWins/nbrPlayed;}
-	Stadium getStadium(){return _stadium;}
+	float getRatio (){return _nbrWins/_nbrPlayed;}
+	//Stadium getStadium(){return _stadium;} // TODO delete?
 	Sponsor getSponsor(){return _sponsor;}
 	std::list<Player> getPlayers(){return _players;}
 	std::list<Coach> getCoaches(){return _coaches;}

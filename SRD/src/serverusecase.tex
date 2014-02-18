@@ -5,14 +5,14 @@
     \caption{\label{fig:UCS:system} Cas d'utilisation: Système - partie gestion}
 \end{figure}
 
-\subsubsection{Connexion d'un utilisateur}
+\subsubsection{Connexion d'un utilisateur (connection from client)}
 	\label{UCS:connection}
 	\paragraph{Relations avec d'autres cas d'utilisation} Inclut \ref{UCS:verification}.
     \paragraph{Précondition} Le \gls{serveur} est allumé.
     \paragraph{Cas général} Le serveur reçoit les informations de connexion d'un utilisateur.
 
 
-\subsubsection{Vérification des informations de connexion}
+\subsubsection{Vérification des informations de connexion (check login info)}
 	\label{UCS:verification}
 	\paragraph{Relations avec d'autres cas d'utilisation} Est inclus par \ref{UCS:connection}.\\
 	Inclut \ref{UCS:waitrequest}.
@@ -20,7 +20,7 @@
     \paragraph{Cas exceptionnel} Le couple Nom d'utilisateur - Mot de passe est incorrect.
     \paragraph{Postcondition} L'utilisateur est connecté.
     
-\subsubsection{Attente des requêtes du client}
+\subsubsection{Attente des requêtes du client (wait for request)}
 	\label{UCS:waitrequest}
 	\paragraph{Relations avec d'autres cas d'utilisation} Est inclus par \ref{UCS:verification}.
 	Est étendu par \ref{UCS:updatesquad}, \ref{UCS:updateinstallation}, \ref{UCS:sendtransfers}, \ref{UCS:sendgear}, \ref{UCS:sendinfo}.
@@ -29,35 +29,35 @@
     \paragraph{Cas exceptionnel} Le serveur ne reçoit pas de message du client ou reçoit un message qui n'est pas reconnaissable.
     \paragraph{Postcondition} Le serveur a envoyé les informations nécessaires, ou a stocké les informations envoyées par le client et continue à attendre des messages du client.
 
-\subsubsection{Mise à jour des informations de l'équipe}
+\subsubsection{Mise à jour des informations de l'équipe (update squad info)}
 	\label{UCS:updatesquad}
 	\paragraph{Relations avec d'autres cas d'utilisation} \'Etend \ref{UCS:waitrequest}.
 	\paragraph{Précondition} L'utilisateur a envoyé une liste de changements à faire dans l'équipe qu'il possède.
     \paragraph{Cas général} Le \gls{serveur} met à jour sa copie des données à propos de l'équipe de l'utilisateur.
     \paragraph{Postcondition} L'équipe du joueur est à jour sur le serveur et le serveur continue à attendre des messages du \gls{client}.
 
-\subsubsection{Mise à jour des informations d'une installation}
+\subsubsection{Mise à jour des informations d'une installation (installation attribute)}
 	\label{UCS:updateinstallation}
 	\paragraph{Relations avec d'autres cas d'utilisation} \'Etend \ref{UCS:waitrequest}.
 	\paragraph{Précondition} L'utilisateur a changé les informations d'une installation qu'il possède.
     \paragraph{Cas général} Le \gls{serveur} met à jour sa copie des données à propos de l'installation.
     \paragraph{Postcondition} Les données de l'installation du joueur est à jour sur le serveur et le serveur continue à attendre des messages du \gls{client}.
     
-\subsubsection{Envoi de la liste des joueurs disponibles pour un transfert}
+\subsubsection{Envoi de la liste des joueurs disponibles pour un transfert (transfers list)}
 	\label{UCS:sendtransfers}
 	\paragraph{Relations avec d'autres cas d'utilisation} \'Etend \ref{UCS:waitrequest}.
 	\paragraph{Précondition} L'utilisateur a demandé à voir la liste des joueurs qu'il peut acheter.
     \paragraph{Cas général} Le \gls{serveur} envoie cette liste.
     \paragraph{Postcondition} Le \gls{client} a reçu la liste et le serveur continue à attendre des messages du client.
     
-\subsubsection{Envoi de la liste du matériel disponible à l'achat}
+\subsubsection{Envoi de la liste du matériel disponible à l'achat (list of gears)}
 	\label{UCS:sendgear}
 	\paragraph{Relations avec d'autres cas d'utilisation} \'Etend \ref{UCS:waitrequest}.
 	\paragraph{Précondition} L'utilisateur a demandé à voir la liste du matériel qu'il peut acheter.
     \paragraph{Cas général} Le \gls{serveur} envoie cette liste.
     \paragraph{Postcondition} Le \gls{client} a reçu la liste et le serveur continue à attendre des messages du client.
     
-\subsubsection{Envoi des informations liées à l'utilisateur connecté}
+\subsubsection{Envoi des informations liées à l'utilisateur connecté (get team info)}
 	\label{UCS:sendinfo}
 	\paragraph{Relations avec d'autres cas d'utilisation} \'Etend \ref{UCS:waitrequest}.
 	\paragraph{Précondition} L'utilisateur a demandé à recevoir la liste de ses joueurs, de ses installations ou de ses groupes d'entraînement, par exemple lorsqu'il désire avoir un aperçu de son stade.

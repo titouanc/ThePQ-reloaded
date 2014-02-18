@@ -1,7 +1,7 @@
 #include <lighttest/lighttest.hpp>
-#include "Position.hpp"
-#include "Displacement.hpp"
-#include "Pitch.hpp"
+#include <model/Position.hpp>
+#include <model/Displacement.hpp>
+#include <model/Pitch.hpp>
 
 static Position West(-2, 0);
 static Position SouthWest(-1, -1); 
@@ -133,7 +133,7 @@ ENDTEST()
 
 TEST(pitch)
     Position p1, p2(2, 0);
-    Moveable m1("1", 0, 0, p1), m2("2", 0, 0, p2);
+    Moveable m1(0, 0, p1), m2(0, 0, p2);
     Pitch p(10, 10);
     p.insert(&m1);
     p.insert(&m2);
@@ -160,11 +160,11 @@ TEST(pitch_repr)
     ASSERT(p.inEllipsis(0, -9));
 
     Position pos;
-    Moveable m("Titou", 0, 0, pos);
+    Moveable m(0, 0, pos);
     p.insert(&m);
 
     pos = Position(2, 2);
-    Moveable n("Floflo", 0, 0, pos);
+    Moveable n(0, 0, pos);
     p.insert(&n);
     cout << p;
 ENDTEST()

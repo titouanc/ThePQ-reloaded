@@ -2,6 +2,7 @@
 #include <json/json.hpp>
 #include <lighttest/lighttest.hpp>
 #include "MatchManager.hpp"
+#include "RandomNameGenerator.hpp"
 
 TEST(user)
 	User user("usertest", "passwdtest");
@@ -20,6 +21,7 @@ TEST(user)
 	delete test;
 ENDTEST()
 
+/*
 TEST(squad)
 	JSON::Value *json = JSON::load("fixtures/squad1.json");
 	ASSERT(ISDICT(json));
@@ -35,6 +37,7 @@ TEST(squad)
 	}
 ENDTEST()
 
+
 TEST(matchmanager)
 	JSON::Value *A = JSON::load("fixtures/squad1.json");
 	ASSERT(ISDICT(A));
@@ -45,13 +48,27 @@ TEST(matchmanager)
 	delete A;
 	delete B;
 ENDTEST()
+*/
+TEST(randomname)
+	RandomNameGenerator r;
+	for (int i=0; i<10; i++){
+		std::string name = r.getRandomName();
+		ASSERT(name.length() > 0);
+		ASSERT(name != "Michel-Michel Michel");
+		if (i > 0)
+			cout << ", ";
+		cout << name;
+	}
+	cout << endl;
+ENDTEST()
 
 int main(int argc, const char **argv)
 {
 	TestFunc tests[] = {
 		ADDTEST(user),
-		ADDTEST(squad),
-		ADDTEST(matchmanager)
+		//ADDTEST(squad),
+		//ADDTEST(matchmanager),
+		ADDTEST(randomname)
 	};
 	return RUN(tests);
 }

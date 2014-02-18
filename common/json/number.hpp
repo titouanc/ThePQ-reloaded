@@ -17,7 +17,7 @@ class Number : public Value {
         Value *clone(void) const;
         operator T const &(){return value();}
 };
-
+/*==Define std::objects to JSON format==*/
 class Integer : public Number<long int> {
     public:
         using Number<long int>::Number;
@@ -31,10 +31,11 @@ class Float : public Number<double> {
 };
 
 class Bool : public Number<bool> {
+    private:
+        void _writeTo(std::ostream & out) const;
     public:
         using Number<bool>::Number;
         Type type(void) const;
-        void _writeTo(std::ostream & out) const;
 };
 
 template <typename T>
@@ -66,6 +67,8 @@ long int Number<T>::intVal(void) const
 template <typename T>
 Value * Number<T>::clone(void) const
 {
+    if (ISBOOL(this))
+        return new Bool(_value);
     if (ISINT(this))
         return new Integer(_value);
     return new Float(_value);

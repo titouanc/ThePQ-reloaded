@@ -18,51 +18,51 @@ points gagnés et les collisions qui interviennent durant ce tour.
     \caption{\label{fig:UC:game} Cas d'utilisation: match de Quidditch}
 \end{figure}
 
-\subsubsection{Sélection d'un joueur}
+\subsubsection{Sélection d'un joueur (select player)}
     \label{UC:selectPlayerOnPitch}
     \paragraph{Précondition} L'utilisateur est connecté au match et le temps de jeu pour ce tour n'est pas dépassé.
     \paragraph{Cas général} L'utilisateur clique sur un joueur. L'ensemble des cases accessibles en ligne droite depuis la position du joueur est mis en évidence. Des icônes apparaissent selon les particularités du joueur: frapper la balle, attraper le vif d'or, lancer un sort d'amélioration, etc\footnote{L'ensemble des coups jouables sera déterminé plus loin dans le développement du jeu, à partir des constats sur l'équilibrage du jeu}...
     \paragraph{Cas exceptionnels} Le \gls{joueur} n'appartient pas à la \gls{selection} de l'\gls{utilisateur}.
     \paragraph{Postcondition} le joueur est sélectionné. 
 
-\subsubsection{Sélection d'une direction}
+\subsubsection{Sélection d'une direction (choose direction)}
     \label{UC:selectDirection}
     \paragraph{Précondition} Un joueur est sélectionné ou une action du joueur sélectionné requiert une direction.
     \paragraph{Cas général} L'utilisateur clique sur une case accessible en ligne droite.
     \paragraph{Cas exceptionnel} La case de destination n'est pas accessible à cause des règles de l'action à effectuer.
     \paragraph{Postcondition} L'action est ajoutée à la liste des coups de l'utilisateur pour ce tour; une icône est ajoutée au groupe d'icônes des actions de l'utilisateur pour ce tour.
 
-\subsubsection{Sélection d'une destination}
+\subsubsection{Sélection d'une destination (select destination)}
     \label{UC:selectDestination}
     \paragraph{Précondition} Un joueur est sélectionné.
     \paragraph{Cas général} L'utilisateur clique sur une des cases accessibles en ligne droite \textit{(mises en évidence au cas d'utilisation \ref{UC:selectPlayerOnPitch})} selon le cas d'utilisation \ref{UC:selectDirection}.
     \paragraph{Postcondition} Si le joueur continue un mouvement, ce déplacement est ajouté au mouvement du joueur. Sinon, le joueur commence un mouvement, et une icône est ajoutée au groupe d'icône des actions du tour.
 
-\subsubsection{Lancement d'une balle}
+\subsubsection{Lancement d'une balle (throw ball)}
     \paragraph{Précondition} Le joueur sélectionné est un \gls{poursuiveur} et il a le \gls{souaffle}.
     \paragraph{Cas général} Continue selon le cas d'utilisation \ref{UC:selectDirection}
 
-\subsubsection{Utiliser la batte}
+\subsubsection{Utiliser la batte (use batt)}
     \paragraph{Précondition} Le joueur sélectionné est un \gls{batteur}.
     \paragraph{Cas général} Le joueur essaye de taper dans un \gls{cognard}. Lorsque le mouvement sera effectivement joué, si le joueur est au même moment sur la même case que la balle, celle-ci partira dans la direction spécifiée, sinon le joueur tape dans le vent. Continue selon le cas d'utilisation \ref{UC:selectDirection} .
 
-\subsubsection{Lancer un sort}
+\subsubsection{Lancer un sort (cast spell)}
     \label{UC:castSpell}
     \paragraph{Précondition} Le sort est utilisable à ce moment (les conditions peuvent varier selon le sort et l'état du jeu).
     \paragraph{Cas général} L'utilisateur clique sur un des sorts du joueur. Si le sort nécessite une direction, continue selon le cas d'utilisation \ref{UC:selectDirection}. Sinon, une icône s'ajoute (comme au cas d'utilisation précité).
     \paragraph{Postcondition} L'action est ajoutée à la liste des coups pour ce tour.
 
-\subsubsection{Annuler un coup}
+\subsubsection{Annuler un coup (cancel action)}
     \paragraph{Précondition} L'utilisateur a au moins joué un coup durant ce \gls{tour}.
     \paragraph{Cas général} L'utilisateur effectue un clic droit sur une des icônes de coups joués.
     \paragraph{Postcondition} Le coup est retiré de la liste des coups pour ce tour.
 
-\subsubsection{Attraper le vif d'or}
+\subsubsection{Attraper le vif d'or (catch golden snitch)}
     \paragraph{Précondition} L'attrapeur est assez proche du vif d'or pour le voir et l'attraper (selon ses caractéristiques).
     \paragraph{Cas général} Se déroule comme au cas d'utilisation \ref{UC:castSpell}.
     \paragraph{Postcondition} Lorsque le tour est joué: si le sort réussit le match s'arrête et l'\gls{equipe} du joueur remporte 150 points.
 
-\subsubsection{Terminer son tour volontairement}
+\subsubsection{Terminer son tour volontairement (end turn)}
     \paragraph{Précondition} Le temps de jeu pour ce tour n'est pas dépassé.
     \paragraph{Cas général} L'utilisateur clique sur le bouton "terminer le tour". Continue selon le cas d'utilisation \ref{UC:endTurn}.
 

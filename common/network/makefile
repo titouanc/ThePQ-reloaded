@@ -1,8 +1,8 @@
-OBJS = TcpSocket.o ConnectionManager.o
+OBJS = ConnectionManager.o
 LIBS = ../json/libjson.a
 CPPFLAGS = -I../
 
-all: test.ok libnetwork.a
+all: libnetwork.a
 
 libnetwork.a: ${OBJS}
 	ar r $@ $^

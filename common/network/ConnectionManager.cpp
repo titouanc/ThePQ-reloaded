@@ -5,6 +5,7 @@
 #include <cstdint>
 
 extern "C" {
+    #include <netdb.h>
     #include <unistd.h>
     #include <sys/types.h>
     #include <sys/stat.h>
@@ -19,9 +20,11 @@ using namespace net;
 
 /* ===== BaseConnectionManager ===== */
 BaseConnectionManager::BaseConnectionManager( 
+    /*Constructor*/
     SharedQueue<Message> & incoming_queue,
-    SharedQueue<Message> & outgoing_queue
-) : _incoming(incoming_queue), _outgoing(outgoing_queue)
+    SharedQueue<Message> & outgoing_queue,
+    bool logger
+) : _running(false), _incoming(incoming_queue), _outgoing(outgoing_queue), _logger(logger)
 {
     pthread_mutex_init(&_mutex, NULL);
     pthread_mutex_init(&_fdset_mutex, NULL);
@@ -29,16 +32,22 @@ BaseConnectionManager::BaseConnectionManager(
 
 BaseConnectionManager::~BaseConnectionManager()
 {
+    /*Destructor*/
     stop();
-    std::set<int>::iterator it;
-    for (it=_clients.begin(); it!=_clients.end(); it++)
+    std::set<int>::iterator it, next;
+    for (it=_clients.begin(); it!=_clients.end();) {
+		next = it;
+		next++;
         _doDisconnect(*it);
+		it = next;
+    }
     pthread_mutex_destroy(&_mutex);
     pthread_mutex_destroy(&_fdset_mutex);
 }
 
 bool BaseConnectionManager::_doWrite(int fd, JSON::Value *obj)
 {
+    /*Method sending <<obj>> over the network*/
     if (obj != NULL){
         std::string const & repr = obj->dumps();
         uint32_t msglen = htonl(repr.length());
@@ -51,7 +60,9 @@ bool BaseConnectionManager::_doWrite(int fd, JSON::Value *obj)
             if (r < 0)
                 return false;
         }
-        std::cout << "\033[1m" << fd << " \033[36m<<\033[0m " << *obj << std::endl;
+        if (_logger)
+            std::cout << "\033[1m" << fd << " \033[36m<<\033[0m " 
+                      << *obj << std::endl;
     }
     return true;
 }
@@ -81,7 +92,9 @@ bool BaseConnectionManager::_doRead(int fd)
     JSON::Value *res = JSON::parse(globalBuf.str().c_str());
     if (res != NULL){
         _incoming.push(Message(fd, res));
-        std::cout << "\033[1m" << fd << " \033[33m>>\033[0m " << *res << std::endl;
+        if (_logger)
+            std::cout << "\033[1m" << fd << " \033[33m>>\033[0m " 
+                      << *res << std::endl;
     }
 
     return true;
@@ -89,17 +102,20 @@ bool BaseConnectionManager::_doRead(int fd)
 
 void BaseConnectionManager::_doDisconnect(int fd)
 {
+    /*Method performing the disconnect between the server and the client*/
     close(fd);
     removeClient(fd);
     JSON::Dict msgdata;
     msgdata.set("type", "DISCONNECT");
     msgdata.set("client_id", fd);
     _incoming.push(Message(fd, msgdata.clone()));
-    std::cout << "\033[1m" << fd << " \033[35m disconnected\033[0m" << std::endl;
+    if (_logger)
+		std::cout << "\033[1m" << fd << " \033[35m disconnected\033[0m" << std::endl;
 }
 
 void BaseConnectionManager::_doConnect(int fd)
 {
+    /*Method performing the connection between the server and the client*/
     addClient(fd);
     JSON::Dict msgdata;
     msgdata.set("type", "CONNECT");
@@ -110,6 +126,9 @@ void BaseConnectionManager::_doConnect(int fd)
 
 int BaseConnectionManager::_doSelect(int fdmax, fd_set *readable)
 {
+    /*Method allowing the selection of the connection
+     * of the client
+     */
     pthread_mutex_lock(&_fdset_mutex);
     std::set<int>::iterator it;
     for (it=_clients.begin(); it!=_clients.end(); it++){
@@ -164,6 +183,7 @@ void BaseConnectionManager::_mainloop_out(void)
 
 void BaseConnectionManager::addClient(int fd)
 {
+    /*Method allowing the addition of a client to the server*/
     pthread_mutex_lock(&_fdset_mutex);
     _clients.insert(fd);
     pthread_mutex_unlock(&_fdset_mutex);
@@ -171,6 +191,10 @@ void BaseConnectionManager::addClient(int fd)
 
 bool BaseConnectionManager::removeClient(int fd)
 {
+    /*Method removing a client from the server
+     *returns a boolean if disconnect successful
+     *false otherwise
+     */
     bool res = false;
     pthread_mutex_lock(&_fdset_mutex);
     if (_clients.find(fd) != _clients.end()){
@@ -250,7 +274,7 @@ ConnectionManager::ConnectionManager(
     const char *bind_addr_repr, 
     unsigned short bind_port,
     int max_clients
-) : BaseConnectionManager::BaseConnectionManager(incoming_queue, outgoing_queue),
+) : BaseConnectionManager::BaseConnectionManager(incoming_queue, outgoing_queue, true),
    _sockfd(-1)
 {
     int yes = 1;
@@ -350,4 +374,70 @@ SubConnectionManager::~SubConnectionManager()
         releaseClient(*client);
         client = next;
     }
+}
+
+ClientConnectionManager::ClientConnectionManager(
+				SharedQueue<Message> & incoming_queue,
+				SharedQueue<Message> & outgoing_queue,
+				const char *host_addr, 
+				unsigned short host_port
+) : BaseConnectionManager::BaseConnectionManager(incoming_queue, outgoing_queue, false),
+	_sockfd(-1)
+{
+    struct hostent *host = gethostbyname(host_addr);
+    if (host == NULL){
+        throw ConnectionFailedException(
+            std::string("Could not resolve host ")+host_addr
+        );
+    }
+
+    _sockfd = socket(AF_INET, SOCK_STREAM, 0);
+    if (_sockfd < 0)
+        throw ConnectionFailedException();
+
+    memset(&_host_addr, 0, sizeof(struct sockaddr_in));
+    
+    _host_addr.sin_family = AF_INET;
+    _host_addr.sin_port = htons(host_port);
+    _host_addr.sin_addr = *((struct in_addr*) *(host->h_addr_list));
+
+    if (connect(_sockfd, (struct sockaddr *) &_host_addr,
+		sizeof(_host_addr)) < 0)
+	{
+		close(_sockfd);
+		throw ConnectionFailedException();
+	}
+
+    addClient(_sockfd);
+}
+
+void ClientConnectionManager::_mainloop_in()
+{
+	while(isRunning())
+	{
+		if(_doRead(_sockfd) == false)
+		{
+			_doDisconnect(_sockfd);
+			stop();
+		}
+	}
+}
+
+void ClientConnectionManager::_mainloop_out()
+{
+    while (isRunning()){
+        Message const & msg = _outgoing.pop();
+        _doWrite(_sockfd, msg.data);
+        delete msg.data;
+    }
+}
+
+const char *ClientConnectionManager::ip(void) const
+{
+    return inet_ntoa(_host_addr.sin_addr);
+}
+
+unsigned short ClientConnectionManager::port(void) const
+{
+    return ntohs(_host_addr.sin_port);
 }

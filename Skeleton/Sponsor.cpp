@@ -1,5 +1,4 @@
 #include "Sponsor.hpp"
-#include "Team.hpp"
 
 using namespace std;
 

@@ -3,6 +3,8 @@
 
 #include <iostream>
 #include <string>
+#include <typeinfo>
+#include <cxxabi.h>
 #include "Message.hpp"
 #include "Connection.hpp"
 #include "Exception.hpp"
