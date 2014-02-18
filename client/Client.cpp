@@ -1,14 +1,14 @@
-#include "Connection.hpp"
+#include "Client.hpp"
 
 using namespace std;
 
-Connection::Connection(std::string host, int port) : _inbox(), _outbox(),
+Client::Client(std::string host, int port) : _inbox(), _outbox(),
 _connectionManager(_inbox, _outbox, host.c_str(), port)
 {
 	_connectionManager.start();
 }
 
-void Connection::loginUser(string username, string passwd)
+void Client::loginUser(string username, string passwd)
 {
 	JSON::Dict toSend, credentials;
 	credentials.set(net::MSG::USERNAME, username);
@@ -42,7 +42,7 @@ void Connection::loginUser(string username, string passwd)
 	// User is logged in at this point.
 }
 
-void Connection::doesUserExist(string username){
+void Client::doesUserExist(string username){
 	JSON::Dict toSend;
 	toSend.set("type", net::MSG::USER_EXISTS);
 	toSend.set("data", username);
@@ -63,7 +63,7 @@ void Connection::doesUserExist(string username){
 	}
 }
 
-void Connection::registerUser(string username, string passwd)
+void Client::registerUser(string username, string passwd)
 {
 	JSON::Dict toSend, received, credentials;
 	credentials.set(net::MSG::USERNAME, username);
@@ -88,7 +88,7 @@ void Connection::registerUser(string username, string passwd)
 	// User is registered
 }
 
-vector<Installation> Connection::getInstallationsList(){
+vector<Installation> Client::getInstallationsList(){
 	JSON::Dict query;
 	JSON::List toFill;
 	query.set("type", net::MSG::INSTALLATIONS_LIST);
@@ -114,7 +114,7 @@ vector<Installation> Connection::getInstallationsList(){
 	return vec;
 }
 
-bool Connection::upgradeInstallation(size_t i)
+bool Client::upgradeInstallation(size_t i)
 {
 	bool ret = false;
 	JSON::Dict query;
@@ -136,7 +136,7 @@ bool Connection::upgradeInstallation(size_t i)
 	return ret;
 }
 
-bool Connection::downgradeInstallation(size_t i)
+bool Client::downgradeInstallation(size_t i)
 {
 	bool ret = false;
 	JSON::Dict query;
@@ -160,7 +160,7 @@ bool Connection::downgradeInstallation(size_t i)
 	return ret;
 }
 
-vector<std::string> Connection::getConnectedUsersList(){
+vector<std::string> Client::getConnectedUsersList(){
 	vector<std::string> res;
 	JSON::Dict query;
 	query.set("type", net::MSG::CONNECTED_USERS_LIST);

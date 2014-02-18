@@ -6,7 +6,7 @@
 #include <typeinfo>
 #include <cxxabi.h>
 #include "Message.hpp"
-#include "Connection.hpp"
+#include "Client.hpp"
 #include "Exception.hpp"
 #include "Menu.hpp"
 #include <Config.hpp>
@@ -40,7 +40,7 @@ public:
 private:
 	std::string _userChoice;
 	std::string _prompt;
-	Connection _connection;
+	Client _connection;
 	std::vector<Installation> _installations;
 	
 	// User menu

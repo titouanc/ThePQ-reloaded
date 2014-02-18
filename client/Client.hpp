@@ -9,10 +9,10 @@
 #include <vector>
 #include "model/Installation.hpp"
 
-class Connection
+class Client
 {
 public:
-	Connection(std::string host, int port);
+	Client(std::string host, int port);
 	
 	void loginUser(std::string username, std::string passwd);
 	void doesUserExist(std::string username);
