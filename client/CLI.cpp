@@ -1,4 +1,4 @@
-#include "Client.hpp"
+#include "CLI.hpp"
 
 using namespace std;
 
@@ -11,18 +11,18 @@ std::string humanExcName(const char *name)
 	return res;
 }
 
-Client::Client(NetConfig const &config) : 	_prompt(">"), 
+CLI::CLI(NetConfig const &config) : 	_prompt(">"), 
 												_connection(config.host, config.port)
 {
 	
 }
 
-Client::~Client()
+CLI::~CLI()
 {
 	
 }
 
-void Client::run()
+void CLI::run()
 {
 	cout << Message::splashScreen();
 	
@@ -31,7 +31,7 @@ void Client::run()
 	cout << Message::goodBye();
 }
 
-void Client::loginMenu()
+void CLI::loginMenu()
 {
 	/* user menu */
 	Menu loginMenu;
@@ -42,8 +42,8 @@ void Client::loginMenu()
 	message+= "   - (q)uit\n";
 	message+= _prompt;
 	loginMenu.setMessage(message);
-	loginMenu.addOption('l', new ClassCallback<Client>(this,&Client::login));
-	loginMenu.addOption('r', new ClassCallback<Client>(this,&Client::registerUser));
+	loginMenu.addOption('l', new ClassCallback<CLI>(this,&CLI::login));
+	loginMenu.addOption('r', new ClassCallback<CLI>(this,&CLI::registerUser));
 
 	bool error = false;
 	do {
@@ -62,7 +62,7 @@ void Client::loginMenu()
 	} while (error);
 }
 
-void Client::login(){
+void CLI::login(){
 	
 	string username = askForUserData("Username : ");
 	string password = askForUserData("Password : ");
@@ -83,7 +83,7 @@ void Client::login(){
 	}
 }
 
-void Client::registerUser(){
+void CLI::registerUser(){
 	bool registered = false;
 	for (int i = 0; i < 3 && ! registered; ++i)
 	{
@@ -105,7 +105,7 @@ void Client::registerUser(){
 	
 
 /* main menu */
-void Client::mainMenu()
+void CLI::mainMenu()
 {
 	Menu main;
 	string message;
@@ -115,13 +115,13 @@ void Client::mainMenu()
 	message+= "   - (q)uit\n";
 	message+= _prompt;
 	main.setMessage(message);
-	main.addOption('m', new ClassCallback<Client>(this, &Client::managementMenu));
-	main.addOption('p', new ClassCallback<Client>(this, &Client::friendlyMatchMenu));
+	main.addOption('m', new ClassCallback<CLI>(this, &CLI::managementMenu));
+	main.addOption('p', new ClassCallback<CLI>(this, &CLI::friendlyMatchMenu));
 	main.run();
 }
 
 /* Management menu */
-void Client::managementMenu()
+void CLI::managementMenu()
 {
 	Menu mgt;
 	string message;
@@ -131,12 +131,12 @@ void Client::managementMenu()
 	message+= "   - (q)uit to main menu\n";
 	message+= _prompt;
 	mgt.setMessage(message);
-	mgt.addOption('s', new ClassCallback<Client>(this, &Client::stadiumMenu));
-	mgt.addOption('p', new ClassCallback<Client>(this, &Client::playersMenu));
+	mgt.addOption('s', new ClassCallback<CLI>(this, &CLI::stadiumMenu));
+	mgt.addOption('p', new ClassCallback<CLI>(this, &CLI::playersMenu));
 	mgt.run();
 }
 
-void Client::stadiumMenu()
+void CLI::stadiumMenu()
 {
 	Menu stadium;
 	string message;
@@ -145,15 +145,15 @@ void Client::stadiumMenu()
 	message+= "    - (u)pgrade an installation\n";
 	message+= "    - (d)owngrade an installation\n";
 	message+= "    - (q)uit to management menu\n";
-	stadium.addOption('v', new ClassCallback<Client>(this, &Client::printInstallationsList));
-	stadium.addOption('u', new ClassCallback<Client>(this, &Client::upgradeInstallation));
-	stadium.addOption('d', new ClassCallback<Client>(this, &Client::downgradeInstallation));
+	stadium.addOption('v', new ClassCallback<CLI>(this, &CLI::printInstallationsList));
+	stadium.addOption('u', new ClassCallback<CLI>(this, &CLI::upgradeInstallation));
+	stadium.addOption('d', new ClassCallback<CLI>(this, &CLI::downgradeInstallation));
 	stadium.setMessage(message);
 	// TODO : stadium menu
 	stadium.run();
 }
 
-void Client::playersMenu()
+void CLI::playersMenu()
 {
 	Menu players;
 	string message;
@@ -165,7 +165,7 @@ void Client::playersMenu()
 }
 
 /* Friendly match menu */
-void Client::friendlyMatchMenu()
+void CLI::friendlyMatchMenu()
 {
 	Menu friendly;
 	string message;
@@ -175,20 +175,20 @@ void Client::friendlyMatchMenu()
 	message+= "   - (q)uit to main menu\n";
 	message+= _prompt;
 	friendly.setMessage(message);
-	friendly.addOption('l', new ClassCallback<Client>(this, &Client::printConnectedUsersList));
-	friendly.addOption('c', new ClassCallback<Client>(this, &Client::chooseUser));
+	friendly.addOption('l', new ClassCallback<CLI>(this, &CLI::printConnectedUsersList));
+	friendly.addOption('c', new ClassCallback<CLI>(this, &CLI::chooseUser));
 	friendly.run();
 }
 
-void Client::chooseUser()
+void CLI::chooseUser()
 {
 	// TODO : choose user for friendly match
 }
-void Client::loadInstallations(){
+void CLI::loadInstallations(){
 	_installations = _connection.getInstallationsList();
 }
 
-void Client::printInstallationsList(){
+void CLI::printInstallationsList(){
 	if (_installations.empty())
 	{
 		loadInstallations();
@@ -205,7 +205,7 @@ void Client::printInstallationsList(){
 	}
 }
 
-void Client::upgradeInstallation()
+void CLI::upgradeInstallation()
 {
 	size_t choice;
 	cout << "Enter the number of the installation you want to upgrade" << endl << ">";
@@ -223,7 +223,7 @@ void Client::upgradeInstallation()
 	}
 }
 
-void Client::downgradeInstallation()
+void CLI::downgradeInstallation()
 {
 	size_t choice;
 	cout << "Enter the number of the installation you want to downgrade" << endl << ">";
@@ -241,7 +241,7 @@ void Client::downgradeInstallation()
 	}
 }
 
-void Client::printConnectedUsersList(){
+void CLI::printConnectedUsersList(){
 	vector<std::string> connectedUsers = _connection.getConnectedUsersList();
 	cout << "Here are all the connected users : " << endl;
  	for (size_t i=0; i < connectedUsers.size(); ++i)
@@ -251,14 +251,14 @@ void Client::printConnectedUsersList(){
 
 /* Private methods */
 
-string Client::askForUserData(string prompt){
+string CLI::askForUserData(string prompt){
 	string data;
 	cout << prompt;
 	cin >> data;
 	return data;
 }
 
-string Client::askForNewPassword(){
+string CLI::askForNewPassword(){
 	string password = "a";
 	string passwordConfirmation;
 	while (password != passwordConfirmation){
