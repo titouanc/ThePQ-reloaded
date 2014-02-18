@@ -3,8 +3,11 @@
 
 using namespace JSON;
 
-Dict::Dict() : _content() 
-{}
+Dict::Dict() : _content(){
+    /*Constructor for Dict object
+     *Maps a string to type Value
+    */
+}
 
 Dict::~Dict() 
 {
@@ -16,6 +19,7 @@ Dict::~Dict()
 
 Dict::Dict(const Dict & other) : Dict()
 {
+    /*Copy constructor*/
     for (Dict::const_iterator it=other.begin(); it!=other.end(); it++)
         setPtr(it->first, it->second->clone());
 }
@@ -70,11 +74,18 @@ void Dict::_writeTo(std::ostream & out) const
 
 bool Dict::hasKey(std::string const & key) const
 {
+    /*Method returning boolean testing key existence.
+     * returns true (key found)
+     *         false (key not found)
+     */
     return _content.find(key) != _content.end();
 }
 
 void Dict::setPtr(std::string const & key, Value *ptr)
 {
+    /*Method creating a key / value pair
+     * if key already exists replace with updated value (ptr
+     */
     std::map<std::string, Value*>::iterator pos = _content.find(key);
     if (pos != _content.end()){
         delete pos->second;
@@ -89,11 +100,13 @@ void Dict::setPtr(std::string const & key, Value *ptr)
 
 void Dict::set(std::string const & key, Value const & val)
 {
+    /*Method setting the key/value pair*/
     setPtr(key, val.clone());
 }
 
 const Value * Dict::get(std::string const & key) const
 {
+    /*Method returning a pointer to the value of <<key>>*/
     std::map<std::string, Value*>::const_iterator elem;
     elem = _content.find(key);
     if (elem == _content.end()) 
@@ -103,9 +116,12 @@ const Value * Dict::get(std::string const & key) const
 
 Value * Dict::steal(std::string const & key)
 {
+    /*Method returning a pointer to the key
+     *In case of a key error throw key error
+     */
     std::map<std::string, Value*>::const_iterator elem;
     elem = _content.find(key);
-    if (elem == _content.end()) 
+    if (elem == _content.end()) //key not found
         throw KeyError(key);
     Value *res = elem->second;
     _content.erase(elem);
@@ -115,6 +131,7 @@ Value * Dict::steal(std::string const & key)
 
 void Dict::set(std::string const & key, double val)
 {
+    /*Method setting the key value pair*/
     if (round(val) == val)
         set(key, Integer(val));
     else
@@ -123,30 +140,36 @@ void Dict::set(std::string const & key, double val)
 
 void Dict::set(std::string const & key, std::string const & val)
 {
+    /*Method setting key/value pair*/
     set(key, String(val));
 }
 
 Dict::iterator Dict::begin(void)
 {
+    /*Method returning the start of the dictionary*/
     return _content.begin();
 }
 
 Dict::iterator Dict::end(void)
 {
+    /*Method returning the end of the dictionary*/
     return _content.end();
 }
 
 Dict::const_iterator Dict::begin(void) const
 {
+    /*Method returning the start of a const dictionary*/
     return _content.begin();
 }
 
 Dict::const_iterator Dict::end(void) const
 {
+    /*Method returning the end of a constant dictionary*/
     return _content.end();
 }
 
 size_t Dict::len(void) const
 {
+    /*Method returning the size of a dictionary*/
     return _content.size();
 }
