@@ -58,6 +58,10 @@ class Pitch {
 		bool isInEastKeeperZone(int x, int y) const;
 		bool isInEastKeeperZone(Moveable *moveable) const;
 
+		// TODO DOC
+		bool isWestGoal(int x, int y) const;
+		bool isEastGoal(int x, int y) const;
+
 		/*!
 		 * @meth void Pitch::setAt(int x, int y, Moveable *moveable)
 		 * @brief Set Moveable at position x,y
