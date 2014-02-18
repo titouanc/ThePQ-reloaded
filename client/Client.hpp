@@ -49,8 +49,6 @@ private:
 	std::string _prompt;
 	Connection _connection;
 	
-	void stop();
-	
 	// User menu
 	void registerUser();
 	void login();
