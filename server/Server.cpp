@@ -44,28 +44,29 @@ void Server::treatMessage(const Message &message){
 		JSON::Dict const &received = DICT(message.data);
 		if (ISSTR(received.get("type"))) {
 			string messageType = STR(received.get("type")).value();
-			if (messageType == "DISCONNECT"){
+			if (messageType == MSG::DISCONNECT){
 				map<int, User*>::iterator it = _users.find(message.peer_id);
 				if (it != _users.end()){
 					delete it->second;
 					_users.erase(it);
 				}
 			} else if (ISDICT(received.get("data"))){
-				if (messageType == MSG::LOGIN_QUERY)
+				if (messageType == MSG::LOGIN)
 					logUserIn(DICT(received.get("data")), message.peer_id);
-				else if (messageType == MSG::REGISTER_QUERY) 
+				else if (messageType == MSG::REGISTER) 
 					registerUser(DICT(received.get("data")), message.peer_id);
 			} else if (ISSTR(received.get("data"))){
 				string const & data = STR(received.get("data"));
 
-				if (messageType == MSG::USER_EXISTS_QUERY) {
+				if (messageType == MSG::USER_EXISTS) {
 					checkIfUserExists(data, message.peer_id);
-				} else if (messageType == MSG::DATA_QUERY){
-					if (data == MSG::INSTALLATIONS_LIST)
+				} else if (messageType == MSG::INSTALLATIONS_LIST){
 						sendInstallationsList(message.peer_id);
-					else if(data == MSG::CONNECTED_USERS_LIST)
+					}
+					else if(messageType == MSG::CONNECTED_USERS_LIST)
+					{
 						sendConnectedUsersList(message.peer_id);
-				}
+					}
 			} else if (ISINT(received.get("data"))) {
 				int data = INT(received.get("data"));
 				if (messageType == MSG::INSTALLATION_UPGRADE) {
@@ -84,7 +85,7 @@ void Server::registerUser(const JSON::Dict &credentials, int peer_id){
 		std::string const & password = STR(credentials.get(MSG::PASSWORD));
 
 		JSON::Dict response = JSON::Dict();
-		response.set("type", MSG::CONNECTION_STATUS);
+		response.set("type", MSG::STATUS);
 
 		User* newUser = User::load(username);
 		if (newUser != NULL){
@@ -112,7 +113,7 @@ void Server::logUserIn(const JSON::Dict &credentials, int peer_id){
 		std::string const & password = STR(credentials.get(MSG::PASSWORD));
 
 		JSON::Dict response;
-		response.set("type", MSG::CONNECTION_STATUS);
+		response.set("type", MSG::STATUS);
 
 		User *user = User::load(username);
 		if (user != NULL){
@@ -138,7 +139,7 @@ void Server::logUserIn(const JSON::Dict &credentials, int peer_id){
 void Server::checkIfUserExists(string username, int peer_id){
 	User *user = User::load(username);
 	JSON::Dict response;
-	response.set("type", MSG::CONNECTION_STATUS);
+	response.set("type", MSG::STATUS);
 
 	if (user != NULL)
 		// user found
@@ -157,7 +158,7 @@ void Server::sendInstallationsList(int peer_id){
 	string listPath = _users[peer_id]->getUserDirectoryPath() + "installations.json";
 	JSON::Value * installationsList = JSON::load(listPath);
 	JSON::Dict msg;
-	msg.set("type", net::MSG::DATA_SEND);
+	msg.set("type", net::MSG::INSTALLATIONS_LIST);
 	msg.set("data", *installationsList);
 	_outbox.push(Message(peer_id, msg.clone()));
 }

@@ -11,17 +11,29 @@ std::string humanExcName(const char *name)
 	return res;
 }
 
-Client::Client(NetConfig const &config) : _prompt(">"), _connection(config.host, config.port)
+Client::Client(NetConfig const &config) : _running(true), _prompt(">"), _connection(config.host, config.port)
 {
 	
+}
+
+Client::~Client()
+{
+	delete _menu;
 }
 
 void Client::run()
 {
 	cout << Message::splashScreen();
+	
+	loginMenu();
+	
+	cout << Message::goodBye();
+}
 
+void Client::loginMenu()
+{
 	/* user menu */
-	Menu<Client> loginMenu;
+	Menu loginMenu;
 	string message;
 	message+= "You can : \n";
 	message+= "   - (l)ogin\n";
@@ -47,8 +59,6 @@ void Client::run()
 				 << "\033[0m" << endl;
 		}
 	} while (error);
-
-	cout << Message::goodBye();
 }
 
 void Client::login(){
@@ -96,7 +106,7 @@ void Client::registerUser(){
 /* main menu */
 void Client::mainMenu()
 {
-	Menu<Client> main;
+	Menu main;
 	string message;
 	message+= "You can : \n";
 	message+= "   - (m)anage your team and stadium\n";
@@ -112,7 +122,7 @@ void Client::mainMenu()
 /* Management menu */
 void Client::managementMenu()
 {
-	Menu<Client> mgt;
+	Menu mgt;
 	string message;
 	message+= "You can : \n";
 	message+= "   - manage your (s)tadium and installations\n";
@@ -128,7 +138,7 @@ void Client::managementMenu()
 void Client::stadiumMenu()
 {
 	StadiumManager stadiumMgr(&_connection);
-	Menu<StadiumManager> stadium;
+	Menu stadium;
 	string message;
 	message+= "You can : \n";
 	message+= "    - (v)iew your installations\n";
@@ -145,7 +155,7 @@ void Client::stadiumMenu()
 
 void Client::playersMenu()
 {
-	Menu<Client> players;
+	Menu players;
 	string message;
 	message+= "You can : \n";
 	message+= "    - (q)uit to management menu\n";
@@ -157,7 +167,7 @@ void Client::playersMenu()
 /* Friendly match menu */
 void Client::friendlyMatchMenu()
 {
-	Menu<Client> friendly;
+	Menu friendly;
 	string message;
 	message+= "You can : \n";
 	message+= "   - (l)ist all connected players\n";
