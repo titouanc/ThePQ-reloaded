@@ -3,6 +3,8 @@
 
 #include <json/json.hpp>
 #include <string>
+#include <time.h>
+#include <stdlib.h>
 #include "Member.hpp"
 #include "Gear.hpp"
 #include "Moveable.hpp"
@@ -49,6 +51,7 @@ public:
 	void improveSpirit (int added) 			{ _spirit+=added; }
 	void improveVelocity (int added) 		{ _velocity+=added; }
 	void improvePrecision (int added) 		{ _precision+=added; }
+	float collisionScore();
 
 	Player &operator=(Player const & player){
 		Moveable::operator=(player);

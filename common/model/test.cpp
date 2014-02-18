@@ -82,6 +82,11 @@ TEST(beaters_instanciation)
 		delete json;
 ENDTEST()
 
+TEST(collision_score)
+	Player p;
+	cout << p.collisionScore() << endl;
+ENDTEST()
+
 int main(int argc, const char **argv){
 	TestFunc tests[] = {
 		ADDTEST(default_constructor),
@@ -90,7 +95,8 @@ int main(int argc, const char **argv){
 		ADDTEST(upgrade_installation),
 		ADDTEST(downgrade_installation),
 		ADDTEST(player_instanciation),
-		ADDTEST(beaters_instanciation)
+		ADDTEST(beaters_instanciation),
+		ADDTEST(collision_score)
 	};
 	return RUN(tests);
 }

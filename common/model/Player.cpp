@@ -82,6 +82,13 @@ void Player::loseMana (int spelled){
         _manaBar = 0;
 }
 
+float Player::collisionScore(){
+    srand(time(NULL));
+    float res = (getStrength()+getConstitution()+getVelocity()+getChance());
+    res = res * (100000000 +(rand()%10000000))/100000000;
+    return res;
+} 
+
 // BEATER ----------------------------------------------------------------------
 void Beater::equipBat(Bat aBat){
     _strength += (aBat.getStrengthBonus());
