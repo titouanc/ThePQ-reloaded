@@ -26,8 +26,11 @@ struct Squad {
 			squad_id = INT(json.get("squad_id"));
 		if (ISLIST(json.get("chasers")) && LIST(json.get("chasers")).len() == 3){
 			JSON::List const & list = LIST(json.get("chasers"));
-			for (int i=0; i<3; i++)
+			for (int i=0; i<3; i++){
+				cout << &(chasers[i]) << " lalala ";
 				chasers[i] = Chaser(DICT(list[i]));
+				cout << &(chasers[i]) << endl;
+			}
 		}
 		if (ISLIST(json.get("beaters")) && LIST(json.get("beaters")).len() == 2){
 			JSON::List const & list = LIST(json.get("beaters"));
@@ -38,7 +41,16 @@ struct Squad {
 			seeker = Seeker(DICT(json.get("seeker")));
 		if (ISDICT(json.get("keeper")))
 			keeper = Keeper(DICT(json.get("keeper")));
-
+	}
+	Squad & operator=(Squad const & other){
+		squad_id = other.squad_id;
+		client_id = other.client_id;
+		int i;
+		for (i=0; i<3; i++) chasers[i] = other.chasers[i];
+		for (i=0; i<2; i++) beaters[i] = other.beaters[i];
+		seeker = seeker;
+		keeper = keeper;
+		return *this;
 	}
 	operator JSON::Dict(){
 		JSON::Dict res;
