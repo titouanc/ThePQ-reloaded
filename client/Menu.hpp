@@ -5,9 +5,15 @@
 #include <iostream>
 #include "Message.hpp"
 
+class Callback 
+{
+public:
+	virtual ~Callback(){}
+	virtual void operator()()=0;
+};
 
 template<class T>
-class ClassCallback {
+class ClassCallback : public Callback {
   T* _classPtr;
   typedef void(T::*fncb)();
   fncb _cbProc;
@@ -19,78 +25,21 @@ public:
   virtual ~ClassCallback() {}
 };
 
-template<typename T>
+
 class Menu
 {
 public:
 	Menu();
 	~Menu();
 	void setMessage(std::string message);
-	void addOption(char choice, ClassCallback<T>* callback);
+	void addOption(char choice, Callback* callback);
 	void run();
 	
 	
 private:
 	std::string _message;
-	std::map<char, ClassCallback<T>*> _options;
+	std::map<char, Callback*> _options;
 	
 };
-
-
-template<typename T>
-Menu<T>::Menu()
-{
-	_message = "";
-}
-
-template<typename T>
-Menu<T>::~Menu()
-{
-	typename
-	std::map<char, ClassCallback<T>*>::iterator it = _options.begin();
-	while (it != _options.end())
-	{
-		delete it->second;
-		it++;
-	}
-}
-
-template<typename T>
-void Menu<T>::setMessage(std::string message)
-{
-	_message = message;
-}
-
-template<typename T>
-void Menu<T>::addOption(char choice, ClassCallback<T>* callback)
-{
-	if (choice != 'q' && choice != 'Q')
-	{
-		_options.insert(std::pair<char, ClassCallback<T>*>(choice, callback));
-	}
-}
-
-template<typename T>
-void Menu<T>::run()
-{
-	char userChoice;
-	do
-	{
-		std::cout << _message;
-		std::cin >> userChoice;
-		if (userChoice >= 'A' && userChoice <= 'Z')
-		{
-			userChoice -= 'A' - 'a';
-		}
-		typename
-		std::map<char, ClassCallback<T>*>::const_iterator it;
-		it = _options.find(userChoice);
-		if (it != _options.end())
-		{
-			(*(it->second))();
-		}
-	}
-	while (userChoice != 'q' && userChoice != 'Q');
-}
 
 #endif // __MENU_HPP
