@@ -1,7 +1,7 @@
 #include "MatchManager.hpp"
 
 /* TODO: read from config file */
-#define STROKES_TIMEOUT_SECONDS 5
+#define STROKES_TIMEOUT_SECONDS 1
 
 MatchManager::MatchManager(
 	BaseConnectionManager & connections, 
@@ -231,6 +231,7 @@ void MatchManager::playStrokes(void)
 	while (! _strokes.empty())
 		_strokes.pop();
 	cout << "Processed moves !!!" << endl;
+	cout << _pitch << endl;
 }
 
 /*!
