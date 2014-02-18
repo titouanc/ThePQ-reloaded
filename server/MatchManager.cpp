@@ -44,6 +44,7 @@ void MatchManager::initPositions(void)
 		_squads[i].keeper.setPosition(c + 10*k*Pitch::West);
 		for (int j=0; j<7; j++)
 			_pitch.insert(_squads[i].players[j]);
+		cout << _pitch << endl;
 	}
 }
 
