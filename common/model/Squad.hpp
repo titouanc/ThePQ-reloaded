@@ -26,11 +26,8 @@ struct Squad {
 			squad_id = INT(json.get("squad_id"));
 		if (ISLIST(json.get("chasers")) && LIST(json.get("chasers")).len() == 3){
 			JSON::List const & list = LIST(json.get("chasers"));
-			for (int i=0; i<3; i++){
-				cout << &(chasers[i]) << " lalala ";
+			for (int i=0; i<3; i++)
 				chasers[i] = Chaser(DICT(list[i]));
-				cout << &(chasers[i]) << endl;
-			}
 		}
 		if (ISLIST(json.get("beaters")) && LIST(json.get("beaters")).len() == 2){
 			JSON::List const & list = LIST(json.get("beaters"));
