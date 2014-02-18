@@ -42,10 +42,14 @@ public:
 private:
 	Callback* _menu;
 	std::map<std::string, Callback*> _callbacks;
+	
+	bool _running;
 
 	std::string _userChoice;
 	std::string _prompt;
 	Connection _connection;
+	
+	void stop();
 	
 	// User menu
 	void registerUser();

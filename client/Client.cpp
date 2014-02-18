@@ -11,7 +11,7 @@ std::string humanExcName(const char *name)
 	return res;
 }
 
-Client::Client(NetConfig const &config) : _prompt(">"), _connection(config.host, config.port)
+Client::Client(NetConfig const &config) : _running(true), _prompt(">"), _connection(config.host, config.port)
 {
 	
 }
@@ -26,12 +26,17 @@ void Client::run()
 	cout << Message::splashScreen();
 	_menu = new ClassCallback<Client>(this, &Client::loginMenu);
 	
-	while(true)
+	while(_running)
 	{
 		(*_menu)();
 	}
 
 	cout << Message::goodBye();
+}
+
+void Client::stop()
+{
+	_running = false;
 }
 
 void Client::loginMenu()
@@ -47,6 +52,7 @@ void Client::loginMenu()
 	loginMenu.setMessage(message);
 	loginMenu.addOption('l', new ClassCallback<Client>(this,&Client::login));
 	loginMenu.addOption('r', new ClassCallback<Client>(this,&Client::registerUser));
+	loginMenu.addOption('q', new ClassCallback<Client>(this,&Client::stop));
 
 	bool error = false;
 	do {
