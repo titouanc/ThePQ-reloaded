@@ -6,10 +6,10 @@
 #include <json/json.hpp>
 #include <network/TcpSocket.hpp>
 #include <stdio.h>
-
 #include "Sale.hpp"
 //todo : constructor loading all json files in memory (server crash ?)
 class PlayerMarket{
+	friend void Sale::resolveEndOfSale();
 private:
 	std::vector<Sale> _sales;
 	std::string _marketPath;
@@ -28,6 +28,9 @@ private:
 		getSale(INT(json.get(net::MSG::PLAYER_ID)))->start(); //Could use _sales[_sales.size()-1]
 	}
 
+	void lockMutex(Sale *sale){sale->lock();}
+	void unlockMutex(Sale *sale){sale->unlock();}
+	void transfert(int from_team, int to_team, int player_id);
 public:
 	PlayerMarket(): _sales(), _marketPath("data/playerMarket/") {}
 	std::string getSalePath(int id){return (_marketPath + "sale_" + std::to_string(id) + ".json");}
@@ -65,12 +68,14 @@ public:
 		JSON::Dict response = JSON::Dict();
 		response.set("type", net::MSG::DELETE_PLAYER_ON_MARKET_QUERY);
 		Sale * sale = getSale(INT(json.get(net::MSG::PLAYER_ID)));
+		lockMutex(sale);
 		if(sale != NULL){
 			if(sale->isSaler(INT(json.get(net::MSG::TEAM_ID)))) {
 				delete(sale);
 				response.set("data",net::MSG::PLAYER_DELETED_OF_MARKET);
 			} else{response.set("data",net::MSG::NOT_YOUR_SALE);}
 		} else{response.set("data",net::MSG::PLAYER_NOT_ON_MARKET);}
+		unlockMutex(sale);
 		return response;
 	}
 
@@ -80,8 +85,9 @@ public:
 		response.set("type", net::MSG::BID_ON_PLAYER_QUERY);
 		int team_id = INT(json.get(net::MSG::TEAM_ID));
 		int player_id = INT(json.get(net::MSG::PLAYER_ID));
-		int bid_value = INT(json.get(NET::BID_VALUE));
+		int bid_value = INT(json.get(net::BID_VALUE));
 		Sale * sale = getSale(player_id);
+		lockMutex(sale);
 		if(sale != NULL){
 			if(sale->isSaler(team_id)) {response.set("data", net::MSG::CANNOT_BID_ON_YOUR_PLAYER);}
 			else{
@@ -98,6 +104,7 @@ public:
 				}
 			}
 		} else{response.set("data", net::MSG::BID_ENDED);}
+		unlockMutex(sale);
 		return response;
 	}
 
