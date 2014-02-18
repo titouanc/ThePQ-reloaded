@@ -5,7 +5,7 @@
 #include <json/json.hpp>
 
 using namespace std;
-
+/*========================Class creating objects used by Player========================*/
 class Gear 
 {
 public:
@@ -13,6 +13,7 @@ public:
 			_description("NoDescription"),
 			_price(0) {}
 	Gear(JSON::Dict const &json): Gear() {
+		/*Constructor from JSON object*/
 		if (ISSTR(json.get("name"))) _name = STR(json.get("name")).value();
 		if (ISSTR(json.get("description"))) _description = STR(json.get("description")).value();
 		if (ISINT(json.get("price"))) _price = INT(json.get("price")).value();		
@@ -37,7 +38,7 @@ private:
 };
 
 
-// BAT -------------------------------------------------------------------------
+/*============================================BAT=====================================================*/
 class Bat : public Gear 
 {
 public:
@@ -61,7 +62,7 @@ private:
 };
 
 
-// BROOMSTICK ------------------------------------------------------------------
+/*============================================BROOMSTICK==========================================*/
 class Broomstick : public Gear 
 {
 public:
@@ -85,11 +86,11 @@ private:
 };
 
 
-// JERSEY ----------------------------------------------------------------------
+/*============================================JERSEY============================================*/
 class Jersey : public Gear 
 {
 public:
-	// TODO : we have to be able to set all the attributes of Jersey
+	//check->>> {TODO : we have to be able to set all the attributes of Jersey}
 	Jersey():_strengthBonus(0), _constitutionBonus(0), _magicBonus(0), _spiritBonus(0){}
 
 	Jersey(JSON::Dict const &json): Gear(json) {
@@ -106,15 +107,25 @@ public:
 		res.set("spiritBonus", _spiritBonus);
 		return res;
 	}	
-	int getStrengthBonus () const 		{ return _strengthBonus; }
-	int getConstitutionBonus () const 	{ return _constitutionBonus; }
-	int getMagicBonus () const 			{ return _magicBonus; }
-	int getSpiritBonus () const 		{ return _spiritBonus; }
+	/*===Getters for Bonuses===*/
+	int getStrengthBonus () const 			{ return _strengthBonus; }
+	int getConstitutionBonus () const 		{ return _constitutionBonus; }
+	int getMagicBonus () const 				{ return _magicBonus; }
+	int getSpiritBonus () const 			{ return _spiritBonus; }
+	/*===Setters for Bonuses===*/
+	void setStrengthBonus(int bonus)		{ _strengthBonus=bonus;}
+	void setConstitutionBonus(int bonus)	{ _constitutionBonus=bonus;}
+	void setMagicBonus(int bonus)			{ _magicBonus=bonus;}
+	void setSpiritBonus(int bonus)			{ _spiritBonus=bonus;}
+	void setName(string name)				{ Gear::setName(name);}
+	void setPrice(int price)				{ Gear::setPrice(price);}
+
 private:
 	int _strengthBonus;
 	int _constitutionBonus;
 	int _magicBonus;
 	int _spiritBonus;
+
 };
 
 #endif

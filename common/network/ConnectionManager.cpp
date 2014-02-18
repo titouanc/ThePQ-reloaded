@@ -20,6 +20,7 @@ using namespace net;
 
 /* ===== BaseConnectionManager ===== */
 BaseConnectionManager::BaseConnectionManager( 
+    /*Constructor*/
     SharedQueue<Message> & incoming_queue,
     SharedQueue<Message> & outgoing_queue,
     bool logger
@@ -31,6 +32,7 @@ BaseConnectionManager::BaseConnectionManager(
 
 BaseConnectionManager::~BaseConnectionManager()
 {
+    /*Destructor*/
     stop();
     std::set<int>::iterator it, next;
     for (it=_clients.begin(); it!=_clients.end();) {
@@ -45,6 +47,7 @@ BaseConnectionManager::~BaseConnectionManager()
 
 bool BaseConnectionManager::_doWrite(int fd, JSON::Value *obj)
 {
+    /*Method sending <<obj>> over the network*/
     if (obj != NULL){
         std::string const & repr = obj->dumps();
         uint32_t msglen = htonl(repr.length());
@@ -99,6 +102,7 @@ bool BaseConnectionManager::_doRead(int fd)
 
 void BaseConnectionManager::_doDisconnect(int fd)
 {
+    /*Method performing the disconnect between the server and the client*/
     close(fd);
     removeClient(fd);
     JSON::Dict msgdata;
@@ -111,6 +115,7 @@ void BaseConnectionManager::_doDisconnect(int fd)
 
 void BaseConnectionManager::_doConnect(int fd)
 {
+    /*Method performing the connection between the server and the client*/
     addClient(fd);
     JSON::Dict msgdata;
     msgdata.set("type", "CONNECT");
@@ -121,6 +126,9 @@ void BaseConnectionManager::_doConnect(int fd)
 
 int BaseConnectionManager::_doSelect(int fdmax, fd_set *readable)
 {
+    /*Method allowing the selection of the connection
+     * of the client
+     */
     pthread_mutex_lock(&_fdset_mutex);
     std::set<int>::iterator it;
     for (it=_clients.begin(); it!=_clients.end(); it++){
@@ -175,6 +183,7 @@ void BaseConnectionManager::_mainloop_out(void)
 
 void BaseConnectionManager::addClient(int fd)
 {
+    /*Method allowing the addition of a client to the server*/
     pthread_mutex_lock(&_fdset_mutex);
     _clients.insert(fd);
     pthread_mutex_unlock(&_fdset_mutex);
@@ -182,6 +191,10 @@ void BaseConnectionManager::addClient(int fd)
 
 bool BaseConnectionManager::removeClient(int fd)
 {
+    /*Method removing a client from the server
+     *returns a boolean if disconnect successful
+     *false otherwise
+     */
     bool res = false;
     pthread_mutex_lock(&_fdset_mutex);
     if (_clients.find(fd) != _clients.end()){

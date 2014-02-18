@@ -8,7 +8,6 @@ using namespace std;
 
 class Moveable {
 public:
-	// CONSTRUCTORS
 	Moveable():  _uniqueID(0), _speed(0), _position(0, 0){}
 	Moveable(unsigned int id, float speed, Position &position): 
 				_uniqueID(id), _speed(speed), _position(position){}

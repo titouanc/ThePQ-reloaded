@@ -10,7 +10,7 @@ using namespace std;
 class Member 
 {
 public:
-	// TODO set random name in constructor
+	// TODO set random name in constructor-<<<<load first/last name from playerNames.txt
     Member() : _name("Lasty Cotter"), _salary(5000), _price(25000){}
     Member(JSON::Dict const& json): Member() {
     	if (ISSTR(json.get("name"))) _name = STR(json.get("name")).value();
@@ -24,6 +24,7 @@ public:
 		res.set("price", _price);
 		return res;  
     }
+    /*========Getters===================*/
     string getName () 	{ return _name; }
 	int getSalary () 	{ return _salary; }
 	int getPrice () 	{ return _price; }

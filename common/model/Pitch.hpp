@@ -51,6 +51,7 @@ class Pitch {
 		 * @param moveable The moveable to place on the pitch
 		 */
 		bool setAt(int x, int y, Moveable *moveable);
+		
 		bool setAt(Position const & pos, Moveable *moveable);
 
 		/*!

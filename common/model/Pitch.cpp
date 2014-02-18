@@ -19,9 +19,10 @@ Pitch::Pitch(size_t width, size_t height) : _width(width), _height(height)
 
 Pitch::~Pitch()
 {
+	/*Destructor*/
 	delete[] _matrix;
 }
-
+/*================Getters=====================*/
 size_t Pitch::width(void) const {return _width;}
 size_t Pitch::height(void) const {return _height;}
 
@@ -43,6 +44,7 @@ Moveable * Pitch::getAt(Position const & pos) const
 
 bool Pitch::inEllipsis(int x, int y) const
 {
+	/*Method checking position is inside the pitch*/
 	double k = ((double) _width)/_height;
 	double L = xmax();
 	return (x*x + k*k*y*y) <= L*L;
@@ -50,11 +52,15 @@ bool Pitch::inEllipsis(int x, int y) const
 
 bool Pitch::inEllipsis(Moveable *moveable) const
 {
+	/*Method checking position is inside the pitch*/
 	return inEllipsis(moveable->getPosition().x(), moveable->getPosition().y());
 }
 
 bool Pitch::setAt(int x, int y, Moveable *moveable)
 {
+	/*Method checking position is correct insisde the pitch
+	 * and setting at position <<<x,y>>> if position is valid
+	 */
 	if (inEllipsis(x, y)){
 		_matrix[_index(x, y)] = moveable;
 		return true;
@@ -64,16 +70,22 @@ bool Pitch::setAt(int x, int y, Moveable *moveable)
 
 bool Pitch::setAt(Position const & pos, Moveable *moveable)
 {
+	/*Method checking position is correct insisde the pitch
+	 * and setting at position <<<x,y>>> if position is valid*/
 	return setAt(pos.x(), pos.y(), moveable);
 }
 
 bool Pitch::insert(Moveable *moveable)
 {
+	/*Method checking position is correct insisde the pitch
+	 * and setting at position <<<x,y>>> if position is valid
+	 */
 	return setAt(moveable->getPosition(), moveable);
 }
 
 std::ostream & operator<<(std::ostream & out, Pitch const & pitch)
 {
+	/*Method for writing to the outputstream*/
 	for (int y=pitch.ymax()-1; y>=pitch.ymin(); y--){
 		for (int x=pitch.xmin(); x<pitch.xmax(); x++){
 			if (abs(x%2) != abs(y%2 )|| ! pitch.inEllipsis(x, y)){
