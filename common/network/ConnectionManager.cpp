@@ -90,8 +90,8 @@ bool BaseConnectionManager::_doRead(int fd)
     if (res != NULL){
         _incoming.push(Message(fd, res));
         if (_logger)
-            std::cout << "\033[1m" << fd << " \033[33m>>\033[0m " 
-                      << *res << std::endl;
+            std::cout << "[" << this << "] "<< "\033[1m" << fd 
+                      << " \033[33m>>\033[0m " << *res << std::endl;
     }
 
     return true;
@@ -106,7 +106,8 @@ void BaseConnectionManager::_doDisconnect(int fd)
     msgdata.set("client_id", fd);
     _incoming.push(Message(fd, msgdata.clone()));
     if (_logger)
-		std::cout << "\033[1m" << fd << " \033[35m disconnected\033[0m" << std::endl;
+		std::cout << "[" << this << "] "<< "\033[1m" << fd 
+                  << " \033[35m disconnected\033[0m" << std::endl;
 }
 
 void BaseConnectionManager::_doConnect(int fd)
@@ -116,7 +117,8 @@ void BaseConnectionManager::_doConnect(int fd)
     msgdata.set("type", "CONNECT");
     msgdata.set("client_id", fd);
     _incoming.push(Message(fd, msgdata.clone()));
-    std::cout << "\033[1m" << fd << " \033[34m connected\033[0m" << std::endl;
+    std::cout << "[" << this << "] "<< "\033[1m" << fd 
+              << " \033[34m connected\033[0m" << std::endl;
 }
 
 int BaseConnectionManager::_doSelect(int fdmax, fd_set *readable)
