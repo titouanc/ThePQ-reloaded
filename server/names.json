@@ -15,7 +15,8 @@
 		"Rebecca","Rose","Ruth","Sally","Sarah","Sophia","Susannah","Victoria",
 		"Dylan", "Jason", "Magali", "Kimberley", "Michel-Michel", "Brandon", 
 		"Kevin", "Jean-Kevin", "Natasha", "Mohamed", "Yvon", "Ignace", "Gertrude",
-		"Bashar", "Jeroen", "Bob", "Jesus"
+		"Bashar", "Jeroen", "Bob", "Jesus", "Clara", "Harry", "Ron", "Hermione",
+		"Tom", "Inge", "Dirk", "Wouter", "Peter", "Jean-Louis", "Jean-Jean"
 	],
 	"LastNames" : [
 		"Hennecker", "Hellinckx", "Caccia", "Christophe", "Carpentier", "Mudura",
@@ -33,6 +34,9 @@
 		"Long","Patterson","Hughes","Flores","Washington","Butler","Simmons",
 		"Foster","Gonzales", "de la Roseraie Flamboyante", "Collignon", 
 		"de Saxe-Cobourg Gotha", "Guetta", "l'Eponge", "Puissant", "Christ",
-		"Duval"
+		"Duval", "Jedusor", "Potter", "Morgane", "Weasley", "Granger", "Moldu",
+		"de la Sainte-Klet", "Van de Klet", "Pikachu", "Durum", "Flan", "Frigidaire",
+		"Yaourt", "Vandervluurde", "de Kampioen", "Champion", "Mulet", "Haricot",
+		"Poireau", "Patate", "Petitpois", "Mergelover"
 	]
 }
