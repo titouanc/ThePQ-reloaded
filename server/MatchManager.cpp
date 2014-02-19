@@ -1,7 +1,7 @@
 #include "MatchManager.hpp"
 
 /* TODO: read from config file */
-#define STROKES_TIMEOUT_SECONDS 1
+#define STROKES_TIMEOUT_SECONDS 3
 
 MatchManager::MatchManager(
 	BaseConnectionManager & connections, 
@@ -64,13 +64,13 @@ void MatchManager::minisleep(double secs)
 
 void MatchManager::processStroke(Message const & msg, JSON::Dict const & data)
 {
-	if (! ISINT(data.get("moveable_id")))
+	if (! ISINT(data.get("mid")))
 		return reply(msg, MATCH_ERROR, "Missing moveable ID");
-	int mid = INT(data.get("moveable_id"));
+	int mid = INT(data.get("mid"));
 	if (mid < 1 || (mid < 11 && mid > 7) || mid > 17)
 		return reply(msg, MATCH_ERROR, "Not a player");
 	int squad_i = mid/10;
-	int player_i = mid%10;
+	int player_i = mid%10 - 1;
 
 	if (msg.peer_id != _squads[squad_i].client_id)
 		return reply(msg, MATCH_ERROR, "Not your player");
@@ -187,6 +187,14 @@ void MatchManager::sendSquads(void)
 	sendToAll(msg);
 }
 
+void MatchManager::sendMatchDeltas(JSON::List const & delta)
+{
+	JSON::Dict msg;
+	msg.set("type", MATCH_DELTA);
+	msg.set("data", delta);
+	sendToAll(msg);
+}
+
 /*!
  * @meth void MatchManager::playStrokes(void)
  * @brief Play all strokes in this turn
@@ -194,6 +202,7 @@ void MatchManager::sendSquads(void)
 void MatchManager::playStrokes(void)
 {
 	size_t i, len, maxlen=0;
+	JSON::List finalPositions;
 
 	/* Find longest displacement */
 	for (i=0; i<_strokes.size(); i++){
@@ -213,7 +222,6 @@ void MatchManager::playStrokes(void)
 		for (i=0; i<n_strokes; i++){
 			Stroke stroke = _strokes.front();
 			_strokes.pop();
-			_strokes.push(stroke);
 			
 			/* Where the moveable would be */
 			Position newPos = stroke.move.position(t, stroke.moveable);
@@ -230,12 +238,24 @@ void MatchManager::playStrokes(void)
 				_pitch.setAt(newPos, &(stroke.moveable));
 				_pitch.setAt(oldPos, NULL);
 			}
+			_strokes.push(stroke);
 		}
 		last_t = t;
 	}
 
-	while (! _strokes.empty())
+
+
+	while (! _strokes.empty()){
+		Stroke & stroke = _strokes.front();
+		JSON::Dict serialized;
+		serialized.set("mid", stroke.moveable.getID());
+		Position const & pos = stroke.move.position(1, stroke.moveable);
+		serialized.set("finalpos", pos.toJson());
+		finalPositions.append(serialized);
 		_strokes.pop();
+	}
+
+	sendMatchDeltas(finalPositions);
 }
 
 /*!

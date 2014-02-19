@@ -1,10 +1,17 @@
 from client import Client
 
+PLAYERS = {}
+
+def printPlayers():
+	for mid in PLAYERS:
+		player = PLAYERS[mid]
+		print "\t", mid, player['name'], player['position']
+
 def printMessage(msg):
 	if msg['type'] == 'M!!!':
 		print "\033[31mERROR  :\033[0m", msg['data']
 	elif msg['type'] == 'M?':
-		print "\033[1mSend your moves..."
+		print "\033[1mSend your moves...\033[0m"
 	elif msg['type'] == 'MACK':
 		print "\033[32mCONFIRM:\033[0m", msg['data']
 	elif msg['type'] == 'MSTART':
@@ -16,11 +23,16 @@ def printMessage(msg):
 			print "SQUAD", squad['squad_id']
 			for ptype in ('chasers', 'beaters'):
 				for player in squad[ptype]:
-					print "\t", player['name'], player['position']
-			print "\t", squad['seeker']['name'], squad['seeker']['position']
-			print "\t", squad['keeper']['name'], squad['keeper']['position']
+					PLAYERS[player['ID']] = player
+			for player in squad['seeker'], squad['keeper']:
+				PLAYERS[player['ID']] = player
+			printPlayers()
 	elif msg['type'] == 'MEND':
 		exit()
+	elif msg['type'] == 'MDELTA':
+		for delta in msg['data']:
+			PLAYERS[delta['mid']]['position'] = delta['finalpos']
+		printPlayers()
 	else:
 		print msg
 
@@ -47,14 +59,14 @@ for i in range(3):
 d.sendObj({
 	"type": "MSTROKE", 
 	"data": {
-		"moveable_id": 13, 
+		"mid": 13, 
 		"move": [[1, 1], [2, 0]]
 	}
 })
 c.sendObj({
 	"type": "MSTROKE", 
 	"data": {
-		"moveable_id": 3, 
+		"mid": 3, 
 		"move": [[1, 1], [2, 0]]
 	}
 })

@@ -33,6 +33,7 @@ struct Stroke {
 #define MATCH_STROKE  "MSTROKE"
 #define MATCH_ERROR   "M!!!"
 #define MATCH_ACK     "MACK"
+#define MATCH_DELTA   "MDELTA"
 
 class MatchManager : public SubConnectionManager {
 	private:
@@ -65,6 +66,8 @@ class MatchManager : public SubConnectionManager {
 		void reply(Message const & msg, std::string type, const char *text);
 		/* Send squads composition to everyone */
 		void sendSquads(void);
+		/* Send match delta to everyone */
+		void sendMatchDeltas(JSON::List const & delta);
 
 		/* Resolve strokes */
 		void playStrokes(void);
