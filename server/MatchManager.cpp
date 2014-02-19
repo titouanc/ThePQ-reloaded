@@ -195,6 +195,19 @@ void MatchManager::sendMatchDeltas(JSON::List const & delta)
 	sendToAll(msg);
 }
 
+Stroke MatchManager::getStrokeForMoveable(Moveable *moveable)
+{
+	size_t n_strokes = _strokes.size();
+	for (size_t i=0; i<n_strokes; i++){
+		Stroke s = _strokes.front()
+		_strokes.pop();
+		if (&(_strokes.front().moveable) == moveable)
+			return s;
+		_strokes.push_back(s);
+	}
+	throw std::runtime_exception("No stroke for this moveable !");
+}
+
 /*!
  * @meth void MatchManager::playStrokes(void)
  * @brief Play all strokes in this turn
@@ -232,13 +245,27 @@ void MatchManager::playStrokes(void)
 			cout << stroke.moveable.getName() << " " 
 			     << oldPos.toJson()
 			     << " -> " << newPos.toJson() << endl;
-			if (atPos)
-				onCollision(t, stroke, newPos);
-			else {
+
+			if (atPos){
+				switch (onCollision(*atPos, stroke.moveable, newPos)){
+					case FIRST_WIN:
+						/* First on position wins => stop the second moveable */
+						stroke.moveable.setPosition(oldPos);
+						JSON::Dict serialized;
+						serialized.set("mid", stroke.moveable.getID());
+						serialized.set("finalpos", oldPos.toJson());
+						finalPositions.append(serialized);
+						break;
+					case SECOND_WIN:
+						break;
+					default:
+						break;
+				}
+			} else {
 				_pitch.setAt(newPos, &(stroke.moveable));
 				_pitch.setAt(oldPos, NULL);
+				_strokes.push(stroke);
 			}
-			_strokes.push(stroke);
 		}
 		last_t = t;
 	}
@@ -247,9 +274,10 @@ void MatchManager::playStrokes(void)
 
 	while (! _strokes.empty()){
 		Stroke & stroke = _strokes.front();
+		Position const & pos = stroke.move.position(1, stroke.moveable);
+
 		JSON::Dict serialized;
 		serialized.set("mid", stroke.moveable.getID());
-		Position const & pos = stroke.move.position(1, stroke.moveable);
 		serialized.set("finalpos", pos.toJson());
 		finalPositions.append(serialized);
 		_strokes.pop();
@@ -258,15 +286,22 @@ void MatchManager::playStrokes(void)
 	sendMatchDeltas(finalPositions);
 }
 
-/*!
- * @meth void MatchManager::onCollision(Stroke & s, Position &conflict)
- * @brief Callback called when a collision occurs.
- * @param s Stroke object for the 2nd player on the conflicting cell
- * @param conflict The conflicting cell position
- */
-void MatchManager::onCollision(double t, Stroke & s, Position &conflict)
+
+Collision_t MatchManager::onCollision(
+	Moveable const & first, 
+	Moveable const & second,
+	Position const & conflict
+)
 {
-	std::cout << "Collision " << s.moveable.getName() << " & "
-	          << _pitch.getAt(conflict)->getName() 
-	          << " => " << conflict.toJson() << std::endl;
+	float first_score  = _pitch.getAt(conflict)->collisionScore();
+	float second_score = s.moveable.collisionScore();
+
+	cout << "Collision. " << first.getName() << "(" << first_score << ") on " 
+	     << conflict.toJson() << " and " << second.getName() << "(" 
+	     << second_score << ") arrives." << endl;
+
+	if (first_score > second_score)
+		return FIRST_WIN;
+	else 
+		return SECOND_WIN;
 }

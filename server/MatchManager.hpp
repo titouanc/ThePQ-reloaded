@@ -43,6 +43,12 @@ class MatchManager : public SubConnectionManager {
 		Pitch  _pitch;
 		SharedQueue<Message> _inbox, _outbox;
 
+		enum Collision_t {
+			FIRST_WIN,  /* First player on position wins */
+			SECOND_WIN, /* Second player on position wins */
+			CATCH_BALL  /* The player catch a ball */
+		};
+
 		/* initialise moveable positions */
 		void initPositions(void);
 
@@ -69,10 +75,15 @@ class MatchManager : public SubConnectionManager {
 		/* Send match delta to everyone */
 		void sendMatchDeltas(JSON::List const & delta);
 
+		Stroke getStrokeForMoveable(Moveable *moveable);
 		/* Resolve strokes */
 		void playStrokes(void);
 		/* *SMASH* */
-		void onCollision(double t, Stroke & s, Position &conflict);
+		Collision_t onCollision(
+			Moveable const & first, 
+			Moveable const & second,
+			Position const & conflict
+		);
 	public:
 		MatchManager(
 			BaseConnectionManager & connections, 
