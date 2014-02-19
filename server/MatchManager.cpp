@@ -192,7 +192,7 @@ void MatchManager::playStrokes(void)
 
 	/* Find longest displacement */
 	for (i=0; i<_strokes.size(); i++){
-		Stroke &stroke = _strokes.front();
+		Stroke stroke = _strokes.front();
 		_strokes.pop();
 		_strokes.push(stroke);
 		len = stroke.move.length();
@@ -206,7 +206,7 @@ void MatchManager::playStrokes(void)
 		size_t n_strokes = _strokes.size();
 		/* For each stroke */
 		for (i=0; i<n_strokes; i++){
-			Stroke &stroke = _strokes.front();
+			Stroke stroke = _strokes.front();
 			_strokes.pop();
 			_strokes.push(stroke);
 			
