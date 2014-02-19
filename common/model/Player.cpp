@@ -1,6 +1,11 @@
 #include "Player.hpp"
 
-Player::Player(JSON::Dict const & json) : Member(json), Moveable(json){
+Player::Player(JSON::Dict const & json) : Member(json), Moveable(json), 
+				_maxLife(100), _maxMana(100), _lifeBar(100), 
+                _manaBar(100), _broomstick(), 
+                _jersey(), _strength(5), _constitution(5), 
+                _magic(5), _spirit(5), _velocity(5), _precision(5), _chance(5) {
+		if (ISSTR(json.get("name"))) _name = STR(json.get("name")).value();
         if (ISINT(json.get("maxLife"))) _maxLife = INT(json.get("maxLife")).value();
         if (ISINT(json.get("maxMana"))) _maxMana = INT(json.get("maxMana")).value();
         if (ISINT(json.get("lifeBar"))) _lifeBar = INT(json.get("lifeBar")).value();
@@ -8,7 +13,7 @@ Player::Player(JSON::Dict const & json) : Member(json), Moveable(json){
         if (ISDICT(json.get("broomstick"))) 
             _broomstick = new Broomstick(DICT(json.get("broomstick")));
         else
-            _broomstick = new Broomstick(5, 50);
+            _broomstick = new Broomstick();
         if (ISDICT(json.get("jersey"))) 
             _jersey = new Jersey(DICT(json.get("jersey")));
         else
@@ -39,6 +44,7 @@ Player::operator JSON::Dict(){
     res.set("velocity", _velocity);
     res.set("precision", _precision);
     res.set("chance", _precision);
+    res.set("name", _name);
     return res;
 }
 
@@ -81,6 +87,12 @@ void Player::loseMana (int spelled){
     if (_manaBar < 0)
         _manaBar = 0;
 }
+
+float Player::collisionScore(){
+    float res = (getStrength()+getConstitution()+getVelocity()+getChance());
+    res = res * (100000000 +(rand()%10000000))/100000000;
+    return res;
+} 
 
 // BEATER ----------------------------------------------------------------------
 void Beater::equipBat(Bat aBat){

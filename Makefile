@@ -1,13 +1,15 @@
-make.ok: server/make.ok client/make.ok
-	touch $@
-	uname -a
-	${CXX} --version
+all: server client
 
-common/make.ok: common
-	make -C $<
+.PHONY: common server client mrproper clean all
 
-%/make.ok: % common/make.ok
-	make -C $<
+common:
+	make -C common
+
+server: common
+	make -C server
+
+client: common
+	make -C client
 
 clean:
 	rm -f *.ok

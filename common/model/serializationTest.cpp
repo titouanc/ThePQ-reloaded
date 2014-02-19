@@ -27,8 +27,10 @@ TEST(bat_serialization)
 ENDTEST()
 
 TEST(broomstick_serialization)
-	Broomstick b(123, 456);
+	Broomstick b;
 	b.setName("SuperBroomstick");
+	b.setCases(123);
+	b.setVelocityBonus(456);
 	JSON::Dict d = JSON::Dict(b);
 	Broomstick c(d);
 	cout << "Bat serialized : " << d << endl;

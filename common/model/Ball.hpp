@@ -22,6 +22,7 @@ class Bludger : public Ball {
 public:
 	bool isBludger () { return true; }
 	string getName() { return "Bludger"; }
+	float collisionScore() { return 20; } // TODO implement this
 };
 
 class Quaffle : public Ball {

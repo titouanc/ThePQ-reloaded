@@ -1,0 +1,43 @@
+{
+	"ID": 0, 
+	"broomstick": {
+		"cases": 5, 
+		"description": 
+		"NoDescription", 
+		"name": "NoName", 
+		"price": 0, 
+		"velocityBonus": 50
+	}, 
+	"chance": 5, 
+	"constitution": 5, 
+	"jersey": {
+		"constitutionBonus": 0, 
+		"description": "NoDescription", 
+		"magicBonus": 0, 
+		"name": "NoName", 
+		"price": 0,
+		 "spiritBonus": 0,
+		 "strengthBonus": 0
+	},
+	"lifeBar": 100,
+	"magic": 5,
+	"manaBar": 100,
+	"maxLife": 100,
+	"maxMana": 100,
+	"name": "Beater1",
+	"position": [0, 0],
+	"precision": 5,
+	"price": 25000,
+	"salary": 5000,
+	"speed": 0,
+	"spirit": 5,
+	"strength": 15,
+	"velocity": 5,
+	"bat": {
+		"description": "NoDescription", 
+		"name": "SuperBat", 
+		"precisionBonus": 456, 
+		"price": 0, 
+		"strengthBonus": 123
+	}
+}

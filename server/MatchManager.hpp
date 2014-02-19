@@ -1,6 +1,9 @@
 #ifndef DEFINE_MATCHMANAGER_HEADER
 #define DEFINE_MATCHMANAGER_HEADER 
 
+#include <cassert>
+
+#include <sys/select.h>
 #include <queue>
 #include <model/Moveable.hpp>
 #include <model/Displacement.hpp>
@@ -9,113 +12,86 @@
 #include <model/Ball.hpp>
 #include <cstring>
 #include "User.hpp"
+#include <network/ConnectionManager.hpp>
+#include <model/Player.hpp>
+#include <model/Squad.hpp>
 
-
+using namespace net;
 
 struct Stroke {
 	Moveable & moveable;
 	Displacement move;
+	Stroke(Moveable & m, Displacement d) : moveable(m), move(d){}
 };
 
-struct Squad {
-	int squad_id;
-	Player players[7];
-	Squad(){}
-	Squad(JSON::Dict const & json){
-		if (! ISINT(json.get("squad_id")))
-			throw JSON::KeyError("A squad should have an ID");
-		if (! ISLIST(json.get("players")))
-			throw JSON::KeyError("A squad should contain players");
+/* TODO: mettre ca dans un fichier de constantes */
+#define MATCH_START   "MSTART"
+#define MATCH_END     "MEND"
+#define MATCH_SQUADS  "MSQUADS"
+#define MATCH_PROMPT  "M?"
+#define MATCH_TIMEOUT "MTOUT"
+#define MATCH_STROKE  "MSTROKE"
+#define MATCH_ERROR   "M!!!"
+#define MATCH_ACK     "MACK"
+#define MATCH_DELTA   "MDELTA"
 
-		JSON::List const & list = LIST(json.get("players"));
-		if (list.len() != 7)
-			throw JSON::KeyError("A Squad should contain exactly 7 players");
-		for (size_t i=0; i<7; i++){
-			if (! ISDICT(list[i]))
-				throw JSON::TypeError("Expecting JSON::Dict for player");
-			players[i] = Player(DICT(list[i]));
-		}
-	}
-	JSON::Dict toJson(){
-		JSON::List list;
-		for (int i=0; i<7; i++)
-			list.append(JSON::Dict(players[i]));
-		JSON::Dict res;
-		res.set("players", list);
-		res.set("squad_id", squad_id);
-		return res;
-	}
-};
-
-class MatchManager {
+class MatchManager : public SubConnectionManager {
 	private:
 		std::queue<Stroke> _strokes;
 		Squad _squads[2];
 		Ball   _balls[4];
 		Pitch  _pitch;
+		SharedQueue<Message> _inbox, _outbox;
+
+		typedef enum Collision_t {
+			FIRST_WIN,  /* First player on position wins */
+			SECOND_WIN, /* Second player on position wins */
+			CATCH_BALL  /* The player catch a ball */
+		} Collision;
+
+		/* initialise moveable positions */
+		void initPositions(void);
+
+		/* Sleep with a microsecond resolution */
+		void minisleep(double secs);
+
+		/* Processing of incoming messages*/
+		void processMessage(Message const & msg);
+		/* Process incoming message with given data (a JSON::Dict)
+		   Could not be made by Stroke(JSON::Dict) because we have to map
+		   moveable_id -> Moveable */
+		void processStroke(Message const & msg, JSON::Dict const & data);
+
+		/* Send messages to clients */
+		void sendToAll(JSON::Value const & data);
+		/* Send {"type": "<signal>", "data": true} to everyone */
+		void sendSignal(std::string const & sig);
+		/* Send message to <msg> sender with given <type> and payload */
+		void reply(Message const & msg, std::string type, JSON::Value const & data);
+		/* Like ^ but data set to "<text>" */
+		void reply(Message const & msg, std::string type, const char *text);
+		/* Send squads composition to everyone */
+		void sendSquads(void);
+		/* Send match delta to everyone */
+		void sendMatchDeltas(JSON::List const & delta);
+
+		Stroke getStrokeForMoveable(Moveable *moveable);
+		/* Resolve strokes */
+		void playStrokes(void);
+		/* *SMASH* */
+		Collision onCollision(
+			Moveable & first, 
+			Moveable & second,
+			Position & conflict
+		);
 	public:
-		MatchManager(Squad const & squadA, Squad const & squadB) : 
-		_strokes(), _pitch(100, 36) {
-			for (int i=0; i<4; i++)
-				_balls[i].setID(100+i+1); /* Balls IDs: 101..104*/
-			_squads[0] = squadA;
-			_squads[1] = squadB;
-
-			for (int i=0; i<2; i++){
-				for (int j=0; j<7; j++){
-					/* Players IDs: 1..7 and 11..16*/
-					_squads[i].players[j].setID(10*i+j+1);
-				}
-			}
-		}
-		~MatchManager(){}
-
-		/*!
-		 * @meth void MatchManager::playStrokes(void)
-		 * @brief Play all strokes in this turn
-		 */
-		void playStrokes(void){
-			size_t i, len, maxlen=0;
-
-			for (i=0; i<_strokes.size(); i++){
-				Stroke &stroke = _strokes.front();
-				_strokes.pop();
-				_strokes.push(stroke);
-				len = stroke.move.length();
-				if (len > maxlen)
-					maxlen = len;
-			}
-
-			for (double t=1.0/maxlen; t<=1; t+=1.0/maxlen){
-				size_t n_strokes = _strokes.size();
-				for (i=0; i<n_strokes; i++){
-					Stroke &stroke = _strokes.front();
-					_strokes.pop();
-					_strokes.push(stroke);
-					Position newPos = stroke.move.position(t, stroke.moveable);
-					Moveable *atPos = _pitch.getAt(newPos);
-					if (atPos)
-						onCollision(stroke, newPos);
-					else
-						_pitch.setAt(newPos, &(stroke.moveable));
-				}
-			}
-
-			while (! _strokes.empty())
-				_strokes.pop();
-		}
-
-		/*!
-		 * @meth void MatchManager::onCollision(Stroke & s, Position &conflict)
-		 * @brief Callback called when a collision occurs.
-		 * @param s Stroke object for the 2nd player on the conflicting cell
-		 * @param conflict The conflicting cell position
-		 */
-		virtual void onCollision(Stroke & s, Position &conflict){
-			std::cout << "Collision " << s.moveable.getName() << " & "
-			          << _pitch.getAt(conflict)->getName() 
-			          << " => " << conflict.toJson() << std::endl;
-		}
+		MatchManager(
+			BaseConnectionManager & connections, 
+			Squad const & squadA, Squad const & squadB
+		);
+		virtual ~MatchManager();
+		/* Run dat shit */
+		void _mainloop_out();
 };
 
 #endif

@@ -66,9 +66,10 @@ private:
 class Broomstick : public Gear 
 {
 public:
-    Broomstick(const int nCases, const int velocity):	_cases(nCases), 
-    													_velocityBonus(velocity){}
-	Broomstick(JSON::Dict const &json): Gear(json) {
+	Broomstick(const int cases, const int velocity) : Gear(), _cases(cases), _velocityBonus(velocity)
+	{}
+
+	Broomstick(JSON::Dict const &json = JSON::Dict()): Gear(json), _cases(5), _velocityBonus(50) {
 		if (ISINT(json.get("cases"))) _cases = INT(json.get("cases")).value();		
 		if (ISINT(json.get("velocityBonus"))) _velocityBonus = INT(json.get("velocityBonus")).value();		
 	}
@@ -78,6 +79,9 @@ public:
 		res.set("velocityBonus", _velocityBonus);
 		return res;
 	}	
+	void setCases(const int cases) { _cases = cases; }
+	void setVelocityBonus(const int velocity) { _velocityBonus = velocity; }
+	
 	int getCases () const 			{ return _cases; }
 	int getVelocityBonus () const  	{ return _velocityBonus; }
 private:
@@ -90,10 +94,9 @@ private:
 class Jersey : public Gear 
 {
 public:
-	//check->>> {TODO : we have to be able to set all the attributes of Jersey}
-	Jersey():_strengthBonus(0), _constitutionBonus(0), _magicBonus(0), _spiritBonus(0){}
 
-	Jersey(JSON::Dict const &json): Gear(json) {
+	Jersey(JSON::Dict const &json = JSON::Dict()): Gear(json),
+		_strengthBonus(0), _constitutionBonus(0), _magicBonus(0), _spiritBonus(0) {
 		if (ISINT(json.get("strengthBonus"))) _strengthBonus = INT(json.get("strengthBonus")).value();		
 		if (ISINT(json.get("constitutionBonus"))) _constitutionBonus = INT(json.get("constitutionBonus")).value();		
 		if (ISINT(json.get("magicBonus"))) _magicBonus = INT(json.get("magicBonus")).value();		

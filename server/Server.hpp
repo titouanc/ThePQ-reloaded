@@ -4,10 +4,13 @@
 #include <iostream>
 #include <string>
 #include <map>
+#include <deque>
+#include <Config.hpp>
 #include <network/ConnectionManager.hpp>
 #include "User.hpp"
 #include <Config.hpp>
 #include "PlayerMarket.hpp"
+#include "MatchManager.hpp"
 
 using namespace std;
 
@@ -37,6 +40,7 @@ struct NetConfig : public Config {
 class Server{
 public:
 	explicit Server(NetConfig const & config);
+    ~Server();
 	void run();
 	void treatMessage(const net::Message &message);
 
@@ -53,11 +57,14 @@ public:
     void deletePlayerOfMarket(const JSON::Dict &bid, int peer_id);
     void placeBidOnPlayer(const JSON::Dict &bid, int peer_id);
     string getRandomName();
+    void collectFinishedMatches(void);
+    void startMatch(int client_idA, int client_idB);
 private:
 	SharedQueue<net::Message> _inbox, _outbox;
 	map<int, User*> _users;
 	net::ConnectionManager _connectionManager;
     PlayerMarket market;
+    std::deque<MatchManager*> _matches;
 };
 
 #endif

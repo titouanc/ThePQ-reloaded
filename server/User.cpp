@@ -75,4 +75,33 @@ void User::saveInstallations()
 	json.save(path.c_str());
 }
 
+void User::createUser(){
+	JSON::Dict json = *this;
+	mkdir(getUserDirectoryPath().c_str(), 0755);
+	json.save(string(getUserDirectoryPath() + "user.json").c_str());
+	JSON::Dict installations;
+	installations.save(string(getUserDirectoryPath()+ "installations.json").c_str());
+	JSON::List baseSquad;
+	generateBaseSquad(baseSquad);
+	baseSquad.save(string(getUserDirectoryPath()+ "players.json").c_str());
+}
+
+
+void User::generateBaseSquad(JSON::List &toFill){
+	RandomNameGenerator gen;
+	for (int i=0; i<7; i++){
+		Player p;
+		p.setName(gen.getRandomName());
+		p.setMemberID();
+		JSON::Value* tmp = JSON::load("data/skel/broomstick.json");
+		p.equipBroomstick(DICT(tmp));
+		delete tmp;
+		tmp = JSON::load("data/skel/jersey.json");
+		p.equipJersey(DICT(tmp));
+		delete tmp;
+		JSON::Dict dict = p;
+		toFill.append(DICT(dict.clone()));
+	}
+}
+
 // TODO add User.delete

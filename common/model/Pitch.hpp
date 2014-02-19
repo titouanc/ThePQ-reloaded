@@ -2,6 +2,7 @@
 #define DEFINE_PITCH_HEADER 
 
 #include "Moveable.hpp"
+#include <vector>
 
 class Pitch {
 	private:
@@ -12,6 +13,13 @@ class Pitch {
 		/* Translate x,y position to index in inner representation */
 		size_t _index(int x, int y) const;
 	public:
+		static const Position West;
+		static const Position East;
+		static const Position NorthWest;
+		static const Position SouthWest;
+		static const Position NorthEast;
+		static const Position SouthEast;
+
 		Pitch(size_t width, size_t height);
 		~Pitch();
 
@@ -23,6 +31,8 @@ class Pitch {
 
 		int ymin(void) const;
 		int ymax(void) const;
+
+		Position center(void) const;
 
 		/*!
 		 * @meth Moveable * Pitch::getAt(int x, int y) const
@@ -41,7 +51,21 @@ class Pitch {
 		 * @param y The row (the middle row is 0)
 		 */
 		bool inEllipsis(int x, int y) const;
+		bool inEllipsis(Position position);
 		bool inEllipsis(Moveable *moveable) const;
+
+		// TODO DOC
+		bool isInWestKeeperZone(int x, int y) const;
+		bool isInWestKeeperZone(Moveable *moveable) const;
+		bool isInEastKeeperZone(int x, int y) const;
+		bool isInEastKeeperZone(Moveable *moveable) const;
+
+		// TODO DOC
+		bool isWestGoal(int x, int y) const;
+		bool isEastGoal(int x, int y) const;
+
+		// TODO DOC
+		std::vector<Position> freePositionsAround(Position &position);
 
 		/*!
 		 * @meth void Pitch::setAt(int x, int y, Moveable *moveable)
