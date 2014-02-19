@@ -1,7 +1,7 @@
 #include "MatchManager.hpp"
 
 /* TODO: read from config file */
-#define STROKES_TIMEOUT_SECONDS 10
+#define STROKES_TIMEOUT_SECONDS 1
 
 MatchManager::MatchManager(
 	BaseConnectionManager & connections, 
@@ -68,20 +68,23 @@ void MatchManager::processStroke(Message const & msg, JSON::Dict const & data)
 	int mid = INT(data.get("moveable_id"));
 	if (mid < 1 || (mid < 11 && mid > 7) || mid > 17)
 		return reply(msg, MATCH_ERROR, "Not a player");
-	int squad = mid/10;
-	int player = mid%10;
+	int squad_i = mid/10;
+	int player_i = mid%10;
 
-	if (msg.peer_id != _squads[squad].client_id)
+	if (msg.peer_id != _squads[squad_i].client_id)
 		return reply(msg, MATCH_ERROR, "Not your player");
 
 	if (! ISLIST(data.get("move")))
 		return reply(msg, MATCH_ERROR, "No displacement found");
+
+	Displacement move(LIST(data.get("move")));
+	Moveable & player = *(_squads[squad_i].players[player_i]);
 	
-	_strokes.push(Stroke(
-		*(_squads[squad].players[player]), 
-		Displacement(LIST(data.get("move")))
-	));
+	cout << "Got displacement: " << move.toJson() << endl;
+
+	_strokes.push(Stroke(player, move));
 	reply(msg, MATCH_ACK, data);
+	cout << _strokes.back().move.toJson() << endl;
 }
 
 void MatchManager::processMessage(Message const & msg)
@@ -232,8 +235,6 @@ void MatchManager::playStrokes(void)
 
 	while (! _strokes.empty())
 		_strokes.pop();
-	cout << "Processed moves !!!" << endl;
-	cout << _pitch << endl;
 }
 
 /*!
