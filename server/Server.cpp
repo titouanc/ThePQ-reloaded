@@ -85,6 +85,7 @@ void Server::registerUser(const JSON::Dict &credentials, int peer_id){
 		std::string const & password = STR(credentials.get(MSG::PASSWORD));
 
 		JSON::Dict response = JSON::Dict();
+		
 		response.set("type", MSG::STATUS);
 
 		User* newUser = User::load(username);
@@ -92,7 +93,7 @@ void Server::registerUser(const JSON::Dict &credentials, int peer_id){
 			response.set("data", MSG::USER_EXISTS);
 		} else { // User doesnt exist
 			newUser = new User(username, password);
-			newUser->save();
+			newUser->createUser(); 
 			response.set("data", MSG::USER_REGISTERED);
 		}
 

@@ -7,6 +7,7 @@
 #include "sys/stat.h"
 #include "RandomNameGenerator.hpp"
 #include <model/Installation.hpp>
+//#include "../Skeleton/Player.hpp"
 
 using namespace std;
 
@@ -32,11 +33,18 @@ public:
 	/* Serializable */
 	string getUserDirectoryPath();
 	void save();
+
 	static User* load(string username);
 	
 	/* Installations */
 	vector<Installation>& getInstallations();
 	void saveInstallations();
+
+	void createUser();
+	
+	static User* load(string username);
+
+	void generateBaseSquad(JSON::Dict &toFill);
 };
 
 #endif
