@@ -6,7 +6,9 @@
 class Schedule 
 {
 public:
+	Schedule();
 	ChampionshipGame[] getGames ();
+	~Schedule();
 private:
 	ChampionshipGame[] games;
 };

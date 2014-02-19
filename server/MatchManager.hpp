@@ -5,16 +5,12 @@
 #include <model/Moveable.hpp>
 #include <model/Displacement.hpp>
 #include <model/Pitch.hpp>
+#include <model/Player.hpp>
+#include <model/Ball.hpp>
 #include <cstring>
 #include "User.hpp"
 
-class Player : public Moveable {
-	using Moveable::Moveable;
-};
 
-class Ball : public Moveable {
-	using Moveable::Moveable;
-};
 
 struct Stroke {
 	Moveable & moveable;
@@ -43,7 +39,7 @@ struct Squad {
 	JSON::Dict toJson(){
 		JSON::List list;
 		for (int i=0; i<7; i++)
-			list.append(players[i].toJson());
+			list.append(JSON::Dict(players[i]));
 		JSON::Dict res;
 		res.set("players", list);
 		res.set("squad_id", squad_id);

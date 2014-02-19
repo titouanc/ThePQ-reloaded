@@ -21,6 +21,9 @@ using namespace std;
 
 static inline void indent(size_t n, const char *indenter="  ")
 {
+    /*Method used for padding the output
+     *Default is space, customisable with ASCII art
+     */
     while (n>0){
         cout << indenter; 
         n--;

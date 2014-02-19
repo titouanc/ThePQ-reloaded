@@ -14,8 +14,8 @@ using namespace JSON;
 
 #define BUFSIZE 4096
 
-Value *JSON::load(const char *filename)
-{
+Value *JSON::load(const char *filename){
+	/*Method used for reading from <<filename>>*/
 	int fd, r;
 	char buffer[BUFSIZE+1];
 	std::stringstream str;
@@ -36,6 +36,7 @@ Value *JSON::load(const char *filename)
 }
 
 Value *JSON::load(std::string filename){
+	/*Method used for reading from <<filename>>*/
 	return JSON::load(filename.c_str());
 }
 

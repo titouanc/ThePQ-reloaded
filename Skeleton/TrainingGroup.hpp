@@ -15,8 +15,9 @@ public:
 	void addPlayer (Player aPlayer);
 	void removePlayer (Player aPlayer);
 	list<Player> getPlayers ();
+	~TrainingGroup();
 private:
-	list<Coach> coaches;
+	list<Coach> coaches;//<<-faut pas plustot utiliser Coach (1 seul type de training)
 	list<Player> players;
 };
 

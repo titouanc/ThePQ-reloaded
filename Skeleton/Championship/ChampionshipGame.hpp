@@ -7,11 +7,13 @@
 class ChampionshipGame 
 {
 public:
+	ChampionshipGame ();
 	ParticipatingTeam getTeam1 ();
 	ParticipatingTeam getTeam2 ();
 	Date getDate ();
     int getTeam1Score();
     int getTeam2Score();
+    ~ChampionshipGame ()
 private:
 	ParticipatingTeam team1;
 	ParticipatingTeam team2;
