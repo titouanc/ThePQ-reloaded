@@ -179,3 +179,72 @@ vector<std::string> Client::getConnectedUsersList(){
 	}
 	return res;
 }
+
+std::vector<JSON::Dict> Client::updatePlayersOnSale(){
+	JSON::Dict query;
+	query.set("type", net::MSG::DATA_QUERY);
+	query.set("data", net::MSG::PLAYERS_ON_MARKET_LIST);
+	net::Message msg(0, query.clone());
+	_outbox.push(msg);
+	JSON::Value *serverResponse = _inbox.pop().data;
+	std::vector<JSON::Dict> res;
+	if (ISDICT(serverResponse)) {
+		JSON::Dict received = DICT(serverResponse);
+		if (ISSTR(received.get("type")) && ISLIST(received.get("data"))){
+			JSON::List & sales = LIST(received.get("data"));
+			for(size_t i = 0; i<sales.len();++i)
+				res.push_back(sales[i]);
+		}
+	}
+	return res; 
+}
+
+void Client::bidOnPlayer(int player_id,int team_id, int value){
+	JSON::Dict query, data;
+	data.set(net::MSG::TEAM_ID,team_id);
+	data.set(net::MSG::PLAYER_ID,player_id);
+	data.set(net::MSG::BID_VALUE,value);
+	query.set("type", net::MSG::BID_ON_PLAYER_QUERY);
+	query.set("data", data);
+	net::Message msg(0, query.clone());
+	_outbox.push(msg);
+	JSON::Value *serverResponse = _inbox.pop().data;
+	if(ISDICT(serverResponse)){
+		JSON::Dict received = DICT(serverResponse);
+		if(ISSTR(received.get("type")) && ISDICT(received.get("data"))){
+			std::string res = DICT(received.get("data")).get(net::MSG::SERVER_RESPONSE);
+			if(res == net::MSG::BID_VALUE_NOT_UPDATED)
+				throw bidValueNotUpdatedException();
+			else if(res == net::MSG::BID_TURN_ERROR)
+				throw turnException();
+			else if(res == net::MSG::BID_ENDED)
+				throw bidEndedException();
+			else if(res == net::MSG::CANNOT_BID_ON_YOUR_PLAYER)
+				throw bidOnYourPlayerException();
+			else if(res == net::MSG::LAST_BIDDER)
+				throw lastBidderException();
+		}
+	}
+}
+
+std::vector<Player> Client::getPlayers(int team_id){
+	JSON::Dict query;
+	JSON::List & toFill;
+	query.set("type", net::MSG::PLAYERS_LIST);
+	query.set("data","");
+	net::Message msg(0, query.clone());
+	_outbox.push(msg);
+	JSON::Value *serverResponse = _inbox.pop().data;
+	if(ISDICT(serverResponse)){
+		JSON::Dict received = DICT(serverResponse);
+		if(ISSTR(received.get("type")) && ISLIST(received.get("data"))){
+			toFill = LIST(received.get("data"));
+		}
+	}
+	std::vector<Player> myplayers;
+	for(size_t i=0; i<toFill.len();++i){
+		myplayers.push_back(DICT(toFill[i]));
+	}
+	delete serverResponse;
+	return myplayers;
+}

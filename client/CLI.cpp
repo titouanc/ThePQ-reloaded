@@ -181,6 +181,70 @@ void CLI::marketMenu(){
 	market.run();
 }
 
+void CLI::salePlayer(){
+	printPlayers();
+	
+}
+
+void CLI::printPlayersOnSale(){
+	_playersOnSale = _connection.updatePlayersOnSale();
+	cout << "================ PLAYERS ON SALE ================" << endl;
+	for(size_t i=0;i<_playersOnSale.size();++i){
+		JSON::Dict & sale = _playersOnSale[i];
+		Player player(DICT(sale.get(net::MSG::PLAYER)));
+		cout << "--------------------------------" << endl;
+		cout << i << " - " << STR(sale.get(net::MSG::PLAYER_ID)) << endl;
+		cout << "Time left (in seconds) : " << 	STR(sale.get(net::MSG::BID_TIMER)) 	<< endl;
+		cout << "Bid value : " 				<<	STR(sale.get(net::MSG::BID_VALUE)) 	<< endl;
+		cout << "Next bid value : "			<< 	STR(sale.get(net::MSG::NEXT_BID)) 	<< endl;
+		cout << "Player ID : "				<<	STR(sale.get(net::MSG::PLAYER_ID))	<< endl;
+		cout << "Player : "					<< 	player 								<< endl;
+		cout << "--------------------------------" << endl;
+	}
+	cout << "=================================================" << endl;
+	Menu marketList;
+	string message;
+	message+="You can : \n";
+	message+="   - (p)lace a bid on a player\n";
+	message+="   - (q)uit to market menu\n";
+	message+= _prompt;
+	marketList.setMessage(message);
+	marketList.addOption('p', new ClassCallback<CLI>(this, &CLI::placeBid));
+	marketList.run();
+}
+
+void CLI::placeBid(){
+	int player_id, value;
+	string response;
+	cout << "Enter the ID of the player you wish to bid on : " << endl;
+	cout << _prompt;
+	cin >> player_id;
+	for(size_t i = 0; i<_playersOnSale.size();++i){		//Getting the next bid value (which is in the JSON::Dict sent by server)
+		if(player_id == INT(_playersOnSale[i].get(net::MSG::PLAYER_ID))){
+			value = _playersOnSale[i].get(net::MSG::NEXT_BID);
+		}
+	}
+	try{
+		_connection.bidOnPlayer(player_id, _team_id, value);
+		cout << "Bid successfully placed ! Hurra !" << endl;
+	}
+	catch(bidValueNotUpdatedException e){
+		cout << "Error : bid value not correct (update your market list)."<<endl;
+	}
+	catch(turnException e){
+		cout << "Error : you did not bid last turn."<<endl;
+	}
+	catch(bidEndedException e){
+		cout << "Error : player no longer on sale (update your market list)."<<endl;
+	}
+	catch(bidOnYourPlayerException e){
+		cout << "Error : are you retarded ? This is your player."<<endl;
+	}
+	catch(lastBidderException e){
+		cout << "Error : you are currently winning this sale. Cannot bid when u are last bidder."<<endl;
+	}
+}
+
 /* Friendly match menu */
 void CLI::friendlyMatchMenu()
 {

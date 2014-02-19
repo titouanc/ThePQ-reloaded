@@ -42,6 +42,8 @@ private:
 	std::string _prompt;
 	Client _connection;
 	std::vector<Installation> _installations;
+	std::vector<JSON::Dict> _playersOnSale;
+	int _team_id;
 	
 	// User menu
 	void registerUser();
