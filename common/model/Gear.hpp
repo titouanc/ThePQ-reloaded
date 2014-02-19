@@ -90,10 +90,9 @@ private:
 class Jersey : public Gear 
 {
 public:
-	//check->>> {TODO : we have to be able to set all the attributes of Jersey}
-	Jersey():_strengthBonus(0), _constitutionBonus(0), _magicBonus(0), _spiritBonus(0){}
 
-	Jersey(JSON::Dict const &json): Gear(json) {
+	Jersey(JSON::Dict const &json = JSON::Dict()): Gear(json),
+		_strengthBonus(0), _constitutionBonus(0), _magicBonus(0), _spiritBonus(0) {
 		if (ISINT(json.get("strengthBonus"))) _strengthBonus = INT(json.get("strengthBonus")).value();		
 		if (ISINT(json.get("constitutionBonus"))) _constitutionBonus = INT(json.get("constitutionBonus")).value();		
 		if (ISINT(json.get("magicBonus"))) _magicBonus = INT(json.get("magicBonus")).value();		

@@ -51,12 +51,14 @@ Player::operator JSON::Dict(){
 
 
 void Player::equipBroomstick (Broomstick aBroom){
+	cout << (JSON::Dict) aBroom << endl;
     improveVelocity(-1 * _broomstick->getVelocityBonus());
     improveVelocity(aBroom.getVelocityBonus());
     *_broomstick = aBroom;
 }
 
 void Player::equipJersey (Jersey aJersey){
+	cout << (JSON::Dict) aJersey << endl;
     improveStrength(-1 * _jersey->getStrengthBonus());
     improveConstitution(-1 * _jersey->getConstitutionBonus());
     improveMagic(-1 * _jersey->getMagicBonus());
