@@ -43,25 +43,33 @@ BaseConnectionManager::~BaseConnectionManager()
     pthread_mutex_destroy(&_fdset_mutex);
 }
 
-bool BaseConnectionManager::_doWrite(int fd, JSON::Value *obj)
+bool BaseConnectionManager::_doWrite(int fd, const JSON::Value *obj)
 {
+    bool res = true;
     if (obj != NULL){
-        std::string const & repr = obj->dumps();
-        uint32_t msglen = htonl(repr.length());
-        int r = send(fd, &msglen, 4, 0);
-        if (r != 4)
-            return false;
-
-        for (size_t i=0; i<repr.length(); i+=r){
-            r = send(fd, repr.c_str()+i, repr.length()-i, 0);
-            if (r < 0)
-                return false;
+        pthread_mutex_lock(&_fdset_mutex);
+        if (_clients.find(fd) != _clients.end()){
+            std::string const & repr = obj->dumps();
+            uint32_t msglen = htonl(repr.length());
+            int r = send(fd, &msglen, 4, 0);
+            if (r != 4)
+                res = false;
+            else {
+                for (size_t i=0; i<repr.length(); i+=r){
+                    r = send(fd, repr.c_str()+i, repr.length()-i, 0);
+                    if (r < 0){
+                        res = false;
+                        break;
+                    }
+                }
+                if (_logger && res)
+                    std::cout << "[" << this << "] " << "\033[1m" << fd 
+                              << " \033[36m<<\033[0m " << *obj << std::endl;
+            }
         }
-        if (_logger)
-            std::cout << "\033[1m" << fd << " \033[36m<<\033[0m " 
-                      << *obj << std::endl;
+        pthread_mutex_unlock(&_fdset_mutex);
     }
-    return true;
+    return res;
 }
 
 #define BUFSIZE 0x1000
@@ -166,11 +174,7 @@ void BaseConnectionManager::_mainloop_out(void)
 {
     while (isRunning()){
         Message const & to_send = _outgoing.pop();
-        pthread_mutex_lock(&_fdset_mutex);
-        std::set<int>::iterator pos = _clients.find(to_send.peer_id);
-        if (pos != _clients.end())
-            _doWrite(to_send.peer_id, to_send.data);
-        pthread_mutex_unlock(&_fdset_mutex);
+        _doWrite(to_send.peer_id, to_send.data);
         delete to_send.data;
     }
 }

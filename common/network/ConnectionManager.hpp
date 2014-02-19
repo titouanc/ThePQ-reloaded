@@ -37,7 +37,7 @@ namespace net {
 			/* Call to select, and read from all known selected clients */
 			int  _doSelect(int fdmax, fd_set *readable);
 			/* Write obj to fd */
-			bool _doWrite(int fd, JSON::Value *obj);
+			bool _doWrite(int fd, const JSON::Value *obj);
 			/* Read a json object from fd and push it in incoming queue */
 			bool _doRead(int fd);
 			/* Close fd, remove client from managed clients and 
