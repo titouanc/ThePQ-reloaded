@@ -3,6 +3,8 @@
 
 #include <json/json.hpp>
 #include <string>
+#include <time.h>
+#include <stdlib.h>
 #include "Member.hpp"
 #include "Gear.hpp"
 #include "Moveable.hpp"
@@ -49,6 +51,26 @@ public:
 	void improveSpirit (int added) 			{ _spirit+=added; }
 	void improveVelocity (int added) 		{ _velocity+=added; }
 	void improvePrecision (int added) 		{ _precision+=added; }
+	float collisionScore();
+
+	Player &operator=(Player const & player){
+		Moveable::operator=(player);
+		Member::operator=(player);
+		_maxLife = player._maxLife;
+		_maxMana = player._maxMana;
+		_lifeBar = player._lifeBar;
+		_manaBar = player._manaBar;
+		_broomstick = new Broomstick(*(player._broomstick));
+		_jersey = new Jersey(*(player._jersey));
+		_strength = player._strength;
+		_constitution = player._constitution;
+		_magic = player._magic;
+		_spirit = player._spirit;
+		_velocity = player._velocity;
+		_precision = player._precision;
+		_chance = player._chance;
+		return *this;
+	}
 protected:
     int _maxLife;
     int _maxMana;
@@ -70,6 +92,12 @@ class Beater : public Player
 {
 public:
     Beater() : Player(), _bat(new Bat(5, 5)){}
+    Beater(JSON::Dict const & json) : Player(json){
+    	if (ISDICT(json.get("bat")))
+    		_bat = new Bat(DICT(json.get("bat")));
+    	else
+    		_bat = new Bat(5, 5); /* TODO: Too much magic here !!! */
+    }
 	bool isBeater () const { return true; }
 	void equipBat (Bat aBat);
     void unequipBat ();
@@ -84,7 +112,7 @@ private:
 class Chaser : public Player 
 {
 public:
-    Chaser(): Player(){}
+	using Player::Player;
     bool isChaser () const { return true; }
     int speed ();
     int collisionner ();
@@ -99,7 +127,7 @@ public:
 class Keeper : public Player 
 {
 public:
-    Keeper() : Player(){}
+    using Player::Player;
 	bool isKeeper () { return true; }
     int catchBall ();
     int pass ();
@@ -109,7 +137,7 @@ public:
 class Seeker : public Player 
 {
 public:
-    Seeker() : Player() {}
+    using Player::Player;
 	bool isSeeker () const { return true; }
     int catchGS ();
 

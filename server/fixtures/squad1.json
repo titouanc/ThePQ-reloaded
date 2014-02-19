@@ -1,12 +1,272 @@
 {
 	"squad_id" : 17,
-	"players" : [
-		{"name": "A", "speed": 7},
-		{"name": "B", "speed": 7},
-		{"name": "C", "speed": 7},
-		{"name": "D", "speed": 7},
-		{"name": "E", "speed": 7},
-		{"name": "F", "speed": 7},
-		{"name": "G", "speed": 7}
-	]
+	"chasers" : [
+		{
+			"ID": 0, 
+			"broomstick": {
+				"cases": 5, 
+				"description": 
+				"NoDescription", 
+				"name": "SuperBroomstick1", 
+				"price": 0, 
+				"velocityBonus": 50
+			}, 
+			"chance": 5, 
+			"constitution": 5, 
+			"jersey": {
+				"constitutionBonus": 0, 
+				"description": "NoDescription", 
+				"magicBonus": 0, 
+				"name": "NoName", 
+				"price": 0,
+				 "spiritBonus": 0,
+				 "strengthBonus": 0
+			},
+			"lifeBar": 100,
+			"magic": 5,
+			"manaBar": 100,
+			"maxLife": 100,
+			"maxMana": 100,
+			"name": "Chaser1",
+			"position": [0, 0],
+			"precision": 5,
+			"price": 25000,
+			"salary": 5000,
+			"speed": 0,
+			"spirit": 5,
+			"strength": 15,
+			"velocity": 5
+		},
+		{
+			"ID": 0, 
+			"broomstick": {
+				"cases": 5, 
+				"description": "NoDescription", 
+				"name": "SuperBroomstick2", 
+				"price": 0, 
+				"velocityBonus": 50
+			}, 
+			"chance": 5, 
+			"constitution": 5, 
+			"jersey": {
+				"constitutionBonus": 0, 
+				"description": "NoDescription", 
+				"magicBonus": 0, 
+				"name": "NoName", 
+				"price": 0,
+				 "spiritBonus": 0,
+				 "strengthBonus": 0
+			},
+			"lifeBar": 100,
+			"magic": 5,
+			"manaBar": 100,
+			"maxLife": 100,
+			"maxMana": 100,
+			"name": "Chaser2",
+			"position": [0, 0],
+			"precision": 5,
+			"price": 25000,
+			"salary": 5000,
+			"speed": 0,
+			"spirit": 5,
+			"strength": 15,
+			"velocity": 5
+		},
+		{
+			"ID": 0, 
+			"broomstick": {
+				"cases": 5, 
+				"description": 
+				"NoDescription", 
+				"name": "SuperBroomstick3", 
+				"price": 0, 
+				"velocityBonus": 50
+			}, 
+			"chance": 5, 
+			"constitution": 5, 
+			"jersey": {
+				"constitutionBonus": 0, 
+				"description": "NoDescription", 
+				"magicBonus": 0, 
+				"name": "NoName", 
+				"price": 0,
+				 "spiritBonus": 0,
+				 "strengthBonus": 0
+			},
+			"lifeBar": 100,
+			"magic": 5,
+			"manaBar": 100,
+			"maxLife": 100,
+			"maxMana": 100,
+			"name": "Chaser3-Jason",
+			"position": [0, 0],
+			"precision": 5,
+			"price": 25000,
+			"salary": 5000,
+			"speed": 0,
+			"spirit": 5,
+			"strength": 15,
+			"velocity": 5
+		}
+	],
+	"beaters" : [
+		{
+			"ID": 0, 
+			"broomstick": {
+				"cases": 5, 
+				"description": 
+				"NoDescription", 
+				"name": "SuperBroomstick4", 
+				"price": 0, 
+				"velocityBonus": 50
+			}, 
+			"chance": 5, 
+			"constitution": 5, 
+			"jersey": {
+				"constitutionBonus": 0, 
+				"description": "NoDescription", 
+				"magicBonus": 0, 
+				"name": "NoName", 
+				"price": 0,
+				 "spiritBonus": 0,
+				 "strengthBonus": 0
+			},
+			"lifeBar": 100,
+			"magic": 5,
+			"manaBar": 100,
+			"maxLife": 100,
+			"maxMana": 100,
+			"name": "Beater1",
+			"position": [0, 0],
+			"precision": 5,
+			"price": 25000,
+			"salary": 5000,
+			"speed": 0,
+			"spirit": 5,
+			"strength": 15,
+			"velocity": 5,
+			"bat": {
+				"description": "NoDescription", 
+				"name": "SuperBat", 
+				"precisionBonus": 456, 
+				"price": 0, 
+				"strengthBonus": 123
+			}
+		}, 
+		{
+			"ID": 0, 
+			"broomstick": {
+				"cases": 5, 
+				"description": 
+				"NoDescription", 
+				"name": "SuperBroomstick5", 
+				"price": 0, 
+				"velocityBonus": 50
+			}, 
+			"chance": 5, 
+			"constitution": 5, 
+			"jersey": {
+				"constitutionBonus": 0, 
+				"description": "NoDescription", 
+				"magicBonus": 0, 
+				"name": "NoName", 
+				"price": 0,
+				 "spiritBonus": 0,
+				 "strengthBonus": 0
+			},
+			"lifeBar": 100,
+			"magic": 5,
+			"manaBar": 100,
+			"maxLife": 100,
+			"maxMana": 100,
+			"name": "Beater2",
+			"position": [0, 0],
+			"precision": 5,
+			"price": 25000,
+			"salary": 5000,
+			"speed": 0,
+			"spirit": 5,
+			"strength": 15,
+			"velocity": 5,
+			"bat": {
+				"description": "NoDescription", 
+				"name": "SuperBat", 
+				"precisionBonus": 456, 
+				"price": 0, 
+				"strengthBonus": 123
+			}
+		}
+	],
+	"seeker" : {
+		"ID": 0, 
+		"broomstick": {
+			"cases": 5, 
+			"description": 
+			"NoDescription", 
+			"name": "SuperBroomstick6", 
+			"price": 0, 
+			"velocityBonus": 50
+		}, 
+		"chance": 5, 
+		"constitution": 5, 
+		"jersey": {
+			"constitutionBonus": 0, 
+			"description": "NoDescription", 
+			"magicBonus": 0, 
+			"name": "NoName", 
+			"price": 0,
+			 "spiritBonus": 0,
+			 "strengthBonus": 0
+		},
+		"lifeBar": 100,
+		"magic": 5,
+		"manaBar": 100,
+		"maxLife": 100,
+		"maxMana": 100,
+		"name": "Seeker",
+		"position": [0, 0],
+		"precision": 5,
+		"price": 25000,
+		"salary": 5000,
+		"speed": 0,
+		"spirit": 5,
+		"strength": 15,
+		"velocity": 5
+	},
+	"keeper" : {
+		"ID": 0, 
+		"broomstick": {
+			"cases": 5, 
+			"description": 
+			"NoDescription", 
+			"name": "SuperBroomstick7", 
+			"price": 0, 
+			"velocityBonus": 50
+		}, 
+		"chance": 5, 
+		"constitution": 5, 
+		"jersey": {
+			"constitutionBonus": 0, 
+			"description": "NoDescription", 
+			"magicBonus": 0, 
+			"name": "NoName", 
+			"price": 0,
+			 "spiritBonus": 0,
+			 "strengthBonus": 0
+		},
+		"lifeBar": 100,
+		"magic": 5,
+		"manaBar": 100,
+		"maxLife": 100,
+		"maxMana": 100,
+		"name": "Keeper",
+		"position": [0, 0],
+		"precision": 5,
+		"price": 25000,
+		"salary": 5000,
+		"speed": 0,
+		"spirit": 5,
+		"strength": 15,
+		"velocity": 5
+	}
 }

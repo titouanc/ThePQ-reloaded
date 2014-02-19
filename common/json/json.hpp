@@ -14,7 +14,7 @@
 #include <cstdlib>
 #include <stdexcept>
 #include <vector>
-#include <map>
+#include <unordered_map>
 
 /* Convenience cast macros */
 #define INT(obj)   (*((JSON::Integer *)(obj)))
@@ -129,7 +129,7 @@ namespace JSON {
 
     class Dict : public Value {
         private:
-            std::map<std::string, Value*> _content;
+            std::unordered_map<std::string, Value*> _content;
         public:
             Dict();
             ~Dict();
@@ -151,8 +151,8 @@ namespace JSON {
             void set(std::string const & key, double val);
             void set(std::string const & key, std::string const & val);
 
-            typedef std::map<std::string, Value*>::iterator iterator;
-            typedef std::map<std::string, Value*>::const_iterator const_iterator;
+            typedef std::unordered_map<std::string, Value*>::iterator iterator;
+            typedef std::unordered_map<std::string, Value*>::const_iterator const_iterator;
             iterator begin(void);
             iterator end(void);
             const_iterator begin(void) const;

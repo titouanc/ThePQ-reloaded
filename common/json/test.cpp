@@ -157,14 +157,16 @@ TEST(json_dict_repr)
 	JSON::Dict d;
 	d.set("key1", "value1");
 	d.set("key2", "value2");
-	ASSERT(
-		d.dumps() == "{\"key1\": \"value1\", \"key2\": \"value2\"}" || 
-		d.dumps() == "{\"key2\": \"value2\", \"key1\": \"value1\"}"
-	)
+
+	const char *repr1 = "{\"key1\": \"value1\", \"key2\": \"value2\"}";
+	const char *repr2 = "{\"key2\": \"value2\", \"key1\": \"value1\"}";
+	ASSERT(d.dumps() == repr1 || d.dumps() == repr2)
 
 	JSON::Value *copy = d.clone();
 	ASSERT(copy != NULL);
-	ASSERT(d.dumps() == copy->dumps());
+	ASSERT(d.dumps() == repr1 || d.dumps() == repr2);
+
+	delete copy;
 ENDTEST()
 
 TEST(json_parse_error)
@@ -376,7 +378,6 @@ TEST(json_save)
 		ASSERT(ISLIST(it->second));
 		ASSERT(LIST(it->second).len() == 3);
 	}
-	ASSERT(val->dumps() == copy->dumps());
 
 	delete val;
 	delete copy;
@@ -464,6 +465,8 @@ TEST(list_assign)
 		ASSERT(ISINT(l1[i])); /* But same val */
 		ASSERT(INT(l1[i]).value() == INT(l2[i]).value());
 	}
+
+	delete parsed;
 ENDTEST()
 
 TEST(dict_assign)

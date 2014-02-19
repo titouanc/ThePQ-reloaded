@@ -1,21 +1,19 @@
-make.ok: json/libjson.a network/libnetwork.a pitch/libpitch.a model/libmodel.a
-	touch $@
+all: json model network
 
-json/libjson.a: json
-	make -C $<
+.PHONY: all clean mrproper json model network
 
-network/libnetwork.a: network json/libjson.a
-	make -C $<
+json:
+	make -C json
 
-model/libmodel.a: model json/libjson.a
-	make -C $<
+model: json
+	make -C model
 
-pitch/libpitch.a: pitch json/libjson.a model/libmodel.a
-	make -C $<
+network: json
+	make -C network
 
 clean:
 	rm -f *.ok
-	for dir in pitch network json model; do make -C $$dir clean; done
+	for dir in network json model; do make -C $$dir clean; done
 
 mrproper: clean
-	for dir in pitch network json model; do make -C $$dir mrproper; done	
+	for dir in network json model; do make -C $$dir mrproper; done	

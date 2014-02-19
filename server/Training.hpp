@@ -1,7 +1,7 @@
 #ifndef _TRAINING_HPP
 #define _TRAINING_HPP
-#include "TrainingGroup.hpp"
-#include "Coach.hpp"
+//#include "TrainingGroup.hpp"
+//#include "Coach.hpp"
 #include <model/Player.hpp>
 
 

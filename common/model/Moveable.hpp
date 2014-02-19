@@ -22,13 +22,15 @@ public:
 	virtual string getName() { return ""; }
 
 	Position getPosition() const { return _position; }
-	void setPosition(Position &position) { _position = position; }
+	void setPosition(Position const & position) { _position = position; }
 
 	float getSpeed() const { return _speed; }
 	void setSpeed(float speed) { _speed = speed; }
 
 	unsigned int getID() const { return _uniqueID; }
 	void setID(unsigned int newID) { _uniqueID = newID; }
+
+	virtual float collisionScore() { return 0; }
 
 	operator JSON::Dict() const {
 		JSON::Dict res;
