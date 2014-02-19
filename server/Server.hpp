@@ -4,9 +4,11 @@
 #include <iostream>
 #include <string>
 #include <map>
+#include <deque>
+#include <Config.hpp>
 #include <network/ConnectionManager.hpp>
 #include "User.hpp"
-#include <Config.hpp>
+#include "MatchManager.hpp"
 
 using namespace std;
 
@@ -36,6 +38,7 @@ struct NetConfig : public Config {
 class Server{
 public:
 	explicit Server(NetConfig const & config);
+    ~Server();
 	void run();
 	void treatMessage(const net::Message &message);
 
@@ -52,6 +55,7 @@ private:
 	SharedQueue<net::Message> _inbox, _outbox;
 	map<int, User*> _users;
 	net::ConnectionManager _connectionManager;
+    std::deque<MatchManager*> _matches;
 };
 
 #endif

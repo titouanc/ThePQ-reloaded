@@ -1,5 +1,4 @@
 #include "Server.hpp"
-#include "MatchManager.hpp"
 #include <stdlib.h>
 #include <time.h>
 #include <stdexcept>
@@ -20,10 +19,21 @@ std::string humanExcName(const char *name)
 
 Server::Server(NetConfig const & config) : 
 	_inbox(), _outbox(), _users(),
-	_connectionManager(_inbox, _outbox, config.ip.c_str(), config.port, config.maxClients)
+	_connectionManager(_inbox, _outbox, config.ip.c_str(), config.port, config.maxClients),
+	_matches()
 {
 	_connectionManager.start();
 	cout << "Launched server on " << _connectionManager.ip() << ":" << _connectionManager.port() << endl;
+}
+
+Server::~Server()
+{
+	std::deque<MatchManager*>::iterator it;
+	for (it=_matches.begin(); it!=_matches.end(); it++){
+		(*it)->stop();
+		delete *it;
+	}
+	_matches.clear();
 }
 
 void Server::run()
@@ -64,11 +74,10 @@ void Server::startMatch(int client_idA, int client_idB)
 	squad2.client_id = client_idB;
 	delete json;
 
-	MatchManager match(_connectionManager, squad1, squad2);
-	cout << "START DA MATCH" << endl;
-	match.run();
-
-	cout << "DA MATCH STOPZ" << endl;
+	while (_outbox.available()); /* Clear outbox (do not lose msgs) */
+	MatchManager *match = new MatchManager(_connectionManager, squad1, squad2);
+	match->start();
+	_matches.push_back(match);
 }
 
 void Server::treatMessage(const Message &message)

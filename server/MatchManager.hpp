@@ -34,14 +34,13 @@ struct Stroke {
 #define MATCH_ERROR   "M!!!"
 #define MATCH_ACK     "MACK"
 
-class MatchManager {
+class MatchManager : public SubConnectionManager {
 	private:
 		std::queue<Stroke> _strokes;
 		Squad _squads[2];
 		Ball   _balls[4];
 		Pitch  _pitch;
 		SharedQueue<Message> _inbox, _outbox;
-		SubConnectionManager _net;
 
 		/* initialise moveable positions */
 		void initPositions(void);
@@ -78,7 +77,7 @@ class MatchManager {
 		);
 		~MatchManager();
 		/* Run dat shit */
-		void run();
+		void _mainloop_out();
 };
 
 #endif

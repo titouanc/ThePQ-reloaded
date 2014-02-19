@@ -1,13 +1,13 @@
 #include "MatchManager.hpp"
 
 /* TODO: read from config file */
-#define STROKES_TIMEOUT_SECONDS 1
+#define STROKES_TIMEOUT_SECONDS 10
 
 MatchManager::MatchManager(
 	BaseConnectionManager & connections, 
 	Squad const & squadA, Squad const & squadB
-) : _strokes(), _pitch(100, 36), _inbox(), _outbox(), 
-   _net(_inbox, _outbox, connections)
+) : SubConnectionManager(_inbox, _outbox, connections), 
+    _strokes(), _pitch(100, 36)
 {
 	for (int i=0; i<4; i++)
 		_balls[i].setID(100+i+1); /* Balls IDs: 101..104*/
@@ -23,11 +23,10 @@ MatchManager::MatchManager(
 	}
 
 	/* Get a local communication channel */
-	_net.acquireClient(squadA.client_id);
-	_net.acquireClient(squadB.client_id);
-	_net.start();
-
+	acquireClient(squadA.client_id);
+	acquireClient(squadB.client_id);
 	initPositions();
+	cout << "MatchManager ready !" << endl;
 }
 
 void MatchManager::initPositions(void)
@@ -107,13 +106,15 @@ void MatchManager::processMessage(Message const & msg)
 	}
 }
 
-void MatchManager::run()
+void MatchManager::_mainloop_out()
 {
 	sendSquads();
 	sendSignal(MATCH_START);
 	time_t tick;
 
-	while (_net.nClients() > 0){
+	cout << "Starting match #" << this << endl;
+	while (nClients() > 0){
+		cout << "+ tick match #" << this << endl;
 		sendSignal(MATCH_PROMPT);
 		tick = time(NULL);
 
@@ -131,21 +132,21 @@ void MatchManager::run()
 		} while (time(NULL) - tick < STROKES_TIMEOUT_SECONDS);
 		
 		sendSignal(MATCH_TIMEOUT);
-		playStrokes();
+		if (! _strokes.empty())
+			playStrokes();
 		break;
 	}
+	cout << "==Ending match #" << this << endl;
 
 	sendSignal(MATCH_END);
 }
 
-/* send data to both clients */
 void MatchManager::sendToAll(JSON::Value const & data)
 {
 	for (int i=0; i<2; i++)
-		_outbox.push(Message(_squads[i].client_id, data.clone()));
+		_doWrite(_squads[i].client_id, &data);
 }
 
-/* send {"type": "<sig>", "data": true} to both clients */
 void MatchManager::sendSignal(std::string const & sig)
 {
 	JSON::Dict msg;
@@ -156,10 +157,10 @@ void MatchManager::sendSignal(std::string const & sig)
 
 void MatchManager::reply(Message const & msg, std::string type, JSON::Value const & data)
 {
-	JSON::Dict *response = new JSON::Dict();
-	response->set("type", type);
-	response->set("data", data);
-	_outbox.push(Message(msg.peer_id, response));
+	JSON::Dict response = JSON::Dict();
+	response.set("type", type);
+	response.set("data", data);
+	_doWrite(msg.peer_id, &response);
 }
 
 void MatchManager::reply(Message const & msg, std::string type, const char *text)
