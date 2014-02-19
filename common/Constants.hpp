@@ -7,12 +7,12 @@ namespace net
 	namespace MSG
 	{
 		// TYPE ----------------------------------------------
+		static const std::string SERVER_RESPONSE = "S_R";
 		static const std::string DISCONNECT = "D";
 		static const std::string LOGIN = "Q_L";
 		static const std::string REGISTER = "Q_R";
 		static const std::string USER_EXISTS = "U_E";
 		static const std::string STATUS = "Q_S";
-		static const std::string INSTALLATIONS_LIST = "DQ_I_L";
 		static const std::string INSTALLATION_UPGRADE = "AQ_I_U";
 		static const std::string INSTALLATION_DOWNGRADE = "AQ_I_D";
 
@@ -33,6 +33,7 @@ namespace net
 		static const std::string PLAYER_ID = "P_ID";						
 		static const std::string TEAM_ID = "T_ID";							
 		static const std::string BID_VALUE = "B_V";
+		static const std::string NEXT_BID = "N_B";
 		static const std::string BID_TIMER = "B_T";
 		static const std::string TEAMS_BIDDING = "TS_B";
 		static const std::string CAN_BID_TEAMS = "C_B_T";
@@ -56,6 +57,7 @@ namespace net
 		static const std::string INSTALLATIONS_LIST = "DQ_I_L";
 		static const std::string CONNECTED_USERS_LIST = "DQ_CU_L";
 		static const std::string PLAYERS_ON_MARKET_LIST= "DQ_P_OM_L";
+		static const std::string PLAYERS_LIST = "DQ_P_L";
 	}
 }
 

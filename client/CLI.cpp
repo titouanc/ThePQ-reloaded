@@ -185,12 +185,13 @@ void CLI::salePlayer(){
 	printPlayers();			//this function updates _players
 	int player_id, bidValue;
 	bool found = false;
+	Player * player;
 	cout << "Choose a player to sale by entering his ID :" <<endl;
 	cout << _prompt;
 	cin >> player_id;
 	for(size_t i = 0; i<_players.size(); ++i){
 		if(_players[i].getID() == player_id)
-			Player *player = &(_players[i]);
+			player = &(_players[i]);
 			found = true;
 	}
 	if(found){
@@ -204,7 +205,7 @@ void CLI::salePlayer(){
 			cin >> bidValue;
 		}
 		try{
-		_connection.addPlayerOnMarket(player_id, team_id, bidValue);
+		_connection.addPlayerOnMarket(player_id, _team_id, bidValue);
 		cout << "Your player was successfully added on market." << endl;
 		}
 		catch(playerAlreadyOnMarketException e){
@@ -219,8 +220,8 @@ void CLI::salePlayer(){
 vector<int> getBidValueRange(Player *player){
 	int allowedRangeFromEstimatedValue = 10000; //TODO : in Constants.hpp (should do that for many others variables !)
 	vector<int> range;
-	vector.push_back(player->estimatedValue() - (int) allowedRangeFromEstimatedValue/2);
-	vector.push_back(player->estimatedValue() + (int) allowedRangeFromEstimatedValue/2);
+	range.push_back(player->estimatedValue() - (int) allowedRangeFromEstimatedValue/2);
+	range.push_back(player->estimatedValue() + (int) allowedRangeFromEstimatedValue/2);
 	return range;
 }
 
@@ -235,7 +236,7 @@ void CLI::printPlayersOnSale(){
 		cout << "Bid value 				: " <<	STR(sale.get(net::MSG::BID_VALUE)) 	<< endl;
 		cout << "Next bid value 		: "	<< 	STR(sale.get(net::MSG::NEXT_BID)) 	<< endl;
 		cout << "Player ID 				: "	<<	STR(sale.get(net::MSG::PLAYER_ID))	<< endl;
-		cout << "Player infos			: "	<< 	player 								<< endl;
+		//cout << "Player infos			: "	<< 	player 								<< endl; TODO << FOR PLAYER
 		cout << "--------------------------------" << endl;
 	}
 	cout << "=================================================" << endl;
@@ -258,7 +259,7 @@ void CLI::placeBid(){
 	cin >> player_id;
 	for(size_t i = 0; i<_playersOnSale.size();++i){		//Getting the next bid value (which is in the JSON::Dict sent by server)
 		if(player_id == INT(_playersOnSale[i].get(net::MSG::PLAYER_ID))){
-			value = _playersOnSale[i].get(net::MSG::NEXT_BID);
+			value = INT(_playersOnSale[i].get(net::MSG::NEXT_BID));
 		}
 	}
 	try{
@@ -285,8 +286,8 @@ void CLI::placeBid(){
 void CLI::printPlayers(){
 	_players = _connection.getPlayers(_team_id);
 	cout << "================ YOUR PLAYERS ================" << endl;
-	for(size_t i =0; i<_players.size(),++i){
-		cout << _players[i] << endl;
+	for(size_t i =0; i<_players.size();++i){
+//		cout << _players[i] << endl; TODO << FOR PLAYER
 		cout << "--------------------------------------" << endl;
 	}
 	cout << "==============================================" << endl;

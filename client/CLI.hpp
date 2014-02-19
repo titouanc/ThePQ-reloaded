@@ -10,6 +10,7 @@
 #include "Exception.hpp"
 #include "Menu.hpp"
 #include <Config.hpp>
+#include "../common/model/Player.hpp" //TODO include Player (also in Client.hpp)
 
 struct NetConfig : public Config {
     std::string host;
@@ -69,6 +70,13 @@ public:
 	
 	void upgradeInstallation();
 	void downgradeInstallation();
+
+	// Player market
+	void printPlayersOnSale();
+	void printPlayers();
+	void salePlayer();
+	vector<int> getBidValueRange(Player *player);
+	void placeBid();
 
 private:
 	void loadInstallations();

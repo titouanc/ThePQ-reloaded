@@ -182,8 +182,8 @@ vector<std::string> Client::getConnectedUsersList(){
 
 std::vector<JSON::Dict> Client::updatePlayersOnSale(){
 	JSON::Dict query;
-	query.set("type", net::MSG::DATA_QUERY);
-	query.set("data", net::MSG::PLAYERS_ON_MARKET_LIST);
+	query.set("type", net::MSG::PLAYERS_ON_MARKET_LIST);
+	query.set("data", "");
 	net::Message msg(0, query.clone());
 	_outbox.push(msg);
 	JSON::Value *serverResponse = _inbox.pop().data;
@@ -193,7 +193,7 @@ std::vector<JSON::Dict> Client::updatePlayersOnSale(){
 		if (ISSTR(received.get("type")) && ISLIST(received.get("data"))){
 			JSON::List & sales = LIST(received.get("data"));
 			for(size_t i = 0; i<sales.len();++i)
-				res.push_back(sales[i]);
+				res.push_back(DICT(sales[i]));
 		}
 	}
 	return res; 
@@ -212,7 +212,7 @@ void Client::bidOnPlayer(int player_id,int team_id, int value){
 	if(ISDICT(serverResponse)){
 		JSON::Dict received = DICT(serverResponse);
 		if(ISSTR(received.get("type")) && ISDICT(received.get("data"))){
-			std::string res = DICT(received.get("data")).get(net::MSG::SERVER_RESPONSE);
+			std::string res = STR(DICT(received.get("data")).get(net::MSG::SERVER_RESPONSE));
 			if(res == net::MSG::BID_VALUE_NOT_UPDATED)
 				throw bidValueNotUpdatedException();
 			else if(res == net::MSG::BID_TURN_ERROR)
@@ -240,7 +240,7 @@ void Client::addPlayerOnMarket(int player_id,int team_id, int value){
 	if(ISDICT(serverResponse)){
 		JSON::Dict received = DICT(serverResponse);
 		if(ISSTR(received.get("type")) && ISDICT(received.get("data"))){
-			std::string res = DICT(received.get("data")).get(net::MSG::SERVER_RESPONSE);
+			std::string res = STR(DICT(received.get("data")).get(net::MSG::SERVER_RESPONSE));
 			if(res == net::MSG::PLAYER_ALREADY_ON_MARKET)
 				throw playerAlreadyOnMarketException();
 		}
@@ -249,7 +249,7 @@ void Client::addPlayerOnMarket(int player_id,int team_id, int value){
 
 std::vector<Player> Client::getPlayers(int team_id){
 	JSON::Dict query, data;
-	JSON::List & toFill;
+	JSON::List toFill;
 	data.set(net::MSG::TEAM_ID, team_id);
 	query.set("type", net::MSG::PLAYERS_LIST);
 	query.set("data",data);

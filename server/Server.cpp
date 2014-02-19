@@ -131,7 +131,7 @@ void Server::treatMessage(const Message &message)
 						sendInstallationsList(message.peer_id);
 				} else if(messageType == MSG::CONNECTED_USERS_LIST){
 						sendConnectedUsersList(message.peer_id);
-				} else if(data == MSG::PLAYERS_ON_MARKET_LIST) {
+				} else if(messageType == MSG::PLAYERS_ON_MARKET_LIST) {
 						sendPlayersOnMarketList(message.peer_id);
 				}
 			} else if (ISINT(received.get("data"))) {
