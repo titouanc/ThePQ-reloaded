@@ -33,13 +33,32 @@ public:
 	int getMemberID()	{ return _memberID; }
 	//Team getOwner () 	{ return _owner; } // TODO
 	//void setOwner (Team aTeam) { _owner = aTeam; } // TODO
-	void setMemberID(int id) { _memberID = id; }
+	void setMemberID() { _memberID = Member::getNextMemberID(); }
+	
+	
 protected:
 	int _memberID;
     string _name;
 	int _salary;
 	int _price;
+	
+	static int getNextMemberID()
+	{
+		static int _staticMemberID = -1;
+		static const std::string path = "data/global/memberID.json";
+		if (_staticMemberID == -1)
+		{
+			JSON::Value* tmp = JSON::load(path);
+			_staticMemberID = INT(tmp);
+			delete tmp;
+		}
+		++_staticMemberID;
+		cout << "MEMBER ID: " << _staticMemberID << endl;
+		JSON::Integer i(_staticMemberID);
+		i.save(path);
+		return _staticMemberID;
+	}
+	
 	//Team * _owner; // TODO
 };
-
 #endif

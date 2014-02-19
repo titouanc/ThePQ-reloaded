@@ -1,5 +1,6 @@
 #include "lighttest/lighttest.hpp"
 #include "Installation.hpp"
+#include "Member.hpp"
 #include <cmath>
 
 TEST(default_constructor)
@@ -60,6 +61,7 @@ TEST(downgrade_installation)
 	ASSERT(inst.getCurrentValue() == 0);
 	ASSERT(inst.getValueAtLevel(0) == 0);
 ENDTEST()
+
 
 
 int main(int argc, const char **argv){
