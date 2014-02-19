@@ -1,6 +1,7 @@
 #include "Player.hpp"
 
 Player::Player(JSON::Dict const & json) : Member(json), Moveable(json){
+		if (ISSTR(json.get("name"))) _name = STR(json.get("name")).value();
         if (ISINT(json.get("maxLife"))) _maxLife = INT(json.get("maxLife")).value();
         if (ISINT(json.get("maxMana"))) _maxMana = INT(json.get("maxMana")).value();
         if (ISINT(json.get("lifeBar"))) _lifeBar = INT(json.get("lifeBar")).value();

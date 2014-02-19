@@ -81,25 +81,20 @@ void User::createUser(){
 	json.save(string(getUserDirectoryPath() + "user.json").c_str());
 	JSON::Dict installations;
 	installations.save(string(getUserDirectoryPath()+ "installations.json").c_str());
-	JSON::Dict baseSquad;
+	JSON::List baseSquad;
 	generateBaseSquad(baseSquad);
 	baseSquad.save(string(getUserDirectoryPath()+ "players.json").c_str());
 }
 
 
-void User::generateBaseSquad(JSON::Dict &toFill){
+void User::generateBaseSquad(JSON::List &toFill){
 	RandomNameGenerator gen;
-	toFill.set("players", JSON::List());
 	for (int i=0; i<7; i++){
-		/* TODO
 		Player p;
 		p.setName(gen.getRandomName());
-		LIST(toFill.get("players")).append(p.toJson().clone());
-		*/
-		JSON::Dict toSave;
-		toSave.set("name", gen.getRandomName());
-		toSave.set("id", 123);
-		LIST(toFill.get("players")).append(toSave);
+		p.setID(123);
+		JSON::Dict dict = p;
+		toFill.append(DICT(dict.clone()));
 	}
 }
 

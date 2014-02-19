@@ -2,7 +2,7 @@
 #define _TRAINING_HPP
 #include "TrainingGroup.hpp"
 #include "Coach.hpp"
-#include "Player.hpp"
+#include <model/Player.hpp>
 
 
 enum trainingType={'Agility','Precision','Endurance'}//<<=add more trainings

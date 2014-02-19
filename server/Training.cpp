@@ -1,6 +1,4 @@
 #include "Training.hpp"
-#include "Coach.hpp"
-#include "Player.hpp"
 using namespace std;
 
 Training::Training();

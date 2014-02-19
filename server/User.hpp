@@ -7,6 +7,7 @@
 #include "sys/stat.h"
 #include "RandomNameGenerator.hpp"
 #include <model/Installation.hpp>
+#include <model/Player.hpp>
 //#include "../Skeleton/Player.hpp"
 
 using namespace std;
@@ -42,7 +43,7 @@ public:
 
 	void createUser();
 
-	void generateBaseSquad(JSON::Dict &toFill);
+	void generateBaseSquad(JSON::List &toFill);
 };
 
 #endif
