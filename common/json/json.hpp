@@ -8,6 +8,9 @@
  * 
  * History:
  *    + 2014-02-07: First release (Titou)
+ *    + 2014-02-19: (Titou)
+ *         * Various additions merged in master
+ *         * _writeTo() privatised in all subclasses
  */
 
 #include <iostream>
@@ -72,7 +75,7 @@ namespace JSON {
             virtual ~Value(){}
             virtual Value * clone(void) const = 0;
             virtual Type type(void) const = 0;
-            virtual std::string dumps(void) const;
+            std::string dumps(void) const;
             friend std::ostream & operator<<(std::ostream & out, Value const & val)
             {
                 val._writeTo(out);
@@ -92,12 +95,12 @@ namespace JSON {
     class String : public Value {
         private:
             std::string _content;
+            void _writeTo(std::ostream & out) const;
         public:
             String(std::string str);
             ~String();
             Type type(void) const;
             Value * clone(void) const;
-            virtual void _writeTo(std::ostream & out) const;
             std::string const & value(void) const;
             operator std::string const &(){return value();}
             operator const char *(){return value().c_str();}
@@ -106,6 +109,7 @@ namespace JSON {
     class List : public Value {
         private:
             std::vector<Value*> _content;
+            void _writeTo(std::ostream & out) const;
         public:
             List();
             ~List();
@@ -114,7 +118,6 @@ namespace JSON {
 
             Type type(void) const;
             Value * clone(void) const;
-            virtual void _writeTo(std::ostream & out) const;
             const Value * operator[](size_t index);
             const Value * operator[](size_t index) const;
             Value * steal(size_t index);
@@ -130,6 +133,7 @@ namespace JSON {
     class Dict : public Value {
         private:
             std::unordered_map<std::string, Value*> _content;
+            void _writeTo(std::ostream & out) const;
         public:
             Dict();
             ~Dict();
@@ -138,7 +142,6 @@ namespace JSON {
 
             Type type(void) const;
             Value * clone(void) const;
-            virtual void _writeTo(std::ostream & out) const;
             bool hasKey(std::string const & key) const;
             void setPtr(std::string const & key, Value *ptr);
             void set(std::string const & key, Value const & val);
