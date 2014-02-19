@@ -8,6 +8,10 @@
 #include "RandomNameGenerator.hpp"
 #include <model/Installation.hpp>
 #include <model/Player.hpp>
+#include <iostream>
+#include <fstream>
+#include <iterator>
+#include <istream>
 //#include "../Skeleton/Player.hpp"
 
 using namespace std;

@@ -76,11 +76,19 @@ void User::saveInstallations()
 }
 
 void User::createUser(){
+	// Initialization
 	JSON::Dict json = *this;
 	mkdir(getUserDirectoryPath().c_str(), 0755);
 	json.save(string(getUserDirectoryPath() + "user.json").c_str());
-	JSON::Dict installations;
-	installations.save(string(getUserDirectoryPath()+ "installations.json").c_str());
+	// Installations
+	fstream f("data/skel/installations.json", fstream::in|fstream::binary);
+	f << noskipws;
+	istream_iterator<unsigned char> begin(f);
+	istream_iterator<unsigned char> end;
+	fstream f2(getUserDirectoryPath()+"installations.json", fstream::out|fstream::trunc|fstream::binary);
+	ostream_iterator<char> begin2(f2);
+	copy(begin, end, begin2);
+	// Players
 	JSON::List baseSquad;
 	generateBaseSquad(baseSquad);
 	baseSquad.save(string(getUserDirectoryPath()+ "players.json").c_str());

@@ -3,6 +3,7 @@
 
 #include <json/json.hpp>
 #include <string>
+#include <iostream>
 #include <time.h>
 #include <stdlib.h>
 #include "Member.hpp"
@@ -23,6 +24,23 @@ public:
     	if (_jersey != NULL) delete _jersey; 
     }
     operator JSON::Dict();
+    
+    std::ostream& operator<<(std::ostream& out)
+    {
+		out << "---------------------------------------------------" << std::endl;
+		out << "Player: 		" << _name << std::endl;
+		out << "Life: 			" << _lifeBar << "/" << _maxLife << std::endl;
+		out << "Mana:			" << _manaBar << "/" << _maxMana << std::endl;
+		out << "Strength:		" << _strength << std::endl;
+		out << "Constitution:	" << _constitution << std::endl;
+		out << "Magic:			" << _magic << std::endl;
+		out << "Spirit:			" << _spirit << std::endl;
+		out << "Velocity:		" << _velocity << std::endl;
+		out << "Precision:		" << _precision << std::endl;
+		out << "Chance:			" << _chance << std::endl;
+		out << "---------------------------------------------------" << std::endl;
+		return out;
+	}
 
 	int getRemainingLife () const	{ return _lifeBar; }
 	int getRemainingMana ()const	{ return _manaBar; }
