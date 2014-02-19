@@ -40,6 +40,7 @@ Player::operator JSON::Dict(){
     res.set("velocity", _velocity);
     res.set("precision", _precision);
     res.set("chance", _precision);
+    res.set("name", _name);
     return res;
 }
 
