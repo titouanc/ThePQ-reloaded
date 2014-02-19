@@ -1,0 +1,4 @@
+[
+	{"baseValue": 200, "level": 1, "name": "Medical Center", "refundRatio": 0.5}, 
+	{"baseValue": 100, "level": 1, "name": "Gear Shop", "refundRatio": 0.5}
+]
