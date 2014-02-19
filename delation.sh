@@ -1,3 +1,4 @@
+#!/bin/bash
 TITOUAN=0
 ANTOINE=0
 FLORENTIN=0
@@ -9,7 +10,7 @@ echo -e "\033[31mDISCLAIMER : \033[0mCes chiffres sont purement informatifs."
 echo "             Le nombre de lignes peut varier incroyablement en fonction de refactoring divers."
 echo -e "\033[32mCommits\033[0m : `git log | grep "Author:" | wc -l`"
 echo -e "\033[32mCommits par personne : \033[0m"
-git shortlog -sn
+git shortlog -sn | cat
 
 echo "Calcul du nombre de lignes par personne..."
 
