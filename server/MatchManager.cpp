@@ -199,13 +199,13 @@ Stroke MatchManager::getStrokeForMoveable(Moveable *moveable)
 {
 	size_t n_strokes = _strokes.size();
 	for (size_t i=0; i<n_strokes; i++){
-		Stroke s = _strokes.front()
+		Stroke s = _strokes.front();
 		_strokes.pop();
 		if (&(_strokes.front().moveable) == moveable)
 			return s;
-		_strokes.push_back(s);
+		_strokes.push(s);
 	}
-	throw std::runtime_exception("No stroke for this moveable !");
+	throw std::runtime_error("No stroke for this moveable !");
 }
 
 /*!
@@ -248,7 +248,7 @@ void MatchManager::playStrokes(void)
 
 			if (atPos){
 				switch (onCollision(*atPos, stroke.moveable, newPos)){
-					case FIRST_WIN:
+					case FIRST_WIN: {
 						/* First on position wins => stop the second moveable */
 						stroke.moveable.setPosition(oldPos);
 						JSON::Dict serialized;
@@ -256,9 +256,12 @@ void MatchManager::playStrokes(void)
 						serialized.set("finalpos", oldPos.toJson());
 						finalPositions.append(serialized);
 						break;
+					}
 					case SECOND_WIN:
+						cout << "Second moveable wins" << endl;
 						break;
 					default:
+						cout << "Nothing todo" << endl;
 						break;
 				}
 			} else {
@@ -287,14 +290,14 @@ void MatchManager::playStrokes(void)
 }
 
 
-Collision_t MatchManager::onCollision(
-	Moveable const & first, 
-	Moveable const & second,
-	Position const & conflict
+MatchManager::Collision MatchManager::onCollision(
+	Moveable & first, 
+	Moveable & second,
+	Position & conflict
 )
 {
-	float first_score  = _pitch.getAt(conflict)->collisionScore();
-	float second_score = s.moveable.collisionScore();
+	float first_score  = first.collisionScore();
+	float second_score = second.collisionScore();
 
 	cout << "Collision. " << first.getName() << "(" << first_score << ") on " 
 	     << conflict.toJson() << " and " << second.getName() << "(" 

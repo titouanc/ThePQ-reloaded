@@ -43,11 +43,11 @@ class MatchManager : public SubConnectionManager {
 		Pitch  _pitch;
 		SharedQueue<Message> _inbox, _outbox;
 
-		enum Collision_t {
+		typedef enum Collision_t {
 			FIRST_WIN,  /* First player on position wins */
 			SECOND_WIN, /* Second player on position wins */
 			CATCH_BALL  /* The player catch a ball */
-		};
+		} Collision;
 
 		/* initialise moveable positions */
 		void initPositions(void);
@@ -79,10 +79,10 @@ class MatchManager : public SubConnectionManager {
 		/* Resolve strokes */
 		void playStrokes(void);
 		/* *SMASH* */
-		Collision_t onCollision(
-			Moveable const & first, 
-			Moveable const & second,
-			Position const & conflict
+		Collision onCollision(
+			Moveable & first, 
+			Moveable & second,
+			Position & conflict
 		);
 	public:
 		MatchManager(

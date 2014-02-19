@@ -56,17 +56,10 @@ for i in range(3):
 	printMessage(c.recvObj())
 	printMessage(d.recvObj())
 
-d.sendObj({
-	"type": "MSTROKE", 
-	"data": {
-		"mid": 13, 
-		"move": [[1, 1], [2, 0]]
-	}
-})
 c.sendObj({
 	"type": "MSTROKE", 
 	"data": {
-		"mid": 3, 
+		"mid": 1, 
 		"move": [[1, 1], [2, 0]]
 	}
 })
