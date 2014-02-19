@@ -75,7 +75,7 @@ class MatchManager : public SubConnectionManager {
 			BaseConnectionManager & connections, 
 			Squad const & squadA, Squad const & squadB
 		);
-		~MatchManager();
+		virtual ~MatchManager();
 		/* Run dat shit */
 		void _mainloop_out();
 };
