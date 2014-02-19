@@ -217,7 +217,7 @@ void CLI::salePlayer(){
 	}
 }
 
-vector<int> getBidValueRange(Player *player){
+vector<int> CLI::getBidValueRange(Player *player){
 	int allowedRangeFromEstimatedValue = 10000; //TODO : in Constants.hpp (should do that for many others variables !)
 	vector<int> range;
 	range.push_back(player->estimatedValue() - (int) allowedRangeFromEstimatedValue/2);
