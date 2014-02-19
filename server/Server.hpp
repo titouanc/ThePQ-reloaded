@@ -50,6 +50,7 @@ public:
 	void downgradeInstallation(int peer_id, size_t i);
 	void sendConnectedUsersList(int peer_id);
     string getRandomName();
+    void collectFinishedMatches(void);
     void startMatch(int client_idA, int client_idB);
 private:
 	SharedQueue<net::Message> _inbox, _outbox;

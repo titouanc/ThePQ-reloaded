@@ -49,7 +49,6 @@ void MatchManager::initPositions(void)
 MatchManager::~MatchManager()
 {
 	while (_outbox.available());
-	std::cout << "GOT HERE" << endl;
 }
 
 void MatchManager::minisleep(double secs)
@@ -109,10 +108,10 @@ void MatchManager::processMessage(Message const & msg)
 void MatchManager::_mainloop_out()
 {
 	sendSquads();
-	sendSignal(MATCH_START);
 	time_t tick;
-
 	cout << "Starting match #" << this << endl;
+	sendSignal(MATCH_START);
+
 	while (nClients() > 0){
 		cout << "+ tick match #" << this << endl;
 		sendSignal(MATCH_PROMPT);
@@ -136,9 +135,11 @@ void MatchManager::_mainloop_out()
 			playStrokes();
 		break;
 	}
-	cout << "==Ending match #" << this << endl;
-
 	sendSignal(MATCH_END);
+	cout << "==Ended match #" << this << endl;
+	stop();
+	for (int i=0; i<2; i++)
+		releaseClient(_squads[i].client_id);
 }
 
 void MatchManager::sendToAll(JSON::Value const & data)

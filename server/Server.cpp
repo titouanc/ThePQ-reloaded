@@ -54,8 +54,24 @@ void Server::run()
 	}
 }
 
+void Server::collectFinishedMatches(void)
+{
+	std::deque<MatchManager*>::iterator it, next;
+	for (it=_matches.begin(); it<_matches.end();){
+		next = it;
+		next++;
+		if(! (*it)->isRunning()){
+			cout << "[" << *it << "] \033[1m\033[32m destroyed\033[0m" << endl;
+			delete *it;
+			_matches.erase(it);
+		}
+		it = next;
+	}
+}
+
 void Server::startMatch(int client_idA, int client_idB)
 {
+	collectFinishedMatches();
 	if (_users.find(client_idA) == _users.end() || 
 		_users.find(client_idB) == _users.end()){
 		return;
