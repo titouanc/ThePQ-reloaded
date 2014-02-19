@@ -1,4 +1,6 @@
 [
-	{"baseValue": 200, "level": 1, "name": "Medical Center", "refundRatio": 0.5}, 
-	{"baseValue": 100, "level": 1, "name": "Gear Shop", "refundRatio": 0.5}
+	{"baseValue": 200, "level": 0, "name": "Medical Center", "refundRatio": 0.5}, 
+	{"baseValue": 100, "level": 0, "name": "Fan Shop", "refundRatio": 0.5},
+	{"baseValue": 100, "level": 0, "name": "Food Stand", "refundRatio": 0.5},
+	{"baseValue": 500, "level": 1, "name": "Tribune", "refundRatio": 0.5}
 ]
