@@ -66,6 +66,9 @@ private:
 class Broomstick : public Gear 
 {
 public:
+	Broomstick(const int cases, const int velocity) : Gear(), _cases(cases), _velocityBonus(velocity)
+	{}
+
 	Broomstick(JSON::Dict const &json = JSON::Dict()): Gear(json), _cases(5), _velocityBonus(50) {
 		if (ISINT(json.get("cases"))) _cases = INT(json.get("cases")).value();		
 		if (ISINT(json.get("velocityBonus"))) _velocityBonus = INT(json.get("velocityBonus")).value();		
