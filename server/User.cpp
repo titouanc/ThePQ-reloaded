@@ -93,6 +93,10 @@ void User::generateBaseSquad(JSON::List &toFill){
 		Player p;
 		p.setName(gen.getRandomName());
 		p.setID(123);
+		JSON::Dict broom = DICT(JSON::load("data/skel/broomstick.json"));
+		p.equipBroomstick(broom);
+		JSON::Dict jersey = DICT(JSON::load("data/skel/jersey.json"));
+		p.equipJersey(jersey);
 		JSON::Dict dict = p;
 		toFill.append(DICT(dict.clone()));
 	}
