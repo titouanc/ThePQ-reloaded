@@ -61,7 +61,6 @@ void Server::collectFinishedMatches(void)
 		next = it;
 		next++;
 		if(! (*it)->isRunning()){
-			cout << "[" << *it << "] \033[1m\033[32m destroyed\033[0m" << endl;
 			delete *it;
 			_matches.erase(it);
 		}

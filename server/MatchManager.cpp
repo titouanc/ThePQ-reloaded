@@ -26,7 +26,7 @@ MatchManager::MatchManager(
 	acquireClient(squadA.client_id);
 	acquireClient(squadB.client_id);
 	initPositions();
-	cout << "MatchManager ready !" << endl;
+	cout << "[" << this << "] \033[1m\033[32mMatch created\033[0m" << endl;
 }
 
 void MatchManager::initPositions(void)
@@ -49,6 +49,7 @@ void MatchManager::initPositions(void)
 MatchManager::~MatchManager()
 {
 	while (_outbox.available());
+	cout << "[" << this << "] \033[1m\033[32mMatch destroyed\033[0m" << endl;
 }
 
 void MatchManager::minisleep(double secs)
@@ -112,7 +113,7 @@ void MatchManager::_mainloop_out()
 {
 	sendSquads();
 	time_t tick;
-	cout << "Starting match #" << this << endl;
+	cout << "[" << this << "] \033[32mMatch started\033[0m" << endl;
 	sendSignal(MATCH_START);
 
 	while (nClients() > 0){
@@ -139,7 +140,7 @@ void MatchManager::_mainloop_out()
 		break;
 	}
 	sendSignal(MATCH_END);
-	cout << "==Ended match #" << this << endl;
+	cout << "[" << this << "] \033[32mMatch finished\033[0m" << endl;
 	stop();
 	for (int i=0; i<2; i++)
 		releaseClient(_squads[i].client_id);
