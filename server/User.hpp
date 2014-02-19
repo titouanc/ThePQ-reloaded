@@ -41,8 +41,6 @@ public:
 	void saveInstallations();
 
 	void createUser();
-	
-	static User* load(string username);
 
 	void generateBaseSquad(JSON::Dict &toFill);
 };
