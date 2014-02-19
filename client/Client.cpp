@@ -227,11 +227,32 @@ void Client::bidOnPlayer(int player_id,int team_id, int value){
 	}
 }
 
+void Client::addPlayerOnMarket(int player_id,int team_id, int value){
+	JSON::Dict query, data;
+	data.set(net::MSG::TEAM_ID,team_id);
+	data.set(net::MSG::PLAYER_ID,player_id);
+	data.set(net::MSG::BID_VALUE,value);
+	query.set("type", net::MSG::ADD_PLAYER_ON_MARKET_QUERY);
+	query.set("data", data);
+	net::Message msg(0, query.clone());
+	_outbox.push(msg);
+	JSON::Value *serverResponse = _inbox.pop().data;
+	if(ISDICT(serverResponse)){
+		JSON::Dict received = DICT(serverResponse);
+		if(ISSTR(received.get("type")) && ISDICT(received.get("data"))){
+			std::string res = DICT(received.get("data")).get(net::MSG::SERVER_RESPONSE);
+			if(res == net::MSG::PLAYER_ALREADY_ON_MARKET)
+				throw playerAlreadyOnMarketException();
+		}
+	}
+}
+
 std::vector<Player> Client::getPlayers(int team_id){
-	JSON::Dict query;
+	JSON::Dict query, data;
 	JSON::List & toFill;
+	data.set(net::MSG::TEAM_ID, team_id);
 	query.set("type", net::MSG::PLAYERS_LIST);
-	query.set("data","");
+	query.set("data",data);
 	net::Message msg(0, query.clone());
 	_outbox.push(msg);
 	JSON::Value *serverResponse = _inbox.pop().data;

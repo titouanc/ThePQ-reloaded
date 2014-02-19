@@ -43,6 +43,7 @@ private:
 	Client _connection;
 	std::vector<Installation> _installations;
 	std::vector<JSON::Dict> _playersOnSale;
+	std::vector<Player> _players;
 	int _team_id;
 	
 	// User menu
