@@ -13,7 +13,7 @@ Player::Player(JSON::Dict const & json) : Member(json), Moveable(json),
         if (ISDICT(json.get("broomstick"))) 
             _broomstick = new Broomstick(DICT(json.get("broomstick")));
         else
-            _broomstick = new Broomstick(5, 50);
+            _broomstick = new Broomstick();
         if (ISDICT(json.get("jersey"))) 
             _jersey = new Jersey(DICT(json.get("jersey")));
         else
@@ -51,14 +51,12 @@ Player::operator JSON::Dict(){
 
 
 void Player::equipBroomstick (Broomstick aBroom){
-	cout << (JSON::Dict) aBroom << endl;
     improveVelocity(-1 * _broomstick->getVelocityBonus());
     improveVelocity(aBroom.getVelocityBonus());
     *_broomstick = aBroom;
 }
 
 void Player::equipJersey (Jersey aJersey){
-	cout << (JSON::Dict) aJersey << endl;
     improveStrength(-1 * _jersey->getStrengthBonus());
     improveConstitution(-1 * _jersey->getConstitutionBonus());
     improveMagic(-1 * _jersey->getMagicBonus());
