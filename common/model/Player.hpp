@@ -10,12 +10,12 @@
 class Player : public Member, public Moveable 
 {
 public:
-	Player ():  Member(), _maxLife(100), _maxMana(100), _lifeBar(100), 
-                _manaBar(100), _broomstick(new Broomstick(5,50)), 
-                _jersey(new Jersey()), _strength(5), _constitution(5), 
-                _magic(5), _spirit(5), _velocity(5), _precision(5), _chance(5){}
+	//~ Player ():  Member(), _maxLife(100), _maxMana(100), _lifeBar(100), 
+                //~ _manaBar(100), _broomstick(new Broomstick(5,50)), 
+                //~ _jersey(new Jersey()), _strength(5), _constitution(5), 
+                //~ _magic(5), _spirit(5), _velocity(5), _precision(5), _chance(5){}
 
-    Player(JSON::Dict const & json);
+    Player(JSON::Dict const & json = JSON::Dict());
     ~Player(){ 
     	if (_broomstick != NULL) delete _broomstick; 
     	if (_jersey != NULL) delete _jersey; 

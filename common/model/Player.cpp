@@ -1,6 +1,10 @@
 #include "Player.hpp"
 
-Player::Player(JSON::Dict const & json) : Member(json), Moveable(json){
+Player::Player(JSON::Dict const & json) : Member(json), Moveable(json), 
+				_maxLife(100), _maxMana(100), _lifeBar(100), 
+                _manaBar(100), _broomstick(), 
+                _jersey(), _strength(5), _constitution(5), 
+                _magic(5), _spirit(5), _velocity(5), _precision(5), _chance(5) {
 		if (ISSTR(json.get("name"))) _name = STR(json.get("name")).value();
         if (ISINT(json.get("maxLife"))) _maxLife = INT(json.get("maxLife")).value();
         if (ISINT(json.get("maxMana"))) _maxMana = INT(json.get("maxMana")).value();
