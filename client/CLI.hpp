@@ -10,7 +10,7 @@
 #include "Exception.hpp"
 #include "Menu.hpp"
 #include <Config.hpp>
-#include "../common/model/Player.hpp" //TODO include Player (also in Client.hpp)
+#include <model/Player.hpp>
 
 struct NetConfig : public Config {
     std::string host;
@@ -45,7 +45,7 @@ private:
 	std::vector<Installation> _installations;
 	std::vector<JSON::Dict> _playersOnSale;
 	std::vector<Player> _players;
-	int _team_id;
+	std::string _userName;
 	
 	// User menu
 	void registerUser();

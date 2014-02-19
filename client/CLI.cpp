@@ -190,7 +190,7 @@ void CLI::salePlayer(){
 	cout << _prompt;
 	cin >> player_id;
 	for(size_t i = 0; i<_players.size(); ++i){
-		if(_players[i].getID() == player_id)
+		if(_players[i].getMemberID() == player_id)
 			player = &(_players[i]);
 			found = true;
 	}

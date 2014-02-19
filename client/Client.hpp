@@ -8,7 +8,7 @@
 #include <string>
 #include <vector>
 #include "model/Installation.hpp"
-#include "../common/model/Player.hpp" //TODO include player (also in CLI.hpp)
+#include <model/Player.hpp>
 
 class Client
 {
