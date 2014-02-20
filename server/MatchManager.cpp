@@ -9,6 +9,8 @@ MatchManager::MatchManager(
 ) : SubConnectionManager(_inbox, _outbox, connections), 
     _strokes(), _pitch(100, 36)
 {
+	_score[0] = 0;
+	_score[1] = 0;
 	for (int i=0; i<4; i++)
 		_balls[i].setID(100+i+1); /* Balls IDs: 101..104*/
 
@@ -33,7 +35,7 @@ void MatchManager::initPositions(void)
 {
 	Position const & c = _pitch.center();
 	for (int i=0; i<2; i++){
-		int k = i ? 1 : -1;
+		int k = i ? 1 : -1; /* Squad[0] -> East; Squad[1] -> West */
 		_squads[i].chasers[0].setPosition(c + k*Pitch::West);
 		_squads[i].chasers[1].setPosition(c + 2*k*Pitch::NorthWest);
 		_squads[i].chasers[2].setPosition(c + 2*k*Pitch::SouthWest);
@@ -212,6 +214,44 @@ static JSON::Dict mkDelta(Moveable const & moveable, Position const & dest)
 	return res;
 }
 
+static void stopStroke(JSON::List & deltas, Stroke & stroke, Position const & pos)
+{
+	stroke.active = false;
+	if (stroke.moveable.getPosition() != pos)
+		deltas.append(mkDelta(stroke.moveable, pos));
+	stroke.moveable.setPosition(pos);
+}
+
+bool MatchManager::isOnGoal(
+	Stroke & stroke,     /* Stroke that might lead to goal */
+	Position & toPos,    /* Position that might be a goal */
+	Position & fromPos,  /* last pos occupied by moving */
+	JSON::List & deltas  /* Where to save match deltas */
+)
+{
+	Moveable & moving = stroke.moveable;
+	bool isWestGoal = _pitch.isWestGoal(toPos.x(), toPos.y());
+	bool isEastGoal = _pitch.isEastGoal(toPos.x(), toPos.y());
+	if (! (isWestGoal || isEastGoal))
+		return false;
+
+	if (moving.isBall()){
+		Ball & ball = (Ball &) moving;
+		if (ball.isQuaffle()){
+			/* If quaffle GOOOOOLEGOOLEGOOOOLE !!!*/
+			if (isWestGoal)
+				_score[0] += 10;
+			else
+				_score[1] += 10;
+			return true;
+		}
+	}
+
+	/* Otherwise stop moveable */
+	stopStroke(deltas, stroke, fromPos);
+	return false;
+}
+
 void MatchManager::playStrokes(void)
 {
 	size_t len, maxlen=0;
@@ -221,8 +261,6 @@ void MatchManager::playStrokes(void)
 		if (len > maxlen)
 			maxlen = len;
 	}
-
-	cout << "MAXLEN IS " << maxlen << endl;
 
 	JSON::List turnDeltas;
 	double last_t = 0;
@@ -237,12 +275,25 @@ void MatchManager::playStrokes(void)
 				Position newPos = move.position(t, moving);
 				Position oldPos = move.position(last_t, moving);
 
-				/* If there is someone where we would arrive */
-				Moveable *atNewPos = _pitch.getAt(newPos);
-				if (atNewPos != NULL && atNewPos != &moving){
-					turnDeltas.append(onCollision(*atNewPos, *i, newPos, oldPos));
+				
+				if (isOnGoal(*i, newPos, oldPos, turnDeltas)){
+					cout << "GOOOOOLEGOOLEGOOOOLE" << endl;
+				} else if (! _pitch.inEllipsis(newPos)){
+					/* Stop the moveable before it gets out */
+					stopStroke(turnDeltas, *i, oldPos);
+				} else if (! moving.isBall()){
+					/* Don't let the keeper get out of his zone */
+					Player & player = (Player &) moving;
+					if (player.isKeeper() && ! _pitch.isInKeeperZone(newPos))
+						stopStroke(turnDeltas, *i, oldPos);
 				} else {
-					_pitch.setAt(newPos, &moving);
+					/* If there is someone where we would arrive */
+					Moveable *atNewPos = _pitch.getAt(newPos);
+					if (atNewPos != NULL && atNewPos != &moving){
+						onCollision(*i, newPos, oldPos, turnDeltas);
+					} else {
+						_pitch.setAt(newPos, &moving);
+					}
 				}
 			}
 		}
@@ -262,37 +313,31 @@ void MatchManager::playStrokes(void)
 
 	sendMatchDeltas(turnDeltas);
 	_strokes.clear();
+	cout << _pitch << endl;
 }
 
-JSON::Dict MatchManager::onCollision(
-	Moveable & first, /* Moveable that was already on position */
-	Stroke & stroke,    /* Stroke iterator that leads to conflict */
+void MatchManager::onCollision(
+	Stroke & stroke,     /* Stroke that leads to conflict */
 	Position & conflict, /* Clonflicting pos */
-	Position & fromPos /* last pos occupied by moving */
+	Position & fromPos,  /* last pos occupied by moving */
+	JSON::List & deltas  /* Where to save match deltas */
 )
 {
+	Moveable & first  = *(_pitch.getAt(conflict));
 	Moveable & moving = stroke.moveable;
 	float first_score  = first.collisionScore();
 	float second_score = moving.collisionScore();
 
-	JSON::Dict res;
 	if (first_score > second_score){
 		/* The first moveable wins, second stops on fromPos */
-		res = mkDelta(moving, fromPos);
-		moving.setPosition(fromPos);
-		stroke.active = false;
+		stopStroke(deltas, stroke, fromPos);
 	} else {
 		/* Second wins: stop first on fromPos */
-		res = mkDelta(first, fromPos);
-		first.setPosition(fromPos);
 		_pitch.setAt(fromPos, &first);
 		_pitch.setAt(conflict, &moving);
-
 		iter stoppedStroke = getStrokeForMoveable(&first);
 		if (stoppedStroke != _strokes.end()){
-			(*stoppedStroke).active = false;
+			stopStroke(deltas, *stoppedStroke, fromPos);
 		}
 	}
-
-	return res;
 }

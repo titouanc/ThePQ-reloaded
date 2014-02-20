@@ -43,6 +43,7 @@ class MatchManager : public SubConnectionManager {
 		Ball   _balls[4];
 		Pitch  _pitch;
 		SharedQueue<Message> _inbox, _outbox;
+		unsigned int _score[2];
 
 		typedef std::deque<Stroke>::iterator iter;
 
@@ -75,12 +76,18 @@ class MatchManager : public SubConnectionManager {
 		iter getStrokeForMoveable(Moveable *moveable);
 		/* Resolve strokes */
 		void playStrokes(void);
+		bool isOnGoal(
+			Stroke & stroke,     /* Stroke that might lead to goal */
+			Position & toPos,    /* Position that might be a goal */
+			Position & fromPos,  /* last pos occupied by moving */
+			JSON::List & deltas  /* Where to save match deltas */
+		);
 		/* *SMASH* */
-		JSON::Dict onCollision(
-			Moveable & first, /* Moveable that was already on position */
-			Stroke & stroke,    /* Stroke iterator that leads to conflict */
+		void onCollision(
+			Stroke & stroke,     /* Stroke that leads to conflict */
 			Position & conflict, /* Clonflicting pos */
-			Position & fromPos /* last pos occupied by moving */
+			Position & fromPos,  /* last pos occupied by moving */
+			JSON::List & deltas  /* Where to save match deltas */
 		);
 	public:
 		MatchManager(
