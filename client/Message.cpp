@@ -1,8 +1,8 @@
 #include "Message.hpp"
 #include <string>
-
+using namespace std;
 std::string Message::splashScreen(){
-string message;
+std::string message;
 	message+="	             _____ _            ____            \n";
 	message+="	            |_   _| |__   ___  |  _ \\ _ __ ___ \n";
 	message+="		      | | | '_ \\ / _ \\ | |_) | '__/ _ \\\n ";
