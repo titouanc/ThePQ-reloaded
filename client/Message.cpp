@@ -1,7 +1,7 @@
-#include <iostream>
+#include "Message.hpp"
 #include <string>
-using namespace std;
-int main(){
+
+std::string Message::splashScreen(){
 string message;
 	message+="	             _____ _            ____            \n";
 	message+="	            |_   _| |__   ___  |  _ \\ _ __ ___ \n";
@@ -24,8 +24,11 @@ string message;
 	message+="		 |_| |_| |_|\\__,_|_| |_|\\__,_|\\__, |\\___|_|\n";
 	message+="   		               	              |___/\n";
 	message+="			Welcome to The Pro Quidditch Manager 2014!\n";
-cout<<message<<endl;
+return message;
 }
 
-
-		
+Message::goodBye(){
+	string message;
+	message+="Bye bye baby";
+	return message;
+}

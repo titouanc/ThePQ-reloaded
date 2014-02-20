@@ -21,6 +21,7 @@ namespace net
 		// connection + register
 		static const std::string USERNAME = "D_U";
 		static const std::string PASSWORD = "D_P";
+		static const std::string FUNDS = "D_F";
 		static const std::string USER_LOGIN = "U_L";
 		static const std::string PASSWORD_ERROR = "U_P";
 		static const std::string USER_NOT_FOUND = "U_NF";

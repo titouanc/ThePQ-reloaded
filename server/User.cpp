@@ -1,4 +1,4 @@
-@#include "User.hpp"
+#include "User.hpp"
 
 User::User(const string& username, const string& password) : _installations()
 {
@@ -31,7 +31,7 @@ User::operator JSON::Dict()
 	return ret;
 }
 
-void User::buyStuff(int price){
+int User::buyStuff(int price){
 	if(price>_funds){
 		_funds-=price;
 		return 0;
