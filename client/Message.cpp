@@ -1,8 +1,10 @@
 #include "Message.hpp"
 #include <string>
+
 using namespace std;
-std::string Message::splashScreen(){
-std::string message;
+
+string Message::splashScreen(){
+	string message;
 	message+="	             _____ _            ____            \n";
 	message+="	            |_   _| |__   ___  |  _ \\ _ __ ___ \n";
 	message+="		      | | | '_ \\ / _ \\ | |_) | '__/ _ \\\n ";
@@ -27,8 +29,11 @@ std::string message;
 return message;
 }
 
-Message::goodBye(){
+string Message::goodBye(){
 	string message;
-	message+="Bye bye baby";
-	return message;
+  	message+= " ========================= \n";
+  	message+= " Thank you for playing the Pro Quidditch Manager 2014!\n";
+ 	message+= " See you next time! :)\n";
+    message+= " ========================= \n";
+ return message;
 }

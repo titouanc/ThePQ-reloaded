@@ -69,6 +69,7 @@ public:
 	void improveSpirit (int added) 			{ _spirit+=added; }
 	void improveVelocity (int added) 		{ _velocity+=added; }
 	void improvePrecision (int added) 		{ _precision+=added; }
+	int estimatedValue(){ return (_strength+_constitution+_magic+_spirit+_velocity+_precision+_chance)*1000;} //TODO
 	float collisionScore();
 
 	Player &operator=(Player const & player){

@@ -4,6 +4,7 @@
 #include <stdexcept>
 #include <typeinfo>
 #include <cxxabi.h>
+#include <Constants.hpp>
 
 using namespace std;
 using namespace net;
@@ -112,6 +113,15 @@ void Server::treatMessage(const Message &message)
 					logUserIn(DICT(received.get("data")), message.peer_id);
 				else if (messageType == MSG::REGISTER) 
 					registerUser(DICT(received.get("data")), message.peer_id);
+				else if (messageType == MSG::DELETE_PLAYER_OF_MARKET_QUERY){
+					deletePlayerOfMarket(DICT(received.get("data")), message.peer_id);
+				}
+				else if (messageType == MSG::ADD_PLAYER_ON_MARKET_QUERY){
+					addPlayerOnMarket(DICT(received.get("data")), message.peer_id);
+				}
+				else if (messageType == MSG::BID_ON_PLAYER_QUERY){
+					placeBidOnPlayer(DICT(received.get("data")), message.peer_id);
+				}
 			} else if (ISSTR(received.get("data"))){
 				string const & data = STR(received.get("data"));
 
@@ -119,11 +129,11 @@ void Server::treatMessage(const Message &message)
 					checkIfUserExists(data, message.peer_id);
 				} else if (messageType == MSG::INSTALLATIONS_LIST){
 						sendInstallationsList(message.peer_id);
-					}
-					else if(messageType == MSG::CONNECTED_USERS_LIST)
-					{
+				} else if(messageType == MSG::CONNECTED_USERS_LIST){
 						sendConnectedUsersList(message.peer_id);
-					}
+				} else if(messageType == MSG::PLAYERS_ON_MARKET_LIST) {
+						sendPlayersOnMarketList(message.peer_id);
+				}
 			} else if (ISINT(received.get("data"))) {
 				int data = INT(received.get("data"));
 				if (messageType == MSG::INSTALLATION_UPGRADE) {
@@ -275,4 +285,23 @@ void Server::sendConnectedUsersList(int peer_id)
 	usersList.set("data", list);
 
 	_outbox.push(Message(peer_id, usersList.clone()));
+}
+
+void Server::deletePlayerOfMarket(const JSON::Dict &sale, int peer_id){
+	Message status(peer_id, market.deletePlayer(sale).clone());
+	_outbox.push(status);
+}
+
+void Server::addPlayerOnMarket(const JSON::Dict &sale, int peer_id){
+	Message status(peer_id, market.addPlayer(sale).clone());
+	_outbox.push(status);
+}
+
+void Server::sendPlayersOnMarketList(int peer_id){
+	Message status(peer_id, market.allSales().clone());
+	_outbox.push(status);
+}
+void Server::placeBidOnPlayer(const JSON::Dict &bid, int peer_id){
+	Message status(peer_id, market.bid(bid).clone());
+	_outbox.push(status);
 }

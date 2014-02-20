@@ -111,11 +111,13 @@ void CLI::mainMenu()
 	string message;
 	message+= "You can : \n";
 	message+= "   - (m)anage your team and stadium\n";
+	message+= "   - (a)ccess market\n";
 	message+= "   - (p)lay a friendly game\n";
 	message+= "   - (q)uit\n";
 	message+= _prompt;
 	main.setMessage(message);
 	main.addOption('m', new ClassCallback<CLI>(this, &CLI::managementMenu));
+	main.addOption('a', new ClassCallback<CLI>(this, &CLI::marketMenu));
 	main.addOption('p', new ClassCallback<CLI>(this, &CLI::friendlyMatchMenu));
 	main.run();
 }
@@ -162,6 +164,133 @@ void CLI::playersMenu()
 	players.setMessage(message);
 	// TODO : players menu
 	players.run();
+}
+
+/* Market menu */
+void CLI::marketMenu(){
+	Menu market;
+	string message;
+	message+="You can : \n";
+	message+="   - (p)ut a player on sale\n";
+	message+="   - (s)ee the players on sale\n";
+	message+="   - (q)uit to main menu\n";
+	message+= _prompt;
+	market.setMessage(message);
+	market.addOption('p', new ClassCallback<CLI>(this, &CLI::printPlayersOnSale));
+	market.addOption('s', new ClassCallback<CLI>(this, &CLI::salePlayer));
+	market.run();
+}
+
+void CLI::salePlayer(){
+	printPlayers();			//this function updates _players
+	int player_id, bidValue;
+	bool found = false;
+	Player * player;
+	cout << "Choose a player to sale by entering his ID :" <<endl;
+	cout << _prompt;
+	cin >> player_id;
+	for(size_t i = 0; i<_players.size(); ++i){
+		if(_players[i].getMemberID() == player_id)
+			player = &(_players[i]);
+			found = true;
+	}
+	if(found){
+		vector<int> range = getBidValueRange(player);
+		cout << "Enter the starting bid value (must be between " << range[0] << " and " << range[1] << ") :" << endl;
+		cout << _prompt;
+		cin >> bidValue;
+		while(bidValue<range[0] or bidValue>range[1]){
+			cout << bidValue << "is not between " << range[0] << " and " << range[1] << " !\nTry again :" << endl;
+			cout << _prompt;
+			cin >> bidValue;
+		}
+		try{
+		_connection.addPlayerOnMarket(player_id, _team_id, bidValue);
+		cout << "Your player was successfully added on market." << endl;
+		}
+		catch(playerAlreadyOnMarketException e){
+			cout << "Error : you are already saling this player." << endl;
+		}
+	}
+	else{
+		cout << "Wrong ID." << endl;
+	}
+}
+
+vector<int> CLI::getBidValueRange(Player *player){
+	int allowedRangeFromEstimatedValue = 10000; //TODO : in Constants.hpp (should do that for many others variables !)
+	vector<int> range;
+	range.push_back(player->estimatedValue() - (int) allowedRangeFromEstimatedValue/2);
+	range.push_back(player->estimatedValue() + (int) allowedRangeFromEstimatedValue/2);
+	return range;
+}
+
+void CLI::printPlayersOnSale(){
+	_playersOnSale = _connection.updatePlayersOnSale();
+	cout << "================ PLAYERS ON SALE ================" << endl;
+	for(size_t i=0;i<_playersOnSale.size();++i){
+		JSON::Dict & sale = _playersOnSale[i];
+		Player player(DICT(sale.get(net::MSG::PLAYER)));
+		cout << i << " - " << STR(sale.get(net::MSG::PLAYER_ID)) << endl;
+		cout << "Time left (in seconds) : " << 	STR(sale.get(net::MSG::BID_TIMER)) 	<< endl;
+		cout << "Bid value 				: " <<	STR(sale.get(net::MSG::BID_VALUE)) 	<< endl;
+		cout << "Next bid value 		: "	<< 	STR(sale.get(net::MSG::NEXT_BID)) 	<< endl;
+		cout << "Player ID 				: "	<<	STR(sale.get(net::MSG::PLAYER_ID))	<< endl;
+		//cout << "Player infos			: "	<< 	player 								<< endl; TODO << FOR PLAYER
+		cout << "--------------------------------" << endl;
+	}
+	cout << "=================================================" << endl;
+	Menu marketList;
+	string message;
+	message+="You can : \n";
+	message+="   - (p)lace a bid on a player\n";
+	message+="   - (q)uit to market menu\n";
+	message+= _prompt;
+	marketList.setMessage(message);
+	marketList.addOption('p', new ClassCallback<CLI>(this, &CLI::placeBid));
+	marketList.run();
+}
+
+void CLI::placeBid(){
+	int player_id, value;
+	string response;
+	cout << "Enter the ID of the player you wish to bid on : " << endl;
+	cout << _prompt;
+	cin >> player_id;
+	for(size_t i = 0; i<_playersOnSale.size();++i){		//Getting the next bid value (which is in the JSON::Dict sent by server)
+		if(player_id == INT(_playersOnSale[i].get(net::MSG::PLAYER_ID))){
+			value = INT(_playersOnSale[i].get(net::MSG::NEXT_BID));
+		}
+	}
+	try{
+		_connection.bidOnPlayer(player_id, _team_id, value);
+		cout << "Bid successfully placed ! Hurra !" << endl;
+	}
+	catch(bidValueNotUpdatedException e){
+		cout << "Error : bid value not correct (update your market list)."<<endl;
+	}
+	catch(turnException e){
+		cout << "Error : you did not bid last turn."<<endl;
+	}
+	catch(bidEndedException e){
+		cout << "Error : player not on market any more (update your market list)."<<endl;
+	}
+	catch(bidOnYourPlayerException e){
+		cout << "Error : cannot bid on your player."<<endl;
+	}
+	catch(lastBidderException e){
+		cout << "Error : you are currently winning this sale. Cannot bid on your own bid."<<endl;
+	}
+}
+
+void CLI::printPlayers(){
+	_players = _connection.getPlayers(_team_id);
+	cout << "================ YOUR PLAYERS ================" << endl;
+	for(size_t i =0; i<_players.size();++i){
+//		cout << _players[i] << endl; TODO << FOR PLAYER
+		cout << "--------------------------------------" << endl;
+	}
+	cout << "==============================================" << endl;
 }
 
 /* Friendly match menu */
