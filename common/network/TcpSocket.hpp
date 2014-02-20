@@ -34,9 +34,9 @@ namespace net
 		TcpSocket(std::string host, int portno);
 	
 		void send(JSON::Value const& json);
+		JSON::Value * pop();
 		
 		void loop();
-		
 		void start();
 		void stop();
 		

@@ -11,6 +11,7 @@
 #include "Menu.hpp"
 #include <Config.hpp>
 #include <model/Player.hpp>
+#include <network/TcpSocket.hpp>
 
 struct NetConfig : public Config {
     std::string host;
@@ -39,9 +40,11 @@ public:
 	void run();
 
 private:
+	net::TcpSocket _connection;
+
 	std::string _userChoice;
 	std::string _prompt;
-	Client _connection;
+	
 	std::vector<Installation> _installations;
 	std::vector<JSON::Dict> _playersOnSale;
 	std::vector<Player> _players;

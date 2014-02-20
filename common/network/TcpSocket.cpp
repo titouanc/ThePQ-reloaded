@@ -19,6 +19,11 @@ void net::TcpSocket::send(JSON::Value const & json)
 	}
 }
 
+JSON::Value * pop()
+{
+	return _messages.pop();
+}
+
 void net::TcpSocket::loop()
 {
 	while (_isRunning == true)

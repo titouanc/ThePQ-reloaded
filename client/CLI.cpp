@@ -11,8 +11,8 @@ std::string humanExcName(const char *name)
 	return res;
 }
 
-CLI::CLI(NetConfig const &config) : 	_prompt(">"), 
-												_connection(config.host, config.port)
+CLI::CLI(NetConfig const &config) : 	_connection(config.host, config.port),
+										_prompt(">")
 {
 	
 }
