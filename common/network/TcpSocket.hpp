@@ -16,11 +16,13 @@
 #include <unistd.h>
 #include <string>
 #include <arpa/inet.h>
+#include <netdb.h>
 #include <stdexcept>
 #include <cerrno>
 #include <cstring>
 #include <json/json.hpp>
 #include "Exception.hpp"
+#include <sharedqueue.hpp>
 
 namespace net
 {	
@@ -29,22 +31,19 @@ namespace net
 		static const size_t MSG_SIZE = 4096;
 	
 		virtual ~ TcpSocket();
-		TcpSocket();
-
-		void connect(const std::string ipAddr, int portNo);
-		void send(const char *data, size_t len);
-		void recv(char *data, size_t len, size_t & received);
+		TcpSocket(std::string host, int portno);
+	
+		void send(JSON::Value const& json);
 		
-		void send(const JSON::Value *json);
-		JSON::Value* recv();
+		void loop();
+		
+		void start();
+		void stop();
 		
 	protected:
-		bool create();
-		void close();
-		bool isOpen() {
-			return _sockfd >= 0;
-		};
+		SharedQueue<JSON::Value*> _messages;
 
+		bool _isRunning;
 		int _sockfd;
 		struct sockaddr_in _servAddr;
 		struct sockaddr_in _cliAddr;
