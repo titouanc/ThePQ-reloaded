@@ -517,6 +517,14 @@ Si aucun coach n'est disponible à l'engagement, rien n'apparaît.
 \item{L'utilisateur va devoir spécifier une valeur a laquelle l'enchère commence. Si cette valeur est correcte (ne dépasse pas la valeur du joueur et n'est pas trop sous-estimée) le joueur est mis sur le marche. Dans le cas défavorable l'utilisateur va devoir introduire une autre valeur comprise entre la valeur maximum et minimum suggérée.}
 \end{list}
 
+\subsection{Procedure d'enchere sur un joueur present sur le Player Market}
+\paragraph{Utilisation du systeme d'enchere}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{L'utilisateur choisi le joueur sur lequel il veut encherir. Si ce joueur appartient a son lot, il est automatiquement deconecte de cette enchere. Si le joueur ne fait pas partie de son lot il est autorise a encherir}
+\item{Si c'est pas  le tour d'utilisateur d'encherir, il est mis dans une file d'attente. Si c'est son tour, une etape de verification de l'enchere est initialisee.}
+\item{S'il a deja la meilleure enchere il est mis dans une file d'attente, dans le cas contraire il lui est propose d'augmenter l'enchere. S'il refuse, il perd l'enchere.}
+\item{S'il augmente l'enchere il est mis dans une file d'attente, et est inclus dans le tour suivant.}
+\item{Si l'utilisateur est le seul restant dans l'enchere c'est lui qui gagne et ajoute le joueur a son lot. Dans le cas contraire un tour suivant d'enchere se deroule tant qu'il reste plus d'un utilisateurs participants.}
 
 \subsubsection{Engager un coach (hire coach)}
 \label{UC:hireCoach}
