@@ -1,5 +1,6 @@
 #include "CLI.hpp"
 
+#include <pthread.h>
 using namespace std;
 
 std::string humanExcName(const char *name)
@@ -14,7 +15,7 @@ std::string humanExcName(const char *name)
 CLI::CLI(NetConfig const &config) : 	_connection(config.host, config.port),
 										_prompt(">")
 {
-	
+	pthread_create(&_thread, NULL, net::runThread, this);
 }
 
 CLI::~CLI()

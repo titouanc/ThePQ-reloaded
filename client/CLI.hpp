@@ -51,6 +51,8 @@ private:
 	std::string _userName;
 	int _team_id;
 	
+	pthread_t _thread;
+	
 	
 	// NEW
 	void loginUser(std::string username, std::string passwd);

@@ -36,18 +36,25 @@ namespace net
 		void send(JSON::Value const& json);
 		JSON::Value * pop();
 		
-		void loop();
 		void start();
 		void stop();
 		
 	protected:
 		SharedQueue<JSON::Value*> _messages;
 
+		void loop();
 		bool _isRunning;
 		int _sockfd;
 		struct sockaddr_in _servAddr;
 		struct sockaddr_in _cliAddr;
 	};
+	
+	static void* runThread(void* arg)
+	{
+		TcpSocket* socket = (TcpSocket*)arg;
+		socket->start();
+		pthread_exit(NULL);
+	}
 }
 
 #endif // __TCP_SOCKET_HPP
