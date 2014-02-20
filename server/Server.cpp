@@ -113,9 +113,9 @@ void Server::treatMessage(const Message &message)
 					logUserIn(DICT(received.get("data")), message.peer_id);
 				else if (messageType == MSG::REGISTER) 
 					registerUser(DICT(received.get("data")), message.peer_id);
-				else if (messageType == MSG::DELETE_PLAYER_OF_MARKET_QUERY){
-					deletePlayerOfMarket(DICT(received.get("data")), message.peer_id);
-				}
+				// else if (messageType == MSG::DELETE_PLAYER_OF_MARKET_QUERY){//modif
+				// 	deletePlayerOfMarket(DICT(received.get("data")), message.peer_id);
+				// }
 				else if (messageType == MSG::ADD_PLAYER_ON_MARKET_QUERY){
 					addPlayerOnMarket(DICT(received.get("data")), message.peer_id);
 				}
@@ -290,10 +290,10 @@ void Server::sendConnectedUsersList(int peer_id)
 	_outbox.push(Message(peer_id, usersList.clone()));
 }
 
-void Server::deletePlayerOfMarket(const JSON::Dict &sale, int peer_id){
-	Message status(peer_id, market.deletePlayer(sale).clone());
-	_outbox.push(status);
-}
+// void Server::deletePlayerOfMarket(const JSON::Dict &sale, int peer_id){//modif
+// 	Message status(peer_id, market.deletePlayer(sale).clone());
+// 	_outbox.push(status);
+// }
 
 void Server::addPlayerOnMarket(const JSON::Dict &sale, int peer_id){
 	Message status(peer_id, market.addPlayer(sale).clone());
@@ -318,5 +318,5 @@ void Server::sendPlayersList(const JSON::Dict &data, int peer_id){//modif
 	playersList.set("data", players);
 	Message status(peer_id, playersList.clone());
 	_outbox.push(status);
-	
+
 }

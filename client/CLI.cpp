@@ -188,8 +188,8 @@ void CLI::marketMenu(){
 	message+="   - (q)uit to main menu\n";
 	message+= _prompt;
 	market.setMessage(message);
-	market.addOption('p', new ClassCallback<CLI>(this, &CLI::printPlayersOnSale));
-	market.addOption('s', new ClassCallback<CLI>(this, &CLI::salePlayer));
+	market.addOption('p', new ClassCallback<CLI>(this, &CLI::salePlayer));
+	market.addOption('s', new ClassCallback<CLI>(this, &CLI::printPlayersOnSale));//modif
 	market.run();
 }
 
@@ -212,7 +212,7 @@ void CLI::salePlayer(){
 		cout << _prompt;
 		cin >> bidValue;
 		while(bidValue<range[0] or bidValue>range[1]){
-			cout << bidValue << "is not between " << range[0] << " and " << range[1] << " !\nTry again :" << endl;
+			cout << bidValue << " is not between " << range[0] << " and " << range[1] << " !\nTry again :" << endl;//modif
 			cout << _prompt;
 			cin >> bidValue;
 		}

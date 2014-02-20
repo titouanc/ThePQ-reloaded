@@ -14,13 +14,13 @@ TODO :
 class Sale;
 class PlayerMarket{
 private:
-	std::vector<Sale> _sales;
+	std::vector<Sale*> _sales;
 	std::string _marketPath;
 public:
 	PlayerMarket();
-	void deleteSale(Sale * sale);
+	void removeSale(Sale * sale);//modif
 	void createSale(const JSON::Dict &json);
-	void transfert(int from_team, int to_team, int player_id);
+	void transfert(std::string from_user, std::string to_user, int player_id);
 	std::string getSalePath(int id);
 	Sale * getSale(int id);
 	JSON::Dict allSales();

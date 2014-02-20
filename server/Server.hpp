@@ -54,7 +54,7 @@ public:
     //market
     void sendPlayersOnMarketList(int peer_id);
     void addPlayerOnMarket(const JSON::Dict &bid, int peer_id);
-    void deletePlayerOfMarket(const JSON::Dict &bid, int peer_id);
+    //void deletePlayerOfMarket(const JSON::Dict &bid, int peer_id);//modif
     void placeBidOnPlayer(const JSON::Dict &bid, int peer_id);
     string getRandomName();
     void collectFinishedMatches(void);

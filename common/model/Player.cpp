@@ -13,6 +13,7 @@ std::ostream& operator<< (std::ostream& out, const Player& player)//modif
         out << "Velocity:       " << player._velocity << std::endl;
         out << "Precision:      " << player._precision << std::endl;
         out << "Chance:         " << player._chance << std::endl;
+        out << "ID:             " << player._memberID << std::endl;//modif
         return out;
     }
     
@@ -78,20 +79,20 @@ Player::operator JSON::Dict(){
 
 
 void Player::equipBroomstick (Broomstick aBroom){
-    improveVelocity(-1 * _broomstick->getVelocityBonus());
-    improveVelocity(aBroom.getVelocityBonus());
+    //improveVelocity(-1 * _broomstick->getVelocityBonus());
+    //improveVelocity(aBroom.getVelocityBonus());//modif
     *_broomstick = aBroom;
 }
 
 void Player::equipJersey (Jersey aJersey){
-    improveStrength(-1 * _jersey->getStrengthBonus());
-    improveConstitution(-1 * _jersey->getConstitutionBonus());
-    improveMagic(-1 * _jersey->getMagicBonus());
-    improveSpirit(-1 * _jersey->getSpiritBonus());
-    improveStrength(aJersey.getStrengthBonus());
-    improveConstitution(aJersey.getConstitutionBonus());
-    improveMagic(aJersey.getMagicBonus());
-    improveSpirit(aJersey.getSpiritBonus());
+    // improveStrength(-1 * _jersey->getStrengthBonus());
+    // improveConstitution(-1 * _jersey->getConstitutionBonus());
+    // improveMagic(-1 * _jersey->getMagicBonus());
+    // improveSpirit(-1 * _jersey->getSpiritBonus());
+    // improveStrength(aJersey.getStrengthBonus());
+    // improveConstitution(aJersey.getConstitutionBonus());
+    // improveMagic(aJersey.getMagicBonus());
+    // improveSpirit(aJersey.getSpiritBonus());
     *_jersey = aJersey;
 }
 
