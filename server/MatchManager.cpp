@@ -35,17 +35,18 @@ void MatchManager::initPositions(void)
 {
 	Position const & c = _pitch.center();
 	for (int i=0; i<2; i++){
-		int k = i ? 1 : -1; /* Squad[0] -> East; Squad[1] -> West */
+		int k = i ? 2 : -2; /* Squad[0] -> East; Squad[1] -> West */
 		_squads[i].chasers[0].setPosition(c + k*Pitch::West);
 		_squads[i].chasers[1].setPosition(c + 2*k*Pitch::NorthWest);
 		_squads[i].chasers[2].setPosition(c + 2*k*Pitch::SouthWest);
 		_squads[i].beaters[0].setPosition(c + k*Pitch::West + k*Pitch::SouthWest);
 		_squads[i].beaters[1].setPosition(c + k*Pitch::West + k*Pitch::NorthWest);
 		_squads[i].seeker.setPosition(c + 2*k*Pitch::West);
-		_squads[i].keeper.setPosition(c + 10*k*Pitch::West);
+		_squads[i].keeper.setPosition(c + 9*k*Pitch::West);
 		for (int j=0; j<7; j++)
 			_pitch.insert(_squads[i].players[j]);
 	}
+
 }
 
 MatchManager::~MatchManager()
