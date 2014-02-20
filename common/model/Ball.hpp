@@ -5,6 +5,7 @@
 /*================Library defining different types of Moveables================*/
 class Ball : public Moveable {
 public:
+	bool isBall() const {return true;}
 	virtual bool isQuaffle () { return false; }
 	virtual bool isBludger () { return false; }
 	virtual bool isGoldenSnitch () { return false; }
