@@ -45,6 +45,7 @@ private:
 	std::vector<Installation> _installations;
 	std::vector<JSON::Dict> _playersOnSale;
 	std::vector<Player> _players;
+	int _team_id;
 	std::string _userName;
 	
 	// User menu
