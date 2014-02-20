@@ -45,8 +45,8 @@ struct Squad {
 		int i;
 		for (i=0; i<3; i++) chasers[i] = other.chasers[i];
 		for (i=0; i<2; i++) beaters[i] = other.beaters[i];
-		seeker = seeker;
-		keeper = keeper;
+		seeker = other.seeker;
+		keeper = other.keeper;
 		return *this;
 	}
 	operator JSON::Dict(){
