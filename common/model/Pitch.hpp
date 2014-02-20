@@ -60,6 +60,11 @@ class Pitch {
 		bool isInEastKeeperZone(int x, int y) const;
 		bool isInEastKeeperZone(Moveable *moveable) const;
 
+		bool isInKeeperZone(Position const & pos) const {
+			return isInEastKeeperZone(pos.x(), pos.y()) || 
+			       isInWestKeeperZone(pos.x(), pos.y());
+		}
+
 		// TODO DOC
 		bool isWestGoal(int x, int y) const;
 		bool isEastGoal(int x, int y) const;
