@@ -59,6 +59,8 @@ public:
     string getRandomName();
     void collectFinishedMatches(void);
     void startMatch(int client_idA, int client_idB);
+    //modif
+    void sendPlayersList(const JSON::Dict &data,int peer_id);
 private:
 	SharedQueue<net::Message> _inbox, _outbox;
 	map<int, User*> _users;

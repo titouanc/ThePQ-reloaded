@@ -199,9 +199,9 @@ std::vector<JSON::Dict> Client::updatePlayersOnSale(){
 	return res; 
 }
 
-void Client::bidOnPlayer(int player_id,int team_id, int value){
+void Client::bidOnPlayer(int player_id,std::string username, int value){//modif
 	JSON::Dict query, data;
-	data.set(net::MSG::TEAM_ID,team_id);
+	data.set(net::MSG::USERNAME,username);
 	data.set(net::MSG::PLAYER_ID,player_id);
 	data.set(net::MSG::BID_VALUE,value);
 	query.set("type", net::MSG::BID_ON_PLAYER_QUERY);
@@ -227,9 +227,9 @@ void Client::bidOnPlayer(int player_id,int team_id, int value){
 	}
 }
 
-void Client::addPlayerOnMarket(int player_id,int team_id, int value){
+void Client::addPlayerOnMarket(int player_id,std::string username, int value){//modif
 	JSON::Dict query, data;
-	data.set(net::MSG::TEAM_ID,team_id);
+	data.set(net::MSG::USERNAME,username);
 	data.set(net::MSG::PLAYER_ID,player_id);
 	data.set(net::MSG::BID_VALUE,value);
 	query.set("type", net::MSG::ADD_PLAYER_ON_MARKET_QUERY);
@@ -247,24 +247,25 @@ void Client::addPlayerOnMarket(int player_id,int team_id, int value){
 	}
 }
 
-std::vector<Player> Client::getPlayers(int team_id){
+std::vector<Player> Client::getPlayers(std::string username){//modif
 	JSON::Dict query, data;
-	JSON::List toFill;
-	data.set(net::MSG::TEAM_ID, team_id);
+	data.set(net::MSG::USERNAME, username);//modif
 	query.set("type", net::MSG::PLAYERS_LIST);
 	query.set("data",data);
 	net::Message msg(0, query.clone());
 	_outbox.push(msg);
 	JSON::Value *serverResponse = _inbox.pop().data;
+	JSON::List toFill;
 	if(ISDICT(serverResponse)){
 		JSON::Dict received = DICT(serverResponse);
-		if(ISSTR(received.get("type")) && ISLIST(received.get("data"))){
+		if(ISLIST(received.get("data"))){
 			toFill = LIST(received.get("data"));
 		}
 	}
-	std::vector<Player> myplayers;
+	vector<Player> myplayers;
 	for(size_t i=0; i<toFill.len();++i){
-		myplayers.push_back(DICT(toFill[i]));
+		Player player(DICT(toFill[i]));
+		myplayers.push_back(player);
 	}
 	delete serverResponse;
 	return myplayers;

@@ -9,7 +9,7 @@ using namespace std;
 class Moveable {
 public:
 	Moveable():  _uniqueID(0), _speed(0), _position(0, 0){}
-	Moveable(unsigned int id, float speed, Position &position): 
+	Moveable(unsigned int id, float speed, Position position): //modif (moved &)
 				_uniqueID(id), _speed(speed), _position(position){}
 	Moveable(JSON::Dict const & json) : Moveable() {
 		if (ISINT(json.get("ID"))) _uniqueID = INT(json.get("ID")).value();
@@ -40,7 +40,7 @@ public:
 		return res;
 	}
 
-private:
+protected://modif
 	unsigned int _uniqueID;
 	double _speed;
 	Position _position;

@@ -45,7 +45,7 @@ private:
 	std::vector<Installation> _installations;
 	std::vector<JSON::Dict> _playersOnSale;
 	std::vector<Player> _players;
-	std::string _userName;
+	std::string _username;//modif
 	
 	// User menu
 	void registerUser();

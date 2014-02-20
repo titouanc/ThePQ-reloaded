@@ -1,5 +1,21 @@
 #include "Player.hpp"
 
+std::ostream& operator<< (std::ostream& out, const Player& player)//modif
+    {
+        out << "---------------------------------------------------" << std::endl;
+        out << "Player:         " << player._name << std::endl;
+        out << "Life:           " << player._lifeBar << "/" << player._maxLife << std::endl;
+        out << "Mana:           " << player._manaBar << "/" << player._maxMana << std::endl;
+        out << "Strength:       " << player._strength << std::endl;
+        out << "Constitution:   " << player._constitution << std::endl;
+        out << "Magic:          " << player._magic << std::endl;
+        out << "Spirit:         " << player._spirit << std::endl;
+        out << "Velocity:       " << player._velocity << std::endl;
+        out << "Precision:      " << player._precision << std::endl;
+        out << "Chance:         " << player._chance << std::endl;
+        return out;
+    }
+    
 Player::Player(JSON::Dict const & json) : Member(json), Moveable(json), 
 				_maxLife(100), _maxMana(100), _lifeBar(100), 
                 _manaBar(100), _broomstick(), 
@@ -26,6 +42,17 @@ Player::Player(JSON::Dict const & json) : Member(json), Moveable(json),
         if (ISINT(json.get("precision"))) _precision = INT(json.get("precision")).value();
         if (ISINT(json.get("chance"))) _chance = INT(json.get("chance")).value();
 }
+
+Player::Player(const Player & player) : Member(player._memberID,player._name,player._salary,player._price), 
+                Moveable(player._uniqueID,player._speed,player._position), 
+                _maxLife(player._maxLife), _maxMana(player._maxMana),_lifeBar(player._lifeBar), 
+                _manaBar(player._manaBar), _broomstick(), 
+                _jersey(), _strength(player._strength), _constitution(player._constitution), 
+                _magic(player._magic), _spirit(player._spirit), _velocity(player._velocity), 
+                _precision(player._precision), _chance(player._chance) {
+        _broomstick = new Broomstick(*(player._broomstick));
+        _jersey = new Jersey(*(player._jersey));
+}//modif
 
 Player::operator JSON::Dict(){
     JSON::Dict res = (Member)*this; 

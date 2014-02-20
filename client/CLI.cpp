@@ -70,6 +70,7 @@ void CLI::login(){
 	try {
 		cout << "Please wait..." << endl;
 		_connection.loginUser(username, password);
+		_username = username;//modif
 		cout << "You have successfully logged in! Welcome! :)" << endl;
 		mainMenu();
 	}
@@ -111,7 +112,7 @@ void CLI::mainMenu()
 	string message;
 	message+= "You can : \n";
 	message+= "   - (m)anage your team and stadium\n";
-	message+= "   - (a)ccess market\n";
+	message+= "   - (a)ccess the market\n";//modif
 	message+= "   - (p)lay a friendly game\n";
 	message+= "   - (q)uit\n";
 	message+= _prompt;
@@ -160,10 +161,21 @@ void CLI::playersMenu()
 	Menu players;
 	string message;
 	message+= "You can : \n";
+	message+= "    - (s)ee a list of your players\n";//modif
 	message+= "    - (q)uit to management menu\n";
+	players.addOption('s', new ClassCallback<CLI>(this, &CLI::printPlayers));//modif
 	players.setMessage(message);
 	// TODO : players menu
 	players.run();
+}
+//modif
+void CLI::printPlayers(){
+	_players = _connection.getPlayers(_username);//modif
+	cout << "================ YOUR PLAYERS ================" << endl;
+	for(size_t i =0; i<_players.size();++i){
+		cout << _players[i] << endl; //modif
+	}
+	cout << "==============================================" << endl;
 }
 
 /* Market menu */
@@ -205,7 +217,7 @@ void CLI::salePlayer(){
 			cin >> bidValue;
 		}
 		try{
-		_connection.addPlayerOnMarket(player_id, _team_id, bidValue);
+		_connection.addPlayerOnMarket(player_id, _username, bidValue);
 		cout << "Your player was successfully added on market." << endl;
 		}
 		catch(playerAlreadyOnMarketException e){
@@ -236,7 +248,7 @@ void CLI::printPlayersOnSale(){
 		cout << "Bid value 				: " <<	STR(sale.get(net::MSG::BID_VALUE)) 	<< endl;
 		cout << "Next bid value 		: "	<< 	STR(sale.get(net::MSG::NEXT_BID)) 	<< endl;
 		cout << "Player ID 				: "	<<	STR(sale.get(net::MSG::PLAYER_ID))	<< endl;
-		//cout << "Player infos			: "	<< 	player 								<< endl; TODO << FOR PLAYER
+		cout << "Player infos			: "	<< 	player 								<< endl;
 		cout << "--------------------------------" << endl;
 	}
 	cout << "=================================================" << endl;
@@ -263,7 +275,7 @@ void CLI::placeBid(){
 		}
 	}
 	try{
-		_connection.bidOnPlayer(player_id, _team_id, value);
+		_connection.bidOnPlayer(player_id, _username, value);
 		cout << "Bid successfully placed ! Hurra !" << endl;
 	}
 	catch(bidValueNotUpdatedException e){
@@ -283,15 +295,7 @@ void CLI::placeBid(){
 	}
 }
 
-void CLI::printPlayers(){
-	_players = _connection.getPlayers(_team_id);
-	cout << "================ YOUR PLAYERS ================" << endl;
-	for(size_t i =0; i<_players.size();++i){
-//		cout << _players[i] << endl; TODO << FOR PLAYER
-		cout << "--------------------------------------" << endl;
-	}
-	cout << "==============================================" << endl;
-}
+
 
 /* Friendly match menu */
 void CLI::friendlyMatchMenu()

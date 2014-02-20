@@ -25,9 +25,9 @@ public:
 	std::vector<std::string> getConnectedUsersList();
 
 	std::vector<JSON::Dict> updatePlayersOnSale();
-	void bidOnPlayer(int player_id, int team_id, int value);
-	void addPlayerOnMarket(int player_id, int team_id, int value);
-	std::vector<Player> getPlayers(int team_id);
+	void bidOnPlayer(int player_id, std::string username, int value);//modif
+	void addPlayerOnMarket(int player_id, std::string username, int value);//modif
+	std::vector<Player> getPlayers(std::string username);//modif
 
 
 	

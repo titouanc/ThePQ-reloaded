@@ -12,6 +12,7 @@ public:
 	Gear(): _name("NoName"), 
 			_description("NoDescription"),
 			_price(0) {}
+	Gear(string name, string descr, int price): _name(name), _description(descr), _price(price){}//modif
 	Gear(JSON::Dict const &json): Gear() {
 		/*Constructor from JSON object*/
 		if (ISSTR(json.get("name"))) _name = STR(json.get("name")).value();
@@ -31,7 +32,7 @@ public:
 	void setName(string name)				{ _name = name; }
 	void setDescription(string description)	{ _description = description; }
 	void setPrice(int price)				{ _price = price; }
-private:
+protected://modif
     string  _name;
     string  _description;
 	int  _price;
@@ -44,6 +45,8 @@ class Bat : public Gear
 public:
     Bat(const int strength, const int precision) : 	_strengthBonus(strength),
     												_precisionBonus(precision){}
+    Bat(const Bat &bat): Gear(bat._name, bat._description, bat._price),
+    _strengthBonus(bat._strengthBonus), _precisionBonus(bat._precisionBonus){}//modif
     Bat(JSON::Dict const &json): Gear(json) {
 		if (ISINT(json.get("strengthBonus"))) _strengthBonus = INT(json.get("strengthBonus")).value();		
 		if (ISINT(json.get("precisionBonus"))) _precisionBonus = INT(json.get("precisionBonus")).value();		
@@ -68,6 +71,8 @@ class Broomstick : public Gear
 public:
 	Broomstick(const int cases, const int velocity) : Gear(), _cases(cases), _velocityBonus(velocity)
 	{}
+	Broomstick(const Broomstick & broomstick): Gear(broomstick._name,broomstick._description,broomstick._price), 
+	_cases(broomstick._cases), _velocityBonus(broomstick._velocityBonus){}//modif
 
 	Broomstick(JSON::Dict const &json = JSON::Dict()): Gear(json), _cases(5), _velocityBonus(50) {
 		if (ISINT(json.get("cases"))) _cases = INT(json.get("cases")).value();		
@@ -102,6 +107,11 @@ public:
 		if (ISINT(json.get("magicBonus"))) _magicBonus = INT(json.get("magicBonus")).value();		
 		if (ISINT(json.get("spiritBonus"))) _spiritBonus = INT(json.get("spiritBonus")).value();		
 	}
+
+	Jersey(const Jersey & jersey): Gear(jersey._name,jersey._description,jersey._price),
+	_strengthBonus(jersey._strengthBonus), _constitutionBonus(jersey._constitutionBonus), _magicBonus(jersey._magicBonus),
+	_spiritBonus(jersey._spiritBonus) {}//modif
+
 	operator JSON::Dict(){
 		JSON::Dict res = JSON::Dict((Gear)*this);
 		res.set("strengthBonus", _strengthBonus);
