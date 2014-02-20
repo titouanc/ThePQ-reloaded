@@ -48,7 +48,6 @@ void MatchManager::initPositions(void)
 
 MatchManager::~MatchManager()
 {
-	while (_outbox.available());
 	cout << "[" << this << "] \033[1m\033[32mMatch destroyed\033[0m" << endl;
 }
 
@@ -83,9 +82,8 @@ void MatchManager::processStroke(Message const & msg, JSON::Dict const & data)
 	
 	cout << "Got displacement: " << move.toJson() << endl;
 
-	_strokes.push(Stroke(player, move));
+	_strokes.push_back(Stroke(player, move));
 	reply(msg, MATCH_ACK, data);
-	cout << _strokes.back().move.toJson() << endl;
 }
 
 void MatchManager::processMessage(Message const & msg)
@@ -195,116 +193,106 @@ void MatchManager::sendMatchDeltas(JSON::List const & delta)
 	sendToAll(msg);
 }
 
-Stroke MatchManager::getStrokeForMoveable(Moveable *moveable)
+MatchManager::iter MatchManager::getStrokeForMoveable(Moveable *moveable)
 {
-	size_t n_strokes = _strokes.size();
-	for (size_t i=0; i<n_strokes; i++){
-		Stroke s = _strokes.front();
-		_strokes.pop();
-		if (&(_strokes.front().moveable) == moveable)
-			return s;
-		_strokes.push(s);
+	iter res;
+	for (res=_strokes.begin(); res!=_strokes.end(); res++){
+		if (&((*res).moveable) == moveable)
+			break;
 	}
-	throw std::runtime_error("No stroke for this moveable !");
+	return res;
 }
 
-/*!
- * @meth void MatchManager::playStrokes(void)
- * @brief Play all strokes in this turn
- */
+static JSON::Dict mkDelta(Moveable const & moveable, Position const & dest)
+{
+	JSON::Dict res;
+	res.set("mid", moveable.getID());
+	res.set("from", moveable.getPosition().toJson());
+	res.set("to", dest.toJson());
+	return res;
+}
+
 void MatchManager::playStrokes(void)
 {
-	size_t i, len, maxlen=0;
-	JSON::List finalPositions;
-
+	size_t len, maxlen=0;
 	/* Find longest displacement */
-	for (i=0; i<_strokes.size(); i++){
-		Stroke stroke = _strokes.front();
-		_strokes.pop();
-		_strokes.push(stroke);
-		len = stroke.move.length();
+	for (iter i=_strokes.begin(); i!=_strokes.end(); i++){
+		len = (*i).move.length();
 		if (len > maxlen)
 			maxlen = len;
 	}
 
-	/* For each step in time interval... */
+	cout << "MAXLEN IS " << maxlen << endl;
+
+	JSON::List turnDeltas;
 	double last_t = 0;
-	for (double t=1.0/maxlen; t<=1; t+=1.0/maxlen){
-		size_t n_strokes = _strokes.size();
-		/* For each stroke */
-		for (i=0; i<n_strokes; i++){
-			Stroke stroke = _strokes.front();
-			_strokes.pop();
-			
-			/* Where the moveable would be */
-			Position newPos = stroke.move.position(t, stroke.moveable);
-			Position oldPos = stroke.move.position(last_t, stroke.moveable);
+	for (size_t t_i=1; t_i<=maxlen; t_i++){
+		/* Foreach time step */
+		double t = ((double) t_i)/maxlen;
+		for (iter i=_strokes.begin(); i!=_strokes.end(); i++){
+			/* Foreach active stroke */
+			if ((*i).active){
+				Moveable & moving = (*i).moveable;
+				Displacement & move = (*i).move;
+				Position newPos = move.position(t, moving);
+				Position oldPos = move.position(last_t, moving);
 
-			/* Who's there ? */
-			Moveable *atPos = _pitch.getAt(newPos);
-			cout << stroke.moveable.getName() << " " 
-			     << oldPos.toJson()
-			     << " -> " << newPos.toJson() << endl;
-
-			if (atPos){
-				switch (onCollision(*atPos, stroke.moveable, newPos)){
-					case FIRST_WIN: {
-						/* First on position wins => stop the second moveable */
-						stroke.moveable.setPosition(oldPos);
-						JSON::Dict serialized;
-						serialized.set("mid", stroke.moveable.getID());
-						serialized.set("finalpos", oldPos.toJson());
-						finalPositions.append(serialized);
-						break;
-					}
-					case SECOND_WIN:
-						cout << "Second moveable wins" << endl;
-						break;
-					default:
-						cout << "Nothing todo" << endl;
-						break;
+				/* If there is someone where we would arrive */
+				Moveable *atNewPos = _pitch.getAt(newPos);
+				if (atNewPos != NULL && atNewPos != &moving){
+					turnDeltas.append(onCollision(*atNewPos, *i, newPos, oldPos));
+				} else {
+					_pitch.setAt(newPos, &moving);
 				}
-			} else {
-				_pitch.setAt(newPos, &(stroke.moveable));
-				_pitch.setAt(oldPos, NULL);
-				_strokes.push(stroke);
 			}
 		}
 		last_t = t;
 	}
 
-
-
-	while (! _strokes.empty()){
-		Stroke & stroke = _strokes.front();
-		Position const & pos = stroke.move.position(1, stroke.moveable);
-
-		JSON::Dict serialized;
-		serialized.set("mid", stroke.moveable.getID());
-		serialized.set("finalpos", pos.toJson());
-		finalPositions.append(serialized);
-		_strokes.pop();
+	/* Find all final position of unstopped moveable */
+	for (iter i=_strokes.begin(); i!=_strokes.end(); i++){
+		if ((*i).active){
+			Moveable & moving = (*i).moveable;
+			Displacement & move = (*i).move;
+			Position finalPos = move.position(1, moving);
+			turnDeltas.append(mkDelta(moving, finalPos));
+			moving.setPosition(finalPos);
+		}
 	}
 
-	sendMatchDeltas(finalPositions);
+	sendMatchDeltas(turnDeltas);
+	_strokes.clear();
 }
 
-
-MatchManager::Collision MatchManager::onCollision(
-	Moveable & first, 
-	Moveable & second,
-	Position & conflict
+JSON::Dict MatchManager::onCollision(
+	Moveable & first, /* Moveable that was already on position */
+	Stroke & stroke,    /* Stroke iterator that leads to conflict */
+	Position & conflict, /* Clonflicting pos */
+	Position & fromPos /* last pos occupied by moving */
 )
 {
+	Moveable & moving = stroke.moveable;
 	float first_score  = first.collisionScore();
-	float second_score = second.collisionScore();
+	float second_score = moving.collisionScore();
 
-	cout << "Collision. " << first.getName() << "(" << first_score << ") on " 
-	     << conflict.toJson() << " and " << second.getName() << "(" 
-	     << second_score << ") arrives." << endl;
+	JSON::Dict res;
+	if (first_score > second_score){
+		/* The first moveable wins, second stops on fromPos */
+		res = mkDelta(moving, fromPos);
+		moving.setPosition(fromPos);
+		stroke.active = false;
+	} else {
+		/* Second wins: stop first on fromPos */
+		res = mkDelta(first, fromPos);
+		first.setPosition(fromPos);
+		_pitch.setAt(fromPos, &first);
+		_pitch.setAt(conflict, &moving);
 
-	if (first_score > second_score)
-		return FIRST_WIN;
-	else 
-		return SECOND_WIN;
+		iter stoppedStroke = getStrokeForMoveable(&first);
+		if (stoppedStroke != _strokes.end()){
+			(*stoppedStroke).active = false;
+		}
+	}
+
+	return res;
 }

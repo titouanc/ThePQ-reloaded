@@ -4,7 +4,7 @@
 #include <cassert>
 
 #include <sys/select.h>
-#include <queue>
+#include <deque>
 #include <model/Moveable.hpp>
 #include <model/Displacement.hpp>
 #include <model/Pitch.hpp>
@@ -21,7 +21,8 @@ using namespace net;
 struct Stroke {
 	Moveable & moveable;
 	Displacement move;
-	Stroke(Moveable & m, Displacement d) : moveable(m), move(d){}
+	bool active;
+	Stroke(Moveable & m, Displacement d) : moveable(m), move(d), active(true){}
 };
 
 /* TODO: mettre ca dans un fichier de constantes */
@@ -37,17 +38,13 @@ struct Stroke {
 
 class MatchManager : public SubConnectionManager {
 	private:
-		std::queue<Stroke> _strokes;
+		std::deque<Stroke> _strokes;
 		Squad _squads[2];
 		Ball   _balls[4];
 		Pitch  _pitch;
 		SharedQueue<Message> _inbox, _outbox;
 
-		typedef enum Collision_t {
-			FIRST_WIN,  /* First player on position wins */
-			SECOND_WIN, /* Second player on position wins */
-			CATCH_BALL  /* The player catch a ball */
-		} Collision;
+		typedef std::deque<Stroke>::iterator iter;
 
 		/* initialise moveable positions */
 		void initPositions(void);
@@ -75,14 +72,15 @@ class MatchManager : public SubConnectionManager {
 		/* Send match delta to everyone */
 		void sendMatchDeltas(JSON::List const & delta);
 
-		Stroke getStrokeForMoveable(Moveable *moveable);
+		iter getStrokeForMoveable(Moveable *moveable);
 		/* Resolve strokes */
 		void playStrokes(void);
 		/* *SMASH* */
-		Collision onCollision(
-			Moveable & first, 
-			Moveable & second,
-			Position & conflict
+		JSON::Dict onCollision(
+			Moveable & first, /* Moveable that was already on position */
+			Stroke & stroke,    /* Stroke iterator that leads to conflict */
+			Position & conflict, /* Clonflicting pos */
+			Position & fromPos /* last pos occupied by moving */
 		);
 	public:
 		MatchManager(

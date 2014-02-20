@@ -31,7 +31,8 @@ def printMessage(msg):
 		exit()
 	elif msg['type'] == 'MDELTA':
 		for delta in msg['data']:
-			PLAYERS[delta['mid']]['position'] = delta['finalpos']
+			print delta['mid'], delta['from'], '->', delta['to']
+			PLAYERS[delta['mid']]['position'] = delta['to']
 		printPlayers()
 	else:
 		print msg
@@ -60,6 +61,13 @@ c.sendObj({
 	"type": "MSTROKE", 
 	"data": {
 		"mid": 1, 
+		"move": [[1, 1], [2, 0]]
+	}
+})
+d.sendObj({
+	"type": "MSTROKE", 
+	"data": {
+		"mid": 11, 
 		"move": [[1, 1], [2, 0]]
 	}
 })
