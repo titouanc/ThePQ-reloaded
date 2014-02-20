@@ -55,6 +55,19 @@ est terminée et le serveur envoie alors les résultats du match dans un autre
 message. Quand le client les a reçues, il le signifie au serveur qui ferme 
 alors la connexion.
 
+\subsection{Le gestionnaire de connexion}
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=\textwidth]{figures/network-class.eps}
+  \caption{\label{fig:Class:Network} Classes: Le gestionnaire de connexion}
+\end{figure}
+
+Les connexions sont ici gérées dans le \emph{BaseConnectionManager}, qui instancie deux threads : un s'occupant des messages entrant, l'autre des sortant. Ces messages arrivent en JSON via un file descriptor, puis passent chacun par des files (suivant leur entrée ou sortie) afin d'arriver dans le bon ordre.
+
+Le \emph{ConnectionManager} ajoute à la précédente classe la possibilité d'accepter de nouveaux file descriptors.
+
+Le \emph{SubConnectionManager} peut voler 
+
 \subsubsection{Le gestionnaire de match}
 \begin{figure}[h!]
   \centering
