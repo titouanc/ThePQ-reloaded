@@ -139,14 +139,13 @@ public:
     int shoot ();
 };
 
-#include "Player.hpp"
 
 /*================================CHASER================================*/
 class Keeper : public Player 
 {
 public:
     using Player::Player;
-	bool isKeeper () { return true; }
+	bool isKeeper () const { return true; }
     int catchBall ();
     int pass ();
 };
