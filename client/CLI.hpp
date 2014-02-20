@@ -10,6 +10,7 @@
 #include "Exception.hpp"
 #include "Menu.hpp"
 #include <Config.hpp>
+#include <model/Player.hpp>
 
 struct NetConfig : public Config {
     std::string host;
@@ -42,6 +43,9 @@ private:
 	std::string _prompt;
 	Client _connection;
 	std::vector<Installation> _installations;
+	std::vector<JSON::Dict> _playersOnSale;
+	std::vector<Player> _players;
+	std::string _userName;
 	
 	// User menu
 	void registerUser();
@@ -54,7 +58,7 @@ private:
 	void stadiumMenu();
 	void playersMenu();
 	void friendlyMatchMenu();
-	
+	void marketMenu();
 	// utils
 	std::string askForUserData(std::string prompt); // returns the user input.
 	std::string askForNewPassword(); // prompts the user to create a new password with 
@@ -66,6 +70,13 @@ public:
 	
 	void upgradeInstallation();
 	void downgradeInstallation();
+
+	// Player market
+	void printPlayersOnSale();
+	void printPlayers();
+	void salePlayer();
+	vector<int> getBidValueRange(Player *player);
+	void placeBid();
 
 private:
 	void loadInstallations();

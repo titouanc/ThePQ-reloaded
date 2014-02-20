@@ -1,8 +1,9 @@
 #include <iostream>
 #include <string>
 using namespace std;
-int main(){
-string message;
+
+string Message::splashScreen(){
+	string message;
 	message+="	             _____ _            ____            \n";
 	message+="	            |_   _| |__   ___  |  _ \\ _ __ ___ \n";
 	message+="		      | | | '_ \\ / _ \\ | |_) | '__/ _ \\\n ";
@@ -24,7 +25,7 @@ string message;
 	message+="		 |_| |_| |_|\\__,_|_| |_|\\__,_|\\__, |\\___|_|\n";
 	message+="   		               	              |___/\n";
 	message+="			Welcome to The Pro Quidditch Manager 2014!\n";
-cout<<message<<endl;
+	return message;
 }
 
 

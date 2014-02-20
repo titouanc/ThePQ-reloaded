@@ -8,6 +8,8 @@
 #include <Config.hpp>
 #include <network/ConnectionManager.hpp>
 #include "User.hpp"
+#include <Config.hpp>
+#include "PlayerMarket.hpp"
 #include "MatchManager.hpp"
 
 using namespace std;
@@ -49,6 +51,11 @@ public:
 	void upgradeInstallation(int peer_id, size_t i);
 	void downgradeInstallation(int peer_id, size_t i);
 	void sendConnectedUsersList(int peer_id);
+    //market
+    void sendPlayersOnMarketList(int peer_id);
+    void addPlayerOnMarket(const JSON::Dict &bid, int peer_id);
+    void deletePlayerOfMarket(const JSON::Dict &bid, int peer_id);
+    void placeBidOnPlayer(const JSON::Dict &bid, int peer_id);
     string getRandomName();
     void collectFinishedMatches(void);
     void startMatch(int client_idA, int client_idB);
@@ -56,6 +63,7 @@ private:
 	SharedQueue<net::Message> _inbox, _outbox;
 	map<int, User*> _users;
 	net::ConnectionManager _connectionManager;
+    PlayerMarket market;
     std::deque<MatchManager*> _matches;
 };
 
