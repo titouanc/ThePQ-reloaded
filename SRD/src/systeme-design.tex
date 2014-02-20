@@ -66,7 +66,9 @@ Les connexions sont ici gérées dans le \emph{BaseConnectionManager}, qui insta
 
 Le \emph{ConnectionManager} ajoute à la précédente classe la possibilité d'accepter de nouveaux file descriptors.
 
-Le \emph{SubConnectionManager} peut voler 
+Le \emph{SubConnectionManager} peut voler un des file descriptors le temps d'un match, fonctionnalité utilisée par le serveur lors des matches.
+
+
 
 \subsubsection{Le gestionnaire de match}
 \begin{figure}[h!]
