@@ -69,7 +69,7 @@ void CLI::login(){
 	
 	try {
 		cout << "Please wait..." << endl;
-		_connection.loginUser(username, password);
+		loginUser(username, password);
 		cout << "You have successfully logged in! Welcome! :)" << endl;
 		mainMenu();
 	}
@@ -90,10 +90,10 @@ void CLI::registerUser(){
 		string username = askForUserData("Pick a username : ");
 		try {
 			cout << "Please wait..." << endl;
-			_connection.doesUserExist(username);
+			doesUserExist(username);
 			string password = askForNewPassword();
 			cout << "Please wait..." << endl;
-			_connection.registerUser(username, password);
+			registerUser(username, password);
 			registered = true;
 			cout << "You have successfully registered! You can now login." << endl;
 		}
@@ -205,7 +205,7 @@ void CLI::salePlayer(){
 			cin >> bidValue;
 		}
 		try{
-		_connection.addPlayerOnMarket(player_id, _team_id, bidValue);
+		addPlayerOnMarket(player_id, _team_id, bidValue);
 		cout << "Your player was successfully added on market." << endl;
 		}
 		catch(playerAlreadyOnMarketException e){
@@ -226,7 +226,7 @@ vector<int> CLI::getBidValueRange(Player *player){
 }
 
 void CLI::printPlayersOnSale(){
-	_playersOnSale = _connection.updatePlayersOnSale();
+	_playersOnSale = updatePlayersOnSale();
 	cout << "================ PLAYERS ON SALE ================" << endl;
 	for(size_t i=0;i<_playersOnSale.size();++i){
 		JSON::Dict & sale = _playersOnSale[i];
@@ -263,7 +263,7 @@ void CLI::placeBid(){
 		}
 	}
 	try{
-		_connection.bidOnPlayer(player_id, _team_id, value);
+		bidOnPlayer(player_id, _team_id, value);
 		cout << "Bid successfully placed ! Hurra !" << endl;
 	}
 	catch(bidValueNotUpdatedException e){
@@ -284,7 +284,7 @@ void CLI::placeBid(){
 }
 
 void CLI::printPlayers(){
-	_players = _connection.getPlayers(_team_id);
+	_players = getPlayers(_team_id);
 	cout << "================ YOUR PLAYERS ================" << endl;
 	for(size_t i =0; i<_players.size();++i){
 //		cout << _players[i] << endl; TODO << FOR PLAYER
@@ -314,7 +314,7 @@ void CLI::chooseUser()
 	// TODO : choose user for friendly match
 }
 void CLI::loadInstallations(){
-	_installations = _connection.getInstallationsList();
+	_installations = getInstallationsList();
 }
 
 void CLI::printInstallationsList(){
@@ -341,7 +341,7 @@ void CLI::upgradeInstallation()
 	cin >> choice;
 	if (choice < _installations.size())
 	{
-		if (_connection.upgradeInstallation(choice))
+		if (upgradeInstallation(choice))
 		{
 			_installations[choice].upgrade();
 		}
@@ -359,7 +359,7 @@ void CLI::downgradeInstallation()
 	cin >> choice;
 	if (choice < _installations.size())
 	{
-		if (_connection.downgradeInstallation(choice))
+		if (downgradeInstallation(choice))
 		{
 			_installations[choice].downgrade();
 		}
@@ -371,7 +371,7 @@ void CLI::downgradeInstallation()
 }
 
 void CLI::printConnectedUsersList(){
-	vector<std::string> connectedUsers = _connection.getConnectedUsersList();
+	vector<std::string> connectedUsers = getConnectedUsersList();
 	cout << "Here are all the connected users : " << endl;
  	for (size_t i=0; i < connectedUsers.size(); ++i)
  		cout << "  - " << connectedUsers[i] << endl;
@@ -398,3 +398,260 @@ string CLI::askForNewPassword(){
 	}
 	return password;
 }
+
+////////// NEW 
+void CLI::loginUser(string username, string passwd)
+{
+	JSON::Dict toSend, credentials;
+	credentials.set(net::MSG::USERNAME, username);
+	credentials.set(net::MSG::PASSWORD, passwd);
+	toSend.set("type", net::MSG::LOGIN);
+	toSend.set("data", credentials);
+	_connection.send(toSend);
+
+	JSON::Value *serverMessage = _connection.pop();	// receiving server response
+
+	if (ISDICT(serverMessage)){
+		JSON::Dict const &received = DICT(serverMessage);
+		if (received.hasKey("type") && ISSTR(received.get("type")) 
+			&& STR(received.get("type")).value() == net::MSG::STATUS){
+			if (received.hasKey("data") && ISSTR(received.get("data"))) {
+				if (STR(received.get("data")).value() == net::MSG::PASSWORD_ERROR)
+				{
+					delete serverMessage;
+					throw WrongPasswordException();
+				}
+				else if (STR(received.get("data")).value() == net::MSG::USER_NOT_FOUND)
+				{
+					delete serverMessage;
+					throw UserNotFoundException();
+				}
+			}
+		}
+	}
+	delete serverMessage;
+	// User is logged in at this point.
+}
+
+void CLI::doesUserExist(string username){
+	JSON::Dict toSend;
+	toSend.set("type", net::MSG::USER_EXISTS);
+	toSend.set("data", username);
+	_connection.send(toSend);
+
+	JSON::Value *serverMessage = _connection.pop(); // receiving server response
+
+	if(ISDICT(serverMessage)){
+		JSON::Dict const &received = DICT(serverMessage);
+		if (received.hasKey("type") && ISSTR(received.get("type")) 
+			&& STR(received.get("type")).value() == net::MSG::STATUS){
+			if (received.hasKey("data") && ISSTR(received.get("data")) 
+				&& STR(received.get("data")).value() == net::MSG::USER_EXISTS){
+				throw UserAlreadyExistsException();
+			}
+		}
+	}
+}
+
+void CLI::registerUser(string username, string passwd)
+{
+	JSON::Dict toSend, received, credentials;
+	credentials.set(net::MSG::USERNAME, username);
+	credentials.set(net::MSG::PASSWORD, passwd);
+	toSend.set("type", net::MSG::REGISTER);
+	toSend.set("data", credentials);
+	_connection.send(toSend);
+
+	JSON::Value *serverMessage = _connection.pop();	// receiving server response
+
+	if (ISDICT(serverMessage)){
+		JSON::Dict const &received = DICT(serverMessage);
+		if (received.hasKey("type") && ISSTR(received.get("type")) 
+			&& STR(received.get("type")).value() == net::MSG::STATUS){
+			if (received.hasKey("data") && ISSTR(received.get("data"))) {
+				if (STR(received.get("data")).value() == net::MSG::USER_EXISTS)
+					throw UserAlreadyExistsException();
+			}
+		}
+	}
+	// User is registered
+}
+
+vector<Installation> CLI::getInstallationsList(){
+	JSON::Dict query;
+	JSON::List toFill;
+	query.set("type", net::MSG::INSTALLATIONS_LIST);
+	query.set("data", "");
+	_connection.send(query);
+
+	JSON::Value *serverResponse = _connection.pop();
+	if (ISDICT(serverResponse))
+	{
+		JSON::Dict response = DICT(serverResponse);
+		if (ISLIST(response.get("data")))
+		{
+			toFill = LIST(response.get("data"));
+		}
+	}
+	vector<Installation> vec;
+	for (size_t i = 0; i < toFill.len(); ++i)
+	{
+		vec.push_back(DICT(toFill[i]));
+	}
+	delete serverResponse;
+	return vec;
+}
+
+bool CLI::upgradeInstallation(size_t i)
+{
+	bool ret = false;
+	JSON::Dict query;
+	query.set("type", net::MSG::INSTALLATION_UPGRADE);
+	query.set("data", i);
+	_connection.send(query);
+	
+	JSON::Value *serverResponse = _connection.pop();
+	if (ISDICT(serverResponse))
+	{
+		JSON::Dict const & received = DICT(serverResponse);
+		if (ISSTR(received.get("type")) && ISBOOL(received.get("data"))
+			&& STR(received.get("type")).value() == net::MSG::INSTALLATION_UPGRADE)
+		{
+			ret = received.get("data");
+		}
+	}
+	return ret;
+}
+
+bool CLI::downgradeInstallation(size_t i)
+{
+	bool ret = false;
+	JSON::Dict query;
+	query.set("type", net::MSG::INSTALLATION_DOWNGRADE);
+	query.set("data", i);
+	_connection.send(query);
+	
+	JSON::Value *serverResponse = _connection.pop();
+	if (ISDICT(serverResponse))
+	{
+		JSON::Dict const &received = DICT(serverResponse);
+		
+		if (ISSTR(received.get("type")) && ISBOOL(received.get("data"))
+			&& STR(received.get("type")).value() == net::MSG::INSTALLATION_DOWNGRADE)
+		{
+			ret = received.get("data");
+		}
+	}
+	delete serverResponse;
+	return ret;
+}
+
+vector<std::string> CLI::getConnectedUsersList(){
+	vector<std::string> res;
+	JSON::Dict query;
+	query.set("type", net::MSG::CONNECTED_USERS_LIST);
+	query.set("data", "");
+	_connection.send(query);
+
+	JSON::Value *serverResponse = _connection.pop();
+	if (ISDICT(serverResponse)){
+		JSON::Dict received = DICT(serverResponse);
+		if (ISSTR(received.get("type")) && ISLIST(received.get("data"))){
+			JSON::List & connectedUsers = LIST(received.get("data"));
+			for (size_t i = 0; i<connectedUsers.len(); ++i)
+				res.push_back(STR(connectedUsers[i]));
+		}
+	}
+	return res;
+}
+
+std::vector<JSON::Dict> CLI::updatePlayersOnSale(){
+	JSON::Dict query;
+	query.set("type", net::MSG::PLAYERS_ON_MARKET_LIST);
+	query.set("data", "");
+	_connection.send(query);
+	
+	JSON::Value *serverResponse = _connection.pop();
+	std::vector<JSON::Dict> res;
+	if (ISDICT(serverResponse)) {
+		JSON::Dict received = DICT(serverResponse);
+		if (ISSTR(received.get("type")) && ISLIST(received.get("data"))){
+			JSON::List & sales = LIST(received.get("data"));
+			for(size_t i = 0; i<sales.len();++i)
+				res.push_back(DICT(sales[i]));
+		}
+	}
+	return res; 
+}
+
+void CLI::bidOnPlayer(int player_id,int team_id, int value){
+	JSON::Dict query, data;
+	data.set(net::MSG::TEAM_ID,team_id);
+	data.set(net::MSG::PLAYER_ID,player_id);
+	data.set(net::MSG::BID_VALUE,value);
+	query.set("type", net::MSG::BID_ON_PLAYER_QUERY);
+	query.set("data", data);
+	_connection.send(query);
+	
+	JSON::Value *serverResponse = _connection.pop();
+	if(ISDICT(serverResponse)){
+		JSON::Dict received = DICT(serverResponse);
+		if(ISSTR(received.get("type")) && ISDICT(received.get("data"))){
+			std::string res = STR(DICT(received.get("data")).get(net::MSG::SERVER_RESPONSE));
+			if(res == net::MSG::BID_VALUE_NOT_UPDATED)
+				throw bidValueNotUpdatedException();
+			else if(res == net::MSG::BID_TURN_ERROR)
+				throw turnException();
+			else if(res == net::MSG::BID_ENDED)
+				throw bidEndedException();
+			else if(res == net::MSG::CANNOT_BID_ON_YOUR_PLAYER)
+				throw bidOnYourPlayerException();
+			else if(res == net::MSG::LAST_BIDDER)
+				throw lastBidderException();
+		}
+	}
+}
+
+void CLI::addPlayerOnMarket(int player_id,int team_id, int value){
+	JSON::Dict query, data;
+	data.set(net::MSG::TEAM_ID,team_id);
+	data.set(net::MSG::PLAYER_ID,player_id);
+	data.set(net::MSG::BID_VALUE,value);
+	query.set("type", net::MSG::ADD_PLAYER_ON_MARKET_QUERY);
+	query.set("data", data);
+	_connection.send(query);
+	
+	JSON::Value *serverResponse = _connection.pop();
+	if(ISDICT(serverResponse)){
+		JSON::Dict received = DICT(serverResponse);
+		if(ISSTR(received.get("type")) && ISDICT(received.get("data"))){
+			std::string res = STR(DICT(received.get("data")).get(net::MSG::SERVER_RESPONSE));
+			if(res == net::MSG::PLAYER_ALREADY_ON_MARKET)
+				throw playerAlreadyOnMarketException();
+		}
+	}
+}
+
+std::vector<Player> CLI::getPlayers(int team_id){
+	JSON::Dict query, data;
+	JSON::List toFill;
+	data.set(net::MSG::TEAM_ID, team_id);
+	query.set("type", net::MSG::PLAYERS_LIST);
+	query.set("data",data);
+	_connection.send(query);
+	
+	JSON::Value *serverResponse = _connection.pop();
+	if(ISDICT(serverResponse)){
+		JSON::Dict received = DICT(serverResponse);
+		if(ISSTR(received.get("type")) && ISLIST(received.get("data"))){
+			toFill = LIST(received.get("data"));
+		}
+	}
+	std::vector<Player> myplayers;
+	for(size_t i=0; i<toFill.len();++i){
+		myplayers.push_back(DICT(toFill[i]));
+	}
+	delete serverResponse;
+	return myplayers;
+}
+///////// END NEW

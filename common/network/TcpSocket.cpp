@@ -19,7 +19,7 @@ void net::TcpSocket::send(JSON::Value const & json)
 	}
 }
 
-JSON::Value * pop()
+JSON::Value * net::TcpSocket::pop()
 {
 	return _messages.pop();
 }

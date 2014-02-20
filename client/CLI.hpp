@@ -49,6 +49,24 @@ private:
 	std::vector<JSON::Dict> _playersOnSale;
 	std::vector<Player> _players;
 	std::string _userName;
+	int _team_id;
+	
+	
+	// NEW
+	void loginUser(std::string username, std::string passwd);
+	void doesUserExist(std::string username);
+	void registerUser(std::string username, std::string passwd);
+	
+	std::vector<Installation> getInstallationsList();
+	bool upgradeInstallation(size_t i);
+	bool downgradeInstallation(size_t i);
+	std::vector<std::string> getConnectedUsersList();
+
+	std::vector<JSON::Dict> updatePlayersOnSale();
+	void bidOnPlayer(int player_id, int team_id, int value);
+	void addPlayerOnMarket(int player_id, int team_id, int value);
+	std::vector<Player> getPlayers(int team_id);
+	// END NEW
 	
 	// User menu
 	void registerUser();
