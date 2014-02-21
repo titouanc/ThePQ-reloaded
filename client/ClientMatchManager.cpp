@@ -118,6 +118,26 @@ void ClientMatchManager::selectDirectionForPlayer(int player){
 	data.set("move", currentDisplacement.toJson());
 	toSend.set("data", data);
 	_connection.send(toSend);
+
+	JSON::Value * serverMessage = _connection.waitForMsg(net::MSG::MATCH_STATUS);
+	cout << serverMessage << endl;
+	if (ISDICT(serverMessage)){
+		JSON::Dict const & received = DICT(serverMessage);
+		if (ISDICT(received.get("data"))){
+			cout << "1" << endl;
+			JSON::Dict status = DICT(received.get("data"));
+			if (ISSTR(status.get("type"))){
+				cout << "2" << endl;
+				string messageType = STR(status.get("type")).value();
+				if (messageType == net::MSG::MATCH_ERROR){
+					cout << "Error : " << STR(status.get("data")).value() << endl;
+				}
+				else if (messageType == net::MSG::MATCH_ACK){
+					cout << "Your moves have been accepted." << endl;
+				}
+			}
+		}
+	}
 }
 
 void ClientMatchManager::displayAvailablePlayers(){

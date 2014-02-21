@@ -183,8 +183,11 @@ void MatchManager::sendSignal(std::string const & sig)
 void MatchManager::reply(Message const & msg, std::string type, JSON::Value const & data)
 {
 	JSON::Dict response = JSON::Dict();
-	response.set("type", type);
-	response.set("data", data);
+	response.set("type", net::MSG::MATCH_STATUS);
+	JSON::Dict status = JSON::Dict();
+	status.set("type", type);
+	status.set("data", data);
+	response.set("data", status);
 	_doWrite(msg.peer_id, &response);
 }
 

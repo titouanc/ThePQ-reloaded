@@ -79,6 +79,7 @@ namespace net
 		static const std::string MATCH_ACK     = "MACK";
 		static const std::string MATCH_DELTA   = "MDELTA";
 		static const std::string MATCH_SCORES  = "MSCORES";
+		static const std::string MATCH_STATUS  = "MSTATUS";
 	}
 }
 
