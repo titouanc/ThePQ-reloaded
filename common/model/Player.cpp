@@ -22,6 +22,7 @@ Player::Player(JSON::Dict const & json) : Member(json), Moveable(json),
                 _manaBar(100), _broomstick(), 
                 _jersey(), _strength(5), _constitution(5), 
                 _magic(5), _spirit(5), _velocity(5), _precision(5), _chance(5) {
+		if (ISINT(json.get("memberID"))) _memberID = INT(json.get("memberID")).value();
 		if (ISSTR(json.get("name"))) _name = STR(json.get("name")).value();
         if (ISINT(json.get("maxLife"))) _maxLife = INT(json.get("maxLife")).value();
         if (ISINT(json.get("maxMana"))) _maxMana = INT(json.get("maxMana")).value();
@@ -59,6 +60,7 @@ Player::operator JSON::Dict(){
     JSON::Dict res = (Member)*this; 
     JSON::Dict subres = (Moveable)*this;
     res.stealMerge(subres);
+    res.set("memberID", _memberID);
     res.set("maxLife", _maxLife);
     res.set("maxMana", _maxMana);
     res.set("lifeBar", _lifeBar);
