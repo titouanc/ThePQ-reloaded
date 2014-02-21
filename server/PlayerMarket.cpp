@@ -2,7 +2,7 @@
 #include <Constants.hpp>
 #include <sys/stat.h>
 #include <stdio.h>
-
+#include "dirent.h"
 void * saleChecker(void * p){
 	PlayerMarket *market = static_cast<PlayerMarket*>(p);
 	while(market->_runChecker){
@@ -83,11 +83,25 @@ void PlayerMarket::transfert(Sale * sale){
 PlayerMarket::PlayerMarket(): _sales(), _marketPath("data/playerMarket/"), _playerPath("data/"),
 _thread(),_runChecker(true), _deleting(PTHREAD_MUTEX_INITIALIZER) {
 	mkdir(_marketPath.c_str(), 0755);
-	/*cherche data/playermarket
-	transformer fichier->C() ajouter au vecteur _sales*/
+	loadSales();	
 	startChecker();
 }
+void PlayerMarket::loadSales(){
+	/*cherche data/playermarket
+	transformer fichier->C() ajouter au vecteur _sales*/
+	DIR *dir;
+	struct dirent *ent;
+	cout<<"Dirent \n\n\n"<<endl;
+	if((dir = opendir(_marketPath.c_str()))!=NULL){
+		while ((ent=readdir (dir)) != NULL){
+			cout<<ent->d_name;
+		}
+		closedir(dir);
+	}else{
+		cout<<"FUCK"<<endl;
+	}
 
+}
 PlayerMarket::~PlayerMarket(){
 	_runChecker = false;
 	for(size_t i=0;i<_sales.size();++i){
