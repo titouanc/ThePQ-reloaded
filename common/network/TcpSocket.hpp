@@ -23,6 +23,7 @@
 #include <json/json.hpp>
 #include "Exception.hpp"
 #include <sharedqueue.hpp>
+#include <queue>
 
 namespace net
 {	
@@ -40,12 +41,16 @@ namespace net
 		
 		void start();
 		void stop();
+		JSON::Value* waitForMsg(std::string typeToWait);
+
+		std::queue<JSON::Value*> notifications;
 		
 	protected:
 		SharedQueue<JSON::Value*> _messages;
 
 		void loop();
 		bool _isRunning;
+		bool _isWaitingForMessage;
 		int _sockfd;
 		struct sockaddr_in _servAddr;
 		struct sockaddr_in _cliAddr;

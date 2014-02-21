@@ -24,6 +24,27 @@ JSON::Value * net::TcpSocket::pop()
 	return _messages.pop();
 }
 
+JSON::Value* net::TcpSocket::waitForMsg(std::string typeToWait)
+{
+	_isWaitingForMessage = true;
+	JSON::Value* msg = NULL, *res = NULL;
+	while (msg == NULL || available())
+	{
+		msg = pop();
+		JSON::Dict const & dict = DICT(msg);
+		if (STR(dict.get("type")).value() == typeToWait)
+		{
+			res = msg;
+		}
+		else
+		{
+			notifications.push(msg);
+		}
+	}
+	_isWaitingForMessage = false;
+	return res;
+}
+
 bool net::TcpSocket::available()
 {
 	return _messages.available();
@@ -74,7 +95,7 @@ void net::TcpSocket::stop()
 }
 
 net::TcpSocket::TcpSocket(const std::string hostname, int portno) : 
-	_isRunning(false), _sockfd(-1)
+	_isRunning(false), _isWaitingForMessage(false), _sockfd(-1)
 {
 	struct hostent *host = NULL;
     _sockfd = socket(AF_INET, SOCK_STREAM, 0);

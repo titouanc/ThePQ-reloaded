@@ -57,8 +57,6 @@ private:
 	
 	pthread_t _thread;
 	
-	JSON::Value* waitForMsg(std::string);
-	std::queue<JSON::Value*> _messages;
 	bool _isWaitingForMessage;
 
 	void displayNotificationsCount();
