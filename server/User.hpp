@@ -20,6 +20,7 @@ class User{
 private:
 	string _username;
 	string _password;
+	int _funds;
 	vector<Installation> _installations;
 public:
 	#define USER_PATH "data/users/"
@@ -34,7 +35,10 @@ public:
 	void setUsername(const string& username){ _username = username; };
 	string getPassword() { return _password; }
 	void setPassword(const string& password) { _password = password; }
-	
+	int getFunds() const {return _funds;}
+	void setFunds(int funds) {_funds=funds;}
+	int buyStuff(int price);
+	void getPayed(int price) {_funds+=price;}
 	/* Serializable */
 	string getUserDirectoryPath();
 	void save();

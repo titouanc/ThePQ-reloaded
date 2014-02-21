@@ -1,6 +1,6 @@
-#include <iostream>
-#include <string>
 #include "Message.hpp"
+#include <string>
+
 using namespace std;
 
 string Message::splashScreen(){
@@ -26,7 +26,7 @@ string Message::splashScreen(){
 	message+="		 |_| |_| |_|\\__,_|_| |_|\\__,_|\\__, |\\___|_|\n";
 	message+="   		               	              |___/\n";
 	message+="			Welcome to The Pro Quidditch Manager 2014!\n";
-	return message;
+return message;
 }
 
 string Message::goodBye(){
@@ -37,6 +37,3 @@ string Message::goodBye(){
 	message+= "                 =========================            \n";
 	return message;
 }
-
-
-		

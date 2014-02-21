@@ -1,23 +1,34 @@
 #include "User.hpp"
 
-User::User(const string& username, const string& password) : _installations()
+User::User(const string& username, const string& password) : _username(username), 
+																_password(password), 
+																_funds(500000), _installations()
 {
-	setUsername(username);
-	setPassword(password);
+	
 }
+
 
 User::User(const JSON::Dict* json)
 {
-	setUsername(STR(json->get(net::MSG::USERNAME)).value());
-	setPassword(STR(json->get(net::MSG::PASSWORD)).value());
+	setUsername(STR(json->get("username")).value());
+	setPassword(STR(json->get("password")).value());
+	setFunds(INT(json->get("funds")).value());
 }
 
 User::operator JSON::Dict()
 {
 	JSON::Dict ret;
-	ret.set(net::MSG::USERNAME, _username);
-	ret.set(net::MSG::PASSWORD, _password);
+	ret.set("username", _username);
+	ret.set("password", _password);
+	ret.set("funds", _funds);
 	return ret;
+}
+
+int User::buyStuff(int price){
+	if(price>_funds){
+		_funds-=price;
+		return 0;
+	}else return -1;	
 }
 
 string User::getUserDirectoryPath(){
