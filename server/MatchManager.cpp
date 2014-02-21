@@ -15,7 +15,7 @@ MatchManager::MatchManager(
 	_quaffle.setID(101);
 	_snitch.setID(102);
 	_bludgers[0].setID(103);
-	_bludgers[0].setID(104);
+	_bludgers[1].setID(104);
 
 	_squads[0] = squadA;
 	_squads[1] = squadB;
@@ -121,8 +121,8 @@ void MatchManager::processMessage(Message const & msg)
 
 void MatchManager::_mainloop_out()
 {
-	sendSquads();
 	sendBalls();
+	sendSquads();
 	time_t tick;
 	cout << "[" << this << "] \033[32mMatch started\033[0m" << endl;
 	sendSignal(MATCH_START);
