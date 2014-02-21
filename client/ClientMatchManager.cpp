@@ -4,7 +4,7 @@
 using namespace std;
 using namespace net;
 
-ClientMatchManager::ClientMatchManager(net::TcpSocket &connection) : _connection(connection),
+ClientMatchManager::ClientMatchManager(TcpSocket &connection) : _connection(connection),
 																	 _isMatchFinished(false){}
 
 void ClientMatchManager::initBalls(const JSON::Dict& msg){
@@ -53,6 +53,9 @@ void ClientMatchManager::turnMenu(){
 	turnMenu.addToDisplay("\t- update pitch");
 	int option;
 	do {
+		JSON::Value* deltas = _connection.hasMessageTypeInNotifications(MSG::MATCH_DELTA);
+		if (ISDICT(deltas))
+			updatePitchWithDeltas(DICT(deltas));
 		displayPitch();
 		displayAvailablePlayers();
 		option = turnMenu.run();
@@ -129,7 +132,7 @@ void ClientMatchManager::selectDirectionForPlayer(int player){
 		}
 	}
 	JSON::Dict toSend;
-	toSend.set("type", net::MSG::MATCH_STROKE);
+	toSend.set("type", MSG::MATCH_STROKE);
 	JSON::Dict data;
 	data.set("mid", _ownSquad.players[player-1]->getID());
 	data.set("move", currentDisplacement.toJson());
@@ -141,17 +144,19 @@ void ClientMatchManager::selectDirectionForPlayer(int player){
 
 void ClientMatchManager::updatePitchWithDeltas(JSON::Dict& deltas){
 	if (ISLIST(deltas.get("data"))){
-		JSON::List toMove = LIST(deltas.get("data"));
-		for(int i = 0; i<toMove.len(); ++i){
+		JSON::List const & toMove = LIST(deltas.get("data"));
+		for(size_t i = 0; i<toMove.len(); ++i){
 			if (ISDICT(toMove[i])){
-				JSON::Dict movement = DICT(toMove[i]);
-				if(ISLIST(movement.get("from"))){
-					JSON::List fromPos = LIST(movement.get("from"));
-					if (ISLIST(movement.get("to"))){
-						JSON::List toPos = LIST(movement.get("to"));
-						Moveable *moveable = _pitch.getAt(INT(fromPos[0]), INT(fromPos[1]));
-						_pitch.setAt(INT(toPos[0]), INT(toPos[1]), moveable);
+				JSON::Dict const & movement = DICT(toMove[i]);
+				if(ISLIST(movement.get("from")) && ISLIST(movement.get("to"))){
+					Position fromPos(LIST(movement.get("from")));
+					Position toPos(LIST(movement.get("to")));
+					Moveable *atPos = _pitch.getAt(fromPos);
+					if (atPos != NULL){
+						_pitch.setAt(toPos, atPos);
+						_pitch.setAt(fromPos, NULL);
 					}
+					cout << "Moving " << fromPos.toJson() << " -> " << toPos.toJson() << endl;
 				}
 			}
 		}
