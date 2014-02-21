@@ -54,7 +54,7 @@ void ClientMatchManager::turnMenu(){
 	startMatch();
 	displayAvailablePlayers();
 	Menu turnMenu;
-	turnMenu.addOption("  - select player");
+	turnMenu.addToDisplay("  - select player");
 	int option;
 	do {
 		option = turnMenu.run();
