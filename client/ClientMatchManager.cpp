@@ -60,15 +60,19 @@ void ClientMatchManager::turnMenu(){
 			case 1:
 				selectPlayer();
 			case 2:
-				_connection.updateNotifications();
-				JSON::Value* deltas = _connection.hasMessageTypeInNotifications(net::MSG::MATCH_DELTA);
-				if (ISDICT(deltas)){
-					updatePitchWithDeltas(DICT(deltas));
-				}
+				updatePitch();
 			default:
 				break;
 		}
 	} while (!_isMatchFinished);
+}
+
+void ClientMatchManager::updatePitch(){
+	_connection.updateNotifications();
+	JSON::Value* deltas = _connection.hasMessageTypeInNotifications(net::MSG::MATCH_DELTA);
+	if (ISDICT(deltas)){
+		updatePitchWithDeltas(DICT(deltas));
+	}
 }
 
 void ClientMatchManager::selectPlayer(){
@@ -132,11 +136,7 @@ void ClientMatchManager::selectDirectionForPlayer(int player){
 	toSend.set("data", data);
 	_connection.send(toSend);
 
-	_connection.updateNotifications();
-	JSON::Value* deltas = _connection.hasMessageTypeInNotifications(net::MSG::MATCH_DELTA);
-	if (ISDICT(deltas)){
-		updatePitchWithDeltas(DICT(deltas));
-	}
+	updatePitch();
 }
 
 void ClientMatchManager::updatePitchWithDeltas(JSON::Dict& deltas){

@@ -30,6 +30,7 @@ public:
 	std::string colorPlayerLetter(Player const & player);
 	void displayPitch();
 	void updatePitchWithDeltas(JSON::Dict& deltas);
+	void updatePitch();
 private:
 	net::TcpSocket & _connection;
 	bool _isMatchFinished;
