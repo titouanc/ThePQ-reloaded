@@ -67,7 +67,13 @@ void ClientMatchManager::turnMenu(){
 void ClientMatchManager::selectPlayer(){
 	Menu selectPlayer;
 	for (int i=0; i<7; ++i){
-		selectPlayer.addToDisplay("\t- " + _ownSquad.players[i]->getName());
+		selectPlayer.addToDisplay(
+			std::string("\t- \033[1m") + 
+			colorPlayerLetter(*(_ownSquad.players[i])) +
+			" - " +
+			_ownSquad.players[i]->getName() +
+			"\033[0m"
+		);
 	}
 	selectPlayer.addToDisplay("\t- back");
 	int option = 0;
@@ -141,7 +147,7 @@ void ClientMatchManager::selectDirectionForPlayer(int player){
 
 void ClientMatchManager::displayAvailablePlayers(){
 	for (int i=0; i<7; ++i){
-		cout << "\t- " << _ownSquad.players[i]->getID() << " ";
+		cout << "\t- " << playerLetter(*(_ownSquad.players[i])) << " ";
 		cout << _ownSquad.players[i]->getName() << endl;
 	}
 }
@@ -180,6 +186,21 @@ char ClientMatchManager::playerLetter(Player const & player)
 	return 'A' + player.getID() - 1;
 }
 
+std::string ClientMatchManager::colorPlayerLetter(Player const & player)
+{
+	char res[7] = "\033[30mX";
+	if (player.isSeeker())
+		res[3] = '3';
+	else if (player.isChaser())
+		res[3] = '4';
+	else if (player.isBeater())
+		res[3] = '1';
+	else if (player.isKeeper())
+		res[3] = '6';
+	res[5] = playerLetter(player);
+	return std::string(res);
+}
+
 void ClientMatchManager::displayPitch()
 {
 	Moveable *atPos = NULL;
@@ -215,17 +236,10 @@ void ClientMatchManager::displayPitch()
 				} else if (atPos->isPlayer()){
 					/* Colorize players by type */
 					Player const & player = (Player const &) *atPos;
+					
 					if (isOwnPlayer(player))
 						cout << "\033[1m";
-					if (player.isSeeker())
-						cout << "\033[33m";
-					else if (player.isChaser())
-						cout << "\033[34m";
-					else if (player.isBeater())
-						cout << "\033[31m";
-					else if (player.isKeeper())
-						cout << "\033[36m";
-					cout << playerLetter(player);
+					cout << colorPlayerLetter(player);
 				}
 			}
 			cout << "\033[0m";

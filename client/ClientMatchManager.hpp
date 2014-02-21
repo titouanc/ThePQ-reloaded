@@ -27,6 +27,7 @@ public:
 	Position parseDirection(string userInput);
 	bool isOwnPlayer(Player const & player);
 	char playerLetter(Player const & player);
+	std::string colorPlayerLetter(Player const & player);
 	void displayPitch();
 private:
 	net::TcpSocket & _connection;
