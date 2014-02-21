@@ -95,6 +95,12 @@ class MatchManager : public SubConnectionManager {
 			Position & fromPos,  /* last pos occupied by moving */
 			JSON::List & deltas  /* Where to save match deltas */
 		);
+		void throwBall(
+			Moveable & ball,
+			Position & fromPos,
+			Position & direction,
+			JSON::List & turnDeltas
+		);
 	public:
 		MatchManager(
 			BaseConnectionManager & connections, 

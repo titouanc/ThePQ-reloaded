@@ -358,6 +358,32 @@ void MatchManager::playStrokes(void)
 	cout << _pitch << endl;
 }
 
+/* TODO: turnDeltas as attribute (maybe t) */
+void MatchManager::throwBall(
+	Moveable & ball,
+	Position & fromPos,
+	Position & direction,
+	JSON::List & turnDeltas
+)
+{
+	iter stoppedStroke = getStrokeForMoveable(&ball);
+	if (stoppedStroke != _strokes.end()){
+		/* If the ball was moving, remove it's stroke */
+		(*stoppedStroke).active = false;
+		JSON::Dict delta;
+		delta.set("mid", ball.getID());
+		delta.set("from", ball.getPosition().toJson());
+		delta.set("to", fromPos.toJson());
+		turnDeltas.append(delta);
+		ball.setPosition(fromPos);
+		_pitch.setAt(fromPos, &ball);
+	}
+
+	Displacement newMove;
+	newMove.addMove(direction);
+	_strokes.push_back(Stroke(ball, newMove));
+}
+
 void MatchManager::onCollision(
 	Stroke & stroke,     /* Stroke that leads to conflict */
 	Position & conflict, /* Clonflicting pos */
@@ -370,10 +396,24 @@ void MatchManager::onCollision(
 	float first_score  = first.collisionScore();
 	float second_score = moving.collisionScore();
 
-	if (first_score > second_score){
+	if (first.isBall() && moving.isPlayer()){
+		Player & player = (Player &) moving;
+		Ball & ball = (Ball &) first;
+
+		/* Chasers can throw quaffle; Beaters can bat bludgers */
+		if ((ball.isQuaffle() && player.isChaser()) || 
+			(ball.isBludger() && player.isBeater())){
+			Position newDirection = conflict - fromPos;
+			throwBall(ball, conflict, newDirection, deltas);
+			_pitch.setAt(fromPos, NULL);
+			_pitch.setAt(conflict, &moving);
+		}
+	} else if (first_score > second_score){
+
 		/* The first moveable wins, second stops on fromPos */
 		stopStroke(deltas, stroke, fromPos);
 	} else {
+
 		/* Second wins: stop first on fromPos */
 		_pitch.setAt(fromPos, &first);
 		_pitch.setAt(conflict, &moving);
