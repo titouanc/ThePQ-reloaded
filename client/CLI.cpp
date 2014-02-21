@@ -345,6 +345,7 @@ void CLI::placeBid(){
 		catch(lastBidderException e){
 			cout << "Error : you are currently winning this sale. Cannot bid on your own bid."<<endl;
 		}
+	}
 	else{
 		cout << "Error : this player is not in the list." << endl;
 	}
