@@ -12,6 +12,7 @@
 
 class Player : public Member, public Moveable 
 {
+	friend std::ostream& operator<< (std::ostream&, const Player&);//modif
 public:
 	//~ Player ():  Member(), _maxLife(100), _maxMana(100), _lifeBar(100), 
                 //~ _manaBar(100), _broomstick(new Broomstick(5,50)), 
@@ -19,28 +20,13 @@ public:
                 //~ _magic(5), _spirit(5), _velocity(5), _precision(5), _chance(5){}
 
     Player(JSON::Dict const & json = JSON::Dict());
-    ~Player(){ 
+    Player(const Player&);//modif
+    ~Player(){
     	if (_broomstick != NULL) delete _broomstick; 
     	if (_jersey != NULL) delete _jersey; 
     }
     operator JSON::Dict();
     
-    std::ostream& operator<<(std::ostream& out)
-    {
-		out << "---------------------------------------------------" << std::endl;
-		out << "Player: 		" << _name << std::endl;
-		out << "Life: 			" << _lifeBar << "/" << _maxLife << std::endl;
-		out << "Mana:			" << _manaBar << "/" << _maxMana << std::endl;
-		out << "Strength:		" << _strength << std::endl;
-		out << "Constitution:	" << _constitution << std::endl;
-		out << "Magic:			" << _magic << std::endl;
-		out << "Spirit:			" << _spirit << std::endl;
-		out << "Velocity:		" << _velocity << std::endl;
-		out << "Precision:		" << _precision << std::endl;
-		out << "Chance:			" << _chance << std::endl;
-		out << "---------------------------------------------------" << std::endl;
-		return out;
-	}
 
 	int getRemainingLife () const	{ return _lifeBar; }
 	int getRemainingMana ()const	{ return _manaBar; }
@@ -88,6 +74,7 @@ public:
 		_velocity = player._velocity;
 		_precision = player._precision;
 		_chance = player._chance;
+		std::cout<<"copying"<<std::endl;
 		return *this;
 	}
 protected:
@@ -106,11 +93,14 @@ protected:
 	int _chance;
 };
 
+
+
 /*================================BEATER==============================*/
 class Beater : public Player 
 {
 public:
     Beater() : Player(), _bat(new Bat(5, 5)){}
+    Beater(const Beater & beater) : Player(beater), _bat(new Bat(*(beater._bat))){}//modif
     Beater(JSON::Dict const & json) : Player(json){
     	if (ISDICT(json.get("bat")))
     		_bat = new Bat(DICT(json.get("bat")));
@@ -139,8 +129,6 @@ public:
     int pass ();
     int shoot ();
 };
-
-#include "Player.hpp"
 
 /*================================CHASER================================*/
 class Keeper : public Player 

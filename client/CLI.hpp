@@ -14,6 +14,7 @@
 #include <network/TcpSocket.hpp>
 #include <stack>
 
+
 struct NetConfig : public Config {
     std::string host;
     unsigned short port;
@@ -47,9 +48,10 @@ private:
 	std::string _prompt;
 	
 	std::vector<Installation> _installations;
-	std::vector<JSON::Dict> _playersOnSale;
+	std::vector<Sale> _playersOnSale;//modif
 	std::vector<Player> _players;
-	std::string _userName;
+	
+	std::string _username;
 	int _team_id;
 	
 	pthread_t _thread;
@@ -67,10 +69,10 @@ private:
 	bool downgradeInstallation(size_t i);
 	std::vector<std::string> getConnectedUsersList();
 
-	std::vector<JSON::Dict> updatePlayersOnSale();
-	void bidOnPlayer(int player_id, int team_id, int value);
-	void addPlayerOnMarket(int player_id, int team_id, int value);
-	std::vector<Player> getPlayers(int team_id);
+	std::vector<Sale> updatePlayersOnSale();
+	void bidOnPlayer(int player_id, std::string username, int value);//modif
+	void addPlayerOnMarket(int player_id, std::string username, int value);//modif
+	std::vector<Player> getPlayers(std::string username);//modif
 	// END NEW
 	
 	// User menu

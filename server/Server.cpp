@@ -113,14 +113,17 @@ void Server::treatMessage(const Message &message)
 					logUserIn(DICT(received.get("data")), message.peer_id);
 				else if (messageType == MSG::REGISTER) 
 					registerUser(DICT(received.get("data")), message.peer_id);
-				else if (messageType == MSG::DELETE_PLAYER_OF_MARKET_QUERY){
-					deletePlayerOfMarket(DICT(received.get("data")), message.peer_id);
-				}
+				// else if (messageType == MSG::DELETE_PLAYER_OF_MARKET_QUERY){//modif
+				// 	deletePlayerOfMarket(DICT(received.get("data")), message.peer_id);
+				// }
 				else if (messageType == MSG::ADD_PLAYER_ON_MARKET_QUERY){
 					addPlayerOnMarket(DICT(received.get("data")), message.peer_id);
 				}
 				else if (messageType == MSG::BID_ON_PLAYER_QUERY){
 					placeBidOnPlayer(DICT(received.get("data")), message.peer_id);
+				}
+				else if(messageType == MSG::PLAYERS_LIST) {//modif
+					sendPlayersList(DICT(received.get("data")), message.peer_id);
 				}
 			} else if (ISSTR(received.get("data"))){
 				string const & data = STR(received.get("data"));
@@ -133,7 +136,7 @@ void Server::treatMessage(const Message &message)
 						sendConnectedUsersList(message.peer_id);
 				} else if(messageType == MSG::PLAYERS_ON_MARKET_LIST) {
 						sendPlayersOnMarketList(message.peer_id);
-				}
+				} 
 			} else if (ISINT(received.get("data"))) {
 				int data = INT(received.get("data"));
 				if (messageType == MSG::INSTALLATION_UPGRADE) {
@@ -287,10 +290,10 @@ void Server::sendConnectedUsersList(int peer_id)
 	_outbox.push(Message(peer_id, usersList.clone()));
 }
 
-void Server::deletePlayerOfMarket(const JSON::Dict &sale, int peer_id){
-	Message status(peer_id, market.deletePlayer(sale).clone());
-	_outbox.push(status);
-}
+// void Server::deletePlayerOfMarket(const JSON::Dict &sale, int peer_id){//modif
+// 	Message status(peer_id, market.deletePlayer(sale).clone());
+// 	_outbox.push(status);
+// }
 
 void Server::addPlayerOnMarket(const JSON::Dict &sale, int peer_id){
 	Message status(peer_id, market.addPlayer(sale).clone());
@@ -304,4 +307,16 @@ void Server::sendPlayersOnMarketList(int peer_id){
 void Server::placeBidOnPlayer(const JSON::Dict &bid, int peer_id){
 	Message status(peer_id, market.bid(bid).clone());
 	_outbox.push(status);
+}
+
+void Server::sendPlayersList(const JSON::Dict &data, int peer_id){//modif
+	std::string username = STR(data.get(net::MSG::USERNAME));
+	std::string path = "data/users/" + username + "/"+"players.json";
+	JSON::Dict playersList;
+	JSON::List players = LIST(JSON::load(path.c_str()));
+	playersList.set("type",net::MSG::PLAYERS_LIST);
+	playersList.set("data", players);
+	Message status(peer_id, playersList.clone());
+	_outbox.push(status);
+
 }

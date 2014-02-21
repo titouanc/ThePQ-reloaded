@@ -4,6 +4,7 @@
 //#include "Team.hpp" TODO check if Team is really necessary.
 #include <string>
 #include <json/json.hpp>
+#include <Constants.hpp>
 
 using namespace std;
 
@@ -12,6 +13,8 @@ class Member
 public:
 	// TODO set random name in constructor-<<<<load first/last name from playerNames.txt
     Member() : _memberID(-1), _name("Lasty Cotter"), _salary(5000), _price(25000){}
+    Member(int memberID,string name,int salary,int price) : _memberID(memberID), _name(name), _salary(salary), 
+    _price(price){}//modif
     Member(JSON::Dict const& json): Member() {
 		if (ISINT(json.get("memberID"))) _memberID = INT(json.get("memberID"));
     	if (ISSTR(json.get("name"))) _name = STR(json.get("name")).value();
@@ -36,7 +39,7 @@ public:
 	void setMemberID() { _memberID = Member::getNextMemberID(); }
 	
 	
-protected:
+protected://modif
 	int _memberID;
     string _name;
 	int _salary;

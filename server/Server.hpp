@@ -54,11 +54,13 @@ public:
     //market
     void sendPlayersOnMarketList(int peer_id);
     void addPlayerOnMarket(const JSON::Dict &bid, int peer_id);
-    void deletePlayerOfMarket(const JSON::Dict &bid, int peer_id);
+    //void deletePlayerOfMarket(const JSON::Dict &bid, int peer_id);//modif
     void placeBidOnPlayer(const JSON::Dict &bid, int peer_id);
     string getRandomName();
     void collectFinishedMatches(void);
     void startMatch(int client_idA, int client_idB);
+    //modif
+    void sendPlayersList(const JSON::Dict &data,int peer_id);
 private:
 	SharedQueue<net::Message> _inbox, _outbox;
 	map<int, User*> _users;

@@ -30,8 +30,8 @@ namespace net
 		static const std::string USER_REGISTERED = "U_R";
 
 		static const std::string PLAYER = "P_DICT"; 		//JSON::Dict of players
-		static const std::string PLAYER_ID = "P_ID";						
-		static const std::string TEAM_ID = "T_ID";							
+		static const std::string PLAYER_ID = "memberID";						
+		static const std::string TEAM_ID = "T_ID";			//modif				
 		static const std::string BID_VALUE = "B_V";
 		static const std::string NEXT_BID = "N_B";
 		static const std::string BID_TIMER = "B_T";

@@ -66,6 +66,7 @@ void CLI::login(){
 	try {
 		cout << "Please wait..." << endl;
 		loginUser(username, password);
+		_username = username;//modif
 		cout << "You have successfully logged in! Welcome! :)" << endl;
 		mainMenu();
 	}
@@ -188,6 +189,7 @@ void CLI::stadiumMenu()
 void CLI::playersMenu()
 {
 	Menu _menu;
+	_menu.addToDisplay("	- Show list of players");
 	_menu.addToDisplay("    - (q)uit to management menu\n");
 	int option;
 	do
@@ -195,11 +197,23 @@ void CLI::playersMenu()
 		option = _menu.run();
 		switch(option)
 		{
+			case 1:
+				printPlayers();
+				break;
 			default:
 				break;
 		}
 	}
 	while (option != 1);
+}
+//modif
+void CLI::printPlayers(){
+	_players = getPlayers(_username);//modif
+	cout << "================ YOUR PLAYERS ================" << endl;
+	for(size_t i =0; i<_players.size();++i){
+		cout << _players[i] << endl; //modif
+	}
+	cout << "==============================================" << endl;
 }
 
 /* Market menu */
@@ -215,10 +229,10 @@ void CLI::marketMenu(){
 		switch(option)
 		{
 			case 1:
-				printPlayersOnSale();
+				salePlayer();
 				break;
 			case 2:
-				salePlayer();
+				printPlayersOnSale();
 				break;
 			default:
 				break;
@@ -246,12 +260,12 @@ void CLI::salePlayer(){
 		cout << _prompt;
 		cin >> bidValue;
 		while(bidValue<range[0] or bidValue>range[1]){
-			cout << bidValue << "is not between " << range[0] << " and " << range[1] << " !\nTry again :" << endl;
+			cout << bidValue << " is not between " << range[0] << " and " << range[1] << " !\nTry again :" << endl;//modif
 			cout << _prompt;
 			cin >> bidValue;
 		}
 		try{
-		addPlayerOnMarket(player_id, _team_id, bidValue);
+		addPlayerOnMarket(player_id, _username, bidValue);
 		cout << "Your player was successfully added on market." << endl;
 		}
 		catch(playerAlreadyOnMarketException e){
@@ -275,15 +289,7 @@ void CLI::printPlayersOnSale(){
 	_playersOnSale = updatePlayersOnSale();
 	cout << "================ PLAYERS ON SALE ================" << endl;
 	for(size_t i=0;i<_playersOnSale.size();++i){
-		JSON::Dict & sale = _playersOnSale[i];
-		Player player(DICT(sale.get(net::MSG::PLAYER)));
-		cout << i << " - " << STR(sale.get(net::MSG::PLAYER_ID)) << endl;
-		cout << "Time left (in seconds) : " << 	STR(sale.get(net::MSG::BID_TIMER)) 	<< endl;
-		cout << "Bid value 				: " <<	STR(sale.get(net::MSG::BID_VALUE)) 	<< endl;
-		cout << "Next bid value 		: "	<< 	STR(sale.get(net::MSG::NEXT_BID)) 	<< endl;
-		cout << "Player ID 				: "	<<	STR(sale.get(net::MSG::PLAYER_ID))	<< endl;
-		//cout << "Player infos			: "	<< 	player 								<< endl; TODO << FOR PLAYER
-		cout << "--------------------------------" << endl;
+		std::cout<<_playersOnSale[i]<<std::endl;
 	}
 	cout << "=================================================" << endl;
 	Menu _menu;
@@ -312,12 +318,13 @@ void CLI::placeBid(){
 	cout << _prompt;
 	cin >> player_id;
 	for(size_t i = 0; i<_playersOnSale.size();++i){		//Getting the next bid value (which is in the JSON::Dict sent by server)
-		if(player_id == INT(_playersOnSale[i].get(net::MSG::PLAYER_ID))){
-			value = INT(_playersOnSale[i].get(net::MSG::NEXT_BID));
+		if(player_id == _playersOnSale[i].getID()){
+			value = _playersOnSale[i].getID();
 		}
 	}
 	try{
-		bidOnPlayer(player_id, _team_id, value);
+		bidOnPlayer(player_id, _username, value);
+		
 		cout << "Bid successfully placed ! Hurra !" << endl;
 	}
 	catch(bidValueNotUpdatedException e){
@@ -335,16 +342,6 @@ void CLI::placeBid(){
 	catch(lastBidderException e){
 		cout << "Error : you are currently winning this sale. Cannot bid on your own bid."<<endl;
 	}
-}
-
-void CLI::printPlayers(){
-	_players = getPlayers(_team_id);
-	cout << "================ YOUR PLAYERS ================" << endl;
-	for(size_t i =0; i<_players.size();++i){
-//		cout << _players[i] << endl; TODO << FOR PLAYER
-		cout << "--------------------------------------" << endl;
-	}
-	cout << "==============================================" << endl;
 }
 
 /* Friendly match menu */
@@ -601,96 +598,89 @@ vector<std::string> CLI::getConnectedUsersList(){// TODO
 	return res;
 }
 
-std::vector<JSON::Dict> CLI::updatePlayersOnSale(){// TODO
+///////// END NEW
+
+std::vector<Sale> CLI::updatePlayersOnSale(){
 	JSON::Dict query;
 	query.set("type", net::MSG::PLAYERS_ON_MARKET_LIST);
 	query.set("data", "");
 	_connection.send(query);
+	JSON::Value *serverResponse = waitForMsg(net::MSG::PLAYERS_ON_MARKET_LIST);
+	JSON::Dict const & received = DICT(serverResponse);
+	std::vector<Sale> res;
 	
-	JSON::Value *serverResponse = _connection.pop();
-	std::vector<JSON::Dict> res;
-	if (ISDICT(serverResponse)) {
-		JSON::Dict received = DICT(serverResponse);
-		if (ISSTR(received.get("type")) && ISLIST(received.get("data"))){
-			JSON::List & sales = LIST(received.get("data"));
-			for(size_t i = 0; i<sales.len();++i)
-				res.push_back(DICT(sales[i]));
-		}
+	if (ISLIST(received.get("data"))){
+		JSON::List & sales = LIST(received.get("data"));
+		for(size_t i = 0; i<sales.len();++i)
+			res.push_back(Sale(DICT(sales[i]), Player(DICT(DICT(sales[i]).get(net::MSG::PLAYER)))));
 	}
 	return res; 
 }
 
-void CLI::bidOnPlayer(int player_id,int team_id, int value){// TODO
+void CLI::bidOnPlayer(int player_id,std::string username, int value){//modif
 	JSON::Dict query, data;
-	data.set(net::MSG::TEAM_ID,team_id);
+	data.set(net::MSG::USERNAME,username);
 	data.set(net::MSG::PLAYER_ID,player_id);
 	data.set(net::MSG::BID_VALUE,value);
 	query.set("type", net::MSG::BID_ON_PLAYER_QUERY);
 	query.set("data", data);
 	_connection.send(query);
+	JSON::Value *serverResponse = waitForMsg(net::MSG::BID_ON_PLAYER_QUERY);
+	JSON::Dict const & received = DICT(serverResponse);
 	
-	JSON::Value *serverResponse = _connection.pop();
-	if(ISDICT(serverResponse)){
-		JSON::Dict received = DICT(serverResponse);
-		if(ISSTR(received.get("type")) && ISDICT(received.get("data"))){
-			std::string res = STR(DICT(received.get("data")).get(net::MSG::SERVER_RESPONSE));
-			if(res == net::MSG::BID_VALUE_NOT_UPDATED)
-				throw bidValueNotUpdatedException();
-			else if(res == net::MSG::BID_TURN_ERROR)
-				throw turnException();
-			else if(res == net::MSG::BID_ENDED)
-				throw bidEndedException();
-			else if(res == net::MSG::CANNOT_BID_ON_YOUR_PLAYER)
-				throw bidOnYourPlayerException();
-			else if(res == net::MSG::LAST_BIDDER)
-				throw lastBidderException();
-		}
+	if(ISDICT(received.get("data"))){
+		std::string res = STR(DICT(received.get("data")).get(net::MSG::SERVER_RESPONSE));
+		if(res == net::MSG::BID_VALUE_NOT_UPDATED)
+			throw bidValueNotUpdatedException();
+		else if(res == net::MSG::BID_TURN_ERROR)
+			throw turnException();
+		else if(res == net::MSG::BID_ENDED)
+			throw bidEndedException();
+		else if(res == net::MSG::CANNOT_BID_ON_YOUR_PLAYER)
+			throw bidOnYourPlayerException();
+		else if(res == net::MSG::LAST_BIDDER)
+			throw lastBidderException();
 	}
 }
 
-void CLI::addPlayerOnMarket(int player_id,int team_id, int value){ // TODO
+void CLI::addPlayerOnMarket(int player_id,std::string username, int value){
 	JSON::Dict query, data;
-	data.set(net::MSG::TEAM_ID,team_id);
+	data.set(net::MSG::USERNAME,username);
 	data.set(net::MSG::PLAYER_ID,player_id);
 	data.set(net::MSG::BID_VALUE,value);
 	query.set("type", net::MSG::ADD_PLAYER_ON_MARKET_QUERY);
 	query.set("data", data);
 	_connection.send(query);
-	
-	JSON::Value *serverResponse = _connection.pop();
-	if(ISDICT(serverResponse)){
-		JSON::Dict received = DICT(serverResponse);
-		if(ISSTR(received.get("type")) && ISDICT(received.get("data"))){
-			std::string res = STR(DICT(received.get("data")).get(net::MSG::SERVER_RESPONSE));
+	JSON::Value *serverResponse = waitForMsg(net::MSG::ADD_PLAYER_ON_MARKET_QUERY);
+	JSON::Dict const & received = DICT(serverResponse);
+		if(ISSTR(received.get("data"))){
+			std::string res = STR((received.get("data"))).value();
 			if(res == net::MSG::PLAYER_ALREADY_ON_MARKET)
 				throw playerAlreadyOnMarketException();
 		}
-	}
 }
 
-std::vector<Player> CLI::getPlayers(int team_id){ // TODO
+std::vector<Player> CLI::getPlayers(std::string username){//modif
 	JSON::Dict query, data;
-	JSON::List toFill;
-	data.set(net::MSG::TEAM_ID, team_id);
+	data.set(net::MSG::USERNAME, username);//modif
 	query.set("type", net::MSG::PLAYERS_LIST);
 	query.set("data",data);
 	_connection.send(query);
-	
-	JSON::Value *serverResponse = _connection.pop();
-	if(ISDICT(serverResponse)){
-		JSON::Dict received = DICT(serverResponse);
-		if(ISSTR(received.get("type")) && ISLIST(received.get("data"))){
-			toFill = LIST(received.get("data"));
-		}
+	JSON::Value *serverResponse = waitForMsg(net::MSG::PLAYERS_LIST);
+	JSON::Dict const & received = DICT(serverResponse);
+	JSON::List toFill;
+	if(ISLIST(received.get("data"))){
+		toFill = LIST(received.get("data"));
 	}
-	std::vector<Player> myplayers;
+	vector<Player> myplayers;
 	for(size_t i=0; i<toFill.len();++i){
-		myplayers.push_back(DICT(toFill[i]));
+		Player player(DICT(toFill[i]));
+		myplayers.push_back(player);
 	}
 	delete serverResponse;
 	return myplayers;
 }
-///////// END NEW
+
 
 JSON::Value* CLI::waitForMsg(std::string typeToWait)
 {
