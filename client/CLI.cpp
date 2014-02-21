@@ -719,3 +719,14 @@ std::vector<Player> CLI::getPlayers(int team_id){
 	return myplayers;
 }
 ///////// END NEW
+
+//~ JSON::Value* waitForMsg(std::string)
+//~ {
+	//~ JSON::Value* msg;
+	//~ while (_connection.available())
+	//~ {
+		//~ msg = _connection.pop();
+		//~ JSON::Dict const & dict = DICT(msg);
+		//~ if (dict.)
+	//~ }
+//~ }

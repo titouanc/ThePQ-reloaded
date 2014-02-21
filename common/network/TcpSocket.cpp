@@ -24,6 +24,11 @@ JSON::Value * net::TcpSocket::pop()
 	return _messages.pop();
 }
 
+bool net::TcpSocket::available()
+{
+	return _messages.available();
+}
+
 void net::TcpSocket::loop()
 {
 	while (_isRunning == true)
@@ -49,7 +54,11 @@ void net::TcpSocket::loop()
 		}
 		JSON::Value* json = JSON::parse(res.str().c_str());
 		if (json != NULL)
-			_messages.push(json);
+		{
+			JSON::Dict const & dict = DICT(json);
+			if (dict.hasKey("type") && dict.hasKey("data") && ISSTR(dict.get("type")))
+				_messages.push(json);
+		}
 	}
 }
 

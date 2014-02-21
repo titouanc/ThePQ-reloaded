@@ -52,6 +52,9 @@ private:
 	int _team_id;
 	
 	pthread_t _thread;
+	
+	//~ JSON::Value* waitForMsg(std::string);
+	//~ std::stack<JSON::Value*> _messages;
 
 	// NEW
 	void loginUser(std::string username, std::string passwd);

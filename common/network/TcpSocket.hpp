@@ -35,6 +35,8 @@ namespace net
 	
 		void send(JSON::Value const& json);
 		JSON::Value * pop();
+			
+		bool available();
 		
 		void start();
 		void stop();
