@@ -53,9 +53,13 @@ protected://modif
 		static const std::string path = "data/global/memberID.json";
 		if (_staticMemberID == -1)
 		{
-			JSON::Value* tmp = JSON::load(path);
-			_staticMemberID = INT(tmp);
-			delete tmp;
+			try {
+				JSON::Value* tmp = JSON::load(path);
+				_staticMemberID = INT(tmp);
+				delete tmp;
+			} catch (JSON::IOError){
+				_staticMemberID = 1;
+			}
 		}
 		++_staticMemberID;
 		cout << "MEMBER ID: " << _staticMemberID << endl;
