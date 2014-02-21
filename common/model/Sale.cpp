@@ -141,7 +141,6 @@ void Sale::save(std::string path){
 }
 
 std::ostream& operator<< (std::ostream& out, const Sale& sale){
-	out << "**************************************************" << std::endl;
 	out << "PLAYER INFOS : " << std::endl;
 	out << sale._player << std::endl;
 	out << "SALE INFOS :\n---------------------------------------------------" 		<< std::endl;
@@ -152,5 +151,6 @@ std::ostream& operator<< (std::ostream& out, const Sale& sale){
 	if(bidder.empty()){bidder = "No one has bid on this player";}
 	out << "Current bidder :            "	<<	bidder 					<< std::endl;
 	out << "Sale ID :                   "	<<	sale._saleID			<< std::endl;
+	out << "**************************************************" << std::endl;
     return out;
 }
