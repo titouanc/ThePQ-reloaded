@@ -17,8 +17,6 @@ class ClientMatchManager {
 public:
 	ClientMatchManager(net::TcpSocket &connection);
 
-	void setConnection(net::TcpSocket &connection){ _connection = connection; }
-
 	void initBalls(const JSON::Dict& msg);
 	void initSquads(const JSON::Dict& msg, string username);
 	void startMatch();
