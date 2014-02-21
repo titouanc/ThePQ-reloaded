@@ -59,8 +59,10 @@ private:
 	
 	JSON::Value* waitForMsg(std::string);
 	std::queue<JSON::Value*> _messages;
+	bool _isWaitingForMessage;
 
 	void displayNotificationsCount();
+	void updateNotifications();
 
 	// NEW
 	void loginUser(std::string username, std::string passwd);

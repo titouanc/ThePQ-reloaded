@@ -13,7 +13,8 @@ std::string humanExcName(const char *name)
 }
 
 CLI::CLI(NetConfig const &config) : 	_connection(config.host, config.port),
-										_prompt(">")
+										_prompt(">"),
+										_isWaitingForMessage(false)
 {
 	pthread_create(&_thread, NULL, net::runThread, this);
 }
@@ -706,6 +707,7 @@ std::vector<Player> CLI::getPlayers(std::string username){//modif
 
 JSON::Value* CLI::waitForMsg(std::string typeToWait)
 {
+	_isWaitingForMessage = true;
 	JSON::Value* msg = NULL, *res = NULL;
 	while (msg == NULL || _connection.available())
 	{
@@ -720,9 +722,16 @@ JSON::Value* CLI::waitForMsg(std::string typeToWait)
 			_messages.push(msg);
 		}
 	}
+	_isWaitingForMessage = false;
 	return res;
 }
 
 void CLI::displayNotificationsCount(){
 	cout << "You have " << _messages.size() << "notifications." << endl;
+}
+
+void CLI::updateNotifications(){
+	while (!_isWaitingForMessage && _connection.available()){
+		_messages.push(_connection.pop());
+	}
 }
