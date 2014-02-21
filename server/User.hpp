@@ -26,7 +26,6 @@ public:
 	#define USER_PATH "data/users/"
 	
 	User(const string& username, const string& password);
-	User(const string& username, const string& password,const int& funds);
 	User(const JSON::Dict*);
 	
 	operator JSON::Dict();
