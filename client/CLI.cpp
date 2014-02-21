@@ -473,24 +473,18 @@ void CLI::loginUser(string username, string passwd)
 	toSend.set("data", credentials);
 	_connection.send(toSend);
 
-	JSON::Value *serverMessage = _connection.pop();	// receiving server response
-
-	if (ISDICT(serverMessage)){
-		JSON::Dict const &received = DICT(serverMessage);
-		if (received.hasKey("type") && ISSTR(received.get("type")) 
-			&& STR(received.get("type")).value() == net::MSG::STATUS){
-			if (received.hasKey("data") && ISSTR(received.get("data"))) {
-				if (STR(received.get("data")).value() == net::MSG::PASSWORD_ERROR)
-				{
-					delete serverMessage;
-					throw WrongPasswordException();
-				}
-				else if (STR(received.get("data")).value() == net::MSG::USER_NOT_FOUND)
-				{
-					delete serverMessage;
-					throw UserNotFoundException();
-				}
-			}
+	JSON::Value *serverMessage = waitForMsg(net::MSG::STATUS);
+	JSON::Dict const & received = DICT(serverMessage); 	// receiving server response
+	if (ISSTR(received.get("data"))) {
+		if (STR(received.get("data")).value() == net::MSG::PASSWORD_ERROR)
+		{
+			delete serverMessage;
+			throw WrongPasswordException();
+		}
+		else if (STR(received.get("data")).value() == net::MSG::USER_NOT_FOUND)
+		{
+			delete serverMessage;
+			throw UserNotFoundException();
 		}
 	}
 	delete serverMessage;
@@ -503,17 +497,11 @@ void CLI::doesUserExist(string username){
 	toSend.set("data", username);
 	_connection.send(toSend);
 
-	JSON::Value *serverMessage = _connection.pop(); // receiving server response
-
-	if(ISDICT(serverMessage)){
-		JSON::Dict const &received = DICT(serverMessage);
-		if (received.hasKey("type") && ISSTR(received.get("type")) 
-			&& STR(received.get("type")).value() == net::MSG::STATUS){
-			if (received.hasKey("data") && ISSTR(received.get("data")) 
-				&& STR(received.get("data")).value() == net::MSG::USER_EXISTS){
-				throw UserAlreadyExistsException();
-			}
-		}
+	JSON::Value *serverMessage = waitForMsg(net::MSG::STATUS); // receiving server response
+	JSON::Dict const & received = DICT(serverMessage);
+	if (ISSTR(received.get("data"))
+		&& STR(received.get("data")).value() == net::MSG::USER_EXISTS){
+		throw UserAlreadyExistsException();
 	}
 }
 
@@ -526,19 +514,13 @@ void CLI::registerUser(string username, string passwd)
 	toSend.set("data", credentials);
 	_connection.send(toSend);
 
-	JSON::Value *serverMessage = _connection.pop();	// receiving server response
+	JSON::Value *serverMessage = waitForMsg(net::MSG::STATUS);	// receiving server response
 
-	if (ISDICT(serverMessage)){
-		JSON::Dict const &received = DICT(serverMessage);
-		if (received.hasKey("type") && ISSTR(received.get("type")) 
-			&& STR(received.get("type")).value() == net::MSG::STATUS){
-			if (received.hasKey("data") && ISSTR(received.get("data"))) {
-				if (STR(received.get("data")).value() == net::MSG::USER_EXISTS)
-					throw UserAlreadyExistsException();
-			}
-		}
+	if (ISSTR(received.get("data"))) {
+		if (STR(received.get("data")).value() == net::MSG::USER_EXISTS)
+			throw UserAlreadyExistsException();
 	}
-	// User is registered
+	delete serverMessage;
 }
 
 vector<Installation> CLI::getInstallationsList(){
@@ -548,19 +530,17 @@ vector<Installation> CLI::getInstallationsList(){
 	query.set("data", "");
 	_connection.send(query);
 
-	JSON::Value *serverResponse = _connection.pop();
-	if (ISDICT(serverResponse))
-	{
-		JSON::Dict response = DICT(serverResponse);
-		if (ISLIST(response.get("data")))
-		{
-			toFill = LIST(response.get("data"));
-		}
-	}
+	JSON::Value *serverResponse = waitForMsg(net::MSG::INSTALLATIONS_LIST);
+	JSON::Dict const & response = DICT(serverResponse);
+	
 	vector<Installation> vec;
-	for (size_t i = 0; i < toFill.len(); ++i)
+	if (ISLIST(response.get("data")))
 	{
-		vec.push_back(DICT(toFill[i]));
+		toFill = LIST(response.get("data"));
+		for (size_t i = 0; i < toFill.len(); ++i)
+		{
+			vec.push_back(DICT(toFill[i]));
+		}
 	}
 	delete serverResponse;
 	return vec;
@@ -584,6 +564,7 @@ bool CLI::upgradeInstallation(size_t i)
 			ret = received.get("data");
 		}
 	}
+	delete serverResponse;
 	return ret;
 }
 
@@ -595,17 +576,14 @@ bool CLI::downgradeInstallation(size_t i)
 	query.set("data", i);
 	_connection.send(query);
 	
-	JSON::Value *serverResponse = _connection.pop();
-	if (ISDICT(serverResponse))
+	JSON::Value *serverResponse = waitForMsg(net::MSG::INSTALLATION_DOWNGRADE);
+	JSON::Dict const & received = DICT(serverResponse);
+	
+	if (ISBOOL(received.get("data")))
 	{
-		JSON::Dict const &received = DICT(serverResponse);
-		
-		if (ISSTR(received.get("type")) && ISBOOL(received.get("data"))
-			&& STR(received.get("type")).value() == net::MSG::INSTALLATION_DOWNGRADE)
-		{
-			ret = received.get("data");
-		}
+		ret = received.get("data");
 	}
+	
 	delete serverResponse;
 	return ret;
 }
@@ -722,8 +700,8 @@ std::vector<Player> CLI::getPlayers(int team_id){
 
 JSON::Value* CLI::waitForMsg(std::string typeToWait)
 {
-	JSON::Value* msg, *res = NULL;
-	while (_connection.available())
+	JSON::Value* msg = NULL, *res = NULL;
+	while (msg == NULL || _connection.available())
 	{
 		msg = _connection.pop();
 		JSON::Dict const & dict = DICT(msg);
