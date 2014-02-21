@@ -427,13 +427,8 @@ void CLI::friendlyMatchMenu()
 void CLI::chooseUser()
 {
 	cout << "Enter a username to send an invitation to another user : ";
-	do
-	{
-		cin >> userInput;
-		if (userInput == _username)
-			cout << "You can not play a game with yourself!" << endl;
-	}
-	while (userInput == _username);
+	string userInput;
+	cin >> userInput;
 	JSON::Dict toSend;
 	toSend.set("type", net::MSG::FRIENDLY_GAME_USERNAME);
 	toSend.set("data", userInput);
@@ -448,6 +443,9 @@ void CLI::chooseUser()
 			cout << " accepted your invitation!" << endl;
 			// launch clientmatchmanager
 
+		}
+		else if (answer == net::MSG::USER_NOT_FOUND) {
+			cout << "User not found" << endl;
 		}
 		else {
 			cout << STR(DICT(received.get("data")).get("username")).value();
