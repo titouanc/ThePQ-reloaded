@@ -35,32 +35,27 @@ void CLI::run()
 void CLI::loginMenu()
 {
 	/* user menu */
-	Menu loginMenu;
-	string message;
-	message+= "You can : \n";
-	message+= "   - (l)ogin\n";
-	message+= "   - (r)egister\n";
-	message+= "   - (q)uit\n";
-	message+= _prompt;
-	loginMenu.setMessage(message);
-	loginMenu.addOption('l', new ClassCallback<CLI>(this,&CLI::login));
-	loginMenu.addOption('r', new ClassCallback<CLI>(this,&CLI::registerUser));
-
-	bool error = false;
-	do {
-		try{ 
-			error = false;
-			loginMenu.run(); 
-		} catch (std::runtime_error &err){
-			error = true;
-			cerr << "\033[31mError " << humanExcName(typeid(err).name()) 
-				     << "\t" << err.what() << "\033[0m" << endl;
-		} catch (...){
-			error = true;
-			cerr << "\033[31mUnknow error "
-				 << "\033[0m" << endl;
+	Menu _menu;
+	_menu.addToDisplay("   - (l)ogin\n");
+	_menu.addToDisplay("   - (r)egister\n");
+	_menu.addToDisplay("   - (q)uit\n");
+	int option;
+	do
+	{
+		option = _menu.run();
+		switch(option)
+		{
+			case 1:
+				login();
+				break;
+			case 2:
+				registerUser();
+				break;
+			default:
+				break;
 		}
-	} while (error);
+	}
+	while (option != 3);
 }
 
 void CLI::login(){
@@ -108,78 +103,128 @@ void CLI::registerUser(){
 /* main menu */
 void CLI::mainMenu()
 {
-	Menu main;
-	string message;
-	message+= "You can : \n";
-	message+= "   - (m)anage your team and stadium\n";
-	message+= "   - (a)ccess market\n";
-	message+= "   - (p)lay a friendly game\n";
-	message+= "   - (q)uit\n";
-	message+= _prompt;
-	main.setMessage(message);
-	main.addOption('m', new ClassCallback<CLI>(this, &CLI::managementMenu));
-	main.addOption('a', new ClassCallback<CLI>(this, &CLI::marketMenu));
-	main.addOption('p', new ClassCallback<CLI>(this, &CLI::friendlyMatchMenu));
-	main.run();
+	Menu _menu;
+	_menu.addToDisplay("   - (m)anage your team and stadium\n");
+	_menu.addToDisplay("   - (a)ccess market\n");
+	_menu.addToDisplay("   - (p)lay a friendly game\n");
+	_menu.addToDisplay("   - (q)uit\n");
+	int option;
+	do
+	{
+		option = _menu.run();
+		switch(option)
+		{
+			case 1:
+				managementMenu();
+				break;
+			case 2:
+				marketMenu();
+				break;
+			case 3:
+				friendlyMatchMenu();
+				break;
+			default:
+				break;
+		}
+	}
+	while (option != 4);
 }
 
 /* Management menu */
 void CLI::managementMenu()
 {
-	Menu mgt;
-	string message;
-	message+= "You can : \n";
-	message+= "   - manage your (s)tadium and installations\n";
-	message+= "   - manage your (p)layers\n";
-	message+= "   - (q)uit to main menu\n";
-	message+= _prompt;
-	mgt.setMessage(message);
-	mgt.addOption('s', new ClassCallback<CLI>(this, &CLI::stadiumMenu));
-	mgt.addOption('p', new ClassCallback<CLI>(this, &CLI::playersMenu));
-	mgt.run();
+	Menu _menu;
+	_menu.addToDisplay("   - manage your (s)tadium and installations\n");
+	_menu.addToDisplay("   - manage your (p)layers\n");
+	_menu.addToDisplay("   - (q)uit to main menu\n");
+	int option;
+	do
+	{
+		option = _menu.run();
+		switch(option)
+		{
+			case 1:
+				stadiumMenu();
+				break;
+			case 2:
+				playersMenu();
+				break;
+			default:
+				break;
+		}
+	}
+	while (option != 3);
 }
 
 void CLI::stadiumMenu()
 {
-	Menu stadium;
-	string message;
-	message+= "You can : \n";
-	message+= "    - (v)iew your installations\n";
-	message+= "    - (u)pgrade an installation\n";
-	message+= "    - (d)owngrade an installation\n";
-	message+= "    - (q)uit to management menu\n";
-	stadium.addOption('v', new ClassCallback<CLI>(this, &CLI::printInstallationsList));
-	stadium.addOption('u', new ClassCallback<CLI>(this, &CLI::upgradeInstallation));
-	stadium.addOption('d', new ClassCallback<CLI>(this, &CLI::downgradeInstallation));
-	stadium.setMessage(message);
-	// TODO : stadium menu
-	stadium.run();
+	Menu _menu;
+	_menu.addToDisplay("    - (v)iew your installations\n");
+	_menu.addToDisplay("    - (u)pgrade an installation\n");
+	_menu.addToDisplay("    - (d)owngrade an installation\n");
+	_menu.addToDisplay("    - (q)uit to management menu\n");
+	int option;
+	do
+	{
+		option = _menu.run();
+		switch(option)
+		{
+			case 1:
+				printInstallationsList();
+				break;
+			case 2:
+				upgradeInstallation();
+				break;
+			case 3:
+				downgradeInstallation();
+				break;
+			default:
+				break;
+		}
+	}
+	while (option != 4);
 }
 
 void CLI::playersMenu()
 {
-	Menu players;
-	string message;
-	message+= "You can : \n";
-	message+= "    - (q)uit to management menu\n";
-	players.setMessage(message);
-	// TODO : players menu
-	players.run();
+	Menu _menu;
+	_menu.addToDisplay("    - (q)uit to management menu\n");
+	int option;
+	do
+	{
+		option = _menu.run();
+		switch(option)
+		{
+			default:
+				break;
+		}
+	}
+	while (option != 1);
 }
 
 /* Market menu */
 void CLI::marketMenu(){
-	Menu market;
-	string message;
-	message+="You can : \n";
-	message+="   - (p)ut a player on sale\n";
-	message+="   - (s)ee the players on sale\n";
-	message+="   - (q)uit to main menu\n";
-	message+= _prompt;
-	market.setMessage(message);
-	market.addOption('p', new ClassCallback<CLI>(this, &CLI::printPlayersOnSale));
-	market.addOption('s', new ClassCallback<CLI>(this, &CLI::salePlayer));
-	market.run();
+	Menu _menu;
+	_menu.addToDisplay("   - (p)ut a player on sale\n");
+	_menu.addToDisplay("   - (s)ee the players on sale\n");
+	_menu.addToDisplay("   - (q)uit to main menu\n");
+	int option;
+	do
+	{
+		option = _menu.run();
+		switch(option)
+		{
+			case 1:
+				printPlayersOnSale();
+				break;
+			case 2:
+				salePlayer();
+				break;
+			default:
+				break;
+		}
+	}
+	while(option != 3);
 }
 
 void CLI::salePlayer(){
@@ -241,15 +286,23 @@ void CLI::printPlayersOnSale(){
 		cout << "--------------------------------" << endl;
 	}
 	cout << "=================================================" << endl;
-	Menu marketList;
-	string message;
-	message+="You can : \n";
-	message+="   - (p)lace a bid on a player\n";
-	message+="   - (q)uit to market menu\n";
-	message+= _prompt;
-	marketList.setMessage(message);
-	marketList.addOption('p', new ClassCallback<CLI>(this, &CLI::placeBid));
-	marketList.run();
+	Menu _menu;
+	_menu.addToDisplay("   - (p)lace a bid on a player\n");
+	_menu.addToDisplay("   - (q)uit to market menu\n");
+	int option;
+	do
+	{
+		option = _menu.run();
+		switch(option)
+		{
+			case 1:
+				placeBid();
+				break;
+			default:
+				break;
+		}
+	}
+	while (option != 2);
 }
 
 void CLI::placeBid(){
@@ -297,17 +350,27 @@ void CLI::printPlayers(){
 /* Friendly match menu */
 void CLI::friendlyMatchMenu()
 {
-	Menu friendly;
-	string message;
-	message+= "You can : \n";
-	message+= "   - (l)ist all connected players\n";
-	message+= "   - (c)hoose one to play a friendly game with\n";
-	message+= "   - (q)uit to main menu\n";
-	message+= _prompt;
-	friendly.setMessage(message);
-	friendly.addOption('l', new ClassCallback<CLI>(this, &CLI::printConnectedUsersList));
-	friendly.addOption('c', new ClassCallback<CLI>(this, &CLI::chooseUser));
-	friendly.run();
+	Menu _menu;
+	_menu.addToDisplay("   - (l)ist all connected players\n");
+	_menu.addToDisplay("   - (c)hoose one to play a friendly game with\n");
+	_menu.addToDisplay("   - (q)uit to main menu\n");
+	int option;
+	do
+	{
+		option = _menu.run();
+		switch(option)
+		{
+			case 1:
+				printConnectedUsersList();
+				break;
+			case 2:
+				chooseUser();
+				break;
+			default:
+				break;
+		}
+	}
+	while(option != 3);
 }
 
 void CLI::chooseUser()

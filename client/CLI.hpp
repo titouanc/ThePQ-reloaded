@@ -52,9 +52,7 @@ private:
 	int _team_id;
 	
 	pthread_t _thread;
-	
-	Menu _menu;
-	
+
 	// NEW
 	void loginUser(std::string username, std::string passwd);
 	void doesUserExist(std::string username);

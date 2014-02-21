@@ -10,6 +10,7 @@ void Menu::addToDisplay(string c){
 }
 
 void Menu::showMenu(){
+	cout << "You can :" << endl;
 	for(size_t i=0;i<_inBuffer.size();++i){
 		cout << i+1 << ". " << _inBuffer[i] << endl;
 	}
