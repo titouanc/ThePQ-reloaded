@@ -15,6 +15,7 @@
 #include <network/ConnectionManager.hpp>
 #include <model/Player.hpp>
 #include <model/Squad.hpp>
+#include <Constants.hpp>
 
 using namespace net;
 
@@ -24,19 +25,6 @@ struct Stroke {
 	bool active;
 	Stroke(Moveable & m, Displacement d) : moveable(m), move(d), active(true){}
 };
-
-/* TODO: mettre ca dans un fichier de constantes */
-#define MATCH_START   "MSTART"
-#define MATCH_END     "MEND"
-#define MATCH_SQUADS  "MSQUADS"
-#define MATCH_BALLS   "MBALLS"
-#define MATCH_PROMPT  "M?"
-#define MATCH_TIMEOUT "MTOUT"
-#define MATCH_STROKE  "MSTROKE"
-#define MATCH_ERROR   "M!!!"
-#define MATCH_ACK     "MACK"
-#define MATCH_DELTA   "MDELTA"
-#define MATCH_SCORES  "MSCORES"
 
 class MatchManager : public SubConnectionManager {
 	private:

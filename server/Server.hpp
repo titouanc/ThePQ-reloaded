@@ -51,6 +51,8 @@ public:
 	void upgradeInstallation(int peer_id, size_t i);
 	void downgradeInstallation(int peer_id, size_t i);
 	void sendConnectedUsersList(int peer_id);
+    void sendInvitationToPlayer(string const& username, int peer_id);
+    void sendInvitationResponseToPlayer(const JSON::Dict &response, int peer_id);
     //market
     void sendPlayersOnMarketList(int peer_id);
     void addPlayerOnMarket(const JSON::Dict &bid, int peer_id);

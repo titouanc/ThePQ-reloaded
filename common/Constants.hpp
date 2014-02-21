@@ -24,6 +24,7 @@ namespace net
 		// connection + register
 		static const std::string USERNAME = "D_U";
 		static const std::string PASSWORD = "D_P";
+		static const std::string FUNDS = "D_F";
 		static const std::string USER_LOGIN = "U_L";
 		static const std::string PASSWORD_ERROR = "U_P";
 		static const std::string USER_NOT_FOUND = "U_NF";
@@ -58,6 +59,26 @@ namespace net
 		static const std::string CONNECTED_USERS_LIST = "DQ_CU_L";
 		static const std::string PLAYERS_ON_MARKET_LIST= "DQ_P_OM_L";
 		static const std::string PLAYERS_LIST = "DQ_P_L";
+
+		// friendly game
+		static const std::string FRIENDLY_GAME_USERNAME = "F_G_U";
+		static const std::string FRIENDLY_GAME_INVITATION = "F_G_I";
+		static const std::string FRIENDLY_GAME_INVITATION_RESPONSE = "F_G_I_R";
+		static const std::string FRIENDLY_GAME_INVITATION_ACCEPT = "F_G_I_A";
+		static const std::string FRIENDLY_GAME_INVITATION_DENY = "F_G_I_D";
+
+		// MATCH ----------------------------------------------------------------
+		static const std::string MATCH_START   = "MSTART";
+		static const std::string MATCH_END     = "MEND";
+		static const std::string MATCH_SQUADS  = "MSQUADS";
+		static const std::string MATCH_BALLS   = "MBALLS";
+		static const std::string MATCH_PROMPT  = "M?";
+		static const std::string MATCH_TIMEOUT = "MTOUT";
+		static const std::string MATCH_STROKE  = "MSTROKE";
+		static const std::string MATCH_ERROR   = "M!!!";
+		static const std::string MATCH_ACK     = "MACK";
+		static const std::string MATCH_DELTA   = "MDELTA";
+		static const std::string MATCH_SCORES  = "MSCORES";
 	}
 }
 

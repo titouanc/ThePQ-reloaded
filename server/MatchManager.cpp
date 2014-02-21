@@ -78,24 +78,24 @@ void MatchManager::minisleep(double secs)
 void MatchManager::processStroke(Message const & msg, JSON::Dict const & data)
 {
 	if (! ISINT(data.get("mid")))
-		return reply(msg, MATCH_ERROR, "Missing moveable ID");
+		return reply(msg, net::MSG::MATCH_ERROR, "Missing moveable ID");
 	int mid = INT(data.get("mid"));
 	if (mid < 1 || (mid < 11 && mid > 7) || mid > 17)
-		return reply(msg, MATCH_ERROR, "Not a player");
+		return reply(msg, net::MSG::MATCH_ERROR, "Not a player");
 	int squad_i = mid/10;
 	int player_i = mid%10 - 1;
 
 	if (msg.peer_id != _squads[squad_i].client_id)
-		return reply(msg, MATCH_ERROR, "Not your player");
+		return reply(msg, net::MSG::MATCH_ERROR, "Not your player");
 
 	if (! ISLIST(data.get("move")))
-		return reply(msg, MATCH_ERROR, "No displacement found");
+		return reply(msg, net::MSG::MATCH_ERROR, "No displacement found");
 
 	Displacement move(LIST(data.get("move")));
 	Moveable & player = *(_squads[squad_i].players[player_i]);
 	
 	_strokes.push_back(Stroke(player, move));
-	reply(msg, MATCH_ACK, data);
+	reply(msg, net::MSG::MATCH_ACK, data);
 }
 
 void MatchManager::processMessage(Message const & msg)
@@ -106,15 +106,15 @@ void MatchManager::processMessage(Message const & msg)
 		if (msg.peer_id == _squads[i].client_id)
 			sender = &(_squads[i]);
 	if (! sender){
-		return reply(msg, MATCH_ERROR, "Not in allowed users");
+		return reply(msg, net::MSG::MATCH_ERROR, "Not in allowed users");
 	}
 
 	JSON::Dict const & data = DICT(msg.data);
 	if (! ISSTR(data.get("type")))
-		return reply(msg, MATCH_ERROR, "Missing \"type\":string");
-	if (STR(data.get("type")).value() == MATCH_STROKE){
+		return reply(msg, net::MSG::MATCH_ERROR, "Missing \"type\":string");
+	if (STR(data.get("type")).value() == net::MSG::MATCH_STROKE){
 		if (! ISDICT(data.get("data")))
-			return reply(msg, MATCH_ERROR, "Data should be a dict");
+			return reply(msg, net::MSG::MATCH_ERROR, "Data should be a dict");
 		processStroke(msg, DICT(data.get("data")));
 	}
 }
@@ -125,7 +125,7 @@ void MatchManager::_mainloop_out()
 	sendSquads();
 	time_t tick;
 	cout << "[" << this << "] \033[32mMatch started\033[0m" << endl;
-	sendSignal(MATCH_START);
+	sendSignal(net::MSG::MATCH_START);
 
 	cout << _pitch << endl;
 
@@ -133,7 +133,7 @@ void MatchManager::_mainloop_out()
 	while (nClients() > 0){
 		n_ticks++;
 		cout << "[" << this << "] + tick " << n_ticks << endl;
-		sendSignal(MATCH_PROMPT);
+		sendSignal(net::MSG::MATCH_PROMPT);
 		tick = time(NULL);
 
 		do {
@@ -142,14 +142,14 @@ void MatchManager::_mainloop_out()
 				if (ISDICT(msg.data))
 					processMessage(msg);
 				else
-					reply(msg, MATCH_ERROR, "Not a dict");
+					reply(msg, net::MSG::MATCH_ERROR, "Not a dict");
 				delete msg.data;
 			} else {
 				minisleep(0.1);
 			}
 		} while (time(NULL) - tick < STROKES_TIMEOUT_SECONDS);
 		
-		sendSignal(MATCH_TIMEOUT);
+		sendSignal(net::MSG::MATCH_TIMEOUT);
 		if (! _strokes.empty())
 			playStrokes();
 
@@ -159,7 +159,7 @@ void MatchManager::_mainloop_out()
 			break;
 	}
 
-	sendSignal(MATCH_END);
+	sendSignal(net::MSG::MATCH_END);
 	cout << "[" << this << "] \033[32mMatch finished\033[0m" << endl;
 	stop();
 	for (int i=0; i<2; i++)
@@ -218,7 +218,7 @@ void MatchManager::sendSquads(void)
 	
 	JSON::Dict msg;
 	msg.set("data", list);
-	msg.set("type", MATCH_SQUADS);
+	msg.set("type", net::MSG::MATCH_SQUADS);
 	sendToAll(msg);
 }
 
@@ -232,15 +232,15 @@ void MatchManager::sendBalls(void)
 	
 	JSON::Dict msg;
 	msg.set("data", balls);
-	msg.set("type", MATCH_BALLS);
+	msg.set("type", net::MSG::MATCH_BALLS);
 	sendToAll(msg);
 }
 
 void MatchManager::sendMatchDeltas(void)
 {
 	JSON::Dict msg;
-	msg.set("type", MATCH_DELTA);
 	msg.set("data", _turnDeltas);
+	msg.set("type", net::MSG::MATCH_DELTA);
 	sendToAll(msg);
 }
 
@@ -425,10 +425,10 @@ void MatchManager::endMatch(void)
 	data.set("looser", looserScore);
 	
 	JSON::Dict msg;
-	msg.set("type", MATCH_SCORES);
+	msg.set("type", net::MSG::MATCH_SCORES);
 	msg.set("data", data);
 	sendToAll(msg);
-	sendSignal(MATCH_END);
+	sendSignal(net::MSG::MATCH_END);
 
 	releaseClient(_squads[0].client_id);
 	releaseClient(_squads[1].client_id);

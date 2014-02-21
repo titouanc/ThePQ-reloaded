@@ -20,7 +20,7 @@ class Pitch {
 		static const Position NorthEast;
 		static const Position SouthEast;
 
-		Pitch(size_t width, size_t height);
+		Pitch(size_t width = 100, size_t height = 36);
 		~Pitch();
 
 		size_t width(void) const;

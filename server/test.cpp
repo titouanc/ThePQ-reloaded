@@ -9,8 +9,8 @@ TEST(user)
 	ASSERT(user.getUsername() == "usertest");
 	ASSERT(user.getPassword() == "passwdtest");
 	JSON::Dict json = user;
-	ASSERT(STR(json.get("D_U")).value() == "usertest");
-	ASSERT(STR(json.get("D_P")).value() == "passwdtest");
+	ASSERT(STR(json.get("username")).value() == "usertest");
+	ASSERT(STR(json.get("password")).value() == "passwdtest");
 	user = User(&json);
 	ASSERT(user.getUsername() == "usertest");
 	ASSERT(user.getPassword() == "passwdtest");

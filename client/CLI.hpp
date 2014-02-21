@@ -13,6 +13,7 @@
 #include <model/Player.hpp>
 #include <network/TcpSocket.hpp>
 #include <stack>
+#include "ClientMatchManager.hpp"
 
 
 struct NetConfig : public Config {
@@ -112,6 +113,8 @@ private:
 	// Match
 	void printConnectedUsersList();
 	void chooseUser();
+
+	ClientMatchManager _matchManager;
 };
 
 #endif // __CLIENT_HPP
