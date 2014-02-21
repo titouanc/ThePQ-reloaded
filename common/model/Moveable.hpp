@@ -20,6 +20,7 @@ public:
 	~Moveable(){}
 
 	virtual bool isBall() const {return false;}
+	bool isPlayer() const {return not isBall();}
 	virtual string getName() { return ""; }
 
 	Position getPosition() const { return _position; }

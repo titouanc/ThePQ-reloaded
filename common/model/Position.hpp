@@ -25,6 +25,7 @@ class Position {
 
         /* Numeric operations */
         Position operator+(Position const & other) const;
+        Position operator-(Position const & other) const;
         Position const & operator+=(Position const & other);
         
         /* Transformations */
