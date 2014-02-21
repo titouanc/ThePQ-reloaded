@@ -148,8 +148,7 @@ void MatchManager::_mainloop_out()
 		} while (time(NULL) - tick < STROKES_TIMEOUT_SECONDS);
 		
 		sendSignal(net::MSG::MATCH_TIMEOUT);
-		if (! _strokes.empty())
-			playStrokes();
+		playStrokes();
 	}
 
 	sendSignal(net::MSG::MATCH_END);
@@ -306,7 +305,6 @@ void MatchManager::playStrokes(void)
 			maxlen = len;
 	}
 
-	JSON::List turnDeltas;
 	double last_t = 0;
 	for (size_t t_i=1; t_i<=maxlen; t_i++){
 		/* Foreach time step */
