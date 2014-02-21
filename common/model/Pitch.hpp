@@ -68,6 +68,9 @@ class Pitch {
 		// TODO DOC
 		bool isWestGoal(int x, int y) const;
 		bool isEastGoal(int x, int y) const;
+		bool isGoal(int x, int y) const {
+			return isEastGoal(x, y) || isEastGoal(x, y);
+		}
 
 		// TODO DOC
 		std::vector<Position> freePositionsAround(Position &position);

@@ -9,6 +9,11 @@ public:
 	virtual bool isQuaffle () const { return false; }
 	virtual bool isBludger () const { return false; }
 	virtual bool isGoldenSnitch () const { return false; }
+	operator JSON::Dict(){
+		JSON::Dict res = Moveable::operator JSON::Dict();
+		res.set("name", getName());
+		return res;
+	}
 };
 
 class GoldenSnitch : public Ball {

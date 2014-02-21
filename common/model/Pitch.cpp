@@ -1,4 +1,6 @@
 #include "Pitch.hpp"
+#include "Player.hpp"
+#include "Ball.hpp"
 #include <cassert>
 #include <cstring>
 
@@ -154,16 +156,36 @@ std::ostream & operator<<(std::ostream & out, Pitch const & pitch)
 			if (abs(x%2) != abs(y%2 )|| ! pitch.inEllipsis(x, y)){
 				out << " ";
 			} else {
-				if (pitch.getAt(x, y) == NULL){
+				Moveable *atPos = pitch.getAt(x, y);
+				if (atPos == NULL){
 					if (pitch.isInEastKeeperZone(x, y) || pitch.isInWestKeeperZone(x, y))
-						if (pitch.isWestGoal(x, y) || pitch.isEastGoal(x, y))
+						if (pitch.isGoal(x, y))
 							out << "O";
 						else
 							out << ".";
 					else
 						out << "\033[32m.\033[0m";
-				} else {
+				} else if (atPos->isBall()) {
+					Ball const & ball = (Ball const &) *atPos;
+					if (ball.isGoldenSnitch())
+						out << "\033[33m*\033[0m";
+					else if (ball.isQuaffle())
+						out << "\033[34m*\033[0m";
+					else if (ball.isBludger())
+						out << "\033[35m*\033[0m";
+				} else if (atPos->isPlayer()) {
 					out << "\033[31mo\033[0m";
+					/* Dynamic cast error  Oo
+					Player & player = (Player &)*atPos;
+					if (player.isSeeker())
+						out << "\033[33mo\033[0m";
+					else if (player.isChaser())
+						out << "\033[34mo\033[0m";
+					else if (player.isBeater())
+						out << "\033[35mo\033[0m";
+					else if (player.isKeeper())
+						out << "\033[36mo\033[0m";
+					//*/
 				}
 			}
 		}
