@@ -71,6 +71,8 @@ class MatchManager : public SubConnectionManager {
 		   Could not be made by Stroke(JSON::Dict) because we have to map
 		   moveable_id -> Moveable */
 		void processStroke(Message const & msg, JSON::Dict const & data);
+		/* Create random moves for golden snitch */
+		void mkSnitchStroke(void);
 
 		/* Send messages to clients */
 		void sendToAll(JSON::Value const & data);

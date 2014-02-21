@@ -193,6 +193,22 @@ void MatchManager::reply(Message const & msg, std::string type, const char *text
 	reply(msg, type, JSON::String(text));
 }
 
+void MatchManager::mkSnitchStroke(void)
+{
+	static const Position directions[6] = {
+		Pitch::West, Pitch::NorthWest, Pitch::NorthEast	,
+		Pitch::East, Pitch::SouthEast, Pitch::SouthWest
+	};
+	if (rand()%11 < 7) /* 30% probability to move */
+		return;
+	Displacement move;
+	for (int i=1+rand()%5; i>=0; i--){ /* Max 5 moves */
+		int choosed = rand()%6;
+		move.addMove(directions[choosed]);
+	}
+	_strokes.push_back(Stroke(_snitch, move));
+}
+
 /* send squads composition */
 void MatchManager::sendSquads(void)
 {
@@ -364,6 +380,7 @@ void MatchManager::playStrokes(void)
 	/* Reset turn state */
 	_turnDeltas = JSON::List();
 	_strokes.clear();
+	mkSnitchStroke();
 }
 
 void MatchManager::throwBall(
