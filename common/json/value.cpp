@@ -27,13 +27,23 @@ void Value::save(const char *filename) const
 
 	fd = open(filename, O_WRONLY|O_CREAT|O_TRUNC, 0644);
 	if (fd < 0)
-		throw IOError(strerror(errno));
+	{
+		std::string error = strerror(errno);
+		error += "in : ";
+		error += filename;
+		throw IOError(error.c_str());
+	}
 
 	std::string repr = this->dumps();
 	for (size_t i=0; i<repr.length(); i+=r){
 		r = write(fd, repr.c_str()+i, repr.length()-i);
 		if (r < 0)
-			throw IOError(strerror(errno));
+		{
+			std::string error = strerror(errno);
+			error += "in : ";
+			error += filename;
+			throw IOError(error.c_str());
+		}
 	}
 
 	close(fd);

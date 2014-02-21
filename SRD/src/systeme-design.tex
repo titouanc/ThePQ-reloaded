@@ -29,7 +29,7 @@ réseau.
 
 \begin{figure}[h!]
   \centering
-  \includegraphics[width=0.7\textwidth]{figures/JSON-Class.eps}
+  \includegraphics[width=\textwidth]{figures/JSON-Class.eps}
   \caption{\label{fig:Class:JSON} Classes: outil de sérialisation JSON}
 \end{figure}
 
@@ -54,6 +54,21 @@ Un message spécial du serveur lors de la mise à jour indique que la partie
 est terminée et le serveur envoie alors les résultats du match dans un autre 
 message. Quand le client les a reçues, il le signifie au serveur qui ferme 
 alors la connexion.
+
+\subsection{Le gestionnaire de connexion}
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=\textwidth]{figures/network-class.eps}
+  \caption{\label{fig:Class:Network} Classes: Le gestionnaire de connexion}
+\end{figure}
+
+Les connexions sont ici gérées dans le \emph{BaseConnectionManager}, qui instancie deux threads : un s'occupant des messages entrant, l'autre des sortant. Ces messages arrivent en JSON via un file descriptor, via une file (suivant leur entrée ou sortie) afin d'arriver dans le bon ordre.
+
+Le \emph{ConnectionManager} ajoute à la précédente classe la possibilité d'accepter de nouveaux file descriptors.
+
+Le \emph{SubConnectionManager} peut voler un des file descriptors le temps d'un match, fonctionnalité utilisée par le serveur lors des matches.
+
+
 
 \subsubsection{Le gestionnaire de match}
 \begin{figure}[h!]

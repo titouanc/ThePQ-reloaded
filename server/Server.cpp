@@ -285,8 +285,14 @@ void Server::downgradeInstallation(int peer_id, size_t i)
 void Server::sendConnectedUsersList(int peer_id)
 {
 	JSON::List list;
+	std::string userFrom = _users.find(peer_id)->second->getUsername();
 	for (map<int, User*>::iterator it=_users.begin(); it!=_users.end(); it++)
-		list.append(it->second->getUsername());
+	{
+		if (it->second->getUsername() != userFrom)
+		{
+			list.append(it->second->getUsername());
+		}
+	}
 
 	JSON::Dict usersList;
 	usersList.set("type", MSG::CONNECTED_USERS_LIST);
@@ -295,16 +301,33 @@ void Server::sendConnectedUsersList(int peer_id)
 	_outbox.push(Message(peer_id, usersList.clone()));
 }
 
-void Server::sendInvitationToPlayer(string const& username, int peer_id){
+void Server::sendInvitationToPlayer(string const& userTo, int peer_id){
 	map<int, User*>::iterator findUser = _users.find(peer_id);
-	for (map<int, User*>::iterator it=_users.begin(); it!=_users.end(); it++){
-		if (it->second->getUsername() == username){
-			JSON::Dict toSend;
-			toSend.set("type", MSG::FRIENDLY_GAME_INVITATION);
-			toSend.set("data", findUser->second->getUsername());
-			Message status(it->first, toSend.clone());
-			_outbox.push(status);
+	std::string userFrom = findUser->second->getUsername();
+	cout << "from: " << userFrom;
+	cout << "to: " << userTo;
+	map<int, User*>::iterator it;
+	if (userFrom != userTo)
+	{
+		for (it =_users.begin(); it!=_users.end(); it++){
+			if (it->second->getUsername() == userTo){
+				JSON::Dict toSend;
+				toSend.set("type", MSG::FRIENDLY_GAME_INVITATION);
+				toSend.set("data", userFrom);
+				Message status(it->first, toSend.clone());
+				_outbox.push(status);
+			}
 		}
+	}
+	if (userFrom == userTo || it == _users.end())
+	{
+		JSON::Dict toSend, data;
+		data.set("username", userTo);
+		data.set("answer", MSG::USER_NOT_FOUND);
+		toSend.set("type", MSG::FRIENDLY_GAME_INVITATION_RESPONSE);
+		toSend.set("data", data);
+		Message status(peer_id, toSend.clone());
+		_outbox.push(status);
 	}
 }
 

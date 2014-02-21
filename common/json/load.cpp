@@ -10,6 +10,7 @@ extern "C" {
 	#include <string.h>
 }
 
+#include <string>
 using namespace JSON;
 
 #define BUFSIZE 4096
@@ -22,14 +23,24 @@ Value *JSON::load(const char *filename){
 
 	fd = open(filename, O_RDONLY);
 	if (fd < 0)
-		throw IOError(strerror(errno));
+	{
+		std::string error = strerror(errno);
+		error += "in : ";
+		error += filename;
+		throw IOError(error.c_str());
+	}
 
 	while ((r = read(fd, buffer, BUFSIZE)) > 0){
 		buffer[r] = '\0';
 		str << buffer;
 	}
 	if (r < 0)
-		throw IOError(strerror(errno));
+	{
+		std::string error = strerror(errno);
+		error += "in : ";
+		error += filename;
+		throw IOError(error.c_str());
+	}
 
 	close(fd);
 	return parse(str.str().c_str());
