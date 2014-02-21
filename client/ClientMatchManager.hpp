@@ -5,6 +5,7 @@
 #include <model/Displacement.hpp>
 #include <model/Position.hpp>
 #include <model/Squad.hpp>
+#include <model/Ball.hpp>
 #include <network/ConnectionManager.hpp>
 #include <Constants.hpp>
 #include <json/json.hpp>
@@ -15,6 +16,7 @@ class ClientMatchManager {
 public:
 	ClientMatchManager();
 
+	void initBalls(const JSON::Dict& msg);
 	void initSquads(const JSON::Dict& msg, string username);
 	void startMatch(const JSON::Value* msg);
 	void turnMenu();
@@ -27,6 +29,10 @@ private:
 	Squad _otherSquad;
 	Squad _ownSquad;
 	Pitch _pitch;
+	/* Balls */
+	Quaffle _quaffle;
+	GoldenSnitch _snitch;
+	Bludger _bludgers[2];
 };
 
 #endif

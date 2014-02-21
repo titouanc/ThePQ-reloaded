@@ -123,6 +123,7 @@ private:
 	// Match
 	void printConnectedUsersList();
 	void chooseUser();
+	void startMatch();
 
 	ClientMatchManager _matchManager;
 };

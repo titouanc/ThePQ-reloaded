@@ -6,6 +6,21 @@ using namespace net;
 
 ClientMatchManager::ClientMatchManager() : _isMatchFinished(false) {}
 
+void ClientMatchManager::initBalls(const JSON::Dict& msg){
+	if (ISLIST(msg.get("data")) && LIST(msg.get("data")).len() == 4){
+		JSON::List & balls = LIST(msg.get("data"));
+		// TODO test ISDICT for each of the 4 balls
+		_quaffle = DICT(balls[0]);
+		_pitch.insert(&_quaffle);
+		_snitch = DICT(balls[1]);
+		_pitch.insert(&_snitch);
+		for(int i=0; i<2; ++i){
+			_bludgers[i] = DICT(balls[i+2]);
+			_pitch.insert(&_bludgers[i]);
+		}
+	}
+}
+
 void ClientMatchManager::initSquads(const JSON::Dict& msg, string username){
 	if (ISLIST(msg.get("data")) && LIST(msg.get("data")).len() == 2) {
 		JSON::List & squads = LIST(msg.get("data"));

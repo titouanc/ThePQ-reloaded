@@ -432,6 +432,7 @@ void CLI::chooseUser()
 	toSend.set("data", userInput);
 	_connection.send(toSend);
 
+	cout << "Please wait for " << userInput << " to answer to your invitation..." << endl;
 	JSON::Value *serverMessage = waitForMsg(net::MSG::FRIENDLY_GAME_INVITATION_RESPONSE);
 	JSON::Dict const & received = DICT(serverMessage);
 	if (ISDICT(received.get("data")) && ISSTR(DICT(received.get("data")).get("answer"))){
@@ -439,7 +440,7 @@ void CLI::chooseUser()
 		if (answer == net::MSG::FRIENDLY_GAME_INVITATION_ACCEPT){
 			cout << STR(DICT(received.get("data")).get("username")).value();
 			cout << " accepted your invitation!" << endl;
-			// launch clientmatchmanager
+			startMatch();
 
 		}
 		else {
@@ -833,6 +834,7 @@ void CLI::acceptInvitationFromUser(string username){
 	data.set("answer", net::MSG::FRIENDLY_GAME_INVITATION_ACCEPT);
 	toSend.set("data", data);
 	_connection.send(toSend);
+	startMatch();
 }
 
 void CLI::denyInvitationFromUser(string username){
@@ -843,4 +845,13 @@ void CLI::denyInvitationFromUser(string username){
 	data.set("answer", net::MSG::FRIENDLY_GAME_INVITATION_DENY);
 	toSend.set("data", data);
 	_connection.send(toSend);
+}
+
+void CLI::startMatch(){
+	JSON::Value *serverBalls = waitForMsg(net::MSG::MATCH_BALLS);
+	JSON::Dict const &receivedBalls = DICT(serverBalls);
+	_matchManager.initBalls(receivedBalls);
+	JSON::Value *serverSquads = waitForMsg(net::MSG::MATCH_SQUADS);
+	JSON::Dict const &receivedSquads = DICT(serverSquads);
+	_matchManager.initSquads(receivedSquads, _username);
 }
