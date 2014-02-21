@@ -14,7 +14,7 @@ void Sale::start(){
 }
 
 void Sale::saleStart(){
-	while( !(_canBidTeams.empty()) or _turn == 1 ){
+	while( _canBidTeams.size()>1 or _turn == 1 ){
 		for(int i=0; i<getTotalTime(); ++i){
 			sleep(1);
 			--_timeLeft;

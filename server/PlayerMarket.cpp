@@ -86,6 +86,13 @@ _thread(),_runChecker(true), _deleting(PTHREAD_MUTEX_INITIALIZER) {
 	startChecker();
 }
 
+PlayerMarket::~PlayerMarket(){
+	_runChecker = false;
+	for(size_t i=0;i<_sales.size();++i){
+		delete _sales[i];
+	}
+}
+
 Sale * PlayerMarket::getSale(int id){
 	for(size_t i = 0; i<_sales.size();++i){
 		if(_sales[i]->getID() == id){return _sales[i];}

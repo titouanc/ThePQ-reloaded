@@ -374,6 +374,8 @@ void CLI::placeBid(){
 			bidOnPlayer(player_id, _username, value);
 			
 			cout << "Bid successfully placed ! Hurra !" << endl;
+			cout << "Updated list :" << endl;
+			printPlayersOnSale();
 		}
 		catch(bidValueNotUpdatedException e){
 			cout << "Error : bid value not correct (update your market list)."<<endl;

@@ -5,6 +5,7 @@
 #include <string>
 #include <json/json.hpp>
 #include <Constants.hpp>
+#include <sys/stat.h>
 
 using namespace std;
 
@@ -48,12 +49,17 @@ protected://modif
 	static int getNextMemberID()
 	{
 		static int _staticMemberID = -1;
+		mkdir("data/global", 0755);
 		static const std::string path = "data/global/memberID.json";
 		if (_staticMemberID == -1)
 		{
-			JSON::Value* tmp = JSON::load(path);
-			_staticMemberID = INT(tmp);
-			delete tmp;
+			try {
+				JSON::Value* tmp = JSON::load(path);
+				_staticMemberID = INT(tmp);
+				delete tmp;
+			} catch (JSON::IOError){
+				_staticMemberID = 1;
+			}
 		}
 		++_staticMemberID;
 		cout << "MEMBER ID: " << _staticMemberID << endl;

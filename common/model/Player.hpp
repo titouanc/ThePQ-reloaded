@@ -74,7 +74,6 @@ public:
 		_velocity = player._velocity;
 		_precision = player._precision;
 		_chance = player._chance;
-		std::cout<<"copying"<<std::endl;
 		return *this;
 	}
 protected:
