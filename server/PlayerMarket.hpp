@@ -37,6 +37,7 @@ public:
 	~PlayerMarket();
 	void createSale(const JSON::Dict &json);
 	void transfert(Sale * sale);
+	void loadSales();
 	Sale * getSale(int id);
 	Player loadPlayerInfos(std::string username, int id);
 	std::string getPlayersPath(std::string owner){return (_playerPath + "users/" + owner + "/" + "players.json");}

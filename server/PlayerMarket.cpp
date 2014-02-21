@@ -2,8 +2,7 @@
 #include <Constants.hpp>
 #include <sys/stat.h>
 #include <stdio.h>
-
-
+#include "dirent.h"
 void * saleChecker(void * p){
 	PlayerMarket *market = static_cast<PlayerMarket*>(p);
 	while(market->_runChecker){
@@ -101,9 +100,36 @@ void PlayerMarket::transfert(Sale * sale){
 PlayerMarket::PlayerMarket(Server *server): _server(server), _sales(), _marketPath("data/playerMarket/"), _playerPath("data/"),
 _thread(),_runChecker(true), _deleting(PTHREAD_MUTEX_INITIALIZER) {
 	mkdir(_marketPath.c_str(), 0755);
+	loadSales();	
 	startChecker();
 }
+void PlayerMarket::loadSales(){
+	/*Method loading players on sale*/
+	DIR *dir;
+	struct dirent *ent;
+	JSON::Value *load;
+	if((dir = opendir(_marketPath.c_str()))!=NULL){//si ouverture reussie
+		cout<<"Loading players for market"<<endl;
+		string curPath=_marketPath;
+		while ((ent=readdir (dir)) != NULL ){
+			if(ent->d_type==DT_REG){			
+				cout<<ent->d_name<<endl;
+				cout<<curPath+ent->d_name<<endl;
+				load=JSON::load((curPath+ent->d_name));
+				JSON::Dict &dict=*((JSON::Dict*) load) ;
+				_sales.push_back(new Sale(dict));
+				curPath=_marketPath;
+			}
+		}
+		closedir(dir);
+		for(size_t i(0);i<_sales.size();++i){
+		_sales[i]->start();
+		}
+	}else{
+		cout<<"Error opening data file"<<endl;
+	}
 
+}
 PlayerMarket::~PlayerMarket(){
 	_runChecker = false;
 	for(size_t i=0;i<_sales.size();++i){
