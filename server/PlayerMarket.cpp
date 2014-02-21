@@ -91,14 +91,14 @@ void PlayerMarket::loadSales(){
 	transformer fichier->C() ajouter au vecteur _sales*/
 	DIR *dir;
 	struct dirent *ent;
-	cout<<"Dirent \n\n\n"<<endl;
-	if((dir = opendir(_marketPath.c_str()))!=NULL){
+	if((dir = opendir(_marketPath.c_str()))!=NULL){//si ouverture reussie
+		cout<<"Loading players for market"<<endl;
 		while ((ent=readdir (dir)) != NULL){
-			cout<<ent->d_name;
+			cout<<ent->d_name<<endl;
 		}
 		closedir(dir);
 	}else{
-		cout<<"FUCK"<<endl;
+		cout<<"Error opening data file"<<endl;
 	}
 
 }
