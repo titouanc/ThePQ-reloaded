@@ -30,7 +30,7 @@ private:
 	void deletingUnlock(){pthread_mutex_unlock(&_deleting);}
 public:
 	PlayerMarket();
-	~PlayerMarket(){_runChecker = false;}
+	~PlayerMarket();
 	void createSale(const JSON::Dict &json);
 	void transfert(Sale * sale);
 	Sale * getSale(int id);
