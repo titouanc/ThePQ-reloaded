@@ -6,7 +6,6 @@
 #include <model/Position.hpp>
 #include <model/Squad.hpp>
 #include <network/ConnectionManager.hpp>
-#include <Callback.hpp>
 #include <Constants.hpp>
 #include <json/json.hpp>
 #include <map>
@@ -24,7 +23,6 @@ public:
 	Position parseDirection(string userInput);
 private:
 	SharedQueue<net::Message> & _outbox;
-	std::map<string, Callback*> _callbacks;
 	bool _isMatchFinished;
 	std::string _username;
 	Squad _otherSquad;

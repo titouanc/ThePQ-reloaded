@@ -13,7 +13,6 @@
 #include <model/Player.hpp>
 #include <network/TcpSocket.hpp>
 #include <stack>
-#include "ClientMatchManager.hpp"
 
 
 struct NetConfig : public Config {

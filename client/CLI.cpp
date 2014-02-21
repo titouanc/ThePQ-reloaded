@@ -380,7 +380,7 @@ void CLI::chooseUser()
 	toSend.set("data", userInput);
 	_connection.send(toSend);
 
-	JSON::Value *received = JSON::Value *serverMessage = waitForMsg(net::MSG::FRIENDLY_GAME_INVITATION_RESPONSE);
+	JSON::Value *serverMessage = waitForMsg(net::MSG::FRIENDLY_GAME_INVITATION_RESPONSE);
 	JSON::Dict const & received = DICT(serverMessage);
 	if (ISDICT(received.get("data")) && ISSTR(DICT(received.get("data")).get("answer"))){
 		string answer = STR(DICT(received.get("data")).get("answer")).value();
