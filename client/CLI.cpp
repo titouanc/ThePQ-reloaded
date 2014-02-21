@@ -221,27 +221,28 @@ void CLI::notificationsMenu()
 	_menu.addToDisplay("   - see next notification\n");
 	_menu.addToDisplay("   - (q)uit\n");
 	int option;
-	while (! _messages.empty())
+	bool quit = false;
+	while (! _messages.empty() && ! quit)
 	{
 		JSON::Value * currentNotification = _messages.front();
 		cout << DICT(currentNotification) << endl;
-		do
-		{
 			option = _menu.run();
-			switch(option)
-			{
-				case 1:
-					handleNotification(currentNotification);
-					_messages.pop();
-					break;
-				case 2:
-					cout << "not implemented yet" << endl; // TODO
-					break;
-				default:
-					break;
-			}
+		switch(option)
+		{
+			case 1:
+				handleNotification(currentNotification);
+				_messages.pop();
+				break;
+			case 2:
+				_messages.push(_messages.front());
+				_messages.pop();
+				break;
+			case 3:
+				quit = true;
+				break;
+			default:
+				break;
 		}
-		while (option != 3);
 	}
 }
 
