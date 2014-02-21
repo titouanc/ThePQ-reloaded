@@ -50,6 +50,7 @@ void ClientMatchManager::turnMenu(){
 	
 	Menu turnMenu;
 	turnMenu.addToDisplay("\t- select player");
+	turnMenu.addToDisplay("\t- update pitch");
 	int option;
 	do {
 		displayPitch();
@@ -58,6 +59,12 @@ void ClientMatchManager::turnMenu(){
 		switch(option){
 			case 1:
 				selectPlayer();
+			case 2:
+				_connection.updateNotifications();
+				JSON::Value* deltas = _connection.hasMessageTypeInNotifications(net::MSG::MATCH_DELTA);
+				if (ISDICT(deltas)){
+					updatePitchWithDeltas(DICT(deltas));
+				}
 			default:
 				break;
 		}
