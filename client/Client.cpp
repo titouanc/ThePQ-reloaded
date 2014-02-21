@@ -193,7 +193,7 @@ std::vector<Sale> Client::updatePlayersOnSale(){
 		if (ISSTR(received.get("type")) && ISLIST(received.get("data"))){
 			JSON::List & sales = LIST(received.get("data"));
 			for(size_t i = 0; i<sales.len();++i)
-				res.push_back(Sale(DICT(sales[i]), Player(DICT(sales[i])->get(net::MSG::PLAYER))));
+				res.push_back(Sale(DICT(sales[i]), Player(DICT(DICT(sales[i]).get(net::MSG::PLAYER)))));
 		}
 	}
 	return res; 
