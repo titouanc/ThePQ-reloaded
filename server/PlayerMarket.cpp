@@ -52,6 +52,7 @@ void PlayerMarket::transfert(Sale * sale){
 
 PlayerMarket::PlayerMarket(): _sales(), _marketPath("data/playerMarket/"), _playerPath("data/"),
 _thread(),_runChecker(true) {
+	mkdir(_marketPath.c_str(), 0755);
 	startChecker();
 }
 
