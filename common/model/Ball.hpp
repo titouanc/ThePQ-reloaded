@@ -5,6 +5,7 @@
 /*================Library defining different types of Moveables================*/
 class Ball : public Moveable {
 public:
+	using Moveable::Moveable;
 	bool isBall() const {return true;}
 	virtual bool isQuaffle () const { return false; }
 	virtual bool isBludger () const { return false; }
@@ -19,6 +20,7 @@ public:
 class GoldenSnitch : public Ball {
 /*Class creating the GoldenSnitch, inheriting from ball*/
 public:
+	using Ball::Ball;
 	bool isGoldenSnitch () const { return true; }
 	string getName() { return "Golden Snitch"; }
 };
@@ -26,6 +28,7 @@ public:
 class Bludger : public Ball {
 /*Class creating a Bludger, inheriting from ball*/
 public:
+	using Ball::Ball;
 	bool isBludger () const { return true; }
 	string getName() { return "Bludger"; }
 	float collisionScore() { return 20; } // TODO implement this
@@ -34,6 +37,7 @@ public:
 class Quaffle : public Ball {
 /*Class creating Quaffle, inheriting from ball*/
 public:
+	using Ball::Ball;
 	bool isQuaffle () const { return true; }
 	string getName() { return "Quaffle"; }
 };
