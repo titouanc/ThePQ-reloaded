@@ -39,7 +39,6 @@ bool Team::fireCoach(Coach coach){
 	return exists; 
 }
 
-
 void bool Team::newSponsor(Sponsor sponsor){
 	_sponsor = sponsor;
 }

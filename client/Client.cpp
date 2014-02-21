@@ -179,3 +179,94 @@ vector<std::string> Client::getConnectedUsersList(){
 	}
 	return res;
 }
+
+std::vector<Sale> Client::updatePlayersOnSale(){
+	JSON::Dict query;
+	query.set("type", net::MSG::PLAYERS_ON_MARKET_LIST);
+	query.set("data", "");
+	net::Message msg(0, query.clone());
+	_outbox.push(msg);
+	JSON::Value *serverResponse = _inbox.pop().data;
+	std::vector<Sale> res;
+	if (ISDICT(serverResponse)) {
+		JSON::Dict & received = DICT(serverResponse);
+		if (ISSTR(received.get("type")) && ISLIST(received.get("data"))){
+			JSON::List & sales = LIST(received.get("data"));
+			for(size_t i = 0; i<sales.len();++i)
+				res.push_back(Sale(DICT(sales[i]), Player(DICT(DICT(sales[i]).get(net::MSG::PLAYER)))));
+		}
+	}
+	return res; 
+}
+
+void Client::bidOnPlayer(int player_id,std::string username, int value){//modif
+	JSON::Dict query, data;
+	data.set(net::MSG::USERNAME,username);
+	data.set(net::MSG::PLAYER_ID,player_id);
+	data.set(net::MSG::BID_VALUE,value);
+	query.set("type", net::MSG::BID_ON_PLAYER_QUERY);
+	query.set("data", data);
+	net::Message msg(0, query.clone());
+	_outbox.push(msg);
+	JSON::Value *serverResponse = _inbox.pop().data;
+	if(ISDICT(serverResponse)){
+		JSON::Dict received = DICT(serverResponse);
+		if(ISSTR(received.get("type")) && ISDICT(received.get("data"))){
+			std::string res = STR(DICT(received.get("data")).get(net::MSG::SERVER_RESPONSE));
+			if(res == net::MSG::BID_VALUE_NOT_UPDATED)
+				throw bidValueNotUpdatedException();
+			else if(res == net::MSG::BID_TURN_ERROR)
+				throw turnException();
+			else if(res == net::MSG::BID_ENDED)
+				throw bidEndedException();
+			else if(res == net::MSG::CANNOT_BID_ON_YOUR_PLAYER)
+				throw bidOnYourPlayerException();
+			else if(res == net::MSG::LAST_BIDDER)
+				throw lastBidderException();
+		}
+	}
+}
+
+void Client::addPlayerOnMarket(int player_id,std::string username, int value){//modif
+	JSON::Dict query, data;
+	data.set(net::MSG::USERNAME,username);
+	data.set(net::MSG::PLAYER_ID,player_id);
+	data.set(net::MSG::BID_VALUE,value);
+	query.set("type", net::MSG::ADD_PLAYER_ON_MARKET_QUERY);
+	query.set("data", data);
+	net::Message msg(0, query.clone());
+	_outbox.push(msg);
+	JSON::Value *serverResponse = _inbox.pop().data;
+	if(ISDICT(serverResponse)){
+		JSON::Dict received = DICT(serverResponse);
+		if(ISSTR(received.get("type")) && ISSTR(received.get("data"))){
+			std::string res = STR((received.get("data"))).value();
+			if(res == net::MSG::PLAYER_ALREADY_ON_MARKET)
+				throw playerAlreadyOnMarketException();
+		}
+	}
+}
+
+std::vector<Player> Client::getPlayers(std::string username){//modif
+	JSON::Dict query, data;
+	data.set(net::MSG::USERNAME, username);//modif
+	query.set("type", net::MSG::PLAYERS_LIST);
+	query.set("data",data);
+	net::Message msg(0, query.clone());
+	_outbox.push(msg);
+	JSON::Value *serverResponse = _inbox.pop().data;
+	JSON::List toFill;
+	if(ISDICT(serverResponse)){
+		JSON::Dict received = DICT(serverResponse);
+		if(ISLIST(received.get("data"))){
+			toFill = LIST(received.get("data"));
+		}
+	}
+	vector<Player> myplayers;
+	for(size_t i=0; i<toFill.len();++i){
+		Player player(DICT(toFill[i]));
+		myplayers.push_back(player);
+	}
+	delete serverResponse;
+	return myplayers;
+}

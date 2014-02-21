@@ -1,4 +1,4 @@
-OBJS = ConnectionManager.o
+OBJS = TcpSocket.o ConnectionManager.o
 LIBS = ../json/libjson.a
 CPPFLAGS = -I../
 

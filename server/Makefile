@@ -1,5 +1,6 @@
-OBJS= Server.o User.o MatchManager.o RandomNameGenerator.o
+OBJS= Server.o User.o MatchManager.o RandomNameGenerator.o PlayerMarket.o
 LIBS = ../common/network/libnetwork.a ../common/json/libjson.a ../common/model/libmodel.a
+
 CPPFLAGS = -I../common/
 
 all: test.ok server.app
