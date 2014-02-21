@@ -1,7 +1,7 @@
 #include "MatchManager.hpp"
 
 /* TODO: read from config file */
-#define STROKES_TIMEOUT_SECONDS 3
+#define STROKES_TIMEOUT_SECONDS 60
 
 MatchManager::MatchManager(
 	BaseConnectionManager & connections, 

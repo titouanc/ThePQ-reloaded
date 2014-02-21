@@ -14,7 +14,8 @@ std::string humanExcName(const char *name)
 
 CLI::CLI(NetConfig const &config) : 	_connection(config.host, config.port),
 										_prompt(">"),
-										_isWaitingForMessage(false)
+										_isWaitingForMessage(false),
+										_matchManager(_connection)
 {
 	pthread_create(&_thread, NULL, net::runThread, this);
 }
@@ -222,9 +223,9 @@ void CLI::notificationsMenu()
 	_menu.addToDisplay("   - (q)uit\n");
 	int option;
 	bool quit = false;
-	while (! _messages.empty() && ! quit)
+	while (! _connection.notifications.empty() && ! quit)
 	{
-		JSON::Value * currentNotification = _messages.front();
+		JSON::Value * currentNotification = _connection.notifications.front();
 		JSON::Dict const & notif = DICT(currentNotification);
 		if (STR(notif.get("type")).value() == net::MSG::FRIENDLY_GAME_INVITATION
 			&& ISSTR(notif.get("data")))
@@ -236,11 +237,11 @@ void CLI::notificationsMenu()
 		{
 			case 1:
 				handleNotification(currentNotification);
-				_messages.pop();
+				_connection.notifications.pop();
 				break;
 			case 2:
-				_messages.push(_messages.front());
-				_messages.pop();
+				_connection.notifications.push(_connection.notifications.front());
+				_connection.notifications.pop();
 				break;
 			case 3:
 				quit = true;
@@ -435,7 +436,7 @@ void CLI::chooseUser()
 	_connection.send(toSend);
 
 	cout << "Please wait for " << userInput << " to answer to your invitation..." << endl;
-	JSON::Value *serverMessage = waitForMsg(net::MSG::FRIENDLY_GAME_INVITATION_RESPONSE);
+	JSON::Value *serverMessage = _connection.waitForMsg(net::MSG::FRIENDLY_GAME_INVITATION_RESPONSE);
 	JSON::Dict const & received = DICT(serverMessage);
 	if (ISDICT(received.get("data")) && ISSTR(DICT(received.get("data")).get("answer"))){
 		string answer = STR(DICT(received.get("data")).get("answer")).value();
@@ -547,7 +548,7 @@ void CLI::loginUser(string username, string passwd)
 	toSend.set("data", credentials);
 	_connection.send(toSend);
 
-	JSON::Value *serverMessage = waitForMsg(net::MSG::STATUS);
+	JSON::Value *serverMessage = _connection.waitForMsg(net::MSG::STATUS);
 	JSON::Dict const & received = DICT(serverMessage); 	// receiving server response
 	if (ISSTR(received.get("data"))) {
 		if (STR(received.get("data")).value() == net::MSG::PASSWORD_ERROR)
@@ -571,7 +572,7 @@ void CLI::doesUserExist(string username){
 	toSend.set("data", username);
 	_connection.send(toSend);
 
-	JSON::Value *serverMessage = waitForMsg(net::MSG::STATUS); // receiving server response
+	JSON::Value *serverMessage = _connection.waitForMsg(net::MSG::STATUS); // receiving server response
 	JSON::Dict const & received = DICT(serverMessage);
 	if (ISSTR(received.get("data"))
 		&& STR(received.get("data")).value() == net::MSG::USER_EXISTS){
@@ -588,7 +589,7 @@ void CLI::registerUser(string username, string passwd)
 	toSend.set("data", credentials);
 	_connection.send(toSend);
 
-	JSON::Value *serverMessage = waitForMsg(net::MSG::STATUS);	// receiving server response
+	JSON::Value *serverMessage = _connection.waitForMsg(net::MSG::STATUS);	// receiving server response
 
 	if (ISSTR(received.get("data"))) {
 		if (STR(received.get("data")).value() == net::MSG::USER_EXISTS)
@@ -604,7 +605,7 @@ vector<Installation> CLI::getInstallationsList(){
 	query.set("data", "");
 	_connection.send(query);
 
-	JSON::Value *serverResponse = waitForMsg(net::MSG::INSTALLATIONS_LIST);
+	JSON::Value *serverResponse = _connection.waitForMsg(net::MSG::INSTALLATIONS_LIST);
 	JSON::Dict const & response = DICT(serverResponse);
 	
 	vector<Installation> vec;
@@ -628,7 +629,7 @@ bool CLI::upgradeInstallation(size_t i)
 	query.set("data", i);
 	_connection.send(query);
 	
-	JSON::Value *serverResponse = waitForMsg(net::MSG::INSTALLATION_UPGRADE);
+	JSON::Value *serverResponse = _connection.waitForMsg(net::MSG::INSTALLATION_UPGRADE);
 	JSON::Dict const & received = DICT(serverResponse);
 	if (ISBOOL(received.get("data")))
 	{
@@ -646,7 +647,7 @@ bool CLI::downgradeInstallation(size_t i)
 	query.set("data", i);
 	_connection.send(query);
 	
-	JSON::Value *serverResponse = waitForMsg(net::MSG::INSTALLATION_DOWNGRADE);
+	JSON::Value *serverResponse = _connection.waitForMsg(net::MSG::INSTALLATION_DOWNGRADE);
 	JSON::Dict const & received = DICT(serverResponse);
 	
 	if (ISBOOL(received.get("data")))
@@ -665,7 +666,7 @@ vector<std::string> CLI::getConnectedUsersList(){// TODO
 	query.set("data", "");
 	_connection.send(query);
 
-	JSON::Value *serverResponse = waitForMsg(net::MSG::CONNECTED_USERS_LIST);
+	JSON::Value *serverResponse = _connection.waitForMsg(net::MSG::CONNECTED_USERS_LIST);
 	JSON::Dict const & received = DICT(serverResponse);
 	if (ISLIST(received.get("data"))) {
 		JSON::List & connectedUsers = LIST(received.get("data"));
@@ -682,7 +683,7 @@ std::vector<Sale> CLI::updatePlayersOnSale(){
 	query.set("type", net::MSG::PLAYERS_ON_MARKET_LIST);
 	query.set("data", "");
 	_connection.send(query);
-	JSON::Value *serverResponse = waitForMsg(net::MSG::PLAYERS_ON_MARKET_LIST);
+	JSON::Value *serverResponse = _connection.waitForMsg(net::MSG::PLAYERS_ON_MARKET_LIST);
 	JSON::Dict const & received = DICT(serverResponse);
 	std::vector<Sale> res;
 	
@@ -702,7 +703,7 @@ void CLI::bidOnPlayer(int player_id,std::string username, int value){//modif
 	query.set("type", net::MSG::BID_ON_PLAYER_QUERY);
 	query.set("data", data);
 	_connection.send(query);
-	JSON::Value *serverResponse = waitForMsg(net::MSG::BID_ON_PLAYER_QUERY);
+	JSON::Value *serverResponse = _connection.waitForMsg(net::MSG::BID_ON_PLAYER_QUERY);
 	JSON::Dict const & received = DICT(serverResponse);
 	
 	if(ISSTR(received.get("data"))){
@@ -728,7 +729,7 @@ void CLI::addPlayerOnMarket(int player_id,std::string username, int value){
 	query.set("type", net::MSG::ADD_PLAYER_ON_MARKET_QUERY);
 	query.set("data", data);
 	_connection.send(query);
-	JSON::Value *serverResponse = waitForMsg(net::MSG::ADD_PLAYER_ON_MARKET_QUERY);
+	JSON::Value *serverResponse = _connection.waitForMsg(net::MSG::ADD_PLAYER_ON_MARKET_QUERY);
 	JSON::Dict const & received = DICT(serverResponse);
 		if(ISSTR(received.get("data"))){
 			std::string res = STR((received.get("data"))).value();
@@ -743,7 +744,7 @@ std::vector<Player> CLI::getPlayers(std::string username){//modif
 	query.set("type", net::MSG::PLAYERS_LIST);
 	query.set("data",data);
 	_connection.send(query);
-	JSON::Value *serverResponse = waitForMsg(net::MSG::PLAYERS_LIST);
+	JSON::Value *serverResponse = _connection.waitForMsg(net::MSG::PLAYERS_LIST);
 	JSON::Dict const & received = DICT(serverResponse);
 	JSON::List toFill;
 	if(ISLIST(received.get("data"))){
@@ -759,34 +760,13 @@ std::vector<Player> CLI::getPlayers(std::string username){//modif
 }
 
 
-JSON::Value* CLI::waitForMsg(std::string typeToWait)
-{
-	_isWaitingForMessage = true;
-	JSON::Value* msg = NULL, *res = NULL;
-	while (msg == NULL || _connection.available())
-	{
-		msg = _connection.pop();
-		JSON::Dict const & dict = DICT(msg);
-		if (STR(dict.get("type")).value() == typeToWait)
-		{
-			res = msg;
-		}
-		else
-		{
-			_messages.push(msg);
-		}
-	}
-	_isWaitingForMessage = false;
-	return res;
-}
-
 void CLI::displayNotificationsCount(){
-	cout << "You have " << _messages.size() << "notifications." << endl;
+	cout << "You have " << _connection.notifications.size() << "notifications." << endl;
 }
 
 void CLI::updateNotifications(){
 	while (!_isWaitingForMessage && _connection.available()){
-		_messages.push(_connection.pop());
+		_connection.notifications.push(_connection.pop());
 	}
 }
 
@@ -850,12 +830,12 @@ void CLI::denyInvitationFromUser(string username){
 }
 
 void CLI::startMatch(){
-	JSON::Value *serverBalls = waitForMsg(net::MSG::MATCH_BALLS);
+	JSON::Value *serverBalls = _connection.waitForMsg(net::MSG::MATCH_BALLS);
 	JSON::Dict const &receivedBalls = DICT(serverBalls);
 	_matchManager.initBalls(receivedBalls);
-	JSON::Value *serverSquads = waitForMsg(net::MSG::MATCH_SQUADS);
+	JSON::Value *serverSquads = _connection.waitForMsg(net::MSG::MATCH_SQUADS);
 	JSON::Dict const &receivedSquads = DICT(serverSquads);
 	_matchManager.initSquads(receivedSquads, _username);
-	waitForMsg(net::MSG::MATCH_START);
+	_connection.waitForMsg(net::MSG::MATCH_START);
 	_matchManager.startMatch();
 }

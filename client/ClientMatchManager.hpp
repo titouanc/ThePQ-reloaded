@@ -11,10 +11,11 @@
 #include <json/json.hpp>
 #include <map>
 #include <string>
+#include <network/TcpSocket.hpp>
 
 class ClientMatchManager {
 public:
-	ClientMatchManager();
+	ClientMatchManager(net::TcpSocket &connection);
 
 	void initBalls(const JSON::Dict& msg);
 	void initSquads(const JSON::Dict& msg, string username);
@@ -22,10 +23,12 @@ public:
 	void turnMenu();
 	void displayAvailablePlayers();
 	void selectPlayer();
+	void selectDirectionForPlayer(int player);
 	Position parseDirection(string userInput);
 	bool isOwnPlayer(Player const & player);
 	void displayPitch();
 private:
+	net::TcpSocket & _connection;
 	bool _isMatchFinished;
 	std::string _username;
 	Squad _otherSquad;
