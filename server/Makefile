@@ -8,4 +8,8 @@ all: test.ok server.app
 server.app: main.o ${OBJS} ${LIBS}
 	${CXX} ${LDFLAGS} -o $@ $^
 
+.PHONY: rmusers
+rmusers:
+	rm -r data/users/*
+
 include ../Makefile.includes
