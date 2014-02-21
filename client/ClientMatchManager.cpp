@@ -52,7 +52,7 @@ void ClientMatchManager::turnMenu(){
 	turnMenu.addToDisplay("\t- select player");
 	int option;
 	do {
-		cout << _pitch << endl;
+		displayPitch();
 		displayAvailablePlayers();
 		option = turnMenu.run();
 		switch(option){
@@ -168,6 +168,76 @@ Position ClientMatchManager::parseDirection(string userInput){
 	return res;
 }
 
+bool ClientMatchManager::isOwnPlayer(Player const & player)
+{
+	for (int i=0; i<7; i++)
+		if (_ownSquad.players[i] == &player)
+			return true;
+	return false;
+}
+
+char ClientMatchManager::playerLetter(Player const & player)
+{
+	return 'A' + player.getID() - 1;
+}
+
+void ClientMatchManager::displayPitch()
+{
+	Moveable *atPos = NULL;
+	for (int y=_pitch.ymax()-1; y>=_pitch.ymin(); y--){
+		for (int x=_pitch.xmin(); x<_pitch.xmax(); x++){
+
+			/* background */
+			if (_pitch.isInKeeperZone(x, y))
+				cout << "\033[47m";
+			else if (_pitch.inEllipsis(x, y))
+				cout << "\033[42m";
+
+			/* foreground */
+			if (! _pitch.isValid(x, y) || ! _pitch.inEllipsis(x, y)){
+				cout << ' ';
+			} else {
+				atPos = _pitch.getAt(x, y);
+				if (_pitch.isGoal(x, y)){
+					cout << "\033[1m\033[44mO";
+				} else if (atPos==NULL){
+					cout << '.';
+				} else if (atPos->isBall()){
+					/* Colorize balls by type */
+					Ball const & ball = (Ball const &) *atPos;
+					cout << "\033[1m";
+					if (ball.isGoldenSnitch())
+						cout << "\033[33m";
+					else if (ball.isQuaffle())
+						cout << "\033[34m";
+					else if (ball.isBludger())
+						cout << "\033[31m";
+					cout << '*';
+				} else if (atPos->isPlayer()){
+					/* Colorize players by type */
+					Player const & player = (Player const &) *atPos;
+					if (isOwnPlayer(player))
+						cout << "\033[1m";
+					if (player.isSeeker())
+						cout << "\033[33m";
+					else if (player.isChaser())
+						cout << "\033[34m";
+					else if (player.isBeater())
+						cout << "\033[31m";
+					else if (player.isKeeper())
+						cout << "\033[36m";
+					cout << playerLetter(player);
+				}
+			}
+			cout << "\033[0m";
+		}
+		cout << endl;
+	}
+	cout << "\033[1m"
+		 << "\033[34mChaser \033[31mBeater \033[36mKeeper \033[33mSeeker"
+	     << "\033[34m*Quaffle \033[31m*Bludger \033[33m*Golden Snitch\033[0m"
+		 << endl;
+}
 
 
 

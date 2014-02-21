@@ -59,10 +59,17 @@ class Pitch {
 		bool isInWestKeeperZone(Moveable *moveable) const;
 		bool isInEastKeeperZone(int x, int y) const;
 		bool isInEastKeeperZone(Moveable *moveable) const;
+		
+		bool isValid(int x, int y) const {
+			return abs(x%2) == abs(y%2);
+		}
+		
+		bool isInKeeperZone(int x, int y) const {
+			return isInEastKeeperZone(x, y) || isInWestKeeperZone(x, y);
+		}
 
 		bool isInKeeperZone(Position const & pos) const {
-			return isInEastKeeperZone(pos.x(), pos.y()) || 
-			       isInWestKeeperZone(pos.x(), pos.y());
+			return isInKeeperZone(pos.x(), pos.y());
 		}
 
 		// TODO DOC
