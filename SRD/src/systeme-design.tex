@@ -62,7 +62,7 @@ alors la connexion.
   \caption{\label{fig:Class:Network} Classes: Le gestionnaire de connexion}
 \end{figure}
 
-Les connexions sont ici gérées dans le \emph{BaseConnectionManager}, qui instancie deux threads : un s'occupant des messages entrant, l'autre des sortant. Ces messages arrivent en JSON via un file descriptor, puis passent chacun par des files (suivant leur entrée ou sortie) afin d'arriver dans le bon ordre.
+Les connexions sont ici gérées dans le \emph{BaseConnectionManager}, qui instancie deux threads : un s'occupant des messages entrant, l'autre des sortant. Ces messages arrivent en JSON via un file descriptor, via une file (suivant leur entrée ou sortie) afin d'arriver dans le bon ordre.
 
 Le \emph{ConnectionManager} ajoute à la précédente classe la possibilité d'accepter de nouveaux file descriptors.
 
