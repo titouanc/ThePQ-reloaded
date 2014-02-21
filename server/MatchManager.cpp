@@ -309,8 +309,8 @@ void MatchManager::playStrokes(void)
 			Displacement & move = (*i).move;
 			Position newPos = move.position(_t, moving);
 			Position oldPos = move.position(last_t, moving);
-
-			cout << "MOVING " << moving.getID() << endl;
+			if (newPos == oldPos)
+				continue;
 
 			if (checkGoal(*i, newPos, oldPos)){
 				/* Is it a goal ? */
