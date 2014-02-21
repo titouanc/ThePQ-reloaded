@@ -1,52 +1,30 @@
 #include "Menu.hpp"
 
-Menu::Menu()
-{
-	_message = "";
+void Menu::clearBuffer(){
+	_inBuffer.clear();
 }
 
 
-Menu::~Menu()
-{
-	typename
-	std::map<char, Callback*>::iterator it = _options.begin();
-	while (it != _options.end())
-	{
-		delete it->second;
-		it++;
+void Menu::addToDisplay(string c){
+	_inBuffer.push_back(c);
+}
+
+void Menu::showMenu(){
+	for(size_t i=0;i<_inBuffer.size();++i){
+		cout << i+1 << ". " << _inBuffer[i] << endl;
 	}
 }
 
-
-void Menu::setMessage(std::string message)
-{
-	_message = message;
-}
-
-
-void Menu::addOption(char choice, Callback* callback)
-{
-	_options.insert(std::pair<char, Callback*>(choice, callback));
-}
-
-
-void Menu::run()
-{
-	char userChoice;
-	do
-	{
-		std::cout << _message;
-		std::cin >> userChoice;
-		if (userChoice >= 'A' && userChoice <= 'Z')
-		{
-			userChoice -= 'A' - 'a';
-		}
-		std::map<char, Callback*>::const_iterator it;
-		it = _options.find(userChoice);
-		if (it != _options.end())
-		{
-			(*(it->second))();
-		}
+int Menu::run(){
+	unsigned int selection;
+	showMenu();
+	cin >> selection;
+	while ( selection > _inBuffer.size() || selection <= 0){
+		cout<<"Wrong option entered"<<endl;
+		cin.clear();
+		cin.ignore(1000,'\n');
+		cin>>selection;
 	}
-	while (userChoice != 'q' && userChoice != 'Q');
+	cout<<"Option entered: "<<selection<<endl;
+	return selection;
 }

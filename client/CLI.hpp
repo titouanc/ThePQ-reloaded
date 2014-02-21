@@ -53,6 +53,7 @@ private:
 	
 	pthread_t _thread;
 	
+	Menu _menu;
 	
 	// NEW
 	void loginUser(std::string username, std::string passwd);
