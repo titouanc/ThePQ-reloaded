@@ -120,7 +120,6 @@ void ClientMatchManager::selectDirectionForPlayer(int player){
 	_connection.send(toSend);
 
 	JSON::Value * serverMessage = _connection.waitForMsg(net::MSG::MATCH_STATUS);
-	cout << serverMessage << endl;
 	if (ISDICT(serverMessage)){
 		JSON::Dict const & received = DICT(serverMessage);
 		if (ISDICT(received.get("data"))){
