@@ -23,12 +23,14 @@ private:
 	std::string _playerPath;
 	pthread_t _thread;
 	bool _runChecker;
+	pthread_mutex_t _deleting;
 
 	void startChecker();
+	void deletingLock(){pthread_mutex_lock(&_deleting);}
+	void deletingUnlock(){pthread_mutex_unlock(&_deleting);}
 public:
 	PlayerMarket();
 	~PlayerMarket(){_runChecker = false;}
-	//void removeSale(Sale * sale);//modif
 	void createSale(const JSON::Dict &json);
 	void transfert(Sale * sale);
 	Sale * getSale(int id);

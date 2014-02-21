@@ -314,33 +314,40 @@ void CLI::printPlayersOnSale(){
 void CLI::placeBid(){
 	int player_id, value;
 	string response;
+	bool found=false;
 	cout << "Enter the ID of the player you wish to bid on : " << endl;
 	cout << _prompt;
 	cin >> player_id;
 	for(size_t i = 0; i<_playersOnSale.size();++i){		//Getting the next bid value (which is in the JSON::Dict sent by server)
 		if(player_id == _playersOnSale[i].getID()){
-			value = _playersOnSale[i].getID();
+			found = true;
+			value = _playersOnSale[i].getNextBidValue();
 		}
 	}
-	try{
-		bidOnPlayer(player_id, _username, value);
-		
-		cout << "Bid successfully placed ! Hurra !" << endl;
+	if (found){
+		try{
+			bidOnPlayer(player_id, _username, value);
+			
+			cout << "Bid successfully placed ! Hurra !" << endl;
+		}
+		catch(bidValueNotUpdatedException e){
+			cout << "Error : bid value not correct (update your market list)."<<endl;
+		}
+		catch(turnException e){
+			cout << "Error : you did not bid last turn."<<endl;
+		}
+		catch(bidEndedException e){
+			cout << "Error : player not on market any more (update your market list)."<<endl;
+		}
+		catch(bidOnYourPlayerException e){
+			cout << "Error : cannot bid on your player."<<endl;
+		}
+		catch(lastBidderException e){
+			cout << "Error : you are currently winning this sale. Cannot bid on your own bid."<<endl;
+		}
 	}
-	catch(bidValueNotUpdatedException e){
-		cout << "Error : bid value not correct (update your market list)."<<endl;
-	}
-	catch(turnException e){
-		cout << "Error : you did not bid last turn."<<endl;
-	}
-	catch(bidEndedException e){
-		cout << "Error : player not on market any more (update your market list)."<<endl;
-	}
-	catch(bidOnYourPlayerException e){
-		cout << "Error : cannot bid on your player."<<endl;
-	}
-	catch(lastBidderException e){
-		cout << "Error : you are currently winning this sale. Cannot bid on your own bid."<<endl;
+	else{
+		cout << "Error : this player is not in the list." << endl;
 	}
 }
 
@@ -650,8 +657,8 @@ void CLI::bidOnPlayer(int player_id,std::string username, int value){//modif
 	JSON::Value *serverResponse = waitForMsg(net::MSG::BID_ON_PLAYER_QUERY);
 	JSON::Dict const & received = DICT(serverResponse);
 	
-	if(ISDICT(received.get("data"))){
-		std::string res = STR(DICT(received.get("data")).get(net::MSG::SERVER_RESPONSE));
+	if(ISSTR(received.get("data"))){
+		std::string res = STR(received.get("data")).value();
 		if(res == net::MSG::BID_VALUE_NOT_UPDATED)
 			throw bidValueNotUpdatedException();
 		else if(res == net::MSG::BID_TURN_ERROR)
