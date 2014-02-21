@@ -8,7 +8,7 @@
 #include <model/Sale.hpp>
 #include <model/Player.hpp>
 #include <pthread.h>
-#include "include.hpp"
+
 #include "Server.hpp"
 
 /*

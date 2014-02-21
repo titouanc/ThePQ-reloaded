@@ -113,8 +113,7 @@ void PlayerMarket::loadSales(){
 		string curPath=_marketPath;
 		while ((ent=readdir (dir)) != NULL ){
 			if(ent->d_type==DT_REG){			
-				cout<<ent->d_name<<endl;
-				cout<<curPath+ent->d_name<<endl;
+				
 				load=JSON::load((curPath+ent->d_name));
 				JSON::Dict &dict=*((JSON::Dict*) load) ;
 				_sales.push_back(new Sale(dict));
