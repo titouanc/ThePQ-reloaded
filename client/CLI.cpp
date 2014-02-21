@@ -398,6 +398,9 @@ void CLI::placeBid(){
 	}
 }
 
+//Market notifs
+
+
 /* Friendly match menu */
 void CLI::friendlyMatchMenu()
 {
@@ -797,8 +800,11 @@ void CLI::handleNotification(JSON::Value *notification){
 	string messageType;
 	if (ISSTR(message.get("type")))
 		messageType = STR(message.get("type")).value();
-	if (messageType == net::MSG::FRIENDLY_GAME_INVITATION)
-		handleFriendlyGameInvitation(message);
+
+		if (messageType == net::MSG::FRIENDLY_GAME_INVITATION)
+			handleFriendlyGameInvitation(message);
+		if (messageType == net::MSG::MARKET_MESSAGE)
+			handleEndOfSaleNotification(DICT(message.get("data")));
 }
 
 void CLI::handleFriendlyGameInvitation(JSON::Dict &message){
@@ -848,4 +854,23 @@ void CLI::denyInvitationFromUser(string username){
 	data.set("answer", net::MSG::FRIENDLY_GAME_INVITATION_DENY);
 	toSend.set("data", data);
 	_connection.send(toSend);
+}
+
+/*Market notifications*/
+
+void CLI::handleEndOfSaleNotification(JSON::Dict & json){
+	cout << "<<MESSAGE : SALE ENDED>>" << endl;
+	if(STR(json.get("type")).value()==net::MSG::END_OF_OWNED_SALE_RAPPORT){
+		if(STR(json.get(net::MSG::RAPPORT_SALE_STATUS)).value() == net::MSG::PLAYER_NOT_SOLD){
+			cout << "Your player " << INT(json.get(net::MSG::PLAYER_ID)) << "was not sold. :(" << endl; 
+		}
+		else if(STR(json.get(net::MSG::RAPPORT_SALE_STATUS)).value() == net::MSG::PLAYER_SOLD){
+			cout << "Your player " << INT(json.get(net::MSG::PLAYER_ID)) << " has been sold for " << INT(json.get(net::MSG::BID_VALUE)) 
+			<< " to " << STR(json.get(net::MSG::CURRENT_BIDDER)).value() << endl;
+		}
+	}
+	else if(STR(json.get("type")).value()==net::MSG::WON_SALE_RAPPORT){
+		cout << "You bought player " << INT(json.get(net::MSG::PLAYER_ID)) << " for " << INT(json.get(net::MSG::BID_VALUE)) << "." <<endl;
+		cout << "This player comes from " << STR(json.get(net::MSG::SALE_OWNER)).value() << "'s team." << endl;
+	}
 }

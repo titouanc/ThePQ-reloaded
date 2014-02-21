@@ -116,6 +116,7 @@ public:
 	void salePlayer();
 	vector<int> getBidValueRange(Player *player);
 	void placeBid();
+	void handleEndOfSaleNotification(JSON::Dict&);
 
 private:
 	void loadInstallations();

@@ -1,10 +1,10 @@
-#include "Server.hpp"
 #include <stdlib.h>
 #include <time.h>
 #include <stdexcept>
 #include <typeinfo>
 #include <cxxabi.h>
 #include <Constants.hpp>
+#include "Server.hpp"
 
 using namespace std;
 using namespace net;
@@ -21,7 +21,7 @@ std::string humanExcName(const char *name)
 Server::Server(NetConfig const & config) : 
 	_inbox(), _outbox(), _users(),
 	_connectionManager(_inbox, _outbox, config.ip.c_str(), config.port, config.maxClients),
-	_matches()
+	market(new PlayerMarket(this)),_matches()
 {
 	_connectionManager.start();
 	cout << "Launched server on " << _connectionManager.ip() << ":" << _connectionManager.port() << endl;
@@ -34,6 +34,7 @@ Server::~Server()
 		(*it)->stop();
 		delete *it;
 	}
+	delete market;
 	_matches.clear();
 }
 
@@ -359,16 +360,16 @@ void Server::sendInvitationResponseToPlayer(const JSON::Dict &response, int peer
 // }
 
 void Server::addPlayerOnMarket(const JSON::Dict &sale, int peer_id){
-	Message status(peer_id, market.addPlayer(sale).clone());
+	Message status(peer_id, market->addPlayer(sale).clone());
 	_outbox.push(status);
 }
 
 void Server::sendPlayersOnMarketList(int peer_id){
-	Message status(peer_id, market.allSales().clone());
+	Message status(peer_id, market->allSales().clone());
 	_outbox.push(status);
 }
 void Server::placeBidOnPlayer(const JSON::Dict &bid, int peer_id){
-	Message status(peer_id, market.bid(bid).clone());
+	Message status(peer_id, market->bid(bid).clone());
 	_outbox.push(status);
 }
 
@@ -382,4 +383,22 @@ void Server::sendPlayersList(const JSON::Dict &data, int peer_id){//modif
 	Message status(peer_id, playersList.clone());
 	_outbox.push(status);
 
+}
+
+int Server::getPeerID(std::string const &username){
+	for (map<int, User*>::iterator it=_users.begin(); it!=_users.end(); it++){
+		if (it->second->getUsername() == username){
+			return it->first;
+		}
+	}
+	return 0;
+}
+
+void Server::sendMarketMessage(std::string const &username, const JSON::Dict &message){
+	int to_peer = getPeerID(username);
+	JSON::Dict toSend;
+	toSend.set("type",net::MSG::MARKET_MESSAGE);
+	toSend.set("data",message);
+	Message status(to_peer, toSend.clone());
+	_outbox.push(status); 
 }
