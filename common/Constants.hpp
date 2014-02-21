@@ -58,6 +58,25 @@ namespace net
 		static const std::string CONNECTED_USERS_LIST = "DQ_CU_L";
 		static const std::string PLAYERS_ON_MARKET_LIST= "DQ_P_OM_L";
 		static const std::string PLAYERS_LIST = "DQ_P_L";
+
+		// friendly game
+		static const std::string FRIENDLY_GAME_USERNAME = "F_G_U";
+		static const std::string FRIENDLY_GAME_INVITATION = "F_G_U";
+		static const std::string FRIENDLY_GAME_INVITATION_ACCEPT = "F_G_U_A";
+		static const std::string FRIENDLY_GAME_INVITATION_DENY = "F_G_U_D";
+
+
+		// MATCH ----------------------------------------------------------------
+		static const std::string MATCH_START   = "MSTART";
+		static const std::string MATCH_END     = "MEND";
+		static const std::string MATCH_SQUADS  = "MSQUADS";
+		static const std::string MATCH_BALLS   = "MBALLS";
+		static const std::string MATCH_PROMPT  = "M?";
+		static const std::string MATCH_TIMEOUT = "MTOUT";
+		static const std::string MATCH_STROKE  = "MSTROKE";
+		static const std::string MATCH_ERROR   = "M!!!";
+		static const std::string MATCH_ACK     = "MACK";
+		static const std::string MATCH_DELTA   = "MDELTA";
 	}
 }
 
