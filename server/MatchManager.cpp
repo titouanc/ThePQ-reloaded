@@ -127,10 +127,8 @@ void MatchManager::_mainloop_out()
 	cout << "[" << this << "] \033[32mMatch started\033[0m" << endl;
 	sendSignal(net::MSG::MATCH_START);
 
-	cout << _pitch << endl;
-
 	unsigned int n_ticks = 0;
-	while (nClients() > 0){
+	while (nClients() == 2){
 		n_ticks++;
 		cout << "[" << this << "] + tick " << n_ticks << endl;
 		sendSignal(net::MSG::MATCH_PROMPT);
@@ -152,11 +150,6 @@ void MatchManager::_mainloop_out()
 		sendSignal(net::MSG::MATCH_TIMEOUT);
 		if (! _strokes.empty())
 			playStrokes();
-
-		cout << _pitch << endl;
-
-		if (n_ticks > 3)
-			break;
 	}
 
 	sendSignal(net::MSG::MATCH_END);
