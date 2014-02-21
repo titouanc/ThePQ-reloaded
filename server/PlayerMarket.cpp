@@ -1,6 +1,7 @@
 #include "PlayerMarket.hpp"
 #include <Constants.hpp>
 #include <sys/stat.h>
+#include <stdio.h>
 
 void * saleChecker(void * p){
 	PlayerMarket *market = static_cast<PlayerMarket*>(p);
@@ -8,9 +9,12 @@ void * saleChecker(void * p){
 		sleep(5); //Checks every 5 seconds
 		for(size_t i = 0; i<market->_sales.size();++i){
 			if(market->_sales[i]->isOver()){
+				market->deletingLock();
 				market->transfert(market->_sales[i]);
+				remove(market->_sales[i]->getSalePath(market->_sales[i]->getID()).c_str());
 				delete market->_sales[i];
 				market->_sales.erase(market->_sales.begin()+i);
+				market->deletingUnlock();
 			}
 		}
 	}
@@ -41,18 +45,43 @@ void PlayerMarket::createSale(const JSON::Dict &json){
 
 void PlayerMarket::transfert(Sale * sale){
 	if(sale->_currentBidder.empty()){
-		//Player not sold, should send notification to client. (doing nothing is fine too at the moment).
+		//Player not sold, should send notification to client.
 	}
 	else{
-		//TODO Transfert the player from _owner to _currentBidder (which are usernames)
-		//Player playerSold = loadPlayerInfos(_owner, sale->getID());
-
+		std::vector<Player> from, to;
+		JSON::List delUpdated, addUpdated;
+		Player *toTransfert;
+		JSON::Value* delLoad = JSON::load(getPlayersPath(sale->getOwner()).c_str());
+		JSON::Value* addLoad = JSON::load(getPlayersPath(sale->getCurrentBidder()).c_str());
+		JSON::List & delTeamPlayers = *((JSON::List*)delLoad);
+		JSON::List & addTeamPlayers = *((JSON::List*)addLoad);
+		for(size_t i=0;i<delTeamPlayers.len();++i){
+			if(INT(DICT(delTeamPlayers[i]).get(net::MSG::PLAYER_ID))==sale->getID()){
+				toTransfert = new Player(DICT(delTeamPlayers[i]));
+			}
+			else{
+				from.push_back(Player(DICT(delTeamPlayers[i])));
+			}
+		}
+		for(size_t i=0;i<addTeamPlayers.len();++i){
+			to.push_back(Player(DICT(addTeamPlayers[i])));
+		}
+		to.push_back(*toTransfert);
+		for(size_t i=0;i<from.size();++i){
+			delUpdated.append(from[i]);
+		}
+		for(size_t i=0;i<to.size();++i){
+			addUpdated.append(to[i]);
+		}
+		delUpdated.save(getPlayersPath(sale->getOwner()).c_str());
+		addUpdated.save(getPlayersPath(sale->getCurrentBidder()).c_str());
+		delete toTransfert;
 	}
 }
 
 
 PlayerMarket::PlayerMarket(): _sales(), _marketPath("data/playerMarket/"), _playerPath("data/"),
-_thread(),_runChecker(true) {
+_thread(),_runChecker(true), _deleting(PTHREAD_MUTEX_INITIALIZER) {
 	mkdir(_marketPath.c_str(), 0755);
 	startChecker();
 }
@@ -65,6 +94,7 @@ Sale * PlayerMarket::getSale(int id){
 }
 
 JSON::Dict PlayerMarket::allSales(){
+	deletingLock();
 	JSON::Dict response;
 	response.set("type", net::MSG::PLAYERS_ON_MARKET_LIST);
 	JSON::List sales;
@@ -72,6 +102,7 @@ JSON::Dict PlayerMarket::allSales(){
 		sales.append(*(_sales[i]->getDict()));
 	}
 	response.set("data", sales);
+	deletingUnlock();
 	return response;
 }
 
@@ -110,10 +141,10 @@ JSON::Dict PlayerMarket::bid(const JSON::Dict &json){
 	std::string username = STR(json.get(net::MSG::USERNAME)).value();
 	int player_id = INT(json.get(net::MSG::PLAYER_ID));
 	int bid_value = INT(json.get(net::MSG::BID_VALUE));
+	deletingLock();
 	Sale * sale = getSale(player_id);
-	
+	sale->lock();
 	if(sale != NULL and !(sale->isOver())) {
-		sale->lock();
 		if(sale->isSaler(username)) {response.set("data", net::MSG::CANNOT_BID_ON_YOUR_PLAYER);}
 		else{
 			if(!(sale->allowedToBidForThisTurn(username))) {response.set("data", net::MSG::BID_TURN_ERROR);}
@@ -128,9 +159,10 @@ JSON::Dict PlayerMarket::bid(const JSON::Dict &json){
 				}
 			}
 		}
-		sale->unlock();	
+		
 	} else{response.set("data", net::MSG::BID_ENDED);}
-	
+	sale->unlock();	
+	deletingUnlock();
 	return response;
 }
 

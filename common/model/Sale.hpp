@@ -11,16 +11,16 @@
 
 /*
 TODO :
-- Behaviour when player not sold ??
 - CONST /!\
 */
-#define FIRST_TURN 600 	//10 min
+#define FIRST_TURN 30 	//10 min
 #define TURN_TIME 30
 #define BIDRATIO 0.05 	//5%
 
 class PlayerMarket;
 class Sale{
 	friend class PlayerMarket;
+	friend void * saleChecker(void *);
 	friend std::ostream& operator<< (std::ostream&, const Sale&);
 private:
 	std::vector<std::string> _turnTeams;

@@ -1,6 +1,5 @@
 #include "Sale.hpp"
 #include <Constants.hpp>
-//TODO : saves
 //Thread
 
 void * Sale::staticSaleStart(void * p){
