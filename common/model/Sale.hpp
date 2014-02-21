@@ -47,7 +47,9 @@ private:
 	void lock(){pthread_mutex_lock(&_mymutex);}
 	void unlock(){pthread_mutex_unlock(&_mymutex);}
 public:
+	Sale();
 	Sale(int bidValue, std::string owner, int id, const Player & player);
+	Sale(const JSON::Dict & json);
 	Sale(const JSON::Dict & json, const Player & player);
 	Sale(const Sale & other);
 	

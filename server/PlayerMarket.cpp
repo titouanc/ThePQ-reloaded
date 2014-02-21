@@ -4,6 +4,7 @@
 void * saleChecker(void * p){
 	PlayerMarket *market = static_cast<PlayerMarket*>(p);
 	while(market->_runChecker){
+		sleep(5); //Checks every 5 seconds
 		for(size_t i = 0; i<market->_sales.size();++i){
 			if(market->_sales[i]->isOver()){
 				market->transfert(market->_sales[i]);
@@ -20,15 +21,6 @@ void PlayerMarket::startChecker(){
 		throw "Error occured when creating sale thread";
 	}
 }
-
-// void PlayerMarket::removeSale(Sale * sale){//modif
-// 	std::string fileName = getSalePath(sale->getID());
-// 	remove(fileName.c_str());
-// 	delete sale;
-// 	for(size_t i=0;i<_sales.size();++i){
-// 		if (_sales[i]->getID() == sale->getID()){_sales.erase(_sales.begin()+i);}
-// 	}
-// }
 
 void PlayerMarket::createSale(const JSON::Dict &json){
 	//json infos
