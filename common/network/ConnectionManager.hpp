@@ -19,6 +19,10 @@ namespace net {
 		Message(int p, JSON::Value *d) : peer_id(p), data(d) {}
 	};
 
+	/*
+     * Maintain a set of file descriptors; read from and write to them.
+     * start(): spawn 1 read and 1 write thread (to incoming & from outgoing)
+	 */
 	class BaseConnectionManager {
 		private:
 			/* Communication threads */
@@ -82,6 +86,9 @@ namespace net {
 			virtual void _mainloop_out(void);
 	};
 
+	/*
+     * A connection manager that first bind(), then accept() in read loop.
+	 */
 	class ConnectionManager : public BaseConnectionManager {
 		private:
 			/* Bound IP structure */
@@ -105,6 +112,10 @@ namespace net {
 			unsigned short port(void) const;
 	};
 
+	/*
+	 * A connection manager which can temporarily borrow FDs from another CM.
+	 * Useful to make temporary local dedicated communication channels (eg. matches)
+	 */
 	class SubConnectionManager : public BaseConnectionManager {
 		private:
 			BaseConnectionManager & _parent;
