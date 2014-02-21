@@ -14,7 +14,8 @@ std::string humanExcName(const char *name)
 
 CLI::CLI(NetConfig const &config) : 	_connection(config.host, config.port),
 										_prompt(">"),
-										_isWaitingForMessage(false)
+										_isWaitingForMessage(false),
+										_matchManager(_connection)
 {
 	pthread_create(&_thread, NULL, net::runThread, this);
 }

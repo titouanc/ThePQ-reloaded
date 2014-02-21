@@ -4,7 +4,8 @@
 using namespace std;
 using namespace net;
 
-ClientMatchManager::ClientMatchManager() : _isMatchFinished(false) {}
+ClientMatchManager::ClientMatchManager(net::TcpSocket &connection) : _connection(connection),
+																	 _isMatchFinished(false){}
 
 void ClientMatchManager::initBalls(const JSON::Dict& msg){
 	if (ISLIST(msg.get("data")) && LIST(msg.get("data")).len() == 4){
@@ -44,26 +45,79 @@ void ClientMatchManager::startMatch(){
 	turnMenu();
 }
 
-void ClientMatchManager::selectPlayer(){
-
-}
 
 void ClientMatchManager::turnMenu(){
 	
 	Menu turnMenu;
-	turnMenu.addToDisplay("  - select player");
+	turnMenu.addToDisplay("\t- select player");
 	int option;
 	do {
 		cout << _pitch << endl;
 		displayAvailablePlayers();
 		option = turnMenu.run();
 		switch(option){
+			case 1:
+				selectPlayer();
 			default:
 				break;
 		}
 	} while (!_isMatchFinished);
+}
 
-	
+void ClientMatchManager::selectPlayer(){
+	Menu selectPlayer;
+	for (int i=0; i<7; ++i){
+		selectPlayer.addToDisplay("\t- " + _ownSquad.players[i]->getName());
+	}
+	selectPlayer.addToDisplay("\t- back");
+	int option = 0;
+	if ((option = selectPlayer.run()) != 8){
+		selectDirectionForPlayer(option);
+	}
+}
+
+void ClientMatchManager::selectDirectionForPlayer(int player){
+	Displacement currentDisplacement;
+	Menu selectDirection;
+	selectDirection.addToDisplay("\t- NorthEast");
+	selectDirection.addToDisplay("\t- East");
+	selectDirection.addToDisplay("\t- SouthEast");
+	selectDirection.addToDisplay("\t- SouthWest");
+	selectDirection.addToDisplay("\t- West");
+	selectDirection.addToDisplay("\t- NorthWest");
+	selectDirection.addToDisplay("\t- done");
+	int option = 0;
+	while ((option = selectDirection.run()) != 7){
+		switch (option){
+			case 1:
+				currentDisplacement.addMove(Pitch::NorthEast);
+				break;
+			case 2:
+				currentDisplacement.addMove(Pitch::East);
+				break;
+			case 3:
+				currentDisplacement.addMove(Pitch::SouthEast);
+				break;
+			case 4:
+				currentDisplacement.addMove(Pitch::SouthWest);
+				break;
+			case 5:
+				currentDisplacement.addMove(Pitch::West);
+				break;
+			case 6:
+				currentDisplacement.addMove(Pitch::NorthWest);
+				break;
+			default:
+				break;
+		}
+	}
+	JSON::Dict toSend;
+	toSend.set("type", net::MSG::MATCH_STROKE);
+	JSON::Dict data;
+	data.set("mid", _ownSquad.players[player-1]->getID());
+	data.set("move", currentDisplacement.toJson());
+	toSend.set("data", data);
+	_connection.send(toSend);
 }
 
 void ClientMatchManager::displayAvailablePlayers(){
