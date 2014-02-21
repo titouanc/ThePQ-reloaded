@@ -106,7 +106,7 @@ void BaseConnectionManager::_doDisconnect(int fd)
     close(fd);
     removeClient(fd);
     JSON::Dict msgdata;
-    msgdata.set("type", "DISCONNECT");
+    msgdata.set("type", MSG::DISCONNECT);
     msgdata.set("client_id", fd);
     _incoming.push(Message(fd, msgdata.clone()));
     if (_logger)

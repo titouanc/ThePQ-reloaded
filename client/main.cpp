@@ -1,4 +1,4 @@
-#include "Client.hpp"
+#include "CLI.hpp"
 
 int main(int argc, char const *argv[])
 {
@@ -8,7 +8,7 @@ int main(int argc, char const *argv[])
 	else
 		config.load();
 	
-	Client client(config);
+	CLI client(config);
 	config.save();
 	
 	client.run();

@@ -2,202 +2,180 @@
 
 using namespace std;
 
-std::string humanExcName(const char *name)
+Client::Client(std::string host, int port) : _inbox(), _outbox(),
+_connectionManager(_inbox, _outbox, host.c_str(), port)
 {
-	int status;
-	char *str = abi::__cxa_demangle(name, 0, 0, &status);
-	std::string res(str);
-	free(str);
+	_connectionManager.start();
+}
+
+void Client::loginUser(string username, string passwd)
+{
+	JSON::Dict toSend, credentials;
+	credentials.set(net::MSG::USERNAME, username);
+	credentials.set(net::MSG::PASSWORD, passwd);
+	toSend.set("type", net::MSG::LOGIN);
+	toSend.set("data", credentials);
+	net::Message msg(0, toSend.clone());
+	_outbox.push(msg);
+
+	JSON::Value *serverMessage = _inbox.pop().data;	// receiving server response
+
+	if (ISDICT(serverMessage)){
+		JSON::Dict const &received = DICT(serverMessage);
+		if (received.hasKey("type") && ISSTR(received.get("type")) 
+			&& STR(received.get("type")).value() == net::MSG::STATUS){
+			if (received.hasKey("data") && ISSTR(received.get("data"))) {
+				if (STR(received.get("data")).value() == net::MSG::PASSWORD_ERROR)
+				{
+					delete serverMessage;
+					throw WrongPasswordException();
+				}
+				else if (STR(received.get("data")).value() == net::MSG::USER_NOT_FOUND)
+				{
+					delete serverMessage;
+					throw UserNotFoundException();
+				}
+			}
+		}
+	}
+	delete serverMessage;
+	// User is logged in at this point.
+}
+
+void Client::doesUserExist(string username){
+	JSON::Dict toSend;
+	toSend.set("type", net::MSG::USER_EXISTS);
+	toSend.set("data", username);
+	net::Message msg(0, toSend.clone());
+	_outbox.push(msg);
+
+	JSON::Value *serverMessage = _inbox.pop().data; // receiving server response
+
+	if(ISDICT(serverMessage)){
+		JSON::Dict const &received = DICT(serverMessage);
+		if (received.hasKey("type") && ISSTR(received.get("type")) 
+			&& STR(received.get("type")).value() == net::MSG::STATUS){
+			if (received.hasKey("data") && ISSTR(received.get("data")) 
+				&& STR(received.get("data")).value() == net::MSG::USER_EXISTS){
+				throw UserAlreadyExistsException();
+			}
+		}
+	}
+}
+
+void Client::registerUser(string username, string passwd)
+{
+	JSON::Dict toSend, received, credentials;
+	credentials.set(net::MSG::USERNAME, username);
+	credentials.set(net::MSG::PASSWORD, passwd);
+	toSend.set("type", net::MSG::REGISTER);
+	toSend.set("data", credentials);
+	net::Message msg(0, toSend.clone());
+	_outbox.push(msg);
+
+	JSON::Value *serverMessage = _inbox.pop().data;	// receiving server response
+
+	if (ISDICT(serverMessage)){
+		JSON::Dict const &received = DICT(serverMessage);
+		if (received.hasKey("type") && ISSTR(received.get("type")) 
+			&& STR(received.get("type")).value() == net::MSG::STATUS){
+			if (received.hasKey("data") && ISSTR(received.get("data"))) {
+				if (STR(received.get("data")).value() == net::MSG::USER_EXISTS)
+					throw UserAlreadyExistsException();
+			}
+		}
+	}
+	// User is registered
+}
+
+vector<Installation> Client::getInstallationsList(){
+	JSON::Dict query;
+	JSON::List toFill;
+	query.set("type", net::MSG::INSTALLATIONS_LIST);
+	query.set("data", "");
+	net::Message msg(0, query.clone());
+	_outbox.push(msg);
+
+	JSON::Value *serverResponse = _inbox.pop().data;
+	if (ISDICT(serverResponse))
+	{
+		JSON::Dict response = DICT(serverResponse);
+		if (ISLIST(response.get("data")))
+		{
+			toFill = LIST(response.get("data"));
+		}
+	}
+	vector<Installation> vec;
+	for (size_t i = 0; i < toFill.len(); ++i)
+	{
+		vec.push_back(DICT(toFill[i]));
+	}
+	delete serverResponse;
+	return vec;
+}
+
+bool Client::upgradeInstallation(size_t i)
+{
+	bool ret = false;
+	JSON::Dict query;
+	query.set("type", net::MSG::INSTALLATION_UPGRADE);
+	query.set("data", i);
+	net::Message msg(0, query.clone());
+	_outbox.push(msg);
+	
+	JSON::Value *serverResponse = _inbox.pop().data;
+	if (ISDICT(serverResponse))
+	{
+		JSON::Dict const & received = DICT(serverResponse);
+		if (ISSTR(received.get("type")) && ISBOOL(received.get("data"))
+			&& STR(received.get("type")).value() == net::MSG::INSTALLATION_UPGRADE)
+		{
+			ret = received.get("data");
+		}
+	}
+	return ret;
+}
+
+bool Client::downgradeInstallation(size_t i)
+{
+	bool ret = false;
+	JSON::Dict query;
+	query.set("type", net::MSG::INSTALLATION_DOWNGRADE);
+	query.set("data", i);
+	net::Message msg(0, query.clone());
+	_outbox.push(msg);
+	
+	JSON::Value *serverResponse = _inbox.pop().data;
+	if (ISDICT(serverResponse))
+	{
+		JSON::Dict const &received = DICT(serverResponse);
+		
+		if (ISSTR(received.get("type")) && ISBOOL(received.get("data"))
+			&& STR(received.get("type")).value() == net::MSG::INSTALLATION_DOWNGRADE)
+		{
+			ret = received.get("data");
+		}
+	}
+	delete serverResponse;
+	return ret;
+}
+
+vector<std::string> Client::getConnectedUsersList(){
+	vector<std::string> res;
+	JSON::Dict query;
+	query.set("type", net::MSG::CONNECTED_USERS_LIST);
+	query.set("data", "");
+	net::Message msg(0, query.clone());
+	_outbox.push(msg);
+
+	JSON::Value *serverResponse = _inbox.pop().data;
+	if (ISDICT(serverResponse)){
+		JSON::Dict received = DICT(serverResponse);
+		if (ISSTR(received.get("type")) && ISLIST(received.get("data"))){
+			JSON::List & connectedUsers = LIST(received.get("data"));
+			for (size_t i = 0; i<connectedUsers.len(); ++i)
+				res.push_back(STR(connectedUsers[i]));
+		}
+	}
 	return res;
-}
-
-Client::Client(NetConfig const &config) : _prompt(">"), _connection(config.host, config.port)
-{
-	
-}
-
-void Client::run()
-{
-	cout << Message::splashScreen();
-
-	/* user menu */
-	Menu<Client> loginMenu;
-	string message;
-	message+= "You can : \n";
-	message+= "   - (l)ogin\n";
-	message+= "   - (r)egister\n";
-	message+= "   - (q)uit\n";
-	message+= _prompt;
-	loginMenu.setMessage(message);
-	loginMenu.addOption('l', new ClassCallback<Client>(this,&Client::login));
-	loginMenu.addOption('r', new ClassCallback<Client>(this,&Client::registerUser));
-
-	bool error = false;
-	do {
-		try{ 
-			error = false;
-			loginMenu.run(); 
-		} catch (std::runtime_error &err){
-			error = true;
-			cerr << "\033[31mError " << humanExcName(typeid(err).name()) 
-				     << "\t" << err.what() << "\033[0m" << endl;
-		} catch (...){
-			error = true;
-			cerr << "\033[31mUnknow error "
-				 << "\033[0m" << endl;
-		}
-	} while (error);
-
-	cout << Message::goodBye();
-}
-
-void Client::login(){
-	
-	string username = askForUserData("Username : ");
-	string password = askForUserData("Password : ");
-	
-	try {
-		cout << "Please wait..." << endl;
-		_connection.loginUser(username, password);
-		cout << "You have successfully logged in! Welcome! :)" << endl;
-		mainMenu();
-	}
-	catch (UserNotFoundException e)
-	{
-		cout << "User not found" << endl;
-	}
-	catch (WrongPasswordException e)
-	{
-		cout << "Wrong password" << endl;
-	}
-}
-
-void Client::registerUser(){
-	bool registered = false;
-	for (int i = 0; i < 3 && ! registered; ++i)
-	{
-		string username = askForUserData("Pick a username : ");
-		try {
-			cout << "Please wait..." << endl;
-			_connection.doesUserExist(username);
-			string password = askForNewPassword();
-			cout << "Please wait..." << endl;
-			_connection.registerUser(username, password);
-			registered = true;
-			cout << "You have successfully registered! You can now login." << endl;
-		}
-		catch (UserAlreadyExistsException e) {
-			cout << "User name already exists. Try again with a different username." << endl;		
-		}
-	}
-}
-	
-
-/* main menu */
-void Client::mainMenu()
-{
-	Menu<Client> main;
-	string message;
-	message+= "You can : \n";
-	message+= "   - (m)anage your team and stadium\n";
-	message+= "   - (p)lay a friendly game\n";
-	message+= "   - (q)uit\n";
-	message+= _prompt;
-	main.setMessage(message);
-	main.addOption('m', new ClassCallback<Client>(this, &Client::managementMenu));
-	main.addOption('p', new ClassCallback<Client>(this, &Client::friendlyMatchMenu));
-	main.run();
-}
-
-/* Management menu */
-void Client::managementMenu()
-{
-	Menu<Client> mgt;
-	string message;
-	message+= "You can : \n";
-	message+= "   - manage your (s)tadium and installations\n";
-	message+= "   - manage your (p)layers\n";
-	message+= "   - (q)uit to main menu\n";
-	message+= _prompt;
-	mgt.setMessage(message);
-	mgt.addOption('s', new ClassCallback<Client>(this, &Client::stadiumMenu));
-	mgt.addOption('p', new ClassCallback<Client>(this, &Client::playersMenu));
-	mgt.run();
-}
-
-void Client::stadiumMenu()
-{
-	StadiumManager stadiumMgr(&_connection);
-	Menu<StadiumManager> stadium;
-	string message;
-	message+= "You can : \n";
-	message+= "    - (v)iew your installations\n";
-	message+= "    - (u)pgrade an installation\n";
-	message+= "    - (d)owngrade an installation\n";
-	message+= "    - (q)uit to management menu\n";
-	stadium.addOption('v', new ClassCallback<StadiumManager>(&stadiumMgr, &StadiumManager::printInstallationsList));
-	stadium.addOption('u', new ClassCallback<StadiumManager>(&stadiumMgr, &StadiumManager::upgradeInstallation));
-	stadium.addOption('d', new ClassCallback<StadiumManager>(&stadiumMgr, &StadiumManager::downgradeInstallation));
-	stadium.setMessage(message);
-	// TODO : stadium menu
-	stadium.run();
-}
-
-void Client::playersMenu()
-{
-	Menu<Client> players;
-	string message;
-	message+= "You can : \n";
-	message+= "    - (q)uit to management menu\n";
-	players.setMessage(message);
-	// TODO : players menu
-	players.run();
-}
-
-/* Friendly match menu */
-void Client::friendlyMatchMenu()
-{
-	Menu<Client> friendly;
-	string message;
-	message+= "You can : \n";
-	message+= "   - (l)ist all connected players\n";
-	message+= "   - (c)hoose one to play a friendly game with\n";
-	message+= "   - (q)uit to main menu\n";
-	message+= _prompt;
-	friendly.setMessage(message);
-	friendly.addOption('l', new ClassCallback<Client>(this, &Client::listUsers));
-	friendly.addOption('c', new ClassCallback<Client>(this, &Client::chooseUser));
-	friendly.run();
-}
-
-void Client::listUsers()
-{
-	FriendlyGameManager::loadConnectedUsersList(&_connection);
-	FriendlyGameManager::printConnectedUsersList();
-}
-
-void Client::chooseUser()
-{
-	// TODO : choose user for friendly match
-}
-
-/* Private methods */
-
-string Client::askForUserData(string prompt){
-	string data;
-	cout << prompt;
-	cin >> data;
-	return data;
-}
-
-string Client::askForNewPassword(){
-	string password = "a";
-	string passwordConfirmation;
-	while (password != passwordConfirmation){
-		password = askForUserData("Enter a new password : ");
-		passwordConfirmation = askForUserData("Confirm password : ");
-		if (password != passwordConfirmation)
-			cout << "The two passwords entered were not the same." << endl;
-	}
-	return password;
 }
