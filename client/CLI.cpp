@@ -722,3 +722,7 @@ JSON::Value* CLI::waitForMsg(std::string typeToWait)
 	}
 	return res;
 }
+
+void CLI::displayNotificationsCount(){
+	cout << "You have " << _messages.size() << "notifications." << endl;
+}

@@ -12,7 +12,7 @@
 #include <Config.hpp>
 #include <model/Player.hpp>
 #include <network/TcpSocket.hpp>
-#include <stack>
+#include <queue>
 #include "ClientMatchManager.hpp"
 
 
@@ -58,7 +58,9 @@ private:
 	pthread_t _thread;
 	
 	JSON::Value* waitForMsg(std::string);
-	std::stack<JSON::Value*> _messages;
+	std::queue<JSON::Value*> _messages;
+
+	void displayNotificationsCount();
 
 	// NEW
 	void loginUser(std::string username, std::string passwd);
