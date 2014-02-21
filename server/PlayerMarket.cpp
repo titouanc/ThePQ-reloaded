@@ -1,5 +1,6 @@
 #include "PlayerMarket.hpp"
 #include <Constants.hpp>
+#include <sys/stat.h>
 
 void * saleChecker(void * p){
 	PlayerMarket *market = static_cast<PlayerMarket*>(p);
