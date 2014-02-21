@@ -14,7 +14,7 @@ TEST(user)
 	user = User(&json);
 	ASSERT(user.getUsername() == "usertest");
 	ASSERT(user.getPassword() == "passwdtest");
-	user.save();
+	user.createUser();
 	User *test = User::load("usertest");
 	ASSERT(user.getUsername() == "usertest");
 	ASSERT(user.getPassword() == "passwdtest");

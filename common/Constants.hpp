@@ -1,6 +1,6 @@
 #ifndef __CONSTANTS_HPP
 #define __CONSTANTS_HPP
-
+#include <string>
 namespace net
 {
 	// NETWORK MESSAGES --------------------------------------------------------
@@ -40,8 +40,9 @@ namespace net
 		static const std::string CAN_BID_TEAMS = "C_B_T";
 		static const std::string TURN_NUMBER = "T_N";
 		static const std::string CURRENT_BIDDER = "C_B";
+		static const std::string SALE_OWNER = "S_OWN";
 
-		//player market
+		//Market
 		static const std::string PLAYER_ALREADY_ON_MARKET = "PM_P_A_OM";	
 		static const std::string PLAYER_ADDED_ON_MARKET = "PM_PA_OM";		
 		static const std::string PLAYER_DELETED_OF_MARKET = "PM_D_OM";		
@@ -53,7 +54,12 @@ namespace net
 		static const std::string BID_PLACED = "PM_BP";						
 		static const std::string BID_ENDED = "PM_BE";						
 		static const std::string BID_VALUE_NOT_UPDATED = "PM_B_V_NU";
-
+		static const std::string MARKET_MESSAGE = "PM_MSG";
+		static const std::string END_OF_OWNED_SALE_RAPPORT = "PM_EOOS_R";
+		static const std::string WON_SALE_RAPPORT = "PM_WSR";
+		static const std::string RAPPORT_SALE_STATUS = "PM_R_SS";
+		static const std::string PLAYER_NOT_SOLD = "PM_P_N_S";
+		static const std::string PLAYER_SOLD = "PM_P_S";
 		// data queries
 		static const std::string INSTALLATIONS_LIST = "DQ_I_L";
 		static const std::string CONNECTED_USERS_LIST = "DQ_CU_L";

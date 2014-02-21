@@ -52,7 +52,7 @@ _saleID(id), _repr(), _thread(), _mymutex(PTHREAD_MUTEX_INITIALIZER), _player(pl
 	_repr.set(net::MSG::PLAYER,JSON::Dict(_player)); 
 	//Those values are supposed consts during the sale. That's why they are not updated in updateDict().
 }
-Sale::Sale(const JSON::Dict & json): Sale() 
+Sale::Sale(JSON::Dict const & json): Sale() 
 {
 	if(json.hasKey(net::MSG::PLAYER)) 			{_player=Player(DICT(json.get(net::MSG::PLAYER)));}
 	if(json.hasKey(net::MSG::PLAYER_ID)) 		{_saleID=INT(json.get(net::MSG::PLAYER_ID));}

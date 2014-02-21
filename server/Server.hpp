@@ -1,6 +1,5 @@
 #ifndef __SERVER_HPP
 #define __SERVER_HPP
-
 #include <iostream>
 #include <string>
 #include <map>
@@ -9,11 +8,11 @@
 #include <network/ConnectionManager.hpp>
 #include "User.hpp"
 #include <Config.hpp>
-#include "PlayerMarket.hpp"
 #include "MatchManager.hpp"
+#include "PlayerMarket.hpp"
+
 
 using namespace std;
-
 struct NetConfig : public Config {
     std::string ip;
     unsigned short port;
@@ -36,7 +35,7 @@ struct NetConfig : public Config {
         return res;
     }
 };
-
+class PlayerMarket;
 class Server{
 public:
 	explicit Server(NetConfig const & config);
@@ -63,11 +62,13 @@ public:
     void startMatch(int client_idA, int client_idB);
     //modif
     void sendPlayersList(const JSON::Dict &data,int peer_id);
+    void sendMarketMessage(const std::string&, const JSON::Dict&);
+    int getPeerID(const std::string&);
 private:
 	SharedQueue<net::Message> _inbox, _outbox;
 	map<int, User*> _users;
 	net::ConnectionManager _connectionManager;
-    PlayerMarket market;
+    PlayerMarket *market;
     std::deque<MatchManager*> _matches;
 };
 

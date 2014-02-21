@@ -1,6 +1,6 @@
 #include "CLI.hpp"
-
 #include <pthread.h>
+
 using namespace std;
 
 std::string humanExcName(const char *name)
@@ -38,9 +38,9 @@ void CLI::loginMenu()
 {
 	/* user menu */
 	Menu _menu;
-	_menu.addToDisplay("   - (l)ogin\n");
-	_menu.addToDisplay("   - (r)egister\n");
-	_menu.addToDisplay("   - (q)uit\n");
+	_menu.addToDisplay("   - login\n");
+	_menu.addToDisplay("   - register\n");
+	_menu.addToDisplay("   - quit\n");
 	int option;
 	do
 	{
@@ -69,16 +69,16 @@ void CLI::login(){
 		cout << "Please wait..." << endl;
 		loginUser(username, password);
 		_username = username;//modif
-		cout << "You have successfully logged in! Welcome! :)" << endl;
+		cout << "You have successfully logged in! Welcome! :)\n\n\n" << endl;
 		mainMenu();
 	}
 	catch (UserNotFoundException e)
 	{
-		cout << "User not found" << endl;
+		cout << "\nUser not found" << endl;
 	}
 	catch (WrongPasswordException e)
 	{
-		cout << "Wrong password" << endl;
+		cout << "\nWrong password" << endl;
 	}
 }
 
@@ -107,11 +107,11 @@ void CLI::registerUser(){
 void CLI::mainMenu()
 {
 	Menu _menu;
-	_menu.addToDisplay("   - (m)anage your team and stadium\n");
-	_menu.addToDisplay("   - (a)ccess market\n");
-	_menu.addToDisplay("   - (p)lay a friendly game\n");
+	_menu.addToDisplay("   - manage your team and stadium\n");
+	_menu.addToDisplay("   - access market\n");
+	_menu.addToDisplay("   - play a friendly game\n");
 	_menu.addToDisplay("   - see notifications\n");
-	_menu.addToDisplay("   - (q)uit\n");
+	_menu.addToDisplay("   - quit\n");
 	int option;
 	do
 	{
@@ -140,9 +140,9 @@ void CLI::mainMenu()
 void CLI::managementMenu()
 {
 	Menu _menu;
-	_menu.addToDisplay("   - manage your (s)tadium and installations\n");
-	_menu.addToDisplay("   - manage your (p)layers\n");
-	_menu.addToDisplay("   - (q)uit to main menu\n");
+	_menu.addToDisplay("   - manage your stadium and installations\n");
+	_menu.addToDisplay("   - manage your players\n");
+	_menu.addToDisplay("   - quit to main menu\n");
 	int option;
 	do
 	{
@@ -165,10 +165,10 @@ void CLI::managementMenu()
 void CLI::stadiumMenu()
 {
 	Menu _menu;
-	_menu.addToDisplay("    - (v)iew your installations\n");
-	_menu.addToDisplay("    - (u)pgrade an installation\n");
-	_menu.addToDisplay("    - (d)owngrade an installation\n");
-	_menu.addToDisplay("    - (q)uit to management menu\n");
+	_menu.addToDisplay("    - view your installations\n");
+	_menu.addToDisplay("    - upgrade an installation\n");
+	_menu.addToDisplay("    - downgrade an installation\n");
+	_menu.addToDisplay("    - quit to management menu\n");
 	int option;
 	do
 	{
@@ -195,7 +195,7 @@ void CLI::playersMenu()
 {
 	Menu _menu;
 	_menu.addToDisplay("	- Show list of players");
-	_menu.addToDisplay("    - (q)uit to management menu\n");
+	_menu.addToDisplay("    - quit to management menu\n");
 	int option;
 	do
 	{
@@ -220,7 +220,7 @@ void CLI::notificationsMenu()
 	Menu _menu;
 	_menu.addToDisplay("   - handle this notification\n");
 	_menu.addToDisplay("   - see next notification\n");
-	_menu.addToDisplay("   - (q)uit\n");
+	_menu.addToDisplay("   - quit\n");
 	int option;
 	bool quit = false;
 	while (! _connection.notifications.empty() && ! quit)
@@ -265,9 +265,9 @@ void CLI::printPlayers(){
 /* Market menu */
 void CLI::marketMenu(){
 	Menu _menu;
-	_menu.addToDisplay("   - (p)ut a player on sale\n");
-	_menu.addToDisplay("   - (s)ee the players on sale\n");
-	_menu.addToDisplay("   - (q)uit to main menu\n");
+	_menu.addToDisplay("   - put a player on sale\n");
+	_menu.addToDisplay("   - see the players on sale\n");
+	_menu.addToDisplay("   - quit to main menu\n");
 	int option;
 	do
 	{
@@ -339,8 +339,8 @@ void CLI::printPlayersOnSale(){
 	}
 	cout << "=================================================" << endl;
 	Menu _menu;
-	_menu.addToDisplay("   - (p)lace a bid on a player\n");
-	_menu.addToDisplay("   - (q)uit to market menu\n");
+	_menu.addToDisplay("   - place a bid on a player\n");
+	_menu.addToDisplay("   - quit to market menu\n");
 	int option;
 	do
 	{
@@ -399,13 +399,16 @@ void CLI::placeBid(){
 	}
 }
 
+//Market notifs
+
+
 /* Friendly match menu */
 void CLI::friendlyMatchMenu()
 {
 	Menu _menu;
-	_menu.addToDisplay("   - (l)ist all connected players\n");
-	_menu.addToDisplay("   - (c)hoose one to play a friendly game with\n");
-	_menu.addToDisplay("   - (q)uit to main menu\n");
+	_menu.addToDisplay("   - list all connected players\n");
+	_menu.addToDisplay("   - choose one to play a friendly game with\n");
+	_menu.addToDisplay("   - quit to main menu\n");
 	int option;
 	do
 	{
@@ -524,6 +527,7 @@ void CLI::printConnectedUsersList(){
 
 string CLI::askForUserData(string prompt){
 	string data;
+	cout<<endl;
 	cout << prompt;
 	cin >> data;
 	return data;
@@ -542,8 +546,8 @@ string CLI::askForNewPassword(){
 }
 
 ////////// NEW 
-void CLI::loginUser(string username, string passwd)
-{
+void CLI::loginUser(string username, string passwd){
+
 	JSON::Dict toSend, credentials;
 	credentials.set(net::MSG::USERNAME, username);
 	credentials.set(net::MSG::PASSWORD, passwd);
@@ -763,7 +767,7 @@ std::vector<Player> CLI::getPlayers(std::string username){//modif
 }
 
 
-void CLI::displayNotificationsCount(){
+ void CLI::displayNotificationsCount(){
 	cout << "You have " << _connection.notifications.size() << "notifications." << endl;
 }
 
@@ -772,8 +776,11 @@ void CLI::handleNotification(JSON::Value *notification){
 	string messageType;
 	if (ISSTR(message.get("type")))
 		messageType = STR(message.get("type")).value();
-	if (messageType == net::MSG::FRIENDLY_GAME_INVITATION)
-		handleFriendlyGameInvitation(message);
+
+		if (messageType == net::MSG::FRIENDLY_GAME_INVITATION)
+			handleFriendlyGameInvitation(message);
+		if (messageType == net::MSG::MARKET_MESSAGE)
+			handleEndOfSaleNotification(DICT(message.get("data")));
 }
 
 void CLI::handleFriendlyGameInvitation(JSON::Dict &message){
@@ -835,4 +842,24 @@ void CLI::startMatch(){
 	_matchManager.initSquads(receivedSquads, _username);
 	_connection.waitForMsg(net::MSG::MATCH_START);
 	_matchManager.startMatch();
+}
+
+
+/*Market notifications*/
+
+void CLI::handleEndOfSaleNotification(JSON::Dict & json){
+	cout << "<<MESSAGE : SALE ENDED>>" << endl;
+	if(STR(json.get("type")).value()==net::MSG::END_OF_OWNED_SALE_RAPPORT){
+		if(STR(json.get(net::MSG::RAPPORT_SALE_STATUS)).value() == net::MSG::PLAYER_NOT_SOLD){
+			cout << "Your player " << INT(json.get(net::MSG::PLAYER_ID)) << "was not sold. :(" << endl; 
+		}
+		else if(STR(json.get(net::MSG::RAPPORT_SALE_STATUS)).value() == net::MSG::PLAYER_SOLD){
+			cout << "Your player " << INT(json.get(net::MSG::PLAYER_ID)) << " has been sold for " << INT(json.get(net::MSG::BID_VALUE)) 
+			<< " to " << STR(json.get(net::MSG::CURRENT_BIDDER)).value() << endl;
+		}
+	}
+	else if(STR(json.get("type")).value()==net::MSG::WON_SALE_RAPPORT){
+		cout << "You bought player " << INT(json.get(net::MSG::PLAYER_ID)) << " for " << INT(json.get(net::MSG::BID_VALUE)) << "." <<endl;
+		cout << "This player comes from " << STR(json.get(net::MSG::SALE_OWNER)).value() << "'s team." << endl;
+	}
 }

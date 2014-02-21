@@ -2,7 +2,7 @@
 #include <Constants.hpp>
 #include <sys/stat.h>
 #include <stdio.h>
-
+#include "dirent.h"
 void * saleChecker(void * p){
 	PlayerMarket *market = static_cast<PlayerMarket*>(p);
 	while(market->_runChecker){
@@ -44,8 +44,12 @@ void PlayerMarket::createSale(const JSON::Dict &json){
 
 
 void PlayerMarket::transfert(Sale * sale){
-	if(sale->_currentBidder.empty()){
-		//Player not sold, should send notification to client.
+	if(sale->_currentBidder.empty()){//Player not sold
+		JSON::Dict toOwner;
+		toOwner.set("type",net::MSG::END_OF_OWNED_SALE_RAPPORT);
+		toOwner.set(net::MSG::RAPPORT_SALE_STATUS, net::MSG::PLAYER_NOT_SOLD);
+		toOwner.set(net::MSG::PLAYER_ID, sale->getID());
+		sendMessageToUser(sale->getOwner(), toOwner);
 	}
 	else{
 		std::vector<Player> from, to;
@@ -76,16 +80,55 @@ void PlayerMarket::transfert(Sale * sale){
 		delUpdated.save(getPlayersPath(sale->getOwner()).c_str());
 		addUpdated.save(getPlayersPath(sale->getCurrentBidder()).c_str());
 		delete toTransfert;
+		JSON::Dict toOwner, toWinner;
+		toOwner.set("type",net::MSG::END_OF_OWNED_SALE_RAPPORT);
+		toOwner.set(net::MSG::RAPPORT_SALE_STATUS, net::MSG::PLAYER_SOLD);
+		toOwner.set(net::MSG::PLAYER_ID, sale->getID());
+		toOwner.set(net::MSG::BID_VALUE, sale->_bidValue);
+		toOwner.set(net::MSG::CURRENT_BIDDER, sale->getCurrentBidder());
+		sendMessageToUser(sale->getOwner(), toOwner);
+		toWinner.set("type",net::MSG::WON_SALE_RAPPORT);
+		toWinner.set(net::MSG::PLAYER_ID,sale->getID());
+		toWinner.set(net::MSG::BID_VALUE, sale->_bidValue);
+		toWinner.set(net::MSG::SALE_OWNER, sale->getOwner());
+		sendMessageToUser(sale->getCurrentBidder(), toWinner);
 	}
 }
 
 
-PlayerMarket::PlayerMarket(): _sales(), _marketPath("data/PlayerMarket/"), _playerPath("data/"),
+
+PlayerMarket::PlayerMarket(Server *server): _server(server), _sales(), _marketPath("data/playerMarket/"), _playerPath("data/"),
 _thread(),_runChecker(true), _deleting(PTHREAD_MUTEX_INITIALIZER) {
 	mkdir(_marketPath.c_str(), 0755);
+	//~ loadSales();	
 	startChecker();
 }
-
+//~ void PlayerMarket::loadSales(){
+	//~ /*Method loading players on sale*/
+	//~ DIR *dir;
+	//~ struct dirent *ent;
+	//~ JSON::Value *load;
+	//~ if((dir = opendir(_marketPath.c_str()))!=NULL){//si ouverture reussie
+		//~ cout<<"Loading players for market"<<endl;
+		//~ string curPath=_marketPath;
+		//~ while ((ent=readdir (dir)) != NULL ){
+			//~ if(ent->d_type==DT_REG && strcmp(d_name[ strlen(e->d_name) - 5 ], ".json") == 0)){			
+				//~ 
+				//~ load=JSON::load((curPath+ent->d_name));
+				//~ JSON::Dict &dict=*((JSON::Dict*) load) ;
+				//~ _sales.push_back(new Sale(dict));
+				//~ curPath=_marketPath;
+			//~ }
+		//~ }
+		//~ closedir(dir);
+		//~ for(size_t i(0);i<_sales.size();++i){
+		//~ _sales[i]->start();
+		//~ }
+	//~ }else{
+		//~ cout<<"Error opening data file"<<endl;
+	//~ }
+//~ 
+//~ }
 PlayerMarket::~PlayerMarket(){
 	_runChecker = false;
 	for(size_t i=0;i<_sales.size();++i){
@@ -188,4 +231,8 @@ Player PlayerMarket::loadPlayerInfos(std::string username, int id){
 		}
 	}
 	return toFind;
+}
+
+void PlayerMarket::sendMessageToUser(std::string username, const JSON::Dict & message){
+	_server->sendMarketMessage(username, message);
 }
