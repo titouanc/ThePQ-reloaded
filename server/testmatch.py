@@ -31,8 +31,8 @@ def printMessage(msg):
 		exit()
 	elif msg['type'] == 'MDELTA':
 		for delta in msg['data']:
-			PLAYERS[delta['mid']]['position'] = delta['finalpos']
-		printPlayers()
+			print "%2d"%delta['mid'], PLAYERS[delta['mid']]['name'], delta['from'], '->', delta['to']
+			PLAYERS[delta['mid']]['position'] = delta['to']
 	else:
 		print msg
 
@@ -51,19 +51,25 @@ print d.recvObj()
 #start match (MAGIC)
 c.sendObj({"type": "42"})
 
-# Receive match init sequence
-for i in range(3): 
-	printMessage(c.recvObj())
-	printMessage(d.recvObj())
+for i in range(3):
+	# Wait for prompt for both clients
+	ok = 0
+	while ok < 2: 
+		for source in (c, d):
+			msg = source.recvObj()
+			printMessage(msg)
+			if msg['type'] == 'M?':
+				ok += 1
 
-c.sendObj({
-	"type": "MSTROKE", 
-	"data": {
-		"mid": 1, 
-		"move": [[1, 1], [2, 0]]
-	}
-})
-while True: 
-	printMessage(c.recvObj())
-	printMessage(d.recvObj())
+	for mid in (1, 4, 6, 7):
+		c.sendObj({
+			"type": "MSTROKE", 
+			"data": {"mid": mid, "move": [[1, 1], [2, 0]]}
+		})
+		d.sendObj({
+			"type": "MSTROKE", 
+			"data": {"mid": 10+mid, "move": [[1, 1], [2, 0]]}
+		})
+		printMessage(c.recvObj())
+		printMessage(d.recvObj())
 

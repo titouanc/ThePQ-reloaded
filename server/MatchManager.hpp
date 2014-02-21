@@ -4,7 +4,7 @@
 #include <cassert>
 
 #include <sys/select.h>
-#include <queue>
+#include <deque>
 #include <model/Moveable.hpp>
 #include <model/Displacement.hpp>
 #include <model/Pitch.hpp>
@@ -21,13 +21,15 @@ using namespace net;
 struct Stroke {
 	Moveable & moveable;
 	Displacement move;
-	Stroke(Moveable & m, Displacement d) : moveable(m), move(d){}
+	bool active;
+	Stroke(Moveable & m, Displacement d) : moveable(m), move(d), active(true){}
 };
 
 /* TODO: mettre ca dans un fichier de constantes */
 #define MATCH_START   "MSTART"
 #define MATCH_END     "MEND"
 #define MATCH_SQUADS  "MSQUADS"
+#define MATCH_BALLS   "MBALLS"
 #define MATCH_PROMPT  "M?"
 #define MATCH_TIMEOUT "MTOUT"
 #define MATCH_STROKE  "MSTROKE"
@@ -37,17 +39,18 @@ struct Stroke {
 
 class MatchManager : public SubConnectionManager {
 	private:
-		std::queue<Stroke> _strokes;
+		std::deque<Stroke> _strokes;
+		/* Players */
 		Squad _squads[2];
-		Ball   _balls[4];
+		/* Balls */
+		Quaffle _quaffle;
+		GoldenSnitch _snitch;
+		Bludger _bludgers[2];
 		Pitch  _pitch;
 		SharedQueue<Message> _inbox, _outbox;
+		unsigned int _score[2];
 
-		typedef enum Collision_t {
-			FIRST_WIN,  /* First player on position wins */
-			SECOND_WIN, /* Second player on position wins */
-			CATCH_BALL  /* The player catch a ball */
-		} Collision;
+		typedef std::deque<Stroke>::iterator iter;
 
 		/* initialise moveable positions */
 		void initPositions(void);
@@ -72,17 +75,25 @@ class MatchManager : public SubConnectionManager {
 		void reply(Message const & msg, std::string type, const char *text);
 		/* Send squads composition to everyone */
 		void sendSquads(void);
+		void sendBalls(void);
 		/* Send match delta to everyone */
 		void sendMatchDeltas(JSON::List const & delta);
 
-		Stroke getStrokeForMoveable(Moveable *moveable);
+		iter getStrokeForMoveable(Moveable *moveable);
 		/* Resolve strokes */
 		void playStrokes(void);
+		bool checkGoal(
+			Stroke & stroke,     /* Stroke that might lead to goal */
+			Position & toPos,    /* Position that might be a goal */
+			Position & fromPos,  /* last pos occupied by moving */
+			JSON::List & deltas  /* Where to save match deltas */
+		);
 		/* *SMASH* */
-		Collision onCollision(
-			Moveable & first, 
-			Moveable & second,
-			Position & conflict
+		void onCollision(
+			Stroke & stroke,     /* Stroke that leads to conflict */
+			Position & conflict, /* Clonflicting pos */
+			Position & fromPos,  /* last pos occupied by moving */
+			JSON::List & deltas  /* Where to save match deltas */
 		);
 	public:
 		MatchManager(

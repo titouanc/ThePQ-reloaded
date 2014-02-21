@@ -42,6 +42,11 @@ Position Position::operator+(Position const & other) const
     return Position(_x+other.x(), _y+other.y());
 }
 
+Position Position::operator-(Position const & other) const
+{
+    return Position(_x-other.x(), _y-other.y());
+}
+
 Position const & Position::operator+=(Position const & other)
 {
     _x += other.x();
