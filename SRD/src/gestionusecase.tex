@@ -40,10 +40,10 @@ et de nouvelles actions pour ce membre sont disponibles.
 
 \subsubsection{Sélectionner un coach (select coach)} 
 \label{UC:selectCoach}
+(Fonctionnalité non implémentée)
 \paragraph{Relations avec d'autres cas d'utilisations}
 Spécialise \ref{UC:selectMember}.\\
 Étendu par \ref{UC:seeAptitudes} et \ref{UC:fire}.\\
-(Fonctionnalité non implémentée)
 \paragraph{Pré-conditions}
 \begin{list}{\labelitemi}{\leftmargin=1.5em}
 \item{L'utilisateur a sélectionné un membre, il s'agit d'un coach.}
@@ -114,6 +114,15 @@ La position choisie par l'utilisateur pour le joueur sélectionné n'est pas enc
 \end{list}
 \paragraph{Post-condition}
 Le joueur sélectionné est mis à la position choisie par l'utilisateur pour le prochain match. Cette action est réversible jusqu'audit match.
+
+\subsubsection{À propos des coaches}
+Élevés depuis leur plus tendre jeunesse au sommet des plus hautes montagnes de l'Himalaya, les coaches n'ont qu'un seul but dans la vie : faire de vos joueurs des "top players" !
+
+Pour parvenir à ce but, ils ont sacrifié leur vie sociale et ont fait voeux de silence, probité et chasteté afin de développer au maximum leurs habilités d'entraînement : ils seront capables de prendre en charge plusieurs joueurs et de développer leurs caractéristiques.
+
+Par contre, s'il y a bien un voeux qu'ils n'ont pas fait, c'est bien celui de pauvreté : chaque coaches devra être acheté sur le marché et recevra un salaire mensuel.
+
+
 %------------------
 
 \subsection{Gestion du stade}
@@ -179,9 +188,9 @@ L'utilisateur souhaite améliorer une installation, après avoir sélectionné l
 
 \subsubsection{Diminuer d'un niveau (downgrade)}
 \label{UC:downgrade}
+(Fonctionnalité non implémentée)
 \paragraph{Relations avec d'autres cas d'utilisations}
 Étend \ref{UC:selectSpot}.
-\\(Fonctionnalité non implémentée)
 \paragraph{Pré-conditions}
 \begin{list}{\labelitemi}{\leftmargin=1.5em}
 \item{Un endroit est sélectionné.}
@@ -231,9 +240,9 @@ L'utilisateur souhaite soigner un joueur blessé, après avoir sélectionné le 
 
 \subsubsection{Choisir le prix des plats (set food price)}
 \label{UC:setFoodPrice}
+(Fonctionnalité non implémentée)
 \paragraph{Relations avec d'autres cas d'utilisations}
 Étend \ref{UC:selectSpot}.
-\\(Fonctionnalité non implémentée)
 \paragraph{Pré-conditions}
 \begin{list}{\labelitemi}{\leftmargin=1.5em}
 \item{Le service d'alimentation est sélectionné.}
@@ -266,12 +275,12 @@ L'utilisateur souhaite modifier le prix des tickets de ses tribunes, il clique d
 \end{list}
 %--------------
 
-\subsection{Gestion des entrainements}
+\subsection{Gestion des entraînements}
 \label{UC:trainingManagement}
 \begin{figure}[h]
   \centering
   \includegraphics[width=\textwidth]{figures/UC-Training.eps}
-   \caption{\label{fig:UC:trainingManagement} Cas d'utilisation: gestion des entrainements}
+   \caption{\label{fig:UC:trainingManagement} Cas d'utilisation: gestion des entraînements}
 \end{figure}
 
 \subsubsection{Gestion des entrainements (overview training)}
@@ -283,20 +292,20 @@ L'utilisateur souhaite modifier le prix des tickets de ses tribunes, il clique d
 \item{Le joueur est authentifié.}
 \end{list}
 \paragraph{Cas général}
-L'utilisateur souhaite gérer ses entrainements, il clique donc sur "gestion des entrainements", ce qui lui permet de voir s'afficher d'une part les informations concernant ses groupes d'entrainement, c'est-à-dire les aptitudes que ce groupe améliore, le coach qui dirige l'entrainement, ainsi que les joueurs qu'il a précédemment assignés à ce groupe; et d'autre part les joueurs qu'il n'a encore assigné à aucun groupe. A partir de là, l'utilisateur peut ajouter des joueurs à un groupe d'entrainements, sélectionner un groupe d'entrainement et créer un nouveau groupe d'entrainement. 
+L'utilisateur souhaite gérer ses entraînements, il clique donc sur "gestion des entraînements", ce qui lui permet de voir s'afficher d'une part les informations concernant ses groupes d'entraînement, c'est-à-dire les aptitudes que ce groupe améliore, le coach qui dirige l'entraînement, ainsi que les joueurs qu'il a précédemment assignés à ce groupe; et d'autre part les joueurs qu'il n'a encore assigné à aucun groupe. À partir de là, l'utilisateur peut ajouter des joueurs à un groupe d'entrainements, sélectionner un groupe d'entraînement et créer un nouveau groupe d'entraînement. 
 \paragraph{Cas exceptionnels}
-Aucun groupe d'entrainement n'a encore été créé, ne s'affiche en conséquence que l'icône permettant de créer un groupe d'entrainement. 
+Aucun groupe d'entraînement n'a encore été créé, ne s'affiche en conséquence que l'icône permettant de créer un groupe d'entraînement. 
 \paragraph{Post-conditions}
 \begin{list}{\labelitemi}{\leftmargin=1.5em}
-\item{Affichage d'informations relatives à la gestion des entrainements (les groupes d'entrainements, les joueurs non assignés à un groupe).}
+\item{Affichage d'informations relatives à la gestion des entraînements (les groupes d'entraînements, les joueurs non assignés à un groupe).}
 \end{list}
 
-\subsubsection{Créer un groupe d'entrainement (create training group)}
+\subsubsection{Créer un groupe d'entraînement (create training group)}
 \label{UC:createTraining}
+(Fonctionnalité non implémentée)
 \paragraph{Relations avec d'autres cas d'utilisations}
 Étend \ref{UC:trainingManagement}.\\
 Inclut \ref{UC:chooseTrainingCoach}, \ref{UC:chooseAptitudesTrained} et \ref{UC:addPlayerToGroup}.
-\\(Fonctionnalité non implémentée)
 \paragraph{Pré-conditions}
 \begin{list}{\labelitemi}{\leftmargin=1.5em}
 \item{L'utilisateur à précédemment choisit "gestion des entrainements".}
@@ -318,13 +327,13 @@ Après avoir sélectionner "gestion des entrainements", si l'utilisateur choisit
 
 \subsubsection{Choisir les joueurs d'un groupe d'entrainement (set players)}
 \label{UC:addPlayerToGroup}
+(Fonctionnalité non implémentée)
 \paragraph{Relations avec d'autres cas d'utilisations}
 Étend \ref{UC:trainingManagement}.\\
 Est inclus par \ref{UC:createTraining}.
-\\(Fonctionnalité non implémentée)
 \paragraph{Pré-conditions}
 \begin{list}{\labelitemi}{\leftmargin=1.5em}
-\item{L'utilisateur se situe dans "gestion des entrainements" ou "créer un groupe d'entrainement ou "sélectionner un groupe".}
+\item{L'utilisateur se situe dans "gestion des entraînements" ou "créer un groupe d'entraînement ou "sélectionner un groupe".}
 \end{list}
 \paragraph{Cas général}
 L'utilisateur sélectionne un joueur parmi sa liste de joueurs, et ajoute ce joueur au groupe spécifié, si ce joueur n'est pas assigné à un autre groupe. Sinon, voir "cas exceptionnels". 
@@ -337,71 +346,71 @@ Voir les cas exceptionnels pour "créer un groupe d'entrainement" (\ref{UC:creat
 
 \subsubsection{Voir l'historique des rapports (see history…)}
 \label{UC:TrainingHistory}
+(Fonctionnalité non implémentée)
 \paragraph{Relations avec d'autres cas d'utilisations}
 Étend \ref{UC:trainingManagement}
-\\(Fonctionnalité non implémentée)
 \paragraph{Pré-conditions}
 \begin{list}{\labelitemi}{\leftmargin=1.5em}
 \item{L'utilisateur se situe dans "gestion des entrainements".}
 \item{Au moins un entrainement a déjà été donné.}
 \end{list}
 \paragraph{Cas général}
-L'utilisateur souhaite s'informer sur l'efficacité des groupes d'entraînements qu'il a créé, il lui suffit donc de cliquer sur l'icône "voir l'historique des rapports" depuis "gestion des entrainements" pour obtenir des informations sur les précédents entraînements donnés. Lesdites informations renseignent entre autres sur les aptitudes gagnées des joueurs, des coaches, les joueurs éventuellement blessés, et la rentabilité globale d'un groupe d'entrainement. 
+L'utilisateur souhaite s'informer sur l'efficacité des groupes d'entraînements qu'il a créé, il lui suffit donc de cliquer sur l'icône "voir l'historique des rapports" depuis "gestion des entraînements" pour obtenir des informations sur les précédents entraînements donnés. Lesdites informations renseignent entre autres sur les aptitudes gagnées des joueurs, des coaches, les joueurs éventuellement blessés, et la rentabilité globale d'un groupe d'entraînement. 
 \paragraph{Post-conditions}
 \begin{list}{\labelitemi}{\leftmargin=1.5em}
-\item{Affiche l'historiques des rapports des précédents entrainements.}
+\item{Affiche l'historiques des rapports des précédents entraînements.}
 \end{list}
 
-\subsubsection{Sélectionner un groupe d'entrainement (select training group)}
+\subsubsection{Sélectionner un groupe d'entraînement (select training group)}
 \label{UC:selectTrainingGroup}
+(Fonctionnalité non implémentée)
 \paragraph{Relations avec d'autres cas d'utilisations}
 Étend \ref{UC:trainingManagement}.\\
 Étendu par \ref{UC:chooseTrainingCoach}, \ref{UC:chooseAptitudesTrained}.
-\\(Fonctionnalité non implémentée)
 \paragraph{Pré-conditions}
 \begin{list}{\labelitemi}{\leftmargin=1.5em}
-\item{L'utilisateur se situe dans "gestion des entrainements."}
-\item{Au moins un groupe d'entrainement à déjà été créé. Si ce n'est pas le cas, cette action est impossible.}
+\item{L'utilisateur se situe dans "gestion des entraînements."}
+\item{Au moins un groupe d'entraînement à déjà été créé. Si ce n'est pas le cas, cette action est impossible.}
 \end{list}
 \paragraph{Cas général}
-L'utilisateur sélectionne un groupe d'entrainement parmi une liste des groupes qu'il a précédemment créés. Il peut ensuite effectuer une série de nouvelles actions relatives à ce groupe d'entrainement (modifier le coach, les aptitudes entrainées).
+L'utilisateur sélectionne un groupe d'entraînement parmi une liste des groupes qu'il a précédemment créés. Il peut ensuite effectuer une série de nouvelles actions relatives à ce groupe d'entraînement (modifier le coach, les aptitudes entrainées).
 \paragraph{Post-conditions}
 \begin{list}{\labelitemi}{\leftmargin=1.5em}
-\item{Un groupe d'entrainement est sélectionné, l'utilisateur peut interagir avec ce groupe.}
+\item{Un groupe d'entraînement est sélectionné, l'utilisateur peut interagir avec ce groupe.}
 \end{list}
 
-\subsubsection{Choisir les aptitudes entrainées (set aptitudes trained)}
+\subsubsection{Choisir les aptitudes entraînées (set aptitudes trained)}
 \label{UC:chooseAptitudesTrained}
+(Fonctionnalité non implémentée)
 \paragraph{Relations avec d'autres cas d'utilisations}
 Étend \ref{UC:createTraining}, \ref{UC:selectTrainingGroup}.
-\\(Fonctionnalité non implémentée)
 \paragraph{Pré-conditions}
 \begin{list}{\labelitemi}{\leftmargin=1.5em}
-\item{L'utilisateur crée un groupe d'entrainement ou a sélectionné un groupe d'entrainement.}
+\item{L'utilisateur crée un groupe d'entraînement ou a sélectionné un groupe d'entraînement.}
 \end{list}
 \paragraph{Cas général}
-L'utilisateur sélectionne un nombre d'aptitudes (à déterminer) parmi toutes les aptitudes relatives aux joueurs (exceptés l'expérience et le potentiel) qu'un groupe entraine et valide la combinaison. 
+L'utilisateur sélectionne un nombre d'aptitudes (à déterminer) parmi toutes les aptitudes relatives aux joueurs (exceptés l'expérience et le potentiel) qu'un groupe entraîne et valide la combinaison. 
 \paragraph{Post-conditions}
 \begin{list}{\labelitemi}{\leftmargin=1.5em}
-\item{Le groupe d'entrainement dont il s'agit entraine dorénavant les aptitudes choisies par l'utilisateur.}
+\item{Le groupe d'entraînement dont il s'agit entraîne dorénavant les aptitudes choisies par l'utilisateur.}
 \end{list}
 
 \subsubsection{Choisir le coach (set coach)}
 \label{UC:chooseTrainingCoach}
+(Fonctionnalité non implémentée)
 \paragraph{Relations avec d'autres cas d'utilisations}
 Étend \ref{UC:createTraining}, \ref{UC:selectTrainingGroup}.
-\\(Fonctionnalité non implémentée)
 \paragraph{Pré-conditions}
 \begin{list}{\labelitemi}{\leftmargin=1.5em}
-\item{L'utilisateur a sélectionné un groupe d'entrainement ou crée un nouveau groupe.}
+\item{L'utilisateur a sélectionné un groupe d'entraînement ou crée un nouveau groupe.}
 \end{list}
 \paragraph{Cas général}
-L'utilisateur clique sur l'icône "modifier le coach" après avoir sélectionné un groupe d'entrainement (ou dans le cas de la création d'un entrainement, se voit obligé de choisir un coach). Il choisit ensuite un nouveau coach parmi une liste des coaches de son équipe. Un nouveau coach est donc assigné au groupe si "tout se passe bien".
+L'utilisateur clique sur l'icône "modifier le coach" après avoir sélectionné un groupe d'entraînement (ou dans le cas de la création d'un entraînement, se voit obligé de choisir un coach). Il choisit ensuite un nouveau coach parmi une liste des coaches de son équipe. Un nouveau coach est donc assigné au groupe si "tout se passe bien".
 \paragraph{Cas exceptionnels}
 Il faut effectivement préciser si "tout se passe bien" en post-condition, car il se peut que cela soit impossible de modifier le coach. Voir les cas d'exceptions pour "créer un groupe d'entraînement" (\ref{UC:createTraining}).
 \paragraph{Post-conditions}
 \begin{list}{\labelitemi}{\leftmargin=1.5em}
-\item{Un nouveau coach est assigné au groupe d'entrainement si "tout se passe bien".}
+\item{Un nouveau coach est assigné au groupe d'entraînement si "tout se passe bien".}
 \end{list}
 
 %----------------
@@ -425,9 +434,9 @@ L'utilisateur clique sur l'icône "Aller aux Transferts", et a ensuite la possib
 
 \subsubsection{Voir l'historique des transferts (see transfer history)}
 \label{UC:transfersHistory}
+(Fonctionnalité non implémentée)
 \paragraph{Relations avec d'autres cas d'utilisations}
 Étend \ref{UC:gotoTransfers}.
-\\(Fonctionnalité non implémentée)
 \paragraph{Pré-conditions}
 \begin{list}{\labelitemi}{\leftmargin=1.5em}
 \item{L'utilisateur se situe dans "aller aux transferts".}
@@ -435,10 +444,10 @@ L'utilisateur clique sur l'icône "Aller aux Transferts", et a ensuite la possib
 \paragraph{Cas général}
 L'utilisateur clique sur l'icône "voir l'historique des transferts" pour afficher l'historique de ses transferts. Cet historique renseigne, pour chaque transfert :
 \begin{itemize}
-\item{Sa date;}
-\item{S'il s'agit d'une vente ou d'un achat;}
-\item{Les gains/pertes;}
-\item{Les informations relatives au membre (âge, nom, aptitudes entre autres).}
+\item{sa date;}
+\item{s'il s'agit d'une vente ou d'un achat;}
+\item{les gains/pertes;}
+\item{les informations relatives au membre (âge, nom, aptitudes entre autres).}
 \end{itemize}
 \paragraph{Cas exceptionnels}
 Aucun joueur n'a encore été vendu, rien ne s'affiche tout simplement. 
@@ -484,10 +493,10 @@ Si aucun joueur n'est disponible à l'achat, rien n'apparaît.
 
 \subsubsection{Voir le marché des transferts des coaches (see coach transfer market)}
 \label{UC:seeCoachMarket}
+(Fonctionnalité non implémentée)
 \paragraph{Relations avec d'autres cas d'utilisations}
 Spécialise \ref{UC:seeMarket}.\\
 Étendu par \ref{UC:hireCoach}.
-\\(Fonctionnalité non implémentée)
 \paragraph{Pré-conditions}
 \begin{list}{\labelitemi}{\leftmargin=1.5em}
 \item{L'utilisateur a choisi de voir le marché des transferts}
@@ -501,11 +510,18 @@ Si aucun coach n'est disponible à l'engagement, rien n'apparaît.
 \item{L'utilisateur voit le marché des transferts concernant les coaches. }
 \end{list}
 
+\subsection{Voir le marche de transferts des joueurs}
+\paragraph{Ajout d'un joueur sur le marche de transfert}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{L'utilisateur qui souhaite vendre un joueur, doit le placer dans la Player Market. Pour que le placement réussisse, le joueur ne doit pas déjà exister sur la liste des transferts. S'il est déjà présent, l'utilisateur n'est pas autorisé à continuer. S'il n'y est pas, il est ajouté a la liste des transferts.}
+\item{L'utilisateur va devoir spécifier une valeur à laquelle l'enchère commence. Si cette valeur est correcte (ne dépasse pas la valeur du joueur et n'est pas trop sous-estimée) le joueur est mis sur le marché. Dans le cas défavorable l'utilisateur va devoir introduire une autre valeur comprise entre la valeur maximale et minimale suggérée.}
+\end{list}
+
 \subsubsection{Engager un coach (hire coach)}
 \label{UC:hireCoach}
+(Fonctionnalité non implémentée)
 \paragraph{Relations avec d'autres cas d'utilisations}
 Étend \ref{UC:seeCoachMarket}.
-\\(Fonctionnalité non implémentée)
 \paragraph{Pré-conditions}
 \begin{list}{\labelitemi}{\leftmargin=1.5em}
 \item{L'utilisateur se situe dans le marché des coachs.}
@@ -576,8 +592,29 @@ L'utilisateur, situé dans le marché de transferts des joueurs, choisit l'optio
 \item{Ce joueur apparaît dans le marché de transferts des joueurs. Le temps qu'il y reste est à déterminer.}
 \end{list}
 
+\subsection{Procédure d'enchère sur un joueur présent sur le Player Market}
+\label{fig:Enchere}
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=\textwidth]{figures/Activity-enchere-2.eps}
+  \caption{\label{fig:Enchere} Déroulement d'une enchère}
+\end{figure}
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{L'utilisateur choisi le joueur sur lequel il veut enchérir. Si ce joueur appartient à son équipe, il est automatiquement déconnecté de cette enchère. Si le joueur ne fait pas partie de son équipe il est autorisé à enchérir}
+\item{Si ce n'est pas  le tour d'un utilisateur d'enchérir, il est mis dans une file d'attente. Si c'est son tour, une étape de vérification de l'enchère est initialisée.}
+\item{S'il a déjà la meilleure enchère il est mis dans une file d'attente, dans le cas contraire il lui est proposé de surenchérir. S'il refuse, il perd l'enchère.}
+\item{S'il augmente l'enchère il est mis dans une file d'attente, et est inclus dans le tour suivant.}
+\item{Si l'utilisateur est le seul restant dans l'enchère c'est lui qui gagne et ajoute le joueur a son lot. Dans le cas contraire un tour suivant d'enchère se déroule tant qu'il reste plus d'un utilisateurs participants.}
+\end{list}
 %----------------
 \subsection{Management de l'équipe}
+
+\subsubsection{Introduction}
+Outre le jeu de Quidditch, l'utilisateur devra également gérer ses finances, son équipement et ses sponsors.
+
+Les équipements permettent d'améliorer les habilités des joueurs ; ceux-ci se répartissent en trois catégories : les tuniques, les balais et pour les batteurs, les battes.
+
+Les sponsors vont investir dans votre équipe, si celle-ci respecte leurs conditions. Il peut par exemple s'agir d'avoir plus d'un certain nombre de matches gagnés, de matches joués, un certain ratio de victoires, ...
 
 \begin{figure}[h]
   \centering
@@ -602,10 +639,10 @@ Depuis l'écran d'accueil, l'utilisateur clique sur l'icône "aller au Managemen
 
 \subsubsection{Aller au Sponsor Management (goto sponsor management)}
 \label{UC:gotoSponsor}
+(Fonctionnalité non implémentée)
 \paragraph{Relations avec d'autres cas d'utilisations}
 Étend \ref{UC:gotoManagement}.\\
 Étendu par \ref{UC:getNewSponsor}.
-\\(Fonctionnalité non implémentée)
 \paragraph{Pré-conditions}
 \begin{list}{\labelitemi}{\leftmargin=1.5em}
 \item{L'utilisateur se situe dans le Management de l'équipe.}
@@ -622,9 +659,9 @@ L'équipe de l'utilisateur n'a aucun sponsor : rien n'est affiché.
 
 \subsubsection{Obtenir un nouveau sponsor (get new sponsor)}
 \label{UC:getNewSponsor}
+(Fonctionnalité non implémentée)
 \paragraph{Relations avec d'autres cas d'utilisations}
 Étend \ref{UC:gotoSponsor}
-\\(Fonctionnalité non implémentée)
 \paragraph{Pré-conditions}
 \begin{list}{\labelitemi}{\leftmargin=1.5em}
 \item{L'utilisateur se situe dans le Sponsor Management.}
@@ -649,7 +686,7 @@ L'équipe ne remplit pas les conditions nécessaires, elle ne peut en conséquen
 \item{L'utilisateur se situe dans le Management de l'équipe.}
 \end{list}
 \paragraph{Cas général}
-À partir du Management de l'équipe, l'utilisateur choisit de gérer les équipements de son équipe, et voit s'afficher une liste d'équipements possibles. Ces équipements sont pour l'instant limités à une robe-maillot, un balai, et une batte. Ces équipements sont donc des classes d'équipements, l'utilisateur peut acheter de nouveaux types de ces classes, et améliorer les aptitudes de ses joueurs, l'aptitude vitesse par exemple ne dépend que des balais des joueurs, et en achetant un type de balai de qualité plus élevée (donc plus cher) la vitesse est directement augmentée !
+À partir du Management de l'équipe, l'utilisateur choisit de gérer les équipements de son équipe, et voit s'afficher une liste d'équipements possibles. Ces équipements sont pour l'instant limités à une tunique, un balai, et une batte. Ces équipements sont donc des classes d'équipements, l'utilisateur peut acheter de nouveaux types de ces classes, et améliorer les aptitudes de ses joueurs, l'aptitude vitesse par exemple ne dépend que des balais des joueurs, et en achetant un type de balai de qualité plus élevée (donc plus cher) la vitesse est directement augmentée !
 \paragraph{Post-conditions}
 \begin{list}{\labelitemi}{\leftmargin=1.5em}
 \item{Affichage d'une liste de type d'équipements.}
@@ -668,7 +705,7 @@ L'équipe ne remplit pas les conditions nécessaires, elle ne peut en conséquen
 L'utilisateur sélectionne une classe d'équipement parmi la liste affichée dans l'accueil du management de l'équipement.
 \paragraph{Post-conditions}
 \begin{list}{\labelitemi}{\leftmargin=1.5em}
-\item{L'utilisateur a sélectionné une classe d'équipement (robe-maillot, balais ou batte).}
+\item{L'utilisateur a sélectionné une classe d'équipement (tunique, balais ou batte).}
 \item{Affichage des caractéristiques du type de la classe d'équipement actuel (aptitudes influencées, prix, durée de vie, etc.). Une même équipe ne peut donc posséder qu'un seul type d'équipement par classe.}
 \end{list}
 
@@ -686,7 +723,7 @@ L'utilisateur achète un nouveau type d'équipement (correspondant donc à la cl
 \begin{list}{\labelitemi}{\leftmargin=1.5em}
 \item{Affichage de tous les types d'équipements disponibles à l'achat correspondant à la classe choisie.}
 \item{L'utilisateur choisit s'il le souhaite un type d'équipement et effectue l'achat.}
-\item{Si un nouveau type d'une classe d'équipement est achetée, détruit l'ancien type possédé.}
+\item{Si un nouveau type d'une classe d'équipement est achetée, l'ancien type possédé est détruit.}
 \end{list}
 
 \subsubsection{Aller aux finances (goto funds)}
