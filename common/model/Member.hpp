@@ -49,7 +49,7 @@ protected://modif
 	static int getNextMemberID()
 	{
 		static int _staticMemberID = -1;
-		mkdir("data/global", 0644);
+		mkdir("data/global", 0755);
 		static const std::string path = "data/global/memberID.json";
 		if (_staticMemberID == -1)
 		{
