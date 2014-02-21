@@ -156,9 +156,9 @@ bool ClientMatchManager::isOwnPlayer(Player const & player)
 	return false;
 }
 
-char playerLetter(Player const & player)
+char ClientMatchManager::playerLetter(Player const & player)
 {
-	return 'A' + player.getID()%10 - 1;
+	return 'A' + player.getID() - 1;
 }
 
 void ClientMatchManager::displayPitch()
@@ -215,7 +215,6 @@ void ClientMatchManager::displayPitch()
 	}
 	cout << "\033[1m"
 		 << "\033[34mChaser \033[31mBeater \033[36mKeeper \033[33mSeeker"
-		 << endl
 	     << "\033[34m*Quaffle \033[31m*Bludger \033[33m*Golden Snitch\033[0m"
 		 << endl;
 }

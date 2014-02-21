@@ -26,6 +26,7 @@ public:
 	void selectDirectionForPlayer(int player);
 	Position parseDirection(string userInput);
 	bool isOwnPlayer(Player const & player);
+	char playerLetter(Player const & player);
 	void displayPitch();
 private:
 	net::TcpSocket & _connection;
