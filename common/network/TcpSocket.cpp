@@ -53,7 +53,7 @@ void net::TcpSocket::loop()
 			len -= r;
 		}
 		JSON::Value* json = JSON::parse(res.str().c_str());
-		if (json != NULL)
+		if (json != NULL && ISDICT(json))
 		{
 			JSON::Dict const & dict = DICT(json);
 			if (dict.hasKey("type") && dict.hasKey("data") && ISSTR(dict.get("type")))

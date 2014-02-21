@@ -554,15 +554,11 @@ bool CLI::upgradeInstallation(size_t i)
 	query.set("data", i);
 	_connection.send(query);
 	
-	JSON::Value *serverResponse = _connection.pop();
-	if (ISDICT(serverResponse))
+	JSON::Value *serverResponse = waitForMsg(net::MSG::INSTALLATION_UPGRADE);
+	JSON::Dict const & received = DICT(serverResponse);
+	if (ISBOOL(received.get("data")))
 	{
-		JSON::Dict const & received = DICT(serverResponse);
-		if (ISSTR(received.get("type")) && ISBOOL(received.get("data"))
-			&& STR(received.get("type")).value() == net::MSG::INSTALLATION_UPGRADE)
-		{
-			ret = received.get("data");
-		}
+		ret = received.get("data");
 	}
 	delete serverResponse;
 	return ret;
@@ -588,26 +584,24 @@ bool CLI::downgradeInstallation(size_t i)
 	return ret;
 }
 
-vector<std::string> CLI::getConnectedUsersList(){
+vector<std::string> CLI::getConnectedUsersList(){// TODO
 	vector<std::string> res;
 	JSON::Dict query;
 	query.set("type", net::MSG::CONNECTED_USERS_LIST);
 	query.set("data", "");
 	_connection.send(query);
 
-	JSON::Value *serverResponse = _connection.pop();
-	if (ISDICT(serverResponse)){
-		JSON::Dict received = DICT(serverResponse);
-		if (ISSTR(received.get("type")) && ISLIST(received.get("data"))){
-			JSON::List & connectedUsers = LIST(received.get("data"));
-			for (size_t i = 0; i<connectedUsers.len(); ++i)
-				res.push_back(STR(connectedUsers[i]));
-		}
+	JSON::Value *serverResponse = waitForMsg(net::MSG::CONNECTED_USERS_LIST);
+	JSON::Dict const & received = DICT(serverResponse);
+	if (ISLIST(received.get("data"))) {
+		JSON::List & connectedUsers = LIST(received.get("data"));
+		for (size_t i = 0; i<connectedUsers.len(); ++i)
+			res.push_back(STR(connectedUsers[i]));
 	}
 	return res;
 }
 
-std::vector<JSON::Dict> CLI::updatePlayersOnSale(){
+std::vector<JSON::Dict> CLI::updatePlayersOnSale(){// TODO
 	JSON::Dict query;
 	query.set("type", net::MSG::PLAYERS_ON_MARKET_LIST);
 	query.set("data", "");
@@ -626,7 +620,7 @@ std::vector<JSON::Dict> CLI::updatePlayersOnSale(){
 	return res; 
 }
 
-void CLI::bidOnPlayer(int player_id,int team_id, int value){
+void CLI::bidOnPlayer(int player_id,int team_id, int value){// TODO
 	JSON::Dict query, data;
 	data.set(net::MSG::TEAM_ID,team_id);
 	data.set(net::MSG::PLAYER_ID,player_id);
@@ -654,7 +648,7 @@ void CLI::bidOnPlayer(int player_id,int team_id, int value){
 	}
 }
 
-void CLI::addPlayerOnMarket(int player_id,int team_id, int value){
+void CLI::addPlayerOnMarket(int player_id,int team_id, int value){ // TODO
 	JSON::Dict query, data;
 	data.set(net::MSG::TEAM_ID,team_id);
 	data.set(net::MSG::PLAYER_ID,player_id);
@@ -674,7 +668,7 @@ void CLI::addPlayerOnMarket(int player_id,int team_id, int value){
 	}
 }
 
-std::vector<Player> CLI::getPlayers(int team_id){
+std::vector<Player> CLI::getPlayers(int team_id){ // TODO
 	JSON::Dict query, data;
 	JSON::List toFill;
 	data.set(net::MSG::TEAM_ID, team_id);
