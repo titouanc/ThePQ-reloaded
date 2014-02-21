@@ -83,6 +83,8 @@ void PlayerMarket::transfert(Sale * sale){
 PlayerMarket::PlayerMarket(): _sales(), _marketPath("data/playerMarket/"), _playerPath("data/"),
 _thread(),_runChecker(true), _deleting(PTHREAD_MUTEX_INITIALIZER) {
 	mkdir(_marketPath.c_str(), 0755);
+	/*cherche data/playermarket
+	transformer fichier->C() ajouter au vecteur _sales*/
 	startChecker();
 }
 
