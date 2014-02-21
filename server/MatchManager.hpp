@@ -36,6 +36,7 @@ struct Stroke {
 #define MATCH_ERROR   "M!!!"
 #define MATCH_ACK     "MACK"
 #define MATCH_DELTA   "MDELTA"
+#define MATCH_SCORES  "MSCORES"
 
 class MatchManager : public SubConnectionManager {
 	private:
@@ -49,6 +50,12 @@ class MatchManager : public SubConnectionManager {
 		Pitch  _pitch;
 		SharedQueue<Message> _inbox, _outbox;
 		unsigned int _score[2];
+
+		/* Current match deltas */
+		JSON::List _turnDeltas;
+
+		/* Current time step */
+		double _t;
 
 		typedef std::deque<Stroke>::iterator iter;
 
@@ -77,7 +84,9 @@ class MatchManager : public SubConnectionManager {
 		void sendSquads(void);
 		void sendBalls(void);
 		/* Send match delta to everyone */
-		void sendMatchDeltas(JSON::List const & delta);
+		void sendMatchDeltas(void);
+		void stopStroke(Stroke & stroke, Position const & pos);
+		void addDelta(Moveable const & moveable, Position const & dest);
 
 		iter getStrokeForMoveable(Moveable *moveable);
 		/* Resolve strokes */
@@ -85,22 +94,20 @@ class MatchManager : public SubConnectionManager {
 		bool checkGoal(
 			Stroke & stroke,     /* Stroke that might lead to goal */
 			Position & toPos,    /* Position that might be a goal */
-			Position & fromPos,  /* last pos occupied by moving */
-			JSON::List & deltas  /* Where to save match deltas */
+			Position & fromPos  /* last pos occupied by moving */
 		);
 		/* *SMASH* */
 		void onCollision(
 			Stroke & stroke,     /* Stroke that leads to conflict */
 			Position & conflict, /* Clonflicting pos */
-			Position & fromPos,  /* last pos occupied by moving */
-			JSON::List & deltas  /* Where to save match deltas */
+			Position & fromPos  /* last pos occupied by moving */
 		);
 		void throwBall(
 			Moveable & ball,
 			Position & fromPos,
-			Position & direction,
-			JSON::List & turnDeltas
+			Position & direction
 		);
+		void endMatch(void);
 	public:
 		MatchManager(
 			BaseConnectionManager & connections, 

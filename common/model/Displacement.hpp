@@ -13,9 +13,10 @@ class NotADirection : public std::runtime_error {
 
 class Displacement {
     private:
+        double _tbeg;
         std::vector<Position> _moves;
     public:
-        Displacement();
+        Displacement(double tbegin=0);
         Displacement(JSON::List const & list);
         Position position(double t=1, size_t speed=0) const;
         Position position(double t, Position const & initial) const;

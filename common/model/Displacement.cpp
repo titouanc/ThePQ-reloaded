@@ -1,7 +1,7 @@
 #include "Displacement.hpp"
 #include <cassert>
 
-Displacement::Displacement() : _moves()
+Displacement::Displacement(double tbegin) : _tbeg(tbegin), _moves()
 {}
 
 Displacement::Displacement(JSON::List const & list) : Displacement() 
@@ -17,8 +17,13 @@ Position Displacement::position(double t, size_t speed) const
     /*Method returning the calculated position*/
     assert(0 <= t && t <= 1);
     assert(speed <= length());
+
     Position res;
     double begin=0, end=0;
+    if (t < _tbeg)
+        return res;
+
+    t -= _tbeg;
 
     if (speed==0)
         speed = length();

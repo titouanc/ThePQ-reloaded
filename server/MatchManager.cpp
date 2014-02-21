@@ -127,10 +127,12 @@ void MatchManager::_mainloop_out()
 	cout << "[" << this << "] \033[32mMatch started\033[0m" << endl;
 	sendSignal(MATCH_START);
 
+	cout << _pitch << endl;
+
 	unsigned int n_ticks = 0;
 	while (nClients() > 0){
 		n_ticks++;
-		cout << "+ tick " << n_ticks << " match #" << this << endl;
+		cout << "[" << this << "] + tick " << n_ticks << endl;
 		sendSignal(MATCH_PROMPT);
 		tick = time(NULL);
 
@@ -150,6 +152,8 @@ void MatchManager::_mainloop_out()
 		sendSignal(MATCH_TIMEOUT);
 		if (! _strokes.empty())
 			playStrokes();
+
+		cout << _pitch << endl;
 
 		if (n_ticks > 3)
 			break;
@@ -216,11 +220,11 @@ void MatchManager::sendBalls(void)
 	sendToAll(msg);
 }
 
-void MatchManager::sendMatchDeltas(JSON::List const & delta)
+void MatchManager::sendMatchDeltas(void)
 {
 	JSON::Dict msg;
 	msg.set("type", MATCH_DELTA);
-	msg.set("data", delta);
+	msg.set("data", _turnDeltas);
 	sendToAll(msg);
 }
 
@@ -234,28 +238,28 @@ MatchManager::iter MatchManager::getStrokeForMoveable(Moveable *moveable)
 	return res;
 }
 
-static JSON::Dict mkDelta(Moveable const & moveable, Position const & dest)
+void MatchManager::addDelta(Moveable const & moveable, Position const & dest)
 {
 	JSON::Dict res;
 	res.set("mid", moveable.getID());
 	res.set("from", moveable.getPosition().toJson());
 	res.set("to", dest.toJson());
-	return res;
+	_turnDeltas.append(res);
 }
 
-static void stopStroke(JSON::List & deltas, Stroke & stroke, Position const & pos)
+void MatchManager::stopStroke(Stroke & stroke, Position const & pos)
 {
+	cout << "\033[1m\033[31mSTOPPING " << stroke.moveable.getID() << "\033[0m" << endl;
 	stroke.active = false;
 	if (stroke.moveable.getPosition() != pos)
-		deltas.append(mkDelta(stroke.moveable, pos));
+		addDelta(stroke.moveable, pos);
 	stroke.moveable.setPosition(pos);
 }
 
 bool MatchManager::checkGoal(
 	Stroke & stroke,     /* Stroke that might lead to goal */
 	Position & toPos,    /* Position that might be a goal */
-	Position & fromPos,  /* last pos occupied by moving */
-	JSON::List & deltas  /* Where to save match deltas */
+	Position & fromPos   /* last pos occupied by moving */
 )
 {
 	Moveable & moving = stroke.moveable;
@@ -277,7 +281,7 @@ bool MatchManager::checkGoal(
 	}
 
 	/* Otherwise stop moveable */
-	stopStroke(deltas, stroke, fromPos);
+	stopStroke(stroke, fromPos);
 	return false;
 }
 
@@ -295,7 +299,7 @@ void MatchManager::playStrokes(void)
 	double last_t = 0;
 	for (size_t t_i=1; t_i<=maxlen; t_i++){
 		/* Foreach time step */
-		double t = ((double) t_i)/maxlen;
+		_t = ((double) t_i)/maxlen;
 		for (iter i=_strokes.begin(); i!=_strokes.end(); i++){
 			/* Foreach active stroke */
 			if (! (*i).active)
@@ -303,10 +307,12 @@ void MatchManager::playStrokes(void)
 
 			Moveable & moving = (*i).moveable;
 			Displacement & move = (*i).move;
-			Position newPos = move.position(t, moving);
+			Position newPos = move.position(_t, moving);
 			Position oldPos = move.position(last_t, moving);
 
-			if (checkGoal(*i, newPos, oldPos, turnDeltas)){
+			cout << "MOVING " << moving.getID() << endl;
+
+			if (checkGoal(*i, newPos, oldPos)){
 				/* Is it a goal ? */
 				cout << "GOOOOOLEGOOLEGOOOOLE" << endl;
 				continue;
@@ -314,15 +320,15 @@ void MatchManager::playStrokes(void)
 			
 			if (! _pitch.inEllipsis(newPos)){
 				/* Stop the moveable before it gets out */
-				stopStroke(turnDeltas, *i, oldPos);
+				stopStroke(*i, oldPos);
 				continue;
 			}
 
-			if (! moving.isBall()){
+			if (moving.isPlayer()){
 				/* Don't let the keeper get out of his zone */
 				Player & player = (Player &) moving;
 				if (player.isKeeper() && ! _pitch.isInKeeperZone(newPos)){
-					stopStroke(turnDeltas, *i, oldPos);
+					stopStroke(*i, oldPos);
 					continue;
 				}
 			}
@@ -331,14 +337,15 @@ void MatchManager::playStrokes(void)
 			Moveable *atNewPos = _pitch.getAt(newPos);
 
 			if (atNewPos != NULL && atNewPos != &moving){
-				onCollision(*i, newPos, oldPos, turnDeltas);
+				onCollision(*i, newPos, oldPos);
 			} else {
 				/* Move to newly acquired position */
 				_pitch.setAt(oldPos, NULL);
 				_pitch.setAt(newPos, &moving);
 			}
 		}
-		last_t = t;
+		last_t = _t;
+		cout << _strokes.size() << " STROKES" << endl;
 	}
 
 	/* Find all final position of unstopped moveable */
@@ -347,23 +354,22 @@ void MatchManager::playStrokes(void)
 			Moveable & moving = (*i).moveable;
 			Displacement & move = (*i).move;
 			Position finalPos = move.position(1, moving);
-			turnDeltas.append(mkDelta(moving, finalPos));
+			addDelta(moving, finalPos);
 			moving.setPosition(finalPos);
 		}
 	}
 
 	/* Tell clients about modifications */
-	sendMatchDeltas(turnDeltas);
+	sendMatchDeltas();
+	/* Reset turn state */
+	_turnDeltas = JSON::List();
 	_strokes.clear();
-	cout << _pitch << endl;
 }
 
-/* TODO: turnDeltas as attribute (maybe t) */
 void MatchManager::throwBall(
 	Moveable & ball,
 	Position & fromPos,
-	Position & direction,
-	JSON::List & turnDeltas
+	Position & direction
 )
 {
 	iter stoppedStroke = getStrokeForMoveable(&ball);
@@ -374,21 +380,53 @@ void MatchManager::throwBall(
 		delta.set("mid", ball.getID());
 		delta.set("from", ball.getPosition().toJson());
 		delta.set("to", fromPos.toJson());
-		turnDeltas.append(delta);
+		_turnDeltas.append(delta);
 		ball.setPosition(fromPos);
 		_pitch.setAt(fromPos, &ball);
 	}
 
-	Displacement newMove;
+	Displacement newMove(_t); /* Start a new move at this timestep */
 	newMove.addMove(direction);
 	_strokes.push_back(Stroke(ball, newMove));
+	cout << "\033[1m\033[31mTHROWING " << ball.getID() 
+		 << " FROM " << fromPos.toJson() 
+		 << " WITH DIRECTION " << direction.toJson() 
+		 << " AT TIME " << _t << " \033[0m" << endl;
+}
+
+void MatchManager::endMatch(void)
+{
+	sendMatchDeltas();
+
+	int winner = (_score[0] > _score[1]) ? 0 : 1;
+	int looser = 1-winner;
+	
+	JSON::Dict winnerScore;
+	winnerScore.set("squad_id", _squads[winner].squad_id);
+	winnerScore.set("score", _score[winner]);
+
+	JSON::Dict looserScore;
+	looserScore.set("squad_id", _squads[looser].squad_id);
+	looserScore.set("score", _score[looser]);
+
+	JSON::Dict data;
+	data.set("winner", winnerScore);
+	data.set("looser", looserScore);
+	
+	JSON::Dict msg;
+	msg.set("type", MATCH_SCORES);
+	msg.set("data", data);
+	sendToAll(msg);
+	sendSignal(MATCH_END);
+
+	releaseClient(_squads[0].client_id);
+	releaseClient(_squads[1].client_id);
 }
 
 void MatchManager::onCollision(
 	Stroke & stroke,     /* Stroke that leads to conflict */
 	Position & conflict, /* Clonflicting pos */
-	Position & fromPos,  /* last pos occupied by moving */
-	JSON::List & deltas  /* Where to save match deltas */
+	Position & fromPos  /* last pos occupied by moving */
 )
 {
 	Moveable & first  = *(_pitch.getAt(conflict));
@@ -400,18 +438,36 @@ void MatchManager::onCollision(
 		Player & player = (Player &) moving;
 		Ball & ball = (Ball &) first;
 
-		/* Chasers can throw quaffle; Beaters can bat bludgers */
+		if (ball.isGoldenSnitch() && player.isSeeker()){
+			if (&player == &(_squads[0].seeker)){
+				_score[0] += 150;
+			} else {
+				_score[1] += 150;
+			}
+			stopStroke(stroke, conflict);
+			iter stoppedStroke = getStrokeForMoveable(&ball);
+			if (stoppedStroke != _strokes.end()){
+				stopStroke(*stoppedStroke, conflict);
+			}
+			endMatch();
+			return;
+		}
+
+		/* Chasers can throw quaffle; Beaters can bat bludgers
+		   But... LATER !!! */
+		/*
 		if ((ball.isQuaffle() && player.isChaser()) || 
 			(ball.isBludger() && player.isBeater())){
 			Position newDirection = conflict - fromPos;
-			throwBall(ball, conflict, newDirection, deltas);
+			throwBall(ball, conflict, newDirection);
 			_pitch.setAt(fromPos, NULL);
 			_pitch.setAt(conflict, &moving);
-		}
-	} else if (first_score > second_score){
+		}*/
+	}
+	if (first_score > second_score){
 
 		/* The first moveable wins, second stops on fromPos */
-		stopStroke(deltas, stroke, fromPos);
+		stopStroke(stroke, fromPos);
 	} else {
 
 		/* Second wins: stop first on fromPos */
@@ -419,7 +475,9 @@ void MatchManager::onCollision(
 		_pitch.setAt(conflict, &moving);
 		iter stoppedStroke = getStrokeForMoveable(&first);
 		if (stoppedStroke != _strokes.end()){
-			stopStroke(deltas, *stoppedStroke, fromPos);
+			stopStroke(*stoppedStroke, fromPos);
 		}
+		cout << "\033[1m\033[31mSWAP " << first.getID() 
+			 << " AND " << moving.getID() << "\033[0m" << endl;
 	}
 }
