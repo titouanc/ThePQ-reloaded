@@ -81,6 +81,7 @@ void Server::startMatch(int client_idA, int client_idB)
 		return;
 	Squad squad1(DICT(json));
 	squad1.client_id = client_idA;
+	squad1.squad_owner = _users[client_idA]->getUsername();
 	delete json;
 
 	json = JSON::load("fixtures/squad2.json");
@@ -88,6 +89,7 @@ void Server::startMatch(int client_idA, int client_idB)
 		return;
 	Squad squad2(DICT(json));
 	squad2.client_id = client_idB;
+	squad2.squad_owner = _users[client_idB]->getUsername();
 	delete json;
 
 	while (_outbox.available()); /* Clear outbox (do not lose msgs) */

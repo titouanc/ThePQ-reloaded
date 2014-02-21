@@ -7,6 +7,7 @@
 struct Squad {
 	int squad_id;
 	int client_id;
+	std::string squad_owner;
 	Chaser chasers[3];
 	Beater beaters[2];
 	Seeker seeker;
@@ -38,6 +39,8 @@ struct Squad {
 			seeker = Seeker(DICT(json.get("seeker")));
 		if (ISDICT(json.get("keeper")))
 			keeper = Keeper(DICT(json.get("keeper")));
+		if (ISSTR(json.get("squad_owner")))
+			squad_owner = STR(json.get("squad_owner")).value();
 	}
 	Squad & operator=(Squad const & other){
 		squad_id = other.squad_id;
@@ -47,11 +50,13 @@ struct Squad {
 		for (i=0; i<2; i++) beaters[i] = other.beaters[i];
 		seeker = other.seeker;
 		keeper = other.keeper;
+		squad_owner = other.squad_owner;
 		return *this;
 	}
 	operator JSON::Dict(){
 		JSON::Dict res;
 		res.set("squad_id", squad_id);
+		res.set("squad_owner", squad_owner);
 		res.set("seeker", JSON::Dict(seeker));
 		res.set("keeper", JSON::Dict(keeper));
 
