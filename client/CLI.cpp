@@ -232,6 +232,7 @@ void CLI::notificationsMenu()
 			{
 				case 1:
 					handleNotification(currentNotification);
+					_messages.pop();
 					break;
 				case 2:
 					cout << "not implemented yet" << endl; // TODO
