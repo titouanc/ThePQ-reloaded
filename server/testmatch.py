@@ -31,9 +31,8 @@ def printMessage(msg):
 		exit()
 	elif msg['type'] == 'MDELTA':
 		for delta in msg['data']:
-			print delta['mid'], delta['from'], '->', delta['to']
+			print "%2d"%delta['mid'], PLAYERS[delta['mid']]['name'], delta['from'], '->', delta['to']
 			PLAYERS[delta['mid']]['position'] = delta['to']
-		printPlayers()
 	else:
 		print msg
 
@@ -57,20 +56,18 @@ for i in range(3):
 	printMessage(c.recvObj())
 	printMessage(d.recvObj())
 
-c.sendObj({
-	"type": "MSTROKE", 
-	"data": {
-		"mid": 1, 
-		"move": [[1, 1], [2, 0]]
-	}
-})
-d.sendObj({
-	"type": "MSTROKE", 
-	"data": {
-		"mid": 11, 
-		"move": [[1, 1], [2, 0]]
-	}
-})
+for mid in (1, 4, 6, 7):
+	c.sendObj({
+		"type": "MSTROKE", 
+		"data": {"mid": mid, "move": [[1, 1], [2, 0]]}
+	})
+	d.sendObj({
+		"type": "MSTROKE", 
+		"data": {"mid": 10+mid, "move": [[1, 1], [2, 0]]}
+	})
+	printMessage(c.recvObj())
+	printMessage(d.recvObj())
+
 while True: 
 	printMessage(c.recvObj())
 	printMessage(d.recvObj())
