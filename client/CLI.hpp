@@ -63,6 +63,11 @@ private:
 
 	void displayNotificationsCount();
 	void updateNotifications();
+	void handleNotification(JSON::Value* notification);
+
+	void handleFriendlyGameInvitation(JSON::Dict &message);
+	void acceptInvitationFromUser(string username);
+	void denyInvitationFromUser(string username);
 
 	// NEW
 	void loginUser(std::string username, std::string passwd);
@@ -92,6 +97,7 @@ private:
 	void playersMenu();
 	void friendlyMatchMenu();
 	void marketMenu();
+	void notificationsMenu();
 	// utils
 	std::string askForUserData(std::string prompt); // returns the user input.
 	std::string askForNewPassword(); // prompts the user to create a new password with 
