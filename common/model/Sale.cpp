@@ -15,7 +15,7 @@ void Sale::start(){
 }
 
 void Sale::saleStart(){
-	while(_turnTeams.size() > 1 or _turn == 1){
+	while( !(_canBidTeams.empty()) or _turn == 1 ){
 		for(int i=0; i<getTotalTime(); ++i){
 			sleep(1);
 			--_timeLeft;
@@ -61,6 +61,7 @@ Sale::Sale(const JSON::Dict & json): Sale()
 	if(json.hasKey(net::MSG::CURRENT_BIDDER))	{_currentBidder=STR(json.get(net::MSG::CURRENT_BIDDER)).value();}
 	if(json.hasKey(net::MSG::TURN_NUMBER)) 		{_turn = INT(json.get(net::MSG::TURN_NUMBER));}
 	if(json.hasKey(net::MSG::BID_TIMER)) 		{_timeLeft = INT(json.get(net::MSG::BID_TIMER));}
+	if(json.hasKey(net::MSG::BID_VALUE)) 		{_bidValue = INT(json.get(net::MSG::BID_VALUE));}
 	if(json.hasKey(net::MSG::TEAMS_BIDDING)) {
 		JSON::List & bidding = LIST(json.get(net::MSG::TEAMS_BIDDING));
 		for(size_t i =0;i<bidding.len();++i){
