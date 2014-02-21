@@ -61,10 +61,10 @@ namespace net
 
 		// friendly game
 		static const std::string FRIENDLY_GAME_USERNAME = "F_G_U";
-		static const std::string FRIENDLY_GAME_INVITATION = "F_G_U";
-		static const std::string FRIENDLY_GAME_INVITATION_ACCEPT = "F_G_U_A";
-		static const std::string FRIENDLY_GAME_INVITATION_DENY = "F_G_U_D";
-
+		static const std::string FRIENDLY_GAME_INVITATION = "F_G_I";
+		static const std::string FRIENDLY_GAME_INVITATION_RESPONSE = "F_G_I_R";
+		static const std::string FRIENDLY_GAME_INVITATION_ACCEPT = "F_G_I_A";
+		static const std::string FRIENDLY_GAME_INVITATION_DENY = "F_G_I_D";
 
 		// MATCH ----------------------------------------------------------------
 		static const std::string MATCH_START   = "MSTART";

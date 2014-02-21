@@ -372,7 +372,29 @@ void CLI::friendlyMatchMenu()
 
 void CLI::chooseUser()
 {
-	// TODO : choose user for friendly match
+	cout << "Enter a username to send an invitation to another user : ";
+	string userInput;
+	cin >> userInput;
+	JSON::Dict toSend;
+	toSend.set("type", net::MSG::FRIENDLY_GAME_USERNAME);
+	toSend.set("data", userInput);
+	_connection.send(toSend);
+
+	JSON::Value *received = JSON::Value *serverMessage = waitForMsg(net::MSG::FRIENDLY_GAME_INVITATION_RESPONSE);
+	JSON::Dict const & received = DICT(serverMessage);
+	if (ISDICT(received.get("data")) && ISSTR(DICT(received.get("data")).get("answer"))){
+		string answer = STR(DICT(received.get("data")).get("answer")).value();
+		if (answer == net::MSG::FRIENDLY_GAME_INVITATION_ACCEPT){
+			cout << STR(DICT(received.get("data")).get("username")).value();
+			cout << " accepted your invitation!" << endl;
+			// launch clientmatchmanager
+
+		}
+		else {
+			cout << STR(DICT(received.get("data")).get("username")).value();
+			cout << " denied your invitation. Sorry!" << endl;
+		}
+	}
 }
 void CLI::loadInstallations(){
 	_installations = getInstallationsList();
