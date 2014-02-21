@@ -37,13 +37,11 @@ void ClientMatchManager::initSquads(const JSON::Dict& msg, string username){
 			_pitch.insert(_otherSquad.players[i]);
 		}
 	}
-	turnMenu();
 }
 
 void ClientMatchManager::startMatch(){
 	cout << "Match Started! Have fuuuuuuuuuunnnnnn :D" << endl;
-	cout << _pitch << endl;
-	
+	turnMenu();
 }
 
 void ClientMatchManager::selectPlayer(){
@@ -51,12 +49,13 @@ void ClientMatchManager::selectPlayer(){
 }
 
 void ClientMatchManager::turnMenu(){
-	startMatch();
-	displayAvailablePlayers();
+	
 	Menu turnMenu;
 	turnMenu.addToDisplay("  - select player");
 	int option;
 	do {
+		cout << _pitch << endl;
+		displayAvailablePlayers();
 		option = turnMenu.run();
 		switch(option){
 			default:
