@@ -69,7 +69,7 @@ class Pitch {
 		bool isWestGoal(int x, int y) const;
 		bool isEastGoal(int x, int y) const;
 		bool isGoal(int x, int y) const {
-			return isEastGoal(x, y) || isEastGoal(x, y);
+			return isEastGoal(x, y) || isWestGoal(x, y);
 		}
 
 		// TODO DOC
