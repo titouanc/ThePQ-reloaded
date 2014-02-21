@@ -13,7 +13,8 @@ std::string humanExcName(const char *name)
 }
 
 CLI::CLI(NetConfig const &config) : 	_connection(config.host, config.port),
-										_prompt(">")
+										_prompt(">"),
+										_isWaitingForMessage(false)
 {
 	pthread_create(&_thread, NULL, net::runThread, this);
 }
@@ -108,6 +109,7 @@ void CLI::mainMenu()
 	_menu.addToDisplay("   - (m)anage your team and stadium\n");
 	_menu.addToDisplay("   - (a)ccess market\n");
 	_menu.addToDisplay("   - (p)lay a friendly game\n");
+	_menu.addToDisplay("   - see notifications\n");
 	_menu.addToDisplay("   - (q)uit\n");
 	int option;
 	do
@@ -124,11 +126,13 @@ void CLI::mainMenu()
 			case 3:
 				friendlyMatchMenu();
 				break;
+			case 4:
+				notificationsMenu();
 			default:
 				break;
 		}
 	}
-	while (option != 4);
+	while (option != 5);
 }
 
 /* Management menu */
@@ -206,6 +210,47 @@ void CLI::playersMenu()
 	}
 	while (option != 1);
 }
+
+/* main menu */
+void CLI::notificationsMenu()
+{
+	updateNotifications();
+	displayNotificationsCount();
+	Menu _menu;
+	_menu.addToDisplay("   - handle this notification\n");
+	_menu.addToDisplay("   - see next notification\n");
+	_menu.addToDisplay("   - (q)uit\n");
+	int option;
+	bool quit = false;
+	while (! _messages.empty() && ! quit)
+	{
+		JSON::Value * currentNotification = _messages.front();
+		JSON::Dict const & notif = DICT(currentNotification);
+		if (STR(notif.get("type")).value() == net::MSG::FRIENDLY_GAME_INVITATION
+			&& ISSTR(notif.get("data")))
+		{
+			cout << STR(notif.get("data")).value() << " invited you to a game" << endl;
+		}
+		option = _menu.run();
+		switch(option)
+		{
+			case 1:
+				handleNotification(currentNotification);
+				_messages.pop();
+				break;
+			case 2:
+				_messages.push(_messages.front());
+				_messages.pop();
+				break;
+			case 3:
+				quit = true;
+				break;
+			default:
+				break;
+		}
+	}
+}
+
 //modif
 void CLI::printPlayers(){
 	_players = getPlayers(_username);//modif
@@ -713,6 +758,7 @@ std::vector<Player> CLI::getPlayers(std::string username){//modif
 
 JSON::Value* CLI::waitForMsg(std::string typeToWait)
 {
+	_isWaitingForMessage = true;
 	JSON::Value* msg = NULL, *res = NULL;
 	while (msg == NULL || _connection.available())
 	{
@@ -727,5 +773,74 @@ JSON::Value* CLI::waitForMsg(std::string typeToWait)
 			_messages.push(msg);
 		}
 	}
+	_isWaitingForMessage = false;
 	return res;
+}
+
+void CLI::displayNotificationsCount(){
+	cout << "You have " << _messages.size() << "notifications." << endl;
+}
+
+void CLI::updateNotifications(){
+	while (!_isWaitingForMessage && _connection.available()){
+		_messages.push(_connection.pop());
+	}
+}
+
+void CLI::handleNotification(JSON::Value *notification){
+	JSON::Dict message = DICT(notification);
+	string messageType;
+	if (ISSTR(message.get("type")))
+		messageType = STR(message.get("type")).value();
+	if (messageType == net::MSG::FRIENDLY_GAME_INVITATION)
+		handleFriendlyGameInvitation(message);
+}
+
+void CLI::handleFriendlyGameInvitation(JSON::Dict &message){
+	if (ISSTR(message.get("data"))){
+		Menu _menu;
+		_menu.addToDisplay("   - accept\n");
+		_menu.addToDisplay("   - deny\n");
+		int option;
+		bool chosen = false;
+		do
+		{
+			option = _menu.run();
+			switch(option)
+			{
+				case 1:
+					chosen = true;
+					acceptInvitationFromUser(STR(message.get("data")).value());
+					// TODO start to play game
+					break;
+				case 2:
+					chosen = true;
+					denyInvitationFromUser(STR(message.get("data")).value());
+					break;
+				default:
+					break;
+			}
+		}
+		while(!chosen);
+	}
+}
+
+void CLI::acceptInvitationFromUser(string username){
+	JSON::Dict toSend;
+	toSend.set("type", net::MSG::FRIENDLY_GAME_INVITATION_RESPONSE);
+	JSON::Dict data;
+	data.set("username", username);
+	data.set("answer", net::MSG::FRIENDLY_GAME_INVITATION_ACCEPT);
+	toSend.set("data", data);
+	_connection.send(toSend);
+}
+
+void CLI::denyInvitationFromUser(string username){
+	JSON::Dict toSend;
+	toSend.set("type", net::MSG::FRIENDLY_GAME_INVITATION_RESPONSE);
+	JSON::Dict data;
+	data.set("username", username);
+	data.set("answer", net::MSG::FRIENDLY_GAME_INVITATION_DENY);
+	toSend.set("data", data);
+	_connection.send(toSend);
 }

@@ -12,7 +12,7 @@
 #include <Config.hpp>
 #include <model/Player.hpp>
 #include <network/TcpSocket.hpp>
-#include <stack>
+#include <queue>
 #include "ClientMatchManager.hpp"
 
 
@@ -58,7 +58,16 @@ private:
 	pthread_t _thread;
 	
 	JSON::Value* waitForMsg(std::string);
-	std::stack<JSON::Value*> _messages;
+	std::queue<JSON::Value*> _messages;
+	bool _isWaitingForMessage;
+
+	void displayNotificationsCount();
+	void updateNotifications();
+	void handleNotification(JSON::Value* notification);
+
+	void handleFriendlyGameInvitation(JSON::Dict &message);
+	void acceptInvitationFromUser(string username);
+	void denyInvitationFromUser(string username);
 
 	// NEW
 	void loginUser(std::string username, std::string passwd);
@@ -88,6 +97,7 @@ private:
 	void playersMenu();
 	void friendlyMatchMenu();
 	void marketMenu();
+	void notificationsMenu();
 	// utils
 	std::string askForUserData(std::string prompt); // returns the user input.
 	std::string askForNewPassword(); // prompts the user to create a new password with 
