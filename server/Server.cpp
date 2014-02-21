@@ -326,8 +326,13 @@ void Server::sendInvitationResponseToPlayer(const JSON::Dict &response, int peer
 			toSend.set("data", data);
 			Message status(it->first, toSend.clone());
 			_outbox.push(status);
+			if (answer == MSG::FRIENDLY_GAME_INVITATION_ACCEPT){
+				startMatch(peer_id, it->first);
+			}
 		}
 	}
+
+
 }
 
 // void Server::deletePlayerOfMarket(const JSON::Dict &sale, int peer_id){//modif
