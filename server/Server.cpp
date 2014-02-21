@@ -136,7 +136,13 @@ void Server::treatMessage(const Message &message)
 						sendConnectedUsersList(message.peer_id);
 				} else if(messageType == MSG::PLAYERS_ON_MARKET_LIST) {
 						sendPlayersOnMarketList(message.peer_id);
-				} 
+				} else if(messageType == MSG::FRIENDLY_GAME_USERNAME) {
+						sendInvitationToPlayer(data, message.peer_id);
+				} else if(messageType == MSG::FRIENDLY_GAME_INVITATION_ACCEPT) {
+						sendInvitationAcceptToPlayer(data, message.peer_id);
+				} else if(messageType == MSG::FRIENDLY_GAME_INVITATION_DENY) {
+						sendInvitationDenyToPlayer(data, message.peer_id);
+				}
 			} else if (ISINT(received.get("data"))) {
 				int data = INT(received.get("data"));
 				if (messageType == MSG::INSTALLATION_UPGRADE) {
@@ -288,6 +294,45 @@ void Server::sendConnectedUsersList(int peer_id)
 	usersList.set("data", list);
 
 	_outbox.push(Message(peer_id, usersList.clone()));
+}
+
+void Server::sendInvitationToPlayer(string const& username, int peer_id){
+	map<int, User*>::iterator findUser = _users.find(peer_id);
+	for (map<int, User*>::iterator it=_users.begin(); it!=_users.end(); it++){
+		if (it->second->getUsername() == username){
+			JSON::Dict toSend;
+			toSend.set("type", MSG::FRIENDLY_GAME_INVITATION);
+			toSend.set("data", findUser->second->getUsername());
+			Message status(it->first, toSend.clone());
+			_outbox.push(status);
+		}
+	}
+}
+
+void Server::sendInvitationAcceptToPlayer(string const& username, int peer_id){
+	map<int, User*>::iterator findUser = _users.find(peer_id);
+	for (map<int, User*>::iterator it=_users.begin(); it!=_users.end(); it++){
+		if (it->second->getUsername() == username){
+			JSON::Dict toSend;
+			toSend.set("type", MSG::FRIENDLY_GAME_INVITATION_ACCEPT);
+			toSend.set("data", findUser->second->getUsername());
+			Message status(it->first, toSend.clone());
+			_outbox.push(status);
+		}
+	}
+}
+
+void Server::sendInvitationDenyToPlayer(string const& username, int peer_id){
+	map<int, User*>::iterator findUser = _users.find(peer_id);
+	for (map<int, User*>::iterator it=_users.begin(); it!=_users.end(); it++){
+		if (it->second->getUsername() == username){
+			JSON::Dict toSend;
+			toSend.set("type", MSG::FRIENDLY_GAME_INVITATION_DENY);
+			toSend.set("data", findUser->second->getUsername());
+			Message status(it->first, toSend.clone());
+			_outbox.push(status);
+		}
+	}
 }
 
 // void Server::deletePlayerOfMarket(const JSON::Dict &sale, int peer_id){//modif
