@@ -446,6 +446,9 @@ void CLI::chooseUser()
 			startMatch();
 
 		}
+		else if (answer == net::MSG::USER_NOT_FOUND) {
+			cout << "User not found" << endl;
+		}
 		else {
 			cout << STR(DICT(received.get("data")).get("username")).value();
 			cout << " denied your invitation. Sorry!" << endl;

@@ -63,7 +63,7 @@
 }
 \newglossaryentry{coach}{
 	name=coach,
-	description={Un coach est un personnage de jeu membre d'une \gls{equipe}, intervenant dans le cadre des \gls{entrainement}s. Il possède une série de caractéristiques, tout comme les \gls{joueur}s. La valeur de ces caractéristiques influencera sur l'efficacité et l'apport d'un entrainement. Il n'intervient par contre aucunement dans un match de Quidditch}
+	description={Un coach est un personnage de jeu membre d'une \gls{equipe}, intervenant dans le cadre des \gls{entrainement}s. Il possède une série de caractéristiques, tout comme les \gls{joueur}s. La valeur de ces caractéristiques influencera sur l'efficacité et l'apport d'un entraînement. Il n'intervient par contre aucunement dans un match de Quidditch}
 }
 
 \newglossaryentry{membre}{
@@ -127,7 +127,7 @@
 }
 \newglossaryentry{sponsor}{
     name=sponsor,
-    description={Mécène qui accepte de financer une \gls{equipe} sous certaines conditions}
+    description={Mécène qui accepte de financer une \gls{equipe} sous certaines conditions (ratio de victoires, équipe possède un certain nombre de joueurs, ...)}
 }
 \newglossaryentry{cas d'utilisation}{
 	name={cas d'utilisation},
@@ -135,11 +135,11 @@
 }
 
 \newglossaryentry{entrainement}{
-	name=entrainement,
-	description={Action déclenchée par l'\gls{utilisateur} permettant d'améliorer les \gls{aptitude}s des joueurs. Un entrainement est divisé en groupes d'entrainements, spécifiés par l'\gls{utilisateur}. Lancer un entrainement entraine une augmentation de la fatigue des joueurs}
+	name=entraînement,
+	description={Action déclenchée par l'\gls{utilisateur} permettant d'améliorer les \gls{aptitude}s des joueurs. Un entraînement est divisé en groupes d'entraînements, spécifiés par l'\gls{utilisateur}. Lancer un entraînement entraine une augmentation de la fatigue des joueurs}
 }
 \newglossaryentry{groupe d'entrainement}{
-	name={groupe d'entrainement},
+	name={groupe d'entraînement},
 	description={Ensemble de \gls{joueur}s, d'\gls{aptitude}s et de \gls{coach}s qui intervient lors du déclenchement d'un \gls{entrainement}. Cet ensemble détermine le degré d'amélioration des \gls{aptitude}s}
 }
 
@@ -203,7 +203,7 @@ gestion de groupe et de maintien de projet sur le long terme.
 Dans ce jeu, vous affronterez d'autres \gls{manager}s en ligne dans une course ensorcelée
 vers la gloire et la richesse. Vous prendrez des décisions stratégiques pour votre
 équipe en recrutant des coaches, en achetant, revendant et entrainant des joueurs, et en faisant prospérer votre stade. 
-Sur \textbf{The Pro Quidditch Manager} Vous bâtissez votre propre \textit{dreamteam} de Quidditch !
+Sur \textbf{The Pro Quidditch Manager},vous bâtissez votre propre \textit{dreamteam} de Quidditch !
 
 \subsection{Le Quidditch}
 Selon le souhait du client, les règles utilisées dans le jeu seront, autant que possible, proches des règles décrites sur Wikipédia\footnote{\url{http://en.wikipedia.org/wiki/Quidditch}, dernière consultation le 18/12/2013}.
@@ -221,11 +221,17 @@ Selon le souhait du client, les règles utilisées dans le jeu seront, autant qu
 \hline
 1.2 & Anthony & 17/02/2014 & Désembiguation EN-FR\\
 \hline
-<<<<<<< HEAD
 1.3 & Anthony & 18/02/2014 & Mise à jour de divers diagrammes\\
-=======
-1.3 & Titou & 19/02/2014 & Adaptation du diagramme JSON\\
->>>>>>> 73499154a8064fd012429b5ecdc4473bfa86717c
+\hline
+1.4 & Anthony & 19/02/2014 & Détails des sponsoring et coaches ajoutés\\
+\hline
+1.5 & Titou & 19/02/2014 & Adaptation du diagramme JSON\\
+\hline
+1.6 & Mircea & 20/02/2014 & Ajout d'une section à propos des enchères\\
+\hline
+1.7 & Anthony & 21/02/2014 & Diagramme de classes général ajouté\\
+\hline
+2.0 & Anthony & 21/02/2014 & Release phase 2\\
 \hline
 \end{tabular}
 \end{figure}
@@ -241,11 +247,11 @@ Selon le souhait du client, les règles utilisées dans le jeu seront, autant qu
 \section{Exigences fonctionnelles}
 Cette section traite des exigences fonctionnelles du jeu. Elle est divisée en 
 plusieurs sous-sections : la gestion de l'\gls{equipe}, la gestion du 
-stade, la gestion des entrainements, la gestion des transferts, le management de l'équipe, l'inscription aux championnats et aux matches amicaux et le jeu sur le terrain.
+stade, la gestion des entraînements, la gestion des transferts, le management de l'équipe, l'inscription aux championnats et aux matches amicaux et le jeu sur le terrain.
 
 \subsection{En bref}
 Ce jeu permettra à des utilisateurs du monde entier de créer une équipe de 
-Quidditch et de la faire évoluer lors d'entrainements, de matches et de 
+Quidditch et de la faire évoluer lors d'entraînements, de matches et de 
 championnats en réseau. Chaque utilisateur démarrera avec une équipe basique et 
 un simple terrain dans son stade, et aura la possibilité d'ajouter des 
 installations.
@@ -287,6 +293,17 @@ Cette section décrira ce que le système doit être capable de faire. À nouvea
 \input{terrain.tex}
 
 \appendix
+
+\chapter{À propos de la librairie graphique}
+\input{gui.tex}
+
+\chapter{Diagramme de classes général}
+\begin{figure}[ht]
+  \centering
+  \includegraphics[angle=90,width=0.4\textwidth]{figures/general-class.eps}
+  \caption{\label{fig:Class:General} Classes: diagramme général}
+\end{figure}
+
 \printindex
 \listoffigures
 
