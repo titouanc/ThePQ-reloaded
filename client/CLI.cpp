@@ -225,8 +225,13 @@ void CLI::notificationsMenu()
 	while (! _messages.empty() && ! quit)
 	{
 		JSON::Value * currentNotification = _messages.front();
-		cout << DICT(currentNotification) << endl;
-			option = _menu.run();
+		JSON::Dict const & notif = DICT(currentNotification);
+		if (STR(notif.get("type")).value() == net::MSG::FRIENDLY_GAME_INVITATION
+			&& ISSTR(notif.get("data")))
+		{
+			cout << STR(notif.get("data")).value() << " invited you to a game" << endl;
+		}
+		option = _menu.run();
 		switch(option)
 		{
 			case 1:
@@ -786,7 +791,6 @@ void CLI::handleNotification(JSON::Value *notification){
 
 void CLI::handleFriendlyGameInvitation(JSON::Dict &message){
 	if (ISSTR(message.get("data"))){
-		cout << STR(message.get("data")).value() << " invited you to play a game." << endl;
 		Menu _menu;
 		_menu.addToDisplay("   - accept\n");
 		_menu.addToDisplay("   - deny\n");
