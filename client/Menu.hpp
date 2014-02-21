@@ -14,6 +14,7 @@ class Menu{
 		Menu(){_option=0;size=0;};
 		//Menu(string inBuffer): _inBuffer(inBuffer) {};
 		int getOption(){return _option;}
+		int getSize(){return _inBuffer.size(); }
 		void clearBuffer();
 		void showMenu();
 		void addToDisplay(string c);
