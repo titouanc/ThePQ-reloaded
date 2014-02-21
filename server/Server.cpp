@@ -285,8 +285,14 @@ void Server::downgradeInstallation(int peer_id, size_t i)
 void Server::sendConnectedUsersList(int peer_id)
 {
 	JSON::List list;
+	std::string userFrom = _user.find(peer_id)
 	for (map<int, User*>::iterator it=_users.begin(); it!=_users.end(); it++)
-		list.append(it->second->getUsername());
+	{
+		if (it->second->getUsername() != userFrom)
+		{
+			list.append(it->second->getUsername());
+		}
+	}
 
 	JSON::Dict usersList;
 	usersList.set("type", MSG::CONNECTED_USERS_LIST);
