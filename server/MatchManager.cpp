@@ -12,8 +12,10 @@ MatchManager::MatchManager(
 	_score[0] = 0;
 	_score[1] = 0;
 
-	for (int i=0; i<4; i++)
-		_balls[i].setID(100+i+1); /* Balls IDs: 101..104*/
+	_quaffle.setID(101);
+	_snitch.setID(102);
+	_bludgers[0].setID(103);
+	_bludgers[0].setID(104);
 
 	_squads[0] = squadA;
 	_squads[1] = squadB;
@@ -35,8 +37,17 @@ MatchManager::MatchManager(
 void MatchManager::initPositions(void)
 {
 	Position const & c = _pitch.center();
+	_quaffle.setPosition(c);
+	_pitch.insert(&_quaffle);
+	_snitch.setPosition(c + 6*Pitch::SouthWest);
+	_pitch.insert(&_snitch);
+
 	for (int i=0; i<2; i++){
-		int k = i ? 2 : -2; /* Squad[0] -> East; Squad[1] -> West */
+		int k = i ? 2 : -2; /* [0] -> East; [1] -> West */
+
+		_bludgers[i].setPosition(c + 6*k*Pitch::NorthWest);
+		_pitch.insert(_bludgers+i);
+
 		_squads[i].chasers[0].setPosition(c + k*Pitch::West);
 		_squads[i].chasers[1].setPosition(c + 2*k*Pitch::NorthWest);
 		_squads[i].chasers[2].setPosition(c + 2*k*Pitch::SouthWest);
@@ -47,7 +58,6 @@ void MatchManager::initPositions(void)
 		for (int j=0; j<7; j++)
 			_pitch.insert(_squads[i].players[j]);
 	}
-
 }
 
 MatchManager::~MatchManager()
@@ -112,6 +122,7 @@ void MatchManager::processMessage(Message const & msg)
 void MatchManager::_mainloop_out()
 {
 	sendSquads();
+	sendBalls();
 	time_t tick;
 	cout << "[" << this << "] \033[32mMatch started\033[0m" << endl;
 	sendSignal(MATCH_START);
@@ -181,14 +192,27 @@ void MatchManager::reply(Message const & msg, std::string type, const char *text
 /* send squads composition */
 void MatchManager::sendSquads(void)
 {
-	int i;
-	JSON::List *list = new JSON::List();
-	for (i=0; i<2; i++)
-		list->append(JSON::Dict(_squads[i]));
+	JSON::List list = JSON::List();
+	for (int i=0; i<2; i++)
+		list.append(JSON::Dict(_squads[i]));
 	
 	JSON::Dict msg;
-	msg.setPtr("data", list);
+	msg.set("data", list);
 	msg.set("type", MATCH_SQUADS);
+	sendToAll(msg);
+}
+
+void MatchManager::sendBalls(void)
+{
+	JSON::List balls = JSON::List();
+	balls.append(JSON::Dict(_quaffle));
+	balls.append(JSON::Dict(_snitch));
+	for (int i=0; i<2; i++)
+		balls.append(JSON::Dict(_bludgers[i]));
+	
+	JSON::Dict msg;
+	msg.set("data", balls);
+	msg.set("type", MATCH_BALLS);
 	sendToAll(msg);
 }
 
@@ -227,7 +251,7 @@ static void stopStroke(JSON::List & deltas, Stroke & stroke, Position const & po
 	stroke.moveable.setPosition(pos);
 }
 
-bool MatchManager::isOnGoal(
+bool MatchManager::checkGoal(
 	Stroke & stroke,     /* Stroke that might lead to goal */
 	Position & toPos,    /* Position that might be a goal */
 	Position & fromPos,  /* last pos occupied by moving */
@@ -274,43 +298,44 @@ void MatchManager::playStrokes(void)
 		double t = ((double) t_i)/maxlen;
 		for (iter i=_strokes.begin(); i!=_strokes.end(); i++){
 			/* Foreach active stroke */
-			if ((*i).active){
-				Moveable & moving = (*i).moveable;
-				Displacement & move = (*i).move;
-				Position newPos = move.position(t, moving);
-				Position oldPos = move.position(last_t, moving);
+			if (! (*i).active)
+				continue;
 
-				if (isOnGoal(*i, newPos, oldPos, turnDeltas)){
-					/* Is it a goal ? */
-					cout << "GOOOOOLEGOOLEGOOOOLE" << endl;
-					continue;
-				}
-				
-				if (! _pitch.inEllipsis(newPos)){
-					/* Stop the moveable before it gets out */
+			Moveable & moving = (*i).moveable;
+			Displacement & move = (*i).move;
+			Position newPos = move.position(t, moving);
+			Position oldPos = move.position(last_t, moving);
+
+			if (checkGoal(*i, newPos, oldPos, turnDeltas)){
+				/* Is it a goal ? */
+				cout << "GOOOOOLEGOOLEGOOOOLE" << endl;
+				continue;
+			}
+			
+			if (! _pitch.inEllipsis(newPos)){
+				/* Stop the moveable before it gets out */
+				stopStroke(turnDeltas, *i, oldPos);
+				continue;
+			}
+
+			if (! moving.isBall()){
+				/* Don't let the keeper get out of his zone */
+				Player & player = (Player &) moving;
+				if (player.isKeeper() && ! _pitch.isInKeeperZone(newPos)){
 					stopStroke(turnDeltas, *i, oldPos);
 					continue;
 				}
+			}
 
-				if (! moving.isBall()){
-					/* Don't let the keeper get out of his zone */
-					Player & player = (Player &) moving;
-					if (player.isKeeper() && ! _pitch.isInKeeperZone(newPos)){
-						stopStroke(turnDeltas, *i, oldPos);
-						continue;
-					}
-				}
+			/* If there is someone where we would arrive */
+			Moveable *atNewPos = _pitch.getAt(newPos);
 
-				/* If there is someone where we would arrive */
-				Moveable *atNewPos = _pitch.getAt(newPos);
-
-				if (atNewPos != NULL && atNewPos != &moving){
-					onCollision(*i, newPos, oldPos, turnDeltas);
-				} else {
-					/* Move to newly acquired position */
-					_pitch.setAt(oldPos, NULL);
-					_pitch.setAt(newPos, &moving);
-				}
+			if (atNewPos != NULL && atNewPos != &moving){
+				onCollision(*i, newPos, oldPos, turnDeltas);
+			} else {
+				/* Move to newly acquired position */
+				_pitch.setAt(oldPos, NULL);
+				_pitch.setAt(newPos, &moving);
 			}
 		}
 		last_t = t;

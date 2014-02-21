@@ -51,24 +51,25 @@ print d.recvObj()
 #start match (MAGIC)
 c.sendObj({"type": "42"})
 
-# Receive match init sequence
-for i in range(3): 
-	printMessage(c.recvObj())
-	printMessage(d.recvObj())
+for i in range(3):
+	# Wait for prompt for both clients
+	ok = 0
+	while ok < 2: 
+		for source in (c, d):
+			msg = source.recvObj()
+			printMessage(msg)
+			if msg['type'] == 'M?':
+				ok += 1
 
-for mid in (1, 4, 6, 7):
-	c.sendObj({
-		"type": "MSTROKE", 
-		"data": {"mid": mid, "move": [[1, 1], [2, 0]]}
-	})
-	d.sendObj({
-		"type": "MSTROKE", 
-		"data": {"mid": 10+mid, "move": [[1, 1], [2, 0]]}
-	})
-	printMessage(c.recvObj())
-	printMessage(d.recvObj())
-
-while True: 
-	printMessage(c.recvObj())
-	printMessage(d.recvObj())
+	for mid in (1, 4, 6, 7):
+		c.sendObj({
+			"type": "MSTROKE", 
+			"data": {"mid": mid, "move": [[1, 1], [2, 0]]}
+		})
+		d.sendObj({
+			"type": "MSTROKE", 
+			"data": {"mid": 10+mid, "move": [[1, 1], [2, 0]]}
+		})
+		printMessage(c.recvObj())
+		printMessage(d.recvObj())
 

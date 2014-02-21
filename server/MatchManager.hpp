@@ -29,6 +29,7 @@ struct Stroke {
 #define MATCH_START   "MSTART"
 #define MATCH_END     "MEND"
 #define MATCH_SQUADS  "MSQUADS"
+#define MATCH_BALLS   "MBALLS"
 #define MATCH_PROMPT  "M?"
 #define MATCH_TIMEOUT "MTOUT"
 #define MATCH_STROKE  "MSTROKE"
@@ -39,8 +40,12 @@ struct Stroke {
 class MatchManager : public SubConnectionManager {
 	private:
 		std::deque<Stroke> _strokes;
+		/* Players */
 		Squad _squads[2];
-		Ball   _balls[4];
+		/* Balls */
+		Quaffle _quaffle;
+		GoldenSnitch _snitch;
+		Bludger _bludgers[2];
 		Pitch  _pitch;
 		SharedQueue<Message> _inbox, _outbox;
 		unsigned int _score[2];
@@ -70,13 +75,14 @@ class MatchManager : public SubConnectionManager {
 		void reply(Message const & msg, std::string type, const char *text);
 		/* Send squads composition to everyone */
 		void sendSquads(void);
+		void sendBalls(void);
 		/* Send match delta to everyone */
 		void sendMatchDeltas(JSON::List const & delta);
 
 		iter getStrokeForMoveable(Moveable *moveable);
 		/* Resolve strokes */
 		void playStrokes(void);
-		bool isOnGoal(
+		bool checkGoal(
 			Stroke & stroke,     /* Stroke that might lead to goal */
 			Position & toPos,    /* Position that might be a goal */
 			Position & fromPos,  /* last pos occupied by moving */
