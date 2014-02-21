@@ -9,6 +9,7 @@
 #include <vector>
 #include "model/Installation.hpp"
 #include <model/Player.hpp>
+#include <model/Sale.hpp>
 
 class Client
 {
@@ -24,13 +25,11 @@ public:
 	bool downgradeInstallation(size_t i);
 	std::vector<std::string> getConnectedUsersList();
 
-	std::vector<JSON::Dict> updatePlayersOnSale();
+	std::vector<Sale> updatePlayersOnSale();
 	void bidOnPlayer(int player_id, std::string username, int value);//modif
 	void addPlayerOnMarket(int player_id, std::string username, int value);//modif
 	std::vector<Player> getPlayers(std::string username);//modif
 
-
-	
 private:
 	SharedQueue<net::Message> _inbox, _outbox;
 	net::ClientConnectionManager _connectionManager;

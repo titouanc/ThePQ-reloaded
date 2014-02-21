@@ -241,15 +241,7 @@ void CLI::printPlayersOnSale(){
 	_playersOnSale = _connection.updatePlayersOnSale();
 	cout << "================ PLAYERS ON SALE ================" << endl;
 	for(size_t i=0;i<_playersOnSale.size();++i){
-		JSON::Dict & sale = _playersOnSale[i];
-		Player player(DICT(sale.get(net::MSG::PLAYER)));
-		cout << i << " - " << STR(sale.get(net::MSG::PLAYER_ID)) << endl;
-		cout << "Time left (in seconds) : " << 	STR(sale.get(net::MSG::BID_TIMER)) 	<< endl;
-		cout << "Bid value 				: " <<	STR(sale.get(net::MSG::BID_VALUE)) 	<< endl;
-		cout << "Next bid value 		: "	<< 	STR(sale.get(net::MSG::NEXT_BID)) 	<< endl;
-		cout << "Player ID 				: "	<<	STR(sale.get(net::MSG::PLAYER_ID))	<< endl;
-		cout << "Player infos			: "	<< 	player 								<< endl;
-		cout << "--------------------------------" << endl;
+		std::cout<<_playersOnSale[i]<<std::endl;
 	}
 	cout << "=================================================" << endl;
 	Menu marketList;
@@ -270,8 +262,8 @@ void CLI::placeBid(){
 	cout << _prompt;
 	cin >> player_id;
 	for(size_t i = 0; i<_playersOnSale.size();++i){		//Getting the next bid value (which is in the JSON::Dict sent by server)
-		if(player_id == INT(_playersOnSale[i].get(net::MSG::PLAYER_ID))){
-			value = INT(_playersOnSale[i].get(net::MSG::NEXT_BID));
+		if(player_id == _playersOnSale[i].getID()){
+			value = _playersOnSale[i].getID();
 		}
 	}
 	try{

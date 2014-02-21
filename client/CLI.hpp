@@ -12,6 +12,7 @@
 #include <Config.hpp>
 #include <model/Player.hpp>
 
+
 struct NetConfig : public Config {
     std::string host;
     unsigned short port;
@@ -43,7 +44,7 @@ private:
 	std::string _prompt;
 	Client _connection;
 	std::vector<Installation> _installations;
-	std::vector<JSON::Dict> _playersOnSale;
+	std::vector<Sale> _playersOnSale;//modif
 	std::vector<Player> _players;
 	std::string _username;//modif
 	
