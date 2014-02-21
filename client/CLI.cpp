@@ -216,15 +216,15 @@ void CLI::notificationsMenu()
 {
 	updateNotifications();
 	displayNotificationsCount();
-	if (! _messages.empty())
+	Menu _menu;
+	_menu.addToDisplay("   - handle this notification\n");
+	_menu.addToDisplay("   - see next notification\n");
+	_menu.addToDisplay("   - (q)uit\n");
+	int option;
+	while (! _messages.empty())
 	{
 		JSON::Value * currentNotification = _messages.front();
 		cout << DICT(currentNotification) << endl;
-		Menu _menu;
-		_menu.addToDisplay("   - handle this notification\n");
-		_menu.addToDisplay("   - see next notification\n");
-		_menu.addToDisplay("   - (q)uit\n");
-		int option;
 		do
 		{
 			option = _menu.run();
