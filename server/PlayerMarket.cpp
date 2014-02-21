@@ -83,12 +83,11 @@ void PlayerMarket::transfert(Sale * sale){
 PlayerMarket::PlayerMarket(): _sales(), _marketPath("data/PlayerMarket/"), _playerPath("data/"),
 _thread(),_runChecker(true), _deleting(PTHREAD_MUTEX_INITIALIZER) {
 	mkdir(_marketPath.c_str(), 0755);
-	//loadSales();	
+	loadSales();	
 	startChecker();
 }
 void PlayerMarket::loadSales(){
-	/*cherche data/playermarket
-	transformer fichier->C() ajouter au vecteur _sales*/
+	/*Method loading players on sale*/
 	DIR *dir;
 	struct dirent *ent;
 	JSON::Value *load;
