@@ -53,8 +53,8 @@ void PlayerMarket::transfert(Sale * sale){
 		Player *toTransfert;
 		JSON::Value* delLoad = JSON::load(getPlayersPath(sale->getOwner()).c_str());
 		JSON::Value* addLoad = JSON::load(getPlayersPath(sale->getCurrentBidder()).c_str());
-		JSON::List & delTeamPlayers = *((JSON::List*)delLoad);
-		JSON::List & addTeamPlayers = *((JSON::List*)addLoad);
+		JSON::List & delTeamPlayers = LIST(delLoad);
+		JSON::List & addTeamPlayers = LIST(addLoad);
 		for(size_t i=0;i<delTeamPlayers.len();++i){
 			if(INT(DICT(delTeamPlayers[i]).get(net::MSG::PLAYER_ID))==sale->getID()){
 				toTransfert = new Player(DICT(delTeamPlayers[i]));
@@ -68,10 +68,10 @@ void PlayerMarket::transfert(Sale * sale){
 		}
 		to.push_back(*toTransfert);
 		for(size_t i=0;i<from.size();++i){
-			delUpdated.append(from[i]);
+			delUpdated.append(JSON::Dict(from[i]));
 		}
 		for(size_t i=0;i<to.size();++i){
-			addUpdated.append(to[i]);
+			addUpdated.append(JSON::Dict(to[i]));
 		}
 		delUpdated.save(getPlayersPath(sale->getOwner()).c_str());
 		addUpdated.save(getPlayersPath(sale->getCurrentBidder()).c_str());
