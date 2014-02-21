@@ -215,7 +215,7 @@ void CLI::playersMenu()
 /* main menu */
 void CLI::notificationsMenu()
 {
-	updateNotifications();
+	_connection.updateNotifications();
 	displayNotificationsCount();
 	Menu _menu;
 	_menu.addToDisplay("   - handle this notification\n");
@@ -762,12 +762,6 @@ std::vector<Player> CLI::getPlayers(std::string username){//modif
 
 void CLI::displayNotificationsCount(){
 	cout << "You have " << _connection.notifications.size() << "notifications." << endl;
-}
-
-void CLI::updateNotifications(){
-	while (!_isWaitingForMessage && _connection.available()){
-		_connection.notifications.push(_connection.pop());
-	}
 }
 
 void CLI::handleNotification(JSON::Value *notification){

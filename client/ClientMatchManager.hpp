@@ -29,6 +29,7 @@ public:
 	char playerLetter(Player const & player);
 	std::string colorPlayerLetter(Player const & player);
 	void displayPitch();
+	void updatePitchWithDeltas(JSON::Dict& deltas);
 private:
 	net::TcpSocket & _connection;
 	bool _isMatchFinished;

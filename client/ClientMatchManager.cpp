@@ -125,20 +125,26 @@ void ClientMatchManager::selectDirectionForPlayer(int player){
 	toSend.set("data", data);
 	_connection.send(toSend);
 
-	JSON::Value * serverMessage = _connection.waitForMsg(net::MSG::MATCH_STATUS);
-	if (ISDICT(serverMessage)){
-		JSON::Dict const & received = DICT(serverMessage);
-		if (ISDICT(received.get("data"))){
-			cout << "1" << endl;
-			JSON::Dict status = DICT(received.get("data"));
-			if (ISSTR(status.get("type"))){
-				cout << "2" << endl;
-				string messageType = STR(status.get("type")).value();
-				if (messageType == net::MSG::MATCH_ERROR){
-					cout << "Error : " << STR(status.get("data")).value() << endl;
-				}
-				else if (messageType == net::MSG::MATCH_ACK){
-					cout << "Your moves have been accepted." << endl;
+	_connection.updateNotifications();
+	JSON::Value* deltas = _connection.hasMessageTypeInNotifications(net::MSG::MATCH_DELTA);
+	if (ISDICT(deltas)){
+		updatePitchWithDeltas(DICT(deltas));
+	}
+}
+
+void ClientMatchManager::updatePitchWithDeltas(JSON::Dict& deltas){
+	if (ISLIST(deltas.get("data"))){
+		JSON::List toMove = LIST(deltas.get("data"));
+		for(int i = 0; i<toMove.len(); ++i){
+			if (ISDICT(toMove[i])){
+				JSON::Dict movement = DICT(toMove[i]);
+				if(ISLIST(movement.get("from"))){
+					JSON::List fromPos = LIST(movement.get("from"));
+					if (ISLIST(movement.get("to"))){
+						JSON::List toPos = LIST(movement.get("to"));
+						Moveable *moveable = _pitch.getAt(INT(fromPos[0]), INT(fromPos[1]));
+						_pitch.setAt(INT(toPos[0]), INT(toPos[1]), moveable);
+					}
 				}
 			}
 		}

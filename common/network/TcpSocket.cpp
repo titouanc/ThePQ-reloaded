@@ -44,6 +44,24 @@ JSON::Value* net::TcpSocket::waitForMsg(std::string typeToWait)
 	_isWaitingForMessage = false;
 	return res;
 }
+JSON::Value* net::TcpSocket::hasMessageTypeInNotifications(std::string messageType){
+	JSON::Value* res = NULL;
+	for (int i = 0; i<notifications.size(); ++i){
+		JSON::Dict notif = DICT(notifications.front());
+		if (ISSTR(notif.get("type"))&& STR(notif.get("type")).value() == messageType){
+			res =  notifications.front();
+		}
+		notifications.push(notifications.front());
+		notifications.pop();
+	}
+	return res;
+}
+
+void net::TcpSocket::updateNotifications(){
+	while (!_isWaitingForMessage && available()){
+		notifications.push(pop());
+	}
+}
 
 bool net::TcpSocket::available()
 {

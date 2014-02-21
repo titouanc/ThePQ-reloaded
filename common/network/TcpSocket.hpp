@@ -42,7 +42,8 @@ namespace net
 		void start();
 		void stop();
 		JSON::Value* waitForMsg(std::string typeToWait);
-
+		JSON::Value* hasMessageTypeInNotifications(std::string messageType);
+		void updateNotifications();
 		std::queue<JSON::Value*> notifications;
 		
 	protected:

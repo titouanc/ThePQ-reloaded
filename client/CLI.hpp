@@ -60,7 +60,6 @@ private:
 	bool _isWaitingForMessage;
 
 	void displayNotificationsCount();
-	void updateNotifications();
 	void handleNotification(JSON::Value* notification);
 
 	void handleFriendlyGameInvitation(JSON::Dict &message);
