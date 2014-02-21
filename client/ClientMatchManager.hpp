@@ -18,7 +18,7 @@ public:
 
 	void initBalls(const JSON::Dict& msg);
 	void initSquads(const JSON::Dict& msg, string username);
-	void startMatch(const JSON::Value* msg);
+	void startMatch();
 	void turnMenu();
 	void displayAvailablePlayers();
 	void selectPlayer();

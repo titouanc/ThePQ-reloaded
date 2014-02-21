@@ -803,7 +803,7 @@ void CLI::handleFriendlyGameInvitation(JSON::Dict &message){
 		_menu.addToDisplay("   - accept\n");
 		_menu.addToDisplay("   - deny\n");
 		int option;
-		bool chosen = false;
+		bool chosen = false; // user has to accept or deny, he cannot quit.
 		do
 		{
 			option = _menu.run();
