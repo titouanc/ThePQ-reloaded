@@ -23,6 +23,8 @@ public:
 	void displayAvailablePlayers();
 	void selectPlayer();
 	Position parseDirection(string userInput);
+	bool isOwnPlayer(Player const & player);
+	void displayPitch();
 private:
 	bool _isMatchFinished;
 	std::string _username;
