@@ -11,6 +11,7 @@ MatchManager::MatchManager(
 {
 	_score[0] = 0;
 	_score[1] = 0;
+
 	for (int i=0; i<4; i++)
 		_balls[i].setID(100+i+1); /* Balls IDs: 101..104*/
 
@@ -83,8 +84,6 @@ void MatchManager::processStroke(Message const & msg, JSON::Dict const & data)
 	Displacement move(LIST(data.get("move")));
 	Moveable & player = *(_squads[squad_i].players[player_i]);
 	
-	cout << "Got displacement: " << move.toJson() << endl;
-
 	_strokes.push_back(Stroke(player, move));
 	reply(msg, MATCH_ACK, data);
 }
@@ -117,8 +116,10 @@ void MatchManager::_mainloop_out()
 	cout << "[" << this << "] \033[32mMatch started\033[0m" << endl;
 	sendSignal(MATCH_START);
 
+	unsigned int n_ticks = 0;
 	while (nClients() > 0){
-		cout << "+ tick match #" << this << endl;
+		n_ticks++;
+		cout << "+ tick " << n_ticks << " match #" << this << endl;
 		sendSignal(MATCH_PROMPT);
 		tick = time(NULL);
 
@@ -138,8 +139,11 @@ void MatchManager::_mainloop_out()
 		sendSignal(MATCH_TIMEOUT);
 		if (! _strokes.empty())
 			playStrokes();
-		break;
+
+		if (n_ticks > 3)
+			break;
 	}
+
 	sendSignal(MATCH_END);
 	cout << "[" << this << "] \033[32mMatch finished\033[0m" << endl;
 	stop();
@@ -276,25 +280,36 @@ void MatchManager::playStrokes(void)
 				Position newPos = move.position(t, moving);
 				Position oldPos = move.position(last_t, moving);
 
-				
 				if (isOnGoal(*i, newPos, oldPos, turnDeltas)){
+					/* Is it a goal ? */
 					cout << "GOOOOOLEGOOLEGOOOOLE" << endl;
-				} else if (! _pitch.inEllipsis(newPos)){
+					continue;
+				}
+				
+				if (! _pitch.inEllipsis(newPos)){
 					/* Stop the moveable before it gets out */
 					stopStroke(turnDeltas, *i, oldPos);
-				} else if (! moving.isBall()){
+					continue;
+				}
+
+				if (! moving.isBall()){
 					/* Don't let the keeper get out of his zone */
 					Player & player = (Player &) moving;
-					if (player.isKeeper() && ! _pitch.isInKeeperZone(newPos))
+					if (player.isKeeper() && ! _pitch.isInKeeperZone(newPos)){
 						stopStroke(turnDeltas, *i, oldPos);
-				} else {
-					/* If there is someone where we would arrive */
-					Moveable *atNewPos = _pitch.getAt(newPos);
-					if (atNewPos != NULL && atNewPos != &moving){
-						onCollision(*i, newPos, oldPos, turnDeltas);
-					} else {
-						_pitch.setAt(newPos, &moving);
+						continue;
 					}
+				}
+
+				/* If there is someone where we would arrive */
+				Moveable *atNewPos = _pitch.getAt(newPos);
+
+				if (atNewPos != NULL && atNewPos != &moving){
+					onCollision(*i, newPos, oldPos, turnDeltas);
+				} else {
+					/* Move to newly acquired position */
+					_pitch.setAt(oldPos, NULL);
+					_pitch.setAt(newPos, &moving);
 				}
 			}
 		}
@@ -312,6 +327,7 @@ void MatchManager::playStrokes(void)
 		}
 	}
 
+	/* Tell clients about modifications */
 	sendMatchDeltas(turnDeltas);
 	_strokes.clear();
 	cout << _pitch << endl;
