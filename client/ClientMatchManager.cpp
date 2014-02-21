@@ -4,15 +4,12 @@
 using namespace std;
 using namespace net;
 
-ClientMatchManager::ClientMatchManager(SharedQueue<net::Message>&outbox, string username) : 	
-				_outbox(outbox), 
-				_isMatchFinished(false),
-				_username(username){}
+ClientMatchManager::ClientMatchManager() : _isMatchFinished(false) {}
 
-void ClientMatchManager::initSquads(const JSON::Value* msg){
-	if (ISLIST(msg) && LIST(msg).len() == 2) {
-		JSON::List & squads = LIST(msg);
-		if (ISSTR(DICT(squads[0]).get("squad_owner")) && STR(DICT(squads[0]).get("squad_owner")).value() == _username){
+void ClientMatchManager::initSquads(const JSON::Dict& msg, string username){
+	if (ISLIST(msg.get("data")) && LIST(msg.get("data")).len() == 2) {
+		JSON::List & squads = LIST(msg.get("data"));
+		if (ISSTR(DICT(squads[0]).get("squad_owner")) && STR(DICT(squads[0]).get("squad_owner")).value() == username){
 			_ownSquad = Squad(DICT(squads[0]));
 			_otherSquad = Squad(DICT(squads[1]));
 		}
@@ -39,10 +36,13 @@ void ClientMatchManager::selectPlayer(){
 }
 
 void ClientMatchManager::turnMenu(){
+
 	displayAvailablePlayers();
+	/*
 	Menu turnMenu;
 	turnMenu.addOption('s', new ClassCallback<ClientMatchManager>(this,&ClientMatchManager::selectPlayer), "(s)elect player");
 	turnMenu.run();
+	*/
 }
 
 void ClientMatchManager::displayAvailablePlayers(){

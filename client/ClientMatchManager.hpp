@@ -13,16 +13,15 @@
 
 class ClientMatchManager {
 public:
-	ClientMatchManager(SharedQueue<net::Message>&outbox, std::string username);
+	ClientMatchManager();
 
-	void initSquads(const JSON::Value* msg);
+	void initSquads(const JSON::Dict& msg, string username);
 	void startMatch(const JSON::Value* msg);
 	void turnMenu();
 	void displayAvailablePlayers();
 	void selectPlayer();
 	Position parseDirection(string userInput);
 private:
-	SharedQueue<net::Message> & _outbox;
 	bool _isMatchFinished;
 	std::string _username;
 	Squad _otherSquad;
