@@ -44,6 +44,8 @@ void PlayerMarket::createSale(const JSON::Dict &json){
 	added->start();
 }
 
+
+
 void PlayerMarket::transfert(Sale * sale){
 	if(sale->_currentBidder.empty()){
 		//Player not sold, should send notification to client. (doing nothing is fine too at the moment).
