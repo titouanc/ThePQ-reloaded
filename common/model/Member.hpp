@@ -54,8 +54,11 @@ protected://modif
 		if (_staticMemberID == -1)
 		{
 			JSON::Value* tmp = JSON::load(path);
-			_staticMemberID = INT(tmp);
-			delete tmp;
+			if (tmp != NULL)
+			{
+				_staticMemberID = INT(tmp);
+				delete tmp;
+			}
 		}
 		++_staticMemberID;
 		cout << "MEMBER ID: " << _staticMemberID << endl;
