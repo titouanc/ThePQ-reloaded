@@ -720,13 +720,21 @@ std::vector<Player> CLI::getPlayers(int team_id){
 }
 ///////// END NEW
 
-//~ JSON::Value* waitForMsg(std::string)
-//~ {
-	//~ JSON::Value* msg;
-	//~ while (_connection.available())
-	//~ {
-		//~ msg = _connection.pop();
-		//~ JSON::Dict const & dict = DICT(msg);
-		//~ if (dict.)
-	//~ }
-//~ }
+JSON::Value* CLI::waitForMsg(std::string typeToWait)
+{
+	JSON::Value* msg, *res = NULL;
+	while (_connection.available())
+	{
+		msg = _connection.pop();
+		JSON::Dict const & dict = DICT(msg);
+		if (STR(dict.get("type")).value() == typeToWait)
+		{
+			res = msg;
+		}
+		else
+		{
+			_messages.push(msg);
+		}
+	}
+	return res;
+}

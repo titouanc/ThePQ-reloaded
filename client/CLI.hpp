@@ -12,6 +12,7 @@
 #include <Config.hpp>
 #include <model/Player.hpp>
 #include <network/TcpSocket.hpp>
+#include <stack>
 
 struct NetConfig : public Config {
     std::string host;
@@ -53,8 +54,8 @@ private:
 	
 	pthread_t _thread;
 	
-	//~ JSON::Value* waitForMsg(std::string);
-	//~ std::stack<JSON::Value*> _messages;
+	JSON::Value* waitForMsg(std::string);
+	std::stack<JSON::Value*> _messages;
 
 	// NEW
 	void loginUser(std::string username, std::string passwd);
