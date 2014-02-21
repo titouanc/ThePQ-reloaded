@@ -265,7 +265,6 @@ void MatchManager::addDelta(Moveable const & moveable, Position const & dest)
 
 void MatchManager::stopStroke(Stroke & stroke, Position const & pos)
 {
-	cout << "\033[1m\033[31mSTOPPING " << stroke.moveable.getID() << "\033[0m" << endl;
 	stroke.active = false;
 	if (stroke.moveable.getPosition() != pos)
 		addDelta(stroke.moveable, pos);
@@ -361,7 +360,6 @@ void MatchManager::playStrokes(void)
 			}
 		}
 		last_t = _t;
-		cout << _strokes.size() << " STROKES" << endl;
 	}
 
 	/* Find all final position of unstopped moveable */
@@ -405,10 +403,6 @@ void MatchManager::throwBall(
 	Displacement newMove(_t); /* Start a new move at this timestep */
 	newMove.addMove(direction);
 	_strokes.push_back(Stroke(ball, newMove));
-	cout << "\033[1m\033[31mTHROWING " << ball.getID() 
-		 << " FROM " << fromPos.toJson() 
-		 << " WITH DIRECTION " << direction.toJson() 
-		 << " AT TIME " << _t << " \033[0m" << endl;
 }
 
 void MatchManager::endMatch(void)
@@ -494,7 +488,5 @@ void MatchManager::onCollision(
 		if (stoppedStroke != _strokes.end()){
 			stopStroke(*stoppedStroke, fromPos);
 		}
-		cout << "\033[1m\033[31mSWAP " << first.getID() 
-			 << " AND " << moving.getID() << "\033[0m" << endl;
 	}
 }
