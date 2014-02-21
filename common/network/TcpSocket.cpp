@@ -28,7 +28,7 @@ JSON::Value* net::TcpSocket::waitForMsg(std::string typeToWait)
 {
 	_isWaitingForMessage = true;
 	JSON::Value* msg = NULL, *res = NULL;
-	while (msg == NULL || available())
+	while (res == NULL || available())
 	{
 		msg = pop();
 		JSON::Dict const & dict = DICT(msg);
