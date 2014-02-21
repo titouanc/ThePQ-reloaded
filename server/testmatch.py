@@ -7,6 +7,10 @@ def printPlayers():
 		player = PLAYERS[mid]
 		print "\t", mid, player['name'], player['position']
 
+def addPlayers(player_list):
+	for player in player_list:
+		PLAYERS[player['ID']] = player 
+
 def printMessage(msg):
 	if msg['type'] == 'M!!!':
 		print "\033[31mERROR  :\033[0m", msg['data']
@@ -20,19 +24,19 @@ def printMessage(msg):
 		print "\033[1mTimeout\033[0m"
 	elif msg['type'] == 'MSQUADS':
 		for squad in msg['data']:
+			addPlayers(squad['chasers']+squad['beaters']+[squad['keeper'], squad['seeker']])
 			print "SQUAD", squad['squad_id']
-			for ptype in ('chasers', 'beaters'):
-				for player in squad[ptype]:
-					PLAYERS[player['ID']] = player
-			for player in squad['seeker'], squad['keeper']:
-				PLAYERS[player['ID']] = player
 			printPlayers()
+	elif msg['type'] == 'MBALLS':
+		addPlayers(msg['data'])
 	elif msg['type'] == 'MEND':
 		exit()
 	elif msg['type'] == 'MDELTA':
 		for delta in msg['data']:
 			print "%2d"%delta['mid'], PLAYERS[delta['mid']]['name'], delta['from'], '->', delta['to']
 			PLAYERS[delta['mid']]['position'] = delta['to']
+	elif msg['type'] == 'MSCORES':
+		print "======== \033[1m\033[32m WINNER", msg['data']['winner'], "\033[0m"
 	else:
 		print msg
 
