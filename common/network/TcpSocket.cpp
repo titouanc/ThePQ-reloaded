@@ -2,6 +2,9 @@
 #include <cstring>
 #include <sstream>
 
+/* Buffer size for incoming messages */
+static const size_t MSG_SIZE = 4096;
+
 void net::TcpSocket::send(JSON::Value const & json)
 {
 	std::string dump = json.dumps();

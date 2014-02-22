@@ -29,9 +29,7 @@ namespace net
 {	
 	class TcpSocket {
 	public:
-		static const size_t MSG_SIZE = 4096;
-	
-		virtual ~ TcpSocket();
+		virtual ~TcpSocket();
 		TcpSocket(std::string host, int portno);
 	
 		void send(JSON::Value const& json);
