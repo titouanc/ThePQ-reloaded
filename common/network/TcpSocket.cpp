@@ -47,9 +47,10 @@ JSON::Value* net::TcpSocket::waitForMsg(std::string typeToWait)
 	_isWaitingForMessage = false;
 	return res;
 }
+
 JSON::Value* net::TcpSocket::hasMessageTypeInNotifications(std::string messageType){
 	JSON::Value* res = NULL;
-	for (int i = 0; i<notifications.size(); ++i){
+	for (size_t i = 0; i<notifications.size(); ++i){
 		JSON::Dict notif = DICT(notifications.front());
 		if (ISSTR(notif.get("type"))&& STR(notif.get("type")).value() == messageType){
 			res =  notifications.front();
