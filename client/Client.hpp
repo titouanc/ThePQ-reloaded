@@ -32,7 +32,6 @@ public:
 
 private:
 	SharedQueue<net::Message> _inbox, _outbox;
-	net::ClientConnectionManager _connectionManager;
 };
 
 #endif
