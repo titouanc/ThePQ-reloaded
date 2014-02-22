@@ -309,20 +309,23 @@ void Server::sendInvitationToPlayer(string const& userTo, int peer_id){
 	std::string userFrom = findUser->second->getUsername();
 	cout << "from: " << userFrom;
 	cout << "to: " << userTo;
-	map<int, User*>::iterator it;
+	map<int, User*>::iterator it = _users.begin();
+	bool found = false;
 	if (userFrom != userTo)
 	{
-		for (it =_users.begin(); it!=_users.end(); it++){
+		while (it!=_users.end()){
 			if (it->second->getUsername() == userTo){
+				found = true;
 				JSON::Dict toSend;
 				toSend.set("type", MSG::FRIENDLY_GAME_INVITATION);
 				toSend.set("data", userFrom);
 				Message status(it->first, toSend.clone());
 				_outbox.push(status);
 			}
+			it++;
 		}
 	}
-	if (userFrom == userTo || it == _users.end())
+	if (userFrom == userTo || !found)
 	{
 		JSON::Dict toSend, data;
 		data.set("username", userTo);
