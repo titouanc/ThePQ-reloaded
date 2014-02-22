@@ -50,6 +50,7 @@ JSON::Value* net::TcpSocket::hasMessageTypeInNotifications(std::string messageTy
 		JSON::Dict notif = DICT(notifications.front());
 		if (ISSTR(notif.get("type"))&& STR(notif.get("type")).value() == messageType){
 			res =  notifications.front();
+			notifications.pop();
 		}
 		notifications.push(notifications.front());
 		notifications.pop();

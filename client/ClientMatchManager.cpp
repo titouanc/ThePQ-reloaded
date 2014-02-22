@@ -72,10 +72,13 @@ void ClientMatchManager::turnMenu(){
 
 void ClientMatchManager::updatePitch(){
 	_connection.updateNotifications();
+	cout << "75" << endl;
 	JSON::Value* deltas = _connection.hasMessageTypeInNotifications(net::MSG::MATCH_DELTA);
 	if (ISDICT(deltas)){
+		cout << "78" << endl;
 		updatePitchWithDeltas(DICT(deltas));
 	}
+	displayPitch();
 }
 
 void ClientMatchManager::selectPlayer(){
@@ -143,10 +146,12 @@ void ClientMatchManager::selectDirectionForPlayer(int player){
 }
 
 void ClientMatchManager::updatePitchWithDeltas(JSON::Dict& deltas){
+	cout << "148" << endl;
 	if (ISLIST(deltas.get("data"))){
 		JSON::List const & toMove = LIST(deltas.get("data"));
 		for(size_t i = 0; i<toMove.len(); ++i){
 			if (ISDICT(toMove[i])){
+				cout << "153" << endl;
 				JSON::Dict const & movement = DICT(toMove[i]);
 				if(ISLIST(movement.get("from")) && ISLIST(movement.get("to"))){
 					Position fromPos(LIST(movement.get("from")));

@@ -840,7 +840,7 @@ void CLI::startMatch(){
 	JSON::Value *serverSquads = _connection.waitForMsg(net::MSG::MATCH_SQUADS);
 	JSON::Dict const &receivedSquads = DICT(serverSquads);
 	_matchManager.initSquads(receivedSquads, _username);
-	_connection.waitForMsg(net::MSG::MATCH_START);
+	//_connection.waitForMsg(net::MSG::MATCH_START);
 	_matchManager.startMatch();
 }
 
