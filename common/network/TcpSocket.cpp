@@ -75,7 +75,7 @@ bool net::TcpSocket::available()
 
 void net::TcpSocket::loop()
 {
-	while (_isRunning == true)
+	while (_isRunning)
 	{
 		std::stringstream res;
 		char data[MSG_SIZE+1];
