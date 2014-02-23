@@ -1,5 +1,7 @@
 #include "CLI.hpp"
 #include <pthread.h>
+#include <typeinfo>
+#include <cxxabi.h>
 
 using namespace std;
 
@@ -767,7 +769,7 @@ std::vector<Player> CLI::getPlayers(std::string username){//modif
 }
 
 
- void CLI::displayNotificationsCount(){
+void CLI::displayNotificationsCount(){
 	cout << "You have " << _connection.notifications.size() << "notifications." << endl;
 }
 

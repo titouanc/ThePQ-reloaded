@@ -3,14 +3,13 @@
 
 #include <iostream>
 #include <string>
-#include <typeinfo>
-#include <cxxabi.h>
 #include "Message.hpp"
-#include "Client.hpp"
 #include "Exception.hpp"
 #include "Menu.hpp"
 #include <Config.hpp>
 #include <model/Player.hpp>
+#include <model/Installation.hpp>
+#include <model/Sale.hpp>
 #include <network/TcpSocket.hpp>
 #include <queue>
 #include "ClientMatchManager.hpp"
