@@ -11,7 +11,6 @@ class UserManager
 {
 public:
 	UserManager(net::ClientConnectionManager& connection);
-	~UserManager();
 	
 	void loginMenu();
 	

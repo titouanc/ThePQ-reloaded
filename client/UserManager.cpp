@@ -1,5 +1,10 @@
 #include "UserManager.hpp"
 
+UserManager::UserManager(net::ClientConnectionManager& connection) : 
+	_connection(connection)
+{
+}
+
 
 void UserManager::loginMenu()
 {

@@ -15,6 +15,7 @@
 #include "ClientMatchManager.hpp"
 #include <model/Installation.hpp>
 #include <model/Sale.hpp>
+#include "UserManager.hpp"
 
 
 struct NetConfig : public Config {
@@ -46,10 +47,12 @@ public:
 private:
 	// Managers
 	net::ClientConnectionManager _connection;
+	UserManager _userManager;
+	ClientMatchManager _matchManager;
 	
 	// Cache
 	std::vector<Installation> _installations;
-	std::vector<Sale> _playersOnSale;//modif
+	std::vector<Sale> _playersOnSale;
 	std::vector<Player> _players;
 	std::string _username;
 	
@@ -77,7 +80,6 @@ private:
 	void printConnectedUsersList();
 	void chooseUser();
 	void startMatch();
-	ClientMatchManager _matchManager;
 
 	// Connection
 	void loginUser(std::string username, std::string passwd);
