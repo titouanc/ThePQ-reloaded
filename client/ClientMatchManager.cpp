@@ -4,7 +4,7 @@
 using namespace std;
 using namespace net;
 
-ClientMatchManager::ClientMatchManager(TcpSocket &connection) : _connection(connection),
+ClientMatchManager::ClientMatchManager(ClientConnectionManager &connection) : _connection(connection),
 																	 _isMatchFinished(false){}
 
 void ClientMatchManager::initBalls(const JSON::Dict& msg){

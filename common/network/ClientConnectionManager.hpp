@@ -1,8 +1,8 @@
-#ifndef __TCP_SOCKET_HPP
-#define __TCP_SOCKET_HPP
+#ifndef __CLIENT_CONNECTION_MANAGER_HPP
+#define __CLIENT_CONNECTION_MANAGER_HPP
 
 /*
- * TcpSocket.hpp : header for a socket library
+ * ClientConnectionManager.hpp : header for a socket library
  * 
  * Author : Antoine Carpentier
  * 
@@ -27,12 +27,12 @@
 
 namespace net
 {	
-	class TcpSocket {
+	class ClientConnectionManager {
 	public:
 		static const size_t MSG_SIZE = 4096;
 	
-		virtual ~ TcpSocket();
-		TcpSocket(std::string host, int portno);
+		virtual ~ ClientConnectionManager();
+		ClientConnectionManager(std::string host, int portno);
 	
 		void send(JSON::Value const& json);
 		JSON::Value * pop();
@@ -59,10 +59,10 @@ namespace net
 	
 	static void* runThread(void* arg)
 	{
-		TcpSocket* socket = (TcpSocket*)arg;
+		ClientConnectionManager* socket = (ClientConnectionManager*)arg;
 		socket->start();
 		pthread_exit(NULL);
 	}
 }
 
-#endif // __TCP_SOCKET_HPP
+#endif // __CLIENT_CONNECTION_MANAGER_HPP

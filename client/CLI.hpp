@@ -10,7 +10,7 @@
 #include "Menu.hpp"
 #include <Config.hpp>
 #include <model/Player.hpp>
-#include <network/TcpSocket.hpp>
+#include <network/ClientConnectionManager.hpp>
 #include <queue>
 #include "ClientMatchManager.hpp"
 #include <model/Installation.hpp>
@@ -44,7 +44,7 @@ public:
 	void run();
 
 private:
-	net::TcpSocket _connection;
+	net::ClientConnectionManager _connection;
 
 	std::string _userChoice;
 	std::string _prompt;

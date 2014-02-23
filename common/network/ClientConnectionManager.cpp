@@ -1,8 +1,8 @@
-#include "TcpSocket.hpp"
+#include "ClientConnectionManager.hpp"
 #include <cstring>
 #include <sstream>
 
-void net::TcpSocket::send(JSON::Value const & json)
+void net::ClientConnectionManager::send(JSON::Value const & json)
 {
 	std::string dump = json.dumps();
 	const char* data = dump.c_str();
@@ -19,12 +19,12 @@ void net::TcpSocket::send(JSON::Value const & json)
 	}
 }
 
-JSON::Value * net::TcpSocket::pop()
+JSON::Value * net::ClientConnectionManager::pop()
 {
 	return _messages.pop();
 }
 
-JSON::Value* net::TcpSocket::waitForMsg(std::string typeToWait)
+JSON::Value* net::ClientConnectionManager::waitForMsg(std::string typeToWait)
 {
 	_isWaitingForMessage = true;
 	JSON::Value* msg = NULL, *res = NULL;
@@ -44,7 +44,7 @@ JSON::Value* net::TcpSocket::waitForMsg(std::string typeToWait)
 	_isWaitingForMessage = false;
 	return res;
 }
-JSON::Value* net::TcpSocket::hasMessageTypeInNotifications(std::string messageType){
+JSON::Value* net::ClientConnectionManager::hasMessageTypeInNotifications(std::string messageType){
 	JSON::Value* res = NULL;
 	for (int i = 0; i<notifications.size(); ++i){
 		JSON::Dict notif = DICT(notifications.front());
@@ -58,18 +58,18 @@ JSON::Value* net::TcpSocket::hasMessageTypeInNotifications(std::string messageTy
 	return res;
 }
 
-void net::TcpSocket::updateNotifications(){
+void net::ClientConnectionManager::updateNotifications(){
 	while (!_isWaitingForMessage && available()){
 		notifications.push(pop());
 	}
 }
 
-bool net::TcpSocket::available()
+bool net::ClientConnectionManager::available()
 {
 	return _messages.available();
 }
 
-void net::TcpSocket::loop()
+void net::ClientConnectionManager::loop()
 {
 	while (_isRunning == true)
 	{
@@ -102,18 +102,18 @@ void net::TcpSocket::loop()
 	}
 }
 
-void net::TcpSocket::start()
+void net::ClientConnectionManager::start()
 {
 	_isRunning = true;
 	loop();
 }
 
-void net::TcpSocket::stop()
+void net::ClientConnectionManager::stop()
 {
 	_isRunning = false;
 }
 
-net::TcpSocket::TcpSocket(const std::string hostname, int portno) : 
+net::ClientConnectionManager::ClientConnectionManager(const std::string hostname, int portno) : 
 	_isRunning(false), _isWaitingForMessage(false), _sockfd(-1)
 {
 	struct hostent *host = NULL;
@@ -136,7 +136,7 @@ net::TcpSocket::TcpSocket(const std::string hostname, int portno) :
 	}
 }
 
-net::TcpSocket::~TcpSocket()
+net::ClientConnectionManager::~ClientConnectionManager()
 {
 	::close(_sockfd);
 }
