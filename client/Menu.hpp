@@ -19,5 +19,14 @@ class Menu{
 		void showMenu();
 		void addToDisplay(string c);
 		int run();
+		
+	static std::string askForUserData(string prompt)
+	{
+		string data;
+		cout << endl;
+		cout << prompt;
+		cin >> data;
+		return data;
+	}
 };
 #endif

@@ -44,7 +44,7 @@ public:
 	void run();
 
 private:
-	// Connection Manager
+	// Managers
 	net::ClientConnectionManager _connection;
 	
 	// Cache
