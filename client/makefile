@@ -1,4 +1,4 @@
-OBJS = Menu.o Message.o ClientMatchManager.o CLI.o 
+OBJS = Menu.o Message.o ClientMatchManager.o Client.o 
 LIBS = ../common/json/libjson.a ../common/network/libnetwork.a ../common/model/libmodel.a
 CPPFLAGS = -I../common
 

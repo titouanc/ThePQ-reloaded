@@ -36,11 +36,11 @@ struct NetConfig : public Config {
     }
 };
 
-class CLI
+class Client
 {
 public:
-	CLI(NetConfig const &config);
-	~CLI();
+	Client(NetConfig const &config);
+	~Client();
 	void run();
 
 private:
