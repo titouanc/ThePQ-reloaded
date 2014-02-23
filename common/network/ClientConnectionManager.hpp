@@ -24,6 +24,7 @@
 #include "Exception.hpp"
 #include <sharedqueue.hpp>
 #include <queue>
+#include <pthread.h>
 
 namespace net
 {	
@@ -40,7 +41,7 @@ namespace net
 		bool available();
 		
 		void start();
-		void stop();
+		
 		JSON::Value* waitForMsg(std::string typeToWait);
 		JSON::Value* hasMessageTypeInNotifications(std::string messageType);
 		void updateNotifications();
@@ -48,6 +49,8 @@ namespace net
 		
 	protected:
 		SharedQueue<JSON::Value*> _messages;
+		
+		pthread_t _thread;
 
 		void loop();
 		bool _isRunning;

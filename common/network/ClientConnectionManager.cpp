@@ -108,11 +108,6 @@ void net::ClientConnectionManager::start()
 	loop();
 }
 
-void net::ClientConnectionManager::stop()
-{
-	_isRunning = false;
-}
-
 net::ClientConnectionManager::ClientConnectionManager(const std::string hostname, int portno) : 
 	_isRunning(false), _isWaitingForMessage(false), _sockfd(-1)
 {
@@ -134,9 +129,11 @@ net::ClientConnectionManager::ClientConnectionManager(const std::string hostname
 	{
 		throw ConnectionFailedException();
 	}
+	pthread_create(&_thread, NULL, net::runClientThread, this);
 }
 
 net::ClientConnectionManager::~ClientConnectionManager()
 {
+	_isRunning = false;
 	::close(_sockfd);
 }

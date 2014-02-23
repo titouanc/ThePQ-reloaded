@@ -13,24 +13,19 @@ std::string humanExcName(const char *name)
 }
 
 Client::Client(NetConfig const &config) : 	_connection(config.host, config.port),
-										_prompt(">"),
-										_isWaitingForMessage(false),
-										_matchManager(_connection)
+												_prompt(">"),
+												_matchManager(_connection)
 {
-	pthread_create(&_thread, NULL, net::runClientThread, this);
 }
 
 Client::~Client()
 {
-	_connection.stop();
 }
 
 void Client::run()
 {
 	cout << Message::splashScreen();
-	
 	loginMenu();
-	
 	cout << Message::goodBye();
 }
 
@@ -68,7 +63,7 @@ void Client::login(){
 	try {
 		cout << "Please wait..." << endl;
 		loginUser(username, password);
-		_username = username;//modif
+		_username = username;
 		cout << "You have successfully logged in! Welcome! :)\n\n\n" << endl;
 		mainMenu();
 	}
@@ -216,7 +211,7 @@ void Client::playersMenu()
 void Client::notificationsMenu()
 {
 	_connection.updateNotifications();
-	displayNotificationsCount();
+	cout << "You have " << _connection.notifications.size() << "notifications." << endl;
 	Menu _menu;
 	_menu.addToDisplay("   - handle this notification\n");
 	_menu.addToDisplay("   - see next notification\n");
@@ -766,10 +761,6 @@ std::vector<Player> Client::getPlayers(std::string username){//modif
 	return myplayers;
 }
 
-
- void Client::displayNotificationsCount(){
-	cout << "You have " << _connection.notifications.size() << "notifications." << endl;
-}
 
 void Client::handleNotification(JSON::Value *notification){
 	JSON::Dict message = DICT(notification);
