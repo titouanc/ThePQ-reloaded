@@ -17,12 +17,12 @@ Client::Client(NetConfig const &config) : 	_connection(config.host, config.port)
 										_isWaitingForMessage(false),
 										_matchManager(_connection)
 {
-	pthread_create(&_thread, NULL, net::runThread, this);
+	pthread_create(&_thread, NULL, net::runClientThread, this);
 }
 
 Client::~Client()
 {
-	
+	_connection.stop();
 }
 
 void Client::run()
@@ -223,7 +223,7 @@ void Client::notificationsMenu()
 	_menu.addToDisplay("   - quit\n");
 	int option;
 	bool quit = false;
-	while (! _connection.notifications.empty() && ! quit)
+	while (_connection.notifications.available() && ! quit)
 	{
 		JSON::Value * currentNotification = _connection.notifications.front();
 		JSON::Dict const & notif = DICT(currentNotification);

@@ -44,7 +44,7 @@ namespace net
 		JSON::Value* waitForMsg(std::string typeToWait);
 		JSON::Value* hasMessageTypeInNotifications(std::string messageType);
 		void updateNotifications();
-		std::queue<JSON::Value*> notifications;
+		SharedQueue<JSON::Value*> notifications;
 		
 	protected:
 		SharedQueue<JSON::Value*> _messages;
@@ -57,10 +57,10 @@ namespace net
 		struct sockaddr_in _cliAddr;
 	};
 	
-	static void* runThread(void* arg)
+	static void* runClientThread(void* arg)
 	{
-		ClientConnectionManager* socket = (ClientConnectionManager*)arg;
-		socket->start();
+		ClientConnectionManager* connection = (ClientConnectionManager*)arg;
+		connection->start();
 		pthread_exit(NULL);
 	}
 }

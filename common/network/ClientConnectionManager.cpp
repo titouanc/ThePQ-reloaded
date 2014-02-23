@@ -46,7 +46,7 @@ JSON::Value* net::ClientConnectionManager::waitForMsg(std::string typeToWait)
 }
 JSON::Value* net::ClientConnectionManager::hasMessageTypeInNotifications(std::string messageType){
 	JSON::Value* res = NULL;
-	for (int i = 0; i<notifications.size(); ++i){
+	for (size_t i = 0; i<notifications.size(); ++i){
 		JSON::Dict notif = DICT(notifications.front());
 		if (ISSTR(notif.get("type"))&& STR(notif.get("type")).value() == messageType){
 			res =  notifications.front();
