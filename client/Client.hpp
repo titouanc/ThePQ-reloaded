@@ -60,7 +60,6 @@ private:
 	std::string _prompt;
 	
 	// Menus
-	void loginMenu();
 	void mainMenu();
 	void managementMenu();
 	void stadiumMenu();
@@ -80,13 +79,6 @@ private:
 	void printConnectedUsersList();
 	void chooseUser();
 	void startMatch();
-
-	// Connection
-	void loginUser(std::string username, std::string passwd);
-	void doesUserExist(std::string username);
-	void registerUser(std::string username, std::string passwd);
-	void registerUser();
-	void login();
 	
 	// Stadium
 	std::vector<Installation> getInstallationsList();

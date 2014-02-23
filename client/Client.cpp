@@ -29,78 +29,9 @@ Client::~Client()
 void Client::run()
 {
 	cout << Message::splashScreen();
-	loginMenu();
+	_userManager.loginMenu();
 	cout << Message::goodBye();
-}
-
-void Client::loginMenu()
-{
-	/* user menu */
-	Menu _menu;
-	_menu.addToDisplay("   - login\n");
-	_menu.addToDisplay("   - register\n");
-	_menu.addToDisplay("   - quit\n");
-	int option;
-	do
-	{
-		option = _menu.run();
-		switch(option)
-		{
-			case 1:
-				login();
-				break;
-			case 2:
-				registerUser();
-				break;
-			default:
-				break;
-		}
-	}
-	while (option != 3);
-}
-
-void Client::login(){
-	
-	string username = askForUserData("Username : ");
-	string password = askForUserData("Password : ");
-	
-	try {
-		cout << "Please wait..." << endl;
-		loginUser(username, password);
-		_username = username;
-		cout << "You have successfully logged in! Welcome! :)\n\n\n" << endl;
-		mainMenu();
-	}
-	catch (UserNotFoundException e)
-	{
-		cout << "\nUser not found" << endl;
-	}
-	catch (WrongPasswordException e)
-	{
-		cout << "\nWrong password" << endl;
-	}
-}
-
-void Client::registerUser(){
-	bool registered = false;
-	for (int i = 0; i < 3 && ! registered; ++i)
-	{
-		string username = askForUserData("Pick a username : ");
-		try {
-			cout << "Please wait..." << endl;
-			doesUserExist(username);
-			string password = askForNewPassword();
-			cout << "Please wait..." << endl;
-			registerUser(username, password);
-			registered = true;
-			cout << "You have successfully registered! You can now login." << endl;
-		}
-		catch (UserAlreadyExistsException e) {
-			cout << "User name already exists. Try again with a different username." << endl;		
-		}
-	}
-}
-	
+}	
 
 /* main menu */
 void Client::mainMenu()
@@ -542,66 +473,6 @@ string Client::askForNewPassword(){
 			cout << "The two passwords entered were not the same." << endl;
 	}
 	return password;
-}
-
-////////// NEW 
-void Client::loginUser(string username, string passwd){
-
-	JSON::Dict toSend, credentials;
-	credentials.set(net::MSG::USERNAME, username);
-	credentials.set(net::MSG::PASSWORD, passwd);
-	toSend.set("type", net::MSG::LOGIN);
-	toSend.set("data", credentials);
-	_connection.send(toSend);
-
-	JSON::Value *serverMessage = _connection.waitForMsg(net::MSG::STATUS);
-	JSON::Dict const & received = DICT(serverMessage); 	// receiving server response
-	if (ISSTR(received.get("data"))) {
-		if (STR(received.get("data")).value() == net::MSG::PASSWORD_ERROR)
-		{
-			delete serverMessage;
-			throw WrongPasswordException();
-		}
-		else if (STR(received.get("data")).value() == net::MSG::USER_NOT_FOUND)
-		{
-			delete serverMessage;
-			throw UserNotFoundException();
-		}
-	}
-	delete serverMessage;
-	// User is logged in at this point.
-}
-
-void Client::doesUserExist(string username){
-	JSON::Dict toSend;
-	toSend.set("type", net::MSG::USER_EXISTS);
-	toSend.set("data", username);
-	_connection.send(toSend);
-
-	JSON::Value *serverMessage = _connection.waitForMsg(net::MSG::STATUS); // receiving server response
-	JSON::Dict const & received = DICT(serverMessage);
-	if (ISSTR(received.get("data"))
-		&& STR(received.get("data")).value() == net::MSG::USER_EXISTS){
-		throw UserAlreadyExistsException();
-	}
-}
-
-void Client::registerUser(string username, string passwd)
-{
-	JSON::Dict toSend, received, credentials;
-	credentials.set(net::MSG::USERNAME, username);
-	credentials.set(net::MSG::PASSWORD, passwd);
-	toSend.set("type", net::MSG::REGISTER);
-	toSend.set("data", credentials);
-	_connection.send(toSend);
-
-	JSON::Value *serverMessage = _connection.waitForMsg(net::MSG::STATUS);	// receiving server response
-
-	if (ISSTR(received.get("data"))) {
-		if (STR(received.get("data")).value() == net::MSG::USER_EXISTS)
-			throw UserAlreadyExistsException();
-	}
-	delete serverMessage;
 }
 
 vector<Installation> Client::getInstallationsList(){
