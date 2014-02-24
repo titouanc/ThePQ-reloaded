@@ -18,20 +18,29 @@ class GraphicPitch {
 	private:
 		Pitch & _pitch;
 		unsigned int _size;
-		sf::Texture _grass_texture, _sand_texture;
+		sf::Texture _grass_texture, _sand_texture, _goal_texture;
 		sf::CircleShape _grass, _sand;
+		sf::Sprite _goal;
 	public:
 		GraphicPitch(Pitch & pitch, unsigned cell_size=25) : 
 		_pitch(pitch), _size(cell_size), _grass(H_SQ2C*_size, 6), 
 		_sand(H_SQ2C*_size, 6){
-			if (! _grass_texture.loadFromFile("grass.jpg"))
+			if (! _grass_texture.loadFromFile("textures/grass1.png"))
 				throw "File not found !";
 			_grass.setTexture(&_grass_texture);
+
 			_grass.setTextureRect(sf::IntRect(0, 0, _size, _size));
-			if (! _sand_texture.loadFromFile("sand.jpg"))
+			if (! _sand_texture.loadFromFile("textures/sand1.png"))
 				throw "File not found !";
 			_sand.setTexture(&_sand_texture);
 			_grass.setTextureRect(sf::IntRect(0, 0, _size, _size));
+
+			if (! _goal_texture.loadFromFile("textures/goal1_50.png"))
+				throw "File not found!";
+			_goal_texture.setSmooth(true);
+			_goal.setTexture(_goal_texture);
+			_goal.setScale(	(float)_size/_goal_texture.getSize().x, 
+							(float)_size/_goal_texture.getSize().y);
 		}
 		void renderTo(sf::RenderTarget & dest){
 			unsigned int xwin=0, ywin=0;
@@ -44,6 +53,10 @@ class GraphicPitch {
 						if (_pitch.isInKeeperZone(x, y)){
 							_sand.setPosition(xwin, ywin);
 							dest.draw(_sand);
+							if (_pitch.isGoal(x, y)){
+								_goal.setPosition(xwin, ywin);
+								dest.draw(_goal);
+							}
 						} else {
 							_grass.setPosition(xwin, ywin);
 							dest.draw(_grass);
@@ -62,6 +75,7 @@ int main(int argc, const char **argv)
 
 	Pitch myPitch;
 	GraphicPitch repr(myPitch);
+	window.setFramerateLimit(5);
 
 	window.clear(sf::Color(0xff, 0xff, 0xff, 0xff));
 	try {
@@ -70,9 +84,12 @@ int main(int argc, const char **argv)
 		cerr << msg << endl;
 		return EXIT_FAILURE;
 	}
-
+	
+	bool hasChanged = false;
+	window.display();
 	while (window.isOpen()){
-		window.display();
+		if (hasChanged)
+			window.display();
 		sf::Event ev;
 		window.waitEvent(ev);
 		if (

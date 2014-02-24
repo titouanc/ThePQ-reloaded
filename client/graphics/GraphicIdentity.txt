@@ -1,0 +1,23 @@
+////////////////////////////////////////////////////////////////////
+FONTS 
+
+Headers, logo : Akashi
+Normal text : Helvetica Neue Light
+
+////////////////////////////////////////////////////////////////////
+COLORS
+
+- BACKGROUNDS : 
+Blue (hex) : 00aeef (R:00, G:ae, B:ef)
+White (hex): ffffff (R:ff, G:ff, B:ff)
+Gray (hex) : d7d7d7 (R:d7, G:d7, G:d7)
+
+- TEXT : 
+White (hex)     : ffffff (R:ff, G:ff, B:ff)
+Dark gray (hex) : 494949 (R:49, G:49, B:49)
+
+////////////////////////////////////////////////////////////////////
+SIZES
+
+Boxes (buttons, textboxes,...)
+Height : 40px
