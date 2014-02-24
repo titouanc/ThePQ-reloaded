@@ -169,7 +169,7 @@ void Client::notificationsMenu()
 }
 
 void Client::printPlayers(){
-	_players = getPlayers(_user.getUsername());//modif
+	_players = getPlayers(_user.username);//modif
 	cout << "================ YOUR PLAYERS ================" << endl;
 	for(size_t i =0; i<_players.size();++i){
 		cout << _players[i] << endl; //modif
@@ -226,7 +226,7 @@ void Client::salePlayer(){
 			cin >> bidValue;
 		}
 		try{
-		addPlayerOnMarket(player_id, _user.getUsername(), bidValue);
+		addPlayerOnMarket(player_id, _user.username, bidValue);
 		cout << "Your player was successfully added on market." << endl;
 		}
 		catch(playerAlreadyOnMarketException e){
@@ -287,7 +287,7 @@ void Client::placeBid(){
 	}
 	if (found){
 		try{
-			bidOnPlayer(player_id, _user.getUsername(), value);
+			bidOnPlayer(player_id, _user.username, value);
 			
 			cout << "Bid successfully placed ! Hurra !" << endl;
 			cout << "Updated list :" << endl;

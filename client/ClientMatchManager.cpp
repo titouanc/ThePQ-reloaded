@@ -27,7 +27,7 @@ void ClientMatchManager::initBalls(const JSON::Dict& msg){
 void ClientMatchManager::initSquads(const JSON::Dict& msg){
 	if (ISLIST(msg.get("data")) && LIST(msg.get("data")).len() == 2) {
 		JSON::List & squads = LIST(msg.get("data"));
-		if (ISSTR(DICT(squads[0]).get("squad_owner")) && STR(DICT(squads[0]).get("squad_owner")).value() == _user.getUsername()){
+		if (ISSTR(DICT(squads[0]).get("squad_owner")) && STR(DICT(squads[0]).get("squad_owner")).value() == _user.username){
 			_ownSquad = Squad(DICT(squads[0]));
 			_otherSquad = Squad(DICT(squads[1]));
 		}

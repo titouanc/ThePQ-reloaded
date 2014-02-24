@@ -7,25 +7,18 @@
 #include <model/Sale.hpp>
 #include <model/Player.hpp>
 
-class User
+struct User
 {
-public:
-	User();
-	
-	void login(std::string username) { _username = username; }
-	void logout() { _username = ""; }
-	bool isLogged() { return _username != ""; }
-	std::string getUsername() { return _username; }
-	
-	std::vector<Installation>& getInstallations() { return _installations; }
-	void loadInstallations(std::vector<Installation> installations) { _installations = installations; }
-	
-private:
-	std::vector<Installation> _installations;
+	// Login
+	void login(std::string username) { username = username; }
+	void logout() { username = ""; }
+	bool isLogged() { return username != ""; }
+
+	// Cache
+	std::vector<Installation> installations;
 	//~ std::vector<Sale> _playersOnSale;
-	//~ std::vector<Player> _players;
-	std::string _username;
-	
+	std::vector<Player> players;
+	std::string username;
 };
 
 #endif // __USER_HPP
