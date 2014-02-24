@@ -12,13 +12,16 @@ std::string humanExcName(const char *name)
 	return res;
 }
 
-Client::Client(NetConfig const &config) : 	_connection(config.host, config.port),
-												_userManager(_connection),
-												_matchManager(_connection),
+Client::Client(NetConfig const &config) : 	
+												_user(),
 												_installations(),
 												_playersOnSale(),
 												_players(),
-												_prompt(">")
+												_connection(config.host, config.port),
+												_userManager(_connection, _user),
+												_matchManager(_connection),
+												_prompt(">"),
+												_isRunning(true)
 {
 }
 
@@ -29,7 +32,17 @@ Client::~Client()
 void Client::run()
 {
 	cout << Message::splashScreen();
-	_userManager.displayMenu();
+	while (_isRunning == true)
+	{
+		if (_user.isLogged() == true)
+		{
+			mainMenu();
+		}
+		else
+		{
+			_isRunning = _userManager.displayMenu();
+		}
+	}
 	cout << Message::goodBye();
 }	
 
@@ -59,6 +72,8 @@ void Client::mainMenu()
 				break;
 			case 4:
 				notificationsMenu();
+			case 5:
+				_user.logout();
 			default:
 				break;
 		}
@@ -184,7 +199,7 @@ void Client::notificationsMenu()
 
 //modif
 void Client::printPlayers(){
-	_players = getPlayers(_username);//modif
+	_players = getPlayers(_user.getUsername());//modif
 	cout << "================ YOUR PLAYERS ================" << endl;
 	for(size_t i =0; i<_players.size();++i){
 		cout << _players[i] << endl; //modif
@@ -241,7 +256,7 @@ void Client::salePlayer(){
 			cin >> bidValue;
 		}
 		try{
-		addPlayerOnMarket(player_id, _username, bidValue);
+		addPlayerOnMarket(player_id, _user.getUsername(), bidValue);
 		cout << "Your player was successfully added on market." << endl;
 		}
 		catch(playerAlreadyOnMarketException e){
@@ -302,7 +317,7 @@ void Client::placeBid(){
 	}
 	if (found){
 		try{
-			bidOnPlayer(player_id, _username, value);
+			bidOnPlayer(player_id, _user.getUsername(), value);
 			
 			cout << "Bid successfully placed ! Hurra !" << endl;
 			cout << "Updated list :" << endl;
@@ -705,7 +720,7 @@ void Client::startMatch(){
 	_matchManager.initBalls(receivedBalls);
 	JSON::Value *serverSquads = _connection.waitForMsg(net::MSG::MATCH_SQUADS);
 	JSON::Dict const &receivedSquads = DICT(serverSquads);
-	_matchManager.initSquads(receivedSquads, _username);
+	_matchManager.initSquads(receivedSquads, _user.getUsername());
 	//_connection.waitForMsg(net::MSG::MATCH_START);
 	_matchManager.startMatch();
 }

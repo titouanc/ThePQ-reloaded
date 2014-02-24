@@ -1,12 +1,12 @@
 #include "UserManager.hpp"
 
-UserManager::UserManager(net::ClientConnectionManager& connection) : 
-	_connection(connection)
+UserManager::UserManager(net::ClientConnectionManager& connection, User& user) : 
+	_connection(connection), _user(user)
 {
 }
 
 
-void UserManager::displayMenu()
+bool UserManager::displayMenu()
 {
 	/* user menu */
 	Menu _menu;
@@ -14,25 +14,24 @@ void UserManager::displayMenu()
 	_menu.addToDisplay("   - register\n");
 	_menu.addToDisplay("   - quit\n");
 	int option;
-	do
+	bool res = true;
+	option = _menu.run();
+	switch(option)
 	{
-		option = _menu.run();
-		switch(option)
-		{
-			case 1:
-				doLogin();
-				break;
-			case 2:
-				doRegister();
-				break;
-			default:
-				break;
-		}
+		case 1:
+			doLoginMenu();
+			break;
+		case 2:
+			doRegisterMenu();
+			break;
+		default:
+			res = false;
+			break;
 	}
-	while (option != 3);
+	return res;
 }
 
-void UserManager::doLogin()
+void UserManager::doLoginMenu()
 {	
 	string username = Menu::askForUserData("Username : ");
 	string password = Menu::askForUserData("Password : ");
@@ -40,8 +39,8 @@ void UserManager::doLogin()
 	try {
 		cout << "Please wait..." << endl;
 		doLoginUser(username, password);
-		_username = username;
 		cout << "You have successfully logged in! Welcome! :)\n\n\n" << endl;
+		_user.login(username);
 		//~ mainMenu();
 	}
 	catch (UserNotFoundException e)
@@ -54,7 +53,7 @@ void UserManager::doLogin()
 	}
 }
 
-void UserManager::doRegister()
+void UserManager::doRegisterMenu()
 {
 	bool registered = false;
 	for (int i = 0; i < 3 && ! registered; ++i)
@@ -91,20 +90,24 @@ void UserManager::doLoginUser(std::string username, std::string password)
 	toSend.set("data", credentials);
 	_connection.send(toSend);
 
+	cout << "message sent " << endl;
 	JSON::Value *serverMessage = _connection.waitForMsg(net::MSG::STATUS);
 	JSON::Dict const & received = DICT(serverMessage); 	// receiving server response
 	if (ISSTR(received.get("data"))) {
 		if (STR(received.get("data")).value() == net::MSG::PASSWORD_ERROR)
 		{
 			delete serverMessage;
+			cout << "wrong password" << endl;
 			throw WrongPasswordException();
 		}
 		else if (STR(received.get("data")).value() == net::MSG::USER_NOT_FOUND)
 		{
 			delete serverMessage;
+			cout << "user not found" << endl;
 			throw UserNotFoundException();
 		}
 	}
+	cout << "message received" << endl;
 	delete serverMessage;
 }
 

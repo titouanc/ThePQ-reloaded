@@ -6,26 +6,25 @@
 #include <Constants.hpp>
 #include "Menu.hpp"
 #include "Exception.hpp"
+#include "User.hpp"
 
 class UserManager
 {
 public:
-	UserManager(net::ClientConnectionManager& connection);
+	UserManager(net::ClientConnectionManager& connection, User& user);
 	
-	void displayMenu();
-	
-	std::string getUserName() { return _username; }
+	bool displayMenu();
 	
 private:
-	void doLogin();
-	void doRegister();
+	void doLoginMenu();
+	void doRegisterMenu();
 	
 	void doLoginUser(std::string username, std::string password);
 	void doRegisterUser(std::string username, std::string password);
 	void doesUserExist(std::string username);
 	
-	net::ClientConnectionManager _connection;
-	std::string _username;
+	net::ClientConnectionManager& _connection;
+	User& _user;
 	
 };
 

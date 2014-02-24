@@ -12,8 +12,10 @@ class User
 public:
 	User();
 	
-	bool login(std::string username) { _username = username; }
+	void login(std::string username) { _username = username; }
+	void logout() { _username = ""; }
 	bool isLogged() { return _username != ""; }
+	std::string getUsername() { return _username; }
 	
 private:
 	//~ std::vector<Installation> _installations;

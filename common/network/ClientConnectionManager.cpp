@@ -87,7 +87,9 @@ void net::ClientConnectionManager::loop()
 		{
 			JSON::Dict const & dict = DICT(json);
 			if (dict.hasKey("type") && dict.hasKey("data") && ISSTR(dict.get("type")))
+			{
 				_messages.push(json);
+			}
 		}
 	}
 }
