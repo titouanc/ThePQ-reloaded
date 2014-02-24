@@ -14,7 +14,6 @@ std::string humanExcName(const char *name)
 
 Client::Client(NetConfig const &config) : 	
 												_user(),
-												_installations(),
 												_playersOnSale(),
 												_players(),
 												_connection(config.host, config.port),
@@ -106,35 +105,6 @@ void Client::managementMenu()
 		}
 	}
 	while (option != 3);
-}
-
-void Client::stadiumMenu()
-{
-	Menu _menu;
-	_menu.addToDisplay("    - view your installations\n");
-	_menu.addToDisplay("    - upgrade an installation\n");
-	_menu.addToDisplay("    - downgrade an installation\n");
-	_menu.addToDisplay("    - quit to management menu\n");
-	int option;
-	do
-	{
-		option = _menu.run();
-		switch(option)
-		{
-			case 1:
-				printInstallationsList();
-				break;
-			case 2:
-				upgradeInstallation();
-				break;
-			case 3:
-				downgradeInstallation();
-				break;
-			default:
-				break;
-		}
-	}
-	while (option != 4);
 }
 
 void Client::playersMenu()
@@ -404,62 +374,6 @@ void Client::chooseUser()
 		}
 	}
 }
-void Client::loadInstallations(){
-	_installations = getInstallationsList();
-}
-
-void Client::printInstallationsList(){
-	if (_installations.empty())
-	{
-		loadInstallations();
-	}
-	// TODO implement printInstallationsList
-	cout << "Here are all the installations you own :" << endl;
-	for (size_t i = 0; i < _installations.size(); ++i){
-		cout << i << " - " << _installations[i].getName() << endl;
-		cout << "      Level : 				" << _installations[i].getLevel() << endl;
-		cout << "      Current Value : 		" << _installations[i].getCurrentValue() << endl;
-		cout << "      Upgrade Cost : 		" << _installations[i].getUpgradeCost() << endl;
-		cout << "      Refund Ratio :       " << _installations[i].getRefundRatio() << endl;
-		cout << "      Downgrade Refunds : 	" << _installations[i].getDowngradeRefunds() << endl;
-	}
-}
-
-void Client::upgradeInstallation()
-{
-	size_t choice;
-	cout << "Enter the number of the installation you want to upgrade" << endl << ">";
-	cin >> choice;
-	if (choice < _installations.size())
-	{
-		if (upgradeInstallation(choice))
-		{
-			_installations[choice].upgrade();
-		}
-	}
-	else
-	{
-		cout << "The number you entered is wrong" << endl;
-	}
-}
-
-void Client::downgradeInstallation()
-{
-	size_t choice;
-	cout << "Enter the number of the installation you want to downgrade" << endl << ">";
-	cin >> choice;
-	if (choice < _installations.size())
-	{
-		if (downgradeInstallation(choice))
-		{
-			_installations[choice].downgrade();
-		}
-	}
-	else
-	{
-		cout << "The number you entered is wrong" << endl;
-	}
-}
 
 void Client::printConnectedUsersList(){
 	vector<std::string> connectedUsers = getConnectedUsersList();
@@ -489,67 +403,6 @@ string Client::askForNewPassword(){
 			cout << "The two passwords entered were not the same." << endl;
 	}
 	return password;
-}
-
-vector<Installation> Client::getInstallationsList(){
-	JSON::Dict query;
-	JSON::List toFill;
-	query.set("type", net::MSG::INSTALLATIONS_LIST);
-	query.set("data", "");
-	_connection.send(query);
-
-	JSON::Value *serverResponse = _connection.waitForMsg(net::MSG::INSTALLATIONS_LIST);
-	JSON::Dict const & response = DICT(serverResponse);
-	
-	vector<Installation> vec;
-	if (ISLIST(response.get("data")))
-	{
-		toFill = LIST(response.get("data"));
-		for (size_t i = 0; i < toFill.len(); ++i)
-		{
-			vec.push_back(DICT(toFill[i]));
-		}
-	}
-	delete serverResponse;
-	return vec;
-}
-
-bool Client::upgradeInstallation(size_t i)
-{
-	bool ret = false;
-	JSON::Dict query;
-	query.set("type", net::MSG::INSTALLATION_UPGRADE);
-	query.set("data", i);
-	_connection.send(query);
-	
-	JSON::Value *serverResponse = _connection.waitForMsg(net::MSG::INSTALLATION_UPGRADE);
-	JSON::Dict const & received = DICT(serverResponse);
-	if (ISBOOL(received.get("data")))
-	{
-		ret = received.get("data");
-	}
-	delete serverResponse;
-	return ret;
-}
-
-bool Client::downgradeInstallation(size_t i)
-{
-	bool ret = false;
-	JSON::Dict query;
-	query.set("type", net::MSG::INSTALLATION_DOWNGRADE);
-	query.set("data", i);
-	_connection.send(query);
-	
-	JSON::Value *serverResponse = _connection.waitForMsg(net::MSG::INSTALLATION_DOWNGRADE);
-	JSON::Dict const & received = DICT(serverResponse);
-	
-	if (ISBOOL(received.get("data")))
-	{
-		ret = received.get("data");
-	}
-	
-	delete serverResponse;
-	return ret;
 }
 
 vector<std::string> Client::getConnectedUsersList(){// TODO

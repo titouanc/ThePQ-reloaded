@@ -49,7 +49,6 @@ public:
 private:
 	// Cache
 	User _user;
-	std::vector<Installation> _installations;
 	std::vector<Sale> _playersOnSale;
 	std::vector<Player> _players;
 	std::string _username;
@@ -67,7 +66,6 @@ private:
 	// Menus
 	void mainMenu();
 	void managementMenu();
-	void stadiumMenu();
 	void playersMenu();
 	void friendlyMatchMenu();
 	void marketMenu();
@@ -84,15 +82,6 @@ private:
 	void printConnectedUsersList();
 	void chooseUser();
 	void startMatch();
-	
-	// Stadium
-	std::vector<Installation> getInstallationsList();
-	bool upgradeInstallation(size_t i);
-	bool downgradeInstallation(size_t i);
-	void printInstallationsList();
-	void upgradeInstallation();
-	void downgradeInstallation();
-	void loadInstallations();
 
 	// Market
 	std::vector<Sale> updatePlayersOnSale();
