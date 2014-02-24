@@ -168,7 +168,6 @@ void Client::notificationsMenu()
 	}
 }
 
-//modif
 void Client::printPlayers(){
 	_players = getPlayers(_user.getUsername());//modif
 	cout << "================ YOUR PLAYERS ================" << endl;

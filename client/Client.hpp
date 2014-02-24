@@ -87,13 +87,15 @@ private:
 	std::vector<Sale> updatePlayersOnSale();
 	void bidOnPlayer(int player_id, std::string username, int value);
 	void addPlayerOnMarket(int player_id, std::string username, int value);
-	std::vector<Player> getPlayers(std::string username);
 	void printPlayersOnSale();
-	void printPlayers();
 	void salePlayer();
 	vector<int> getBidValueRange(Player *player);
 	void placeBid();
 	void handleEndOfSaleNotification(JSON::Dict&);
+
+	// Players
+	std::vector<Player> getPlayers(std::string username);
+	void printPlayers();
 
 	// utils
 	std::string askForUserData(std::string prompt); // returns the user input.
