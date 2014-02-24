@@ -1,4 +1,8 @@
 #include "User.hpp"
+#include <unistd.h>
+#include <errno.h>
+
+#define USER_PATH "data/users/"
 
 User::User(const string& username, const string& password) : _username(username), 
 																_password(password), 
@@ -24,14 +28,16 @@ User::operator JSON::Dict()
 	return ret;
 }
 
-int User::buyStuff(int price){
+int User::buyStuff(int price)
+{
 	if(price>_funds){
 		_funds-=price;
 		return 0;
 	}else return -1;	
 }
 
-string User::getUserDirectoryPath(){
+string User::getUserDirectoryPath() const
+{
 	return USER_PATH + getUsername() + "/";
 }
 
@@ -86,7 +92,8 @@ void User::saveInstallations()
 	json.save(path.c_str());
 }
 
-void User::createUser(){
+void User::createUser()
+{
 	// Initialization
 	JSON::Dict json = *this;
 	mkdir("data", 0755);
@@ -108,7 +115,8 @@ void User::createUser(){
 }
 
 
-void User::generateBaseSquad(JSON::List &toFill){
+void User::generateBaseSquad(JSON::List &toFill)
+{
 	RandomNameGenerator gen;
 	for (int i=0; i<7; i++){
 		Player p;
@@ -123,6 +131,34 @@ void User::generateBaseSquad(JSON::List &toFill){
 		JSON::Dict dict = p;
 		toFill.append(DICT(dict.clone()));
 	}
+}
+
+#define OFFLINE_MSG_FILENAME "offline_messages.json"
+void User::sendOfflineMsg(JSON::Value const & message) const
+{
+	JSON::List messages = getOfflineMsg();
+	messages.append(message);
+	messages.save(getUserDirectoryPath() + OFFLINE_MSG_FILENAME);
+}
+
+JSON::List User::getOfflineMsg(void) const
+{
+	JSON::Value *loaded = NULL;
+	try {
+		loaded = JSON::load(getUserDirectoryPath() + OFFLINE_MSG_FILENAME);
+	} catch (JSON::Error & err){}
+
+	JSON::List res = (loaded) ? LIST(loaded) : JSON::List();
+	if (loaded)
+		delete loaded;
+	return res;
+}
+
+bool User::clearOfflineMsg(void) const
+{
+	int r = unlink((getUserDirectoryPath() + OFFLINE_MSG_FILENAME).c_str());
+	/* delete successes if unlink() returns 0 or if there was no file */
+	return (r == 0 || errno == ENOENT);
 }
 
 // TODO add User.delete

@@ -22,8 +22,6 @@ private:
 	int _funds;
 	vector<Installation> _installations;
 public:
-	#define USER_PATH "data/users/"
-	
 	User(const string& username, const string& password);
 	User(const JSON::Dict*);
 	
@@ -51,6 +49,13 @@ public:
 	void createUser();
 
 	void generateBaseSquad(JSON::List &toFill);
+
+	/* Enqueue a message to send when user gets back online */
+	void sendOfflineMsg(JSON::Value const & message) const;
+	/* Get all enqueued messages for this user */
+	JSON::List getOfflineMsg(void) const;
+	/* Erase all enqueued messages for this user */
+	bool clearOfflineMsg(void) const;
 };
 
 #endif
