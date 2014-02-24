@@ -19,7 +19,7 @@ Client::Client(NetConfig const &config) :
 												_players(),
 												_connection(config.host, config.port),
 												_userManager(_connection, _user),
-												_matchManager(_connection),
+												_matchManager(_connection, _user),
 												_prompt(">"),
 												_isRunning(true)
 {
@@ -720,7 +720,7 @@ void Client::startMatch(){
 	_matchManager.initBalls(receivedBalls);
 	JSON::Value *serverSquads = _connection.waitForMsg(net::MSG::MATCH_SQUADS);
 	JSON::Dict const &receivedSquads = DICT(serverSquads);
-	_matchManager.initSquads(receivedSquads, _user.getUsername());
+	_matchManager.initSquads(receivedSquads);
 	//_connection.waitForMsg(net::MSG::MATCH_START);
 	_matchManager.startMatch();
 }

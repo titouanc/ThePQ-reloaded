@@ -11,13 +11,14 @@
 #include <map>
 #include <string>
 #include <network/ClientConnectionManager.hpp>
+#include "User.hpp"
 
 class ClientMatchManager {
 public:
-	ClientMatchManager(net::ClientConnectionManager &connection);
+	ClientMatchManager(net::ClientConnectionManager &connection, User &user);
 
 	void initBalls(const JSON::Dict& msg);
-	void initSquads(const JSON::Dict& msg, string username);
+	void initSquads(const JSON::Dict& msg);
 	void startMatch();
 	void turnMenu();
 	void displayAvailablePlayers();
@@ -32,8 +33,8 @@ public:
 	void updatePitch();
 private:
 	net::ClientConnectionManager & _connection;
+	User &_user;
 	bool _isMatchFinished;
-	std::string _username;
 	Squad _otherSquad;
 	Squad _ownSquad;
 	Pitch _pitch;
