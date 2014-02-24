@@ -100,10 +100,17 @@ bool BaseConnectionManager::_doRead(int fd)
 
     JSON::Value *res = JSON::parse(globalBuf.str().c_str());
     if (res != NULL){
-        _incoming.push(Message(fd, res));
-        if (_logger)
-            std::cout << "[" << this << "] "<< "\033[1m" << fd 
-                      << " \033[33m>>\033[0m " << *res << std::endl;
+        if (ISDICT(res) && 
+            ISSTR(DICT(res).get("type")) &&
+            DICT(res).hasKey("data")
+        ){
+            _incoming.push(Message(fd, res));
+            if (_logger)
+                std::cout << "[" << this << "] "<< "\033[1m" << fd 
+                          << " \033[33m>>\033[0m " << *res << std::endl;
+        } else {
+            delete res;
+        }
     }
 
     return true;
