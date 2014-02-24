@@ -12,7 +12,6 @@
 #include <fstream>
 #include <iterator>
 #include <istream>
-//#include "../Skeleton/Player.hpp"
 
 using namespace std;
 
@@ -31,16 +30,16 @@ public:
 	operator JSON::Dict();
 
 	/* Getters / Setters */
-	string getUsername() { return _username; }
+	string getUsername() const { return _username; }
 	void setUsername(const string& username){ _username = username; };
-	string getPassword() { return _password; }
+	string getPassword() const { return _password; }
 	void setPassword(const string& password) { _password = password; }
 	int getFunds() const {return _funds;}
 	void setFunds(int funds) {_funds=funds;}
 	int buyStuff(int price);
 	void getPayed(int price) {_funds+=price;}
 	/* Serializable */
-	string getUserDirectoryPath();
+	string getUserDirectoryPath() const;
 	void save();
 
 	static User* load(string username);
