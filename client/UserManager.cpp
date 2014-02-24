@@ -43,13 +43,17 @@ void UserManager::doLoginMenu()
 		_user.login(username);
 		//~ mainMenu();
 	}
-	catch (UserNotFoundException e)
+	catch (UserNotFoundException & e)
 	{
 		cout << "\nUser not found" << endl;
 	}
-	catch (WrongPasswordException e)
+	catch (WrongPasswordException & e)
 	{
 		cout << "\nWrong password" << endl;
+	}
+	catch (AlreadyLoggedInException & e)
+	{
+		cout << "\nYou're already logged in from another location" << endl;
 	}
 }
 
@@ -90,24 +94,26 @@ void UserManager::doLoginUser(std::string username, std::string password)
 	toSend.set("data", credentials);
 	_connection.send(toSend);
 
-	cout << "message sent " << endl;
 	JSON::Value *serverMessage = _connection.waitForMsg(net::MSG::STATUS);
 	JSON::Dict const & received = DICT(serverMessage); 	// receiving server response
 	if (ISSTR(received.get("data"))) {
-		if (STR(received.get("data")).value() == net::MSG::PASSWORD_ERROR)
+		std::string const & payload = STR(received.get("data"));
+		if (payload == net::MSG::PASSWORD_ERROR)
 		{
 			delete serverMessage;
-			cout << "wrong password" << endl;
 			throw WrongPasswordException();
 		}
-		else if (STR(received.get("data")).value() == net::MSG::USER_NOT_FOUND)
+		else if (payload == net::MSG::USER_NOT_FOUND)
 		{
 			delete serverMessage;
-			cout << "user not found" << endl;
 			throw UserNotFoundException();
 		}
+		else if (payload == net::MSG::ALREADY_LOGGED_IN)
+		{
+			delete serverMessage;
+			throw AlreadyLoggedInException();
+		}
 	}
-	cout << "message received" << endl;
 	delete serverMessage;
 }
 

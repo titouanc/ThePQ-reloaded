@@ -309,7 +309,7 @@ void Client::placeBid(){
 			cout << "Error : you are currently winning this sale. Cannot bid on your own bid."<<endl;
 		}
 	}
-	else{
+	else {
 		cout << "Error : this player is not in the list." << endl;
 	}
 }
