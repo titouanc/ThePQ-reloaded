@@ -1,4 +1,4 @@
-OBJS = Position.o Displacement.o Pitch.o Player.o Installation.o Sale.o
+OBJS = Position.o Displacement.o Pitch.o Player.o Installation.o Sale.o Exception.o
 CPPFLAGS = -I..
 LIBS = ../json/libjson.a
 

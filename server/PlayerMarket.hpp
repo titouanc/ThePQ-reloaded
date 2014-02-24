@@ -42,7 +42,7 @@ public:
 	Player loadPlayerInfos(std::string username, int id);
 	std::string getPlayersPath(std::string owner){return (_playerPath + "users/" + owner + "/" + "players.json");}
 	void sendMessageToUser(std::string, const JSON::Dict&);
-	JSON::Dict allSales();
+	JSON::Dict allSales() const ;
 	JSON::Dict addPlayer(const JSON::Dict &json);
 	JSON::Dict deletePlayer(const JSON::Dict &json);
 	JSON::Dict bid(const JSON::Dict &json);
