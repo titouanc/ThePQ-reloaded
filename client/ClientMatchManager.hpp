@@ -6,19 +6,19 @@
 #include <model/Position.hpp>
 #include <model/Squad.hpp>
 #include <model/Ball.hpp>
-#include <network/ConnectionManager.hpp>
 #include <Constants.hpp>
 #include <json/json.hpp>
 #include <map>
 #include <string>
-#include <network/TcpSocket.hpp>
+#include <network/ClientConnectionManager.hpp>
+#include "User.hpp"
 
 class ClientMatchManager {
 public:
-	ClientMatchManager(net::TcpSocket &connection);
+	ClientMatchManager(net::ClientConnectionManager &connection, User &user);
 
 	void initBalls(const JSON::Dict& msg);
-	void initSquads(const JSON::Dict& msg, string username);
+	void initSquads(const JSON::Dict& msg);
 	void startMatch();
 	void turnMenu();
 	void displayAvailablePlayers();
@@ -32,9 +32,9 @@ public:
 	void updatePitchWithDeltas(JSON::Dict& deltas);
 	void updatePitch();
 private:
-	net::TcpSocket & _connection;
+	net::ClientConnectionManager & _connection;
+	User &_user;
 	bool _isMatchFinished;
-	std::string _username;
 	Squad _otherSquad;
 	Squad _ownSquad;
 	Pitch _pitch;

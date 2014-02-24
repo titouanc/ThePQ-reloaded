@@ -1,7 +1,5 @@
-#include "CLI.hpp"
+#include "Client.hpp"
 #include <pthread.h>
-#include <typeinfo>
-#include <cxxabi.h>
 
 using namespace std;
 
@@ -14,99 +12,42 @@ std::string humanExcName(const char *name)
 	return res;
 }
 
-CLI::CLI(NetConfig const &config) : 	_connection(config.host, config.port),
-										_prompt(">"),
-										_isWaitingForMessage(false),
-										_matchManager(_connection)
+Client::Client(NetConfig const &config) : 	
+												_user(),
+												_playersOnSale(),
+												_players(),
+												_connection(config.host, config.port),
+												_userManager(_connection, _user),
+												_stadiumManager(_connection, _user),
+												_matchManager(_connection, _user),
+												_prompt(">"),
+												_isRunning(true)
 {
-	pthread_create(&_thread, NULL, net::runThread, this);
 }
 
-CLI::~CLI()
+Client::~Client()
 {
-	
 }
 
-void CLI::run()
+void Client::run()
 {
 	cout << Message::splashScreen();
-	
-	loginMenu();
-	
-	cout << Message::goodBye();
-}
-
-void CLI::loginMenu()
-{
-	/* user menu */
-	Menu _menu;
-	_menu.addToDisplay("   - login\n");
-	_menu.addToDisplay("   - register\n");
-	_menu.addToDisplay("   - quit\n");
-	int option;
-	do
+	while (_isRunning == true)
 	{
-		option = _menu.run();
-		switch(option)
+		if (_user.isLogged() == true)
 		{
-			case 1:
-				login();
-				break;
-			case 2:
-				registerUser();
-				break;
-			default:
-				break;
+			mainMenu();
+		}
+		else
+		{
+			_isRunning = _userManager.displayMenu();
 		}
 	}
-	while (option != 3);
-}
-
-void CLI::login(){
-	
-	string username = askForUserData("Username : ");
-	string password = askForUserData("Password : ");
-	
-	try {
-		cout << "Please wait..." << endl;
-		loginUser(username, password);
-		_username = username;//modif
-		cout << "You have successfully logged in! Welcome! :)\n\n\n" << endl;
-		mainMenu();
-	}
-	catch (UserNotFoundException e)
-	{
-		cout << "\nUser not found" << endl;
-	}
-	catch (WrongPasswordException e)
-	{
-		cout << "\nWrong password" << endl;
-	}
-}
-
-void CLI::registerUser(){
-	bool registered = false;
-	for (int i = 0; i < 3 && ! registered; ++i)
-	{
-		string username = askForUserData("Pick a username : ");
-		try {
-			cout << "Please wait..." << endl;
-			doesUserExist(username);
-			string password = askForNewPassword();
-			cout << "Please wait..." << endl;
-			registerUser(username, password);
-			registered = true;
-			cout << "You have successfully registered! You can now login." << endl;
-		}
-		catch (UserAlreadyExistsException e) {
-			cout << "User name already exists. Try again with a different username." << endl;		
-		}
-	}
-}
-	
+	cout << Message::goodBye();
+}	
 
 /* main menu */
-void CLI::mainMenu()
+void Client::mainMenu()
 {
 	Menu _menu;
 	_menu.addToDisplay("   - manage your team and stadium\n");
@@ -131,6 +72,8 @@ void CLI::mainMenu()
 				break;
 			case 4:
 				notificationsMenu();
+			case 5:
+				_user.logout();
 			default:
 				break;
 		}
@@ -139,7 +82,7 @@ void CLI::mainMenu()
 }
 
 /* Management menu */
-void CLI::managementMenu()
+void Client::managementMenu()
 {
 	Menu _menu;
 	_menu.addToDisplay("   - manage your stadium and installations\n");
@@ -152,7 +95,7 @@ void CLI::managementMenu()
 		switch(option)
 		{
 			case 1:
-				stadiumMenu();
+				_stadiumManager.displayMenu();
 				break;
 			case 2:
 				playersMenu();
@@ -164,36 +107,7 @@ void CLI::managementMenu()
 	while (option != 3);
 }
 
-void CLI::stadiumMenu()
-{
-	Menu _menu;
-	_menu.addToDisplay("    - view your installations\n");
-	_menu.addToDisplay("    - upgrade an installation\n");
-	_menu.addToDisplay("    - downgrade an installation\n");
-	_menu.addToDisplay("    - quit to management menu\n");
-	int option;
-	do
-	{
-		option = _menu.run();
-		switch(option)
-		{
-			case 1:
-				printInstallationsList();
-				break;
-			case 2:
-				upgradeInstallation();
-				break;
-			case 3:
-				downgradeInstallation();
-				break;
-			default:
-				break;
-		}
-	}
-	while (option != 4);
-}
-
-void CLI::playersMenu()
+void Client::playersMenu()
 {
 	Menu _menu;
 	_menu.addToDisplay("	- Show list of players");
@@ -215,17 +129,17 @@ void CLI::playersMenu()
 }
 
 /* main menu */
-void CLI::notificationsMenu()
+void Client::notificationsMenu()
 {
 	_connection.updateNotifications();
-	displayNotificationsCount();
+	cout << "You have " << _connection.notifications.size() << "notifications." << endl;
 	Menu _menu;
 	_menu.addToDisplay("   - handle this notification\n");
 	_menu.addToDisplay("   - see next notification\n");
 	_menu.addToDisplay("   - quit\n");
 	int option;
 	bool quit = false;
-	while (! _connection.notifications.empty() && ! quit)
+	while (_connection.notifications.available() && ! quit)
 	{
 		JSON::Value * currentNotification = _connection.notifications.front();
 		JSON::Dict const & notif = DICT(currentNotification);
@@ -254,9 +168,8 @@ void CLI::notificationsMenu()
 	}
 }
 
-//modif
-void CLI::printPlayers(){
-	_players = getPlayers(_username);//modif
+void Client::printPlayers(){
+	_players = getPlayers(_user.getUsername());//modif
 	cout << "================ YOUR PLAYERS ================" << endl;
 	for(size_t i =0; i<_players.size();++i){
 		cout << _players[i] << endl; //modif
@@ -265,7 +178,7 @@ void CLI::printPlayers(){
 }
 
 /* Market menu */
-void CLI::marketMenu(){
+void Client::marketMenu(){
 	Menu _menu;
 	_menu.addToDisplay("   - put a player on sale\n");
 	_menu.addToDisplay("   - see the players on sale\n");
@@ -289,7 +202,7 @@ void CLI::marketMenu(){
 	while(option != 3);
 }
 
-void CLI::salePlayer(){
+void Client::salePlayer(){
 	printPlayers();			//this function updates _players
 	int player_id, bidValue;
 	bool found = false;
@@ -313,7 +226,7 @@ void CLI::salePlayer(){
 			cin >> bidValue;
 		}
 		try{
-		addPlayerOnMarket(player_id, _username, bidValue);
+		addPlayerOnMarket(player_id, _user.getUsername(), bidValue);
 		cout << "Your player was successfully added on market." << endl;
 		}
 		catch(playerAlreadyOnMarketException e){
@@ -325,7 +238,7 @@ void CLI::salePlayer(){
 	}
 }
 
-vector<int> CLI::getBidValueRange(Player *player){
+vector<int> Client::getBidValueRange(Player *player){
 	int allowedRangeFromEstimatedValue = 10000; //TODO : in Constants.hpp (should do that for many others variables !)
 	vector<int> range;
 	range.push_back(player->estimatedValue() - (int) allowedRangeFromEstimatedValue/2);
@@ -333,7 +246,7 @@ vector<int> CLI::getBidValueRange(Player *player){
 	return range;
 }
 
-void CLI::printPlayersOnSale(){
+void Client::printPlayersOnSale(){
 	_playersOnSale = updatePlayersOnSale();
 	cout << "================ PLAYERS ON SALE ================" << endl;
 	for(size_t i=0;i<_playersOnSale.size();++i){
@@ -359,7 +272,7 @@ void CLI::printPlayersOnSale(){
 	while (option != 2);
 }
 
-void CLI::placeBid(){
+void Client::placeBid(){
 	int player_id, value;
 	string response;
 	bool found=false;
@@ -374,7 +287,7 @@ void CLI::placeBid(){
 	}
 	if (found){
 		try{
-			bidOnPlayer(player_id, _username, value);
+			bidOnPlayer(player_id, _user.getUsername(), value);
 			
 			cout << "Bid successfully placed ! Hurra !" << endl;
 			cout << "Updated list :" << endl;
@@ -405,7 +318,7 @@ void CLI::placeBid(){
 
 
 /* Friendly match menu */
-void CLI::friendlyMatchMenu()
+void Client::friendlyMatchMenu()
 {
 	Menu _menu;
 	_menu.addToDisplay("   - list all connected players\n");
@@ -430,7 +343,7 @@ void CLI::friendlyMatchMenu()
 	while(option != 3);
 }
 
-void CLI::chooseUser()
+void Client::chooseUser()
 {
 	cout << "Enter a username to send an invitation to another user : ";
 	string userInput;
@@ -460,64 +373,8 @@ void CLI::chooseUser()
 		}
 	}
 }
-void CLI::loadInstallations(){
-	_installations = getInstallationsList();
-}
 
-void CLI::printInstallationsList(){
-	if (_installations.empty())
-	{
-		loadInstallations();
-	}
-	// TODO implement printInstallationsList
-	cout << "Here are all the installations you own :" << endl;
-	for (size_t i = 0; i < _installations.size(); ++i){
-		cout << i << " - " << _installations[i].getName() << endl;
-		cout << "      Level : 				" << _installations[i].getLevel() << endl;
-		cout << "      Current Value : 		" << _installations[i].getCurrentValue() << endl;
-		cout << "      Upgrade Cost : 		" << _installations[i].getUpgradeCost() << endl;
-		cout << "      Refund Ratio :       " << _installations[i].getRefundRatio() << endl;
-		cout << "      Downgrade Refunds : 	" << _installations[i].getDowngradeRefunds() << endl;
-	}
-}
-
-void CLI::upgradeInstallation()
-{
-	size_t choice;
-	cout << "Enter the number of the installation you want to upgrade" << endl << ">";
-	cin >> choice;
-	if (choice < _installations.size())
-	{
-		if (upgradeInstallation(choice))
-		{
-			_installations[choice].upgrade();
-		}
-	}
-	else
-	{
-		cout << "The number you entered is wrong" << endl;
-	}
-}
-
-void CLI::downgradeInstallation()
-{
-	size_t choice;
-	cout << "Enter the number of the installation you want to downgrade" << endl << ">";
-	cin >> choice;
-	if (choice < _installations.size())
-	{
-		if (downgradeInstallation(choice))
-		{
-			_installations[choice].downgrade();
-		}
-	}
-	else
-	{
-		cout << "The number you entered is wrong" << endl;
-	}
-}
-
-void CLI::printConnectedUsersList(){
+void Client::printConnectedUsersList(){
 	vector<std::string> connectedUsers = getConnectedUsersList();
 	cout << "Here are all the connected users : " << endl;
  	for (size_t i=0; i < connectedUsers.size(); ++i)
@@ -527,7 +384,7 @@ void CLI::printConnectedUsersList(){
 
 /* Private methods */
 
-string CLI::askForUserData(string prompt){
+string Client::askForUserData(string prompt){
 	string data;
 	cout<<endl;
 	cout << prompt;
@@ -535,7 +392,7 @@ string CLI::askForUserData(string prompt){
 	return data;
 }
 
-string CLI::askForNewPassword(){
+string Client::askForNewPassword(){
 	string password = "a";
 	string passwordConfirmation;
 	while (password != passwordConfirmation){
@@ -547,131 +404,7 @@ string CLI::askForNewPassword(){
 	return password;
 }
 
-////////// NEW 
-void CLI::loginUser(string username, string passwd){
-
-	JSON::Dict toSend, credentials;
-	credentials.set(net::MSG::USERNAME, username);
-	credentials.set(net::MSG::PASSWORD, passwd);
-	toSend.set("type", net::MSG::LOGIN);
-	toSend.set("data", credentials);
-	_connection.send(toSend);
-
-	JSON::Value *serverMessage = _connection.waitForMsg(net::MSG::STATUS);
-	JSON::Dict const & received = DICT(serverMessage); 	// receiving server response
-	if (ISSTR(received.get("data"))) {
-		std::string const & payload = STR(received.get("data"));
-		if (payload == net::MSG::PASSWORD_ERROR){
-			delete serverMessage;
-			throw WrongPasswordException();
-		}
-		else if (payload == net::MSG::USER_NOT_FOUND){
-			delete serverMessage;
-			throw UserNotFoundException();
-		}
-		else if (payload == net::MSG::ALREADY_LOGGED_IN){
-			delete serverMessage;
-			throw AlreadyLoggedInException();
-		}
-	}
-	delete serverMessage;
-	// User is logged in at this point.
-}
-
-void CLI::doesUserExist(string username){
-	JSON::Dict toSend;
-	toSend.set("type", net::MSG::USER_EXISTS);
-	toSend.set("data", username);
-	_connection.send(toSend);
-
-	JSON::Value *serverMessage = _connection.waitForMsg(net::MSG::STATUS); // receiving server response
-	JSON::Dict const & received = DICT(serverMessage);
-	if (ISSTR(received.get("data"))
-		&& STR(received.get("data")).value() == net::MSG::USER_EXISTS){
-		throw UserAlreadyExistsException();
-	}
-}
-
-void CLI::registerUser(string username, string passwd)
-{
-	JSON::Dict toSend, received, credentials;
-	credentials.set(net::MSG::USERNAME, username);
-	credentials.set(net::MSG::PASSWORD, passwd);
-	toSend.set("type", net::MSG::REGISTER);
-	toSend.set("data", credentials);
-	_connection.send(toSend);
-
-	JSON::Value *serverMessage = _connection.waitForMsg(net::MSG::STATUS);	// receiving server response
-
-	if (ISSTR(received.get("data"))) {
-		if (STR(received.get("data")).value() == net::MSG::USER_EXISTS)
-			throw UserAlreadyExistsException();
-	}
-	delete serverMessage;
-}
-
-vector<Installation> CLI::getInstallationsList(){
-	JSON::Dict query;
-	JSON::List toFill;
-	query.set("type", net::MSG::INSTALLATIONS_LIST);
-	query.set("data", "");
-	_connection.send(query);
-
-	JSON::Value *serverResponse = _connection.waitForMsg(net::MSG::INSTALLATIONS_LIST);
-	JSON::Dict const & response = DICT(serverResponse);
-	
-	vector<Installation> vec;
-	if (ISLIST(response.get("data")))
-	{
-		toFill = LIST(response.get("data"));
-		for (size_t i = 0; i < toFill.len(); ++i)
-		{
-			vec.push_back(DICT(toFill[i]));
-		}
-	}
-	delete serverResponse;
-	return vec;
-}
-
-bool CLI::upgradeInstallation(size_t i)
-{
-	bool ret = false;
-	JSON::Dict query;
-	query.set("type", net::MSG::INSTALLATION_UPGRADE);
-	query.set("data", i);
-	_connection.send(query);
-	
-	JSON::Value *serverResponse = _connection.waitForMsg(net::MSG::INSTALLATION_UPGRADE);
-	JSON::Dict const & received = DICT(serverResponse);
-	if (ISBOOL(received.get("data")))
-	{
-		ret = received.get("data");
-	}
-	delete serverResponse;
-	return ret;
-}
-
-bool CLI::downgradeInstallation(size_t i)
-{
-	bool ret = false;
-	JSON::Dict query;
-	query.set("type", net::MSG::INSTALLATION_DOWNGRADE);
-	query.set("data", i);
-	_connection.send(query);
-	
-	JSON::Value *serverResponse = _connection.waitForMsg(net::MSG::INSTALLATION_DOWNGRADE);
-	JSON::Dict const & received = DICT(serverResponse);
-	
-	if (ISBOOL(received.get("data")))
-	{
-		ret = received.get("data");
-	}
-	
-	delete serverResponse;
-	return ret;
-}
-
-vector<std::string> CLI::getConnectedUsersList(){// TODO
+vector<std::string> Client::getConnectedUsersList(){// TODO
 	vector<std::string> res;
 	JSON::Dict query;
 	query.set("type", net::MSG::CONNECTED_USERS_LIST);
@@ -690,7 +423,7 @@ vector<std::string> CLI::getConnectedUsersList(){// TODO
 
 ///////// END NEW
 
-std::vector<Sale> CLI::updatePlayersOnSale(){
+std::vector<Sale> Client::updatePlayersOnSale(){
 	JSON::Dict query;
 	query.set("type", net::MSG::PLAYERS_ON_MARKET_LIST);
 	query.set("data", "");
@@ -707,7 +440,7 @@ std::vector<Sale> CLI::updatePlayersOnSale(){
 	return res; 
 }
 
-void CLI::bidOnPlayer(int player_id,std::string username, int value){//modif
+void Client::bidOnPlayer(int player_id,std::string username, int value){//modif
 	JSON::Dict query, data;
 	data.set(net::MSG::USERNAME,username);
 	data.set(net::MSG::PLAYER_ID,player_id);
@@ -733,7 +466,7 @@ void CLI::bidOnPlayer(int player_id,std::string username, int value){//modif
 	}
 }
 
-void CLI::addPlayerOnMarket(int player_id,std::string username, int value){
+void Client::addPlayerOnMarket(int player_id,std::string username, int value){
 	JSON::Dict query, data;
 	data.set(net::MSG::USERNAME,username);
 	data.set(net::MSG::PLAYER_ID,player_id);
@@ -750,7 +483,7 @@ void CLI::addPlayerOnMarket(int player_id,std::string username, int value){
 		}
 }
 
-std::vector<Player> CLI::getPlayers(std::string username){//modif
+std::vector<Player> Client::getPlayers(std::string username){//modif
 	JSON::Dict query, data;
 	data.set(net::MSG::USERNAME, username);//modif
 	query.set("type", net::MSG::PLAYERS_LIST);
@@ -772,11 +505,7 @@ std::vector<Player> CLI::getPlayers(std::string username){//modif
 }
 
 
-void CLI::displayNotificationsCount(){
-	cout << "You have " << _connection.notifications.size() << "notifications." << endl;
-}
-
-void CLI::handleNotification(JSON::Value *notification){
+void Client::handleNotification(JSON::Value *notification){
 	JSON::Dict message = DICT(notification);
 	string messageType;
 	if (ISSTR(message.get("type")))
@@ -788,7 +517,7 @@ void CLI::handleNotification(JSON::Value *notification){
 			handleEndOfSaleNotification(DICT(message.get("data")));
 }
 
-void CLI::handleFriendlyGameInvitation(JSON::Dict &message){
+void Client::handleFriendlyGameInvitation(JSON::Dict &message){
 	if (ISSTR(message.get("data"))){
 		Menu _menu;
 		_menu.addToDisplay("   - accept\n");
@@ -817,7 +546,7 @@ void CLI::handleFriendlyGameInvitation(JSON::Dict &message){
 	}
 }
 
-void CLI::acceptInvitationFromUser(string username){
+void Client::acceptInvitationFromUser(string username){
 	JSON::Dict toSend;
 	toSend.set("type", net::MSG::FRIENDLY_GAME_INVITATION_RESPONSE);
 	JSON::Dict data;
@@ -828,7 +557,7 @@ void CLI::acceptInvitationFromUser(string username){
 	startMatch();
 }
 
-void CLI::denyInvitationFromUser(string username){
+void Client::denyInvitationFromUser(string username){
 	JSON::Dict toSend;
 	toSend.set("type", net::MSG::FRIENDLY_GAME_INVITATION_RESPONSE);
 	JSON::Dict data;
@@ -838,13 +567,13 @@ void CLI::denyInvitationFromUser(string username){
 	_connection.send(toSend);
 }
 
-void CLI::startMatch(){
+void Client::startMatch(){
 	JSON::Value *serverBalls = _connection.waitForMsg(net::MSG::MATCH_BALLS);
 	JSON::Dict const &receivedBalls = DICT(serverBalls);
 	_matchManager.initBalls(receivedBalls);
 	JSON::Value *serverSquads = _connection.waitForMsg(net::MSG::MATCH_SQUADS);
 	JSON::Dict const &receivedSquads = DICT(serverSquads);
-	_matchManager.initSquads(receivedSquads, _username);
+	_matchManager.initSquads(receivedSquads);
 	//_connection.waitForMsg(net::MSG::MATCH_START);
 	_matchManager.startMatch();
 }
@@ -852,7 +581,7 @@ void CLI::startMatch(){
 
 /*Market notifications*/
 
-void CLI::handleEndOfSaleNotification(JSON::Dict & json){
+void Client::handleEndOfSaleNotification(JSON::Dict & json){
 	cout << "<<MESSAGE : SALE ENDED>>" << endl;
 	if(STR(json.get("type")).value()==net::MSG::END_OF_OWNED_SALE_RAPPORT){
 		if(STR(json.get(net::MSG::RAPPORT_SALE_STATUS)).value() == net::MSG::PLAYER_NOT_SOLD){

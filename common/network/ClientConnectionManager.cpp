@@ -1,11 +1,11 @@
-#include "TcpSocket.hpp"
+#include "ClientConnectionManager.hpp"
 #include <cstring>
 #include <sstream>
 
 /* Buffer size for incoming messages */
 static const size_t MSG_SIZE = 4096;
 
-void net::TcpSocket::send(JSON::Value const & json)
+void net::ClientConnectionManager::send(JSON::Value const & json)
 {
 	std::string dump = json.dumps();
 	const char* data = dump.c_str();
@@ -22,18 +22,13 @@ void net::TcpSocket::send(JSON::Value const & json)
 	}
 }
 
-JSON::Value * net::TcpSocket::pop()
-{
-	return _messages.pop();
-}
-
-JSON::Value* net::TcpSocket::waitForMsg(std::string typeToWait)
+JSON::Value* net::ClientConnectionManager::waitForMsg(std::string typeToWait)
 {
 	_isWaitingForMessage = true;
 	JSON::Value* msg = NULL, *res = NULL;
-	while (res == NULL || available())
+	while (res == NULL || _messages.available())
 	{
-		msg = pop();
+		msg = _messages.pop();
 		JSON::Dict const & dict = DICT(msg);
 		if (STR(dict.get("type")).value() == typeToWait)
 		{
@@ -48,7 +43,7 @@ JSON::Value* net::TcpSocket::waitForMsg(std::string typeToWait)
 	return res;
 }
 
-JSON::Value* net::TcpSocket::hasMessageTypeInNotifications(std::string messageType){
+JSON::Value* net::ClientConnectionManager::hasMessageTypeInNotifications(std::string messageType){
 	JSON::Value* res = NULL;
 	for (size_t i = 0; i<notifications.size(); ++i){
 		JSON::Dict notif = DICT(notifications.front());
@@ -62,18 +57,13 @@ JSON::Value* net::TcpSocket::hasMessageTypeInNotifications(std::string messageTy
 	return res;
 }
 
-void net::TcpSocket::updateNotifications(){
-	while (!_isWaitingForMessage && available()){
-		notifications.push(pop());
+void net::ClientConnectionManager::updateNotifications(){
+	while (!_isWaitingForMessage && _messages.available()){
+		notifications.push(_messages.pop());
 	}
 }
 
-bool net::TcpSocket::available()
-{
-	return _messages.available();
-}
-
-void net::TcpSocket::loop()
+void net::ClientConnectionManager::loop()
 {
 	while (_isRunning)
 	{
@@ -101,23 +91,22 @@ void net::TcpSocket::loop()
 		{
 			JSON::Dict const & dict = DICT(json);
 			if (dict.hasKey("type") && dict.hasKey("data") && ISSTR(dict.get("type")))
+			{
 				_messages.push(json);
+			}
 		}
 	}
 }
 
-void net::TcpSocket::start()
+// TODO Mutex on running ?
+
+void net::ClientConnectionManager::start()
 {
 	_isRunning = true;
 	loop();
 }
 
-void net::TcpSocket::stop()
-{
-	_isRunning = false;
-}
-
-net::TcpSocket::TcpSocket(const std::string hostname, int portno) : 
+net::ClientConnectionManager::ClientConnectionManager(const std::string hostname, int portno) : 
 	_isRunning(false), _isWaitingForMessage(false), _sockfd(-1)
 {
 	struct hostent *host = NULL;
@@ -138,9 +127,11 @@ net::TcpSocket::TcpSocket(const std::string hostname, int portno) :
 	{
 		throw ConnectionFailedException();
 	}
+	pthread_create(&_thread, NULL, net::runClientThread, this);
 }
 
-net::TcpSocket::~TcpSocket()
+net::ClientConnectionManager::~ClientConnectionManager()
 {
+	_isRunning = false;
 	::close(_sockfd);
 }

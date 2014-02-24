@@ -1,8 +1,8 @@
-#ifndef __TCP_SOCKET_HPP
-#define __TCP_SOCKET_HPP
+#ifndef __CLIENT_CONNECTION_MANAGER_HPP
+#define __CLIENT_CONNECTION_MANAGER_HPP
 
 /*
- * TcpSocket.hpp : header for a socket library
+ * ClientConnectionManager.hpp : header for a socket library
  * 
  * Author : Antoine Carpentier
  * 
@@ -24,28 +24,28 @@
 #include "Exception.hpp"
 #include <sharedqueue.hpp>
 #include <queue>
+#include <pthread.h>
 
 namespace net
 {	
-	class TcpSocket {
+	class ClientConnectionManager {
 	public:
-		virtual ~TcpSocket();
-		TcpSocket(std::string host, int portno);
+		virtual ~ClientConnectionManager();
+		ClientConnectionManager(std::string host, int portno);
 	
 		void send(JSON::Value const& json);
-		JSON::Value * pop();
-			
-		bool available();
 		
 		void start();
-		void stop();
+		
 		JSON::Value* waitForMsg(std::string typeToWait);
 		JSON::Value* hasMessageTypeInNotifications(std::string messageType);
 		void updateNotifications();
-		std::queue<JSON::Value*> notifications;
+		SharedQueue<JSON::Value*> notifications;
 		
 	protected:
 		SharedQueue<JSON::Value*> _messages;
+		
+		pthread_t _thread;
 
 		void loop();
 		bool _isRunning;
@@ -55,12 +55,12 @@ namespace net
 		struct sockaddr_in _cliAddr;
 	};
 	
-	static void* runThread(void* arg)
+	static void* runClientThread(void* arg)
 	{
-		TcpSocket* socket = (TcpSocket*)arg;
-		socket->start();
+		ClientConnectionManager* connection = (ClientConnectionManager*)arg;
+		connection->start();
 		pthread_exit(NULL);
 	}
 }
 
-#endif // __TCP_SOCKET_HPP
+#endif // __CLIENT_CONNECTION_MANAGER_HPP
