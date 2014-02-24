@@ -17,7 +17,7 @@ public:
 	bool isLogged() { return _username != ""; }
 	std::string getUsername() { return _username; }
 	
-	std::vector<Installation> getInstallations() { return _installations; }
+	std::vector<Installation>& getInstallations() { return _installations; }
 	void loadInstallations(std::vector<Installation> installations) { _installations = installations; }
 	
 private:

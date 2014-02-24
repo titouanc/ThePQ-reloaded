@@ -19,6 +19,7 @@ Client::Client(NetConfig const &config) :
 												_players(),
 												_connection(config.host, config.port),
 												_userManager(_connection, _user),
+												_stadiumManager(_connection, _user),
 												_matchManager(_connection, _user),
 												_prompt(">"),
 												_isRunning(true)
@@ -95,7 +96,7 @@ void Client::managementMenu()
 		switch(option)
 		{
 			case 1:
-				stadiumMenu();
+				_stadiumManager.displayMenu();
 				break;
 			case 2:
 				playersMenu();

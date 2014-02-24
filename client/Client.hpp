@@ -17,6 +17,7 @@
 #include <model/Sale.hpp>
 #include "UserManager.hpp"
 #include "User.hpp"
+#include "StadiumManager.hpp"
 
 
 struct NetConfig : public Config {
@@ -56,6 +57,7 @@ private:
 	// Managers
 	net::ClientConnectionManager _connection;
 	UserManager _userManager;
+	StadiumManager _stadiumManager;
 	ClientMatchManager _matchManager;
 	
 	// CLI
