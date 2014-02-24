@@ -19,18 +19,13 @@ void net::ClientConnectionManager::send(JSON::Value const & json)
 	}
 }
 
-JSON::Value * net::ClientConnectionManager::pop()
-{
-	return _messages.pop();
-}
-
 JSON::Value* net::ClientConnectionManager::waitForMsg(std::string typeToWait)
 {
 	_isWaitingForMessage = true;
 	JSON::Value* msg = NULL, *res = NULL;
-	while (res == NULL || available())
+	while (res == NULL || _messages.available())
 	{
-		msg = pop();
+		msg = _messages.pop();
 		JSON::Dict const & dict = DICT(msg);
 		if (STR(dict.get("type")).value() == typeToWait)
 		{
@@ -59,14 +54,9 @@ JSON::Value* net::ClientConnectionManager::hasMessageTypeInNotifications(std::st
 }
 
 void net::ClientConnectionManager::updateNotifications(){
-	while (!_isWaitingForMessage && available()){
-		notifications.push(pop());
+	while (!_isWaitingForMessage && _messages.available()){
+		notifications.push(_messages.pop());
 	}
-}
-
-bool net::ClientConnectionManager::available()
-{
-	return _messages.available();
 }
 
 void net::ClientConnectionManager::loop()
@@ -101,6 +91,8 @@ void net::ClientConnectionManager::loop()
 		}
 	}
 }
+
+// TODO Mutex on running ?
 
 void net::ClientConnectionManager::start()
 {

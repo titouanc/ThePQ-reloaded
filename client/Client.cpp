@@ -29,7 +29,7 @@ Client::~Client()
 void Client::run()
 {
 	cout << Message::splashScreen();
-	_userManager.loginMenu();
+	_userManager.displayMenu();
 	cout << Message::goodBye();
 }	
 

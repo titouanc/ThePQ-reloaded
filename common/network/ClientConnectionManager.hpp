@@ -36,9 +36,6 @@ namespace net
 		ClientConnectionManager(std::string host, int portno);
 	
 		void send(JSON::Value const& json);
-		JSON::Value * pop();
-			
-		bool available();
 		
 		void start();
 		

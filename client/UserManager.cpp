@@ -6,7 +6,7 @@ UserManager::UserManager(net::ClientConnectionManager& connection) :
 }
 
 
-void UserManager::loginMenu()
+void UserManager::displayMenu()
 {
 	/* user menu */
 	Menu _menu;

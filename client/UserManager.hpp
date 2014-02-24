@@ -12,7 +12,7 @@ class UserManager
 public:
 	UserManager(net::ClientConnectionManager& connection);
 	
-	void loginMenu();
+	void displayMenu();
 	
 	std::string getUserName() { return _username; }
 	
