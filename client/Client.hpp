@@ -18,6 +18,7 @@
 #include "UserManager.hpp"
 #include "User.hpp"
 #include "StadiumManager.hpp"
+#include "TeamManager.hpp"
 
 
 struct NetConfig : public Config {
@@ -50,14 +51,13 @@ private:
 	// Cache
 	User _user;
 	std::vector<Sale> _playersOnSale;
-	std::vector<Player> _players;
-	std::string _username;
 	
 	// Managers
 	net::ClientConnectionManager _connection;
 	UserManager _userManager;
 	StadiumManager _stadiumManager;
 	ClientMatchManager _matchManager;
+	TeamManager _teamManager;
 	
 	// CLI
 	std::string _prompt;
@@ -92,10 +92,6 @@ private:
 	vector<int> getBidValueRange(Player *player);
 	void placeBid();
 	void handleEndOfSaleNotification(JSON::Dict&);
-
-	// Players
-	std::vector<Player> getPlayers(std::string username);
-	void printPlayers();
 
 	// utils
 	std::string askForUserData(std::string prompt); // returns the user input.

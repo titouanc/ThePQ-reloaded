@@ -15,11 +15,11 @@ std::string humanExcName(const char *name)
 Client::Client(NetConfig const &config) : 	
 												_user(),
 												_playersOnSale(),
-												_players(),
 												_connection(config.host, config.port),
 												_userManager(_connection, _user),
 												_stadiumManager(_connection, _user),
 												_matchManager(_connection, _user),
+												_teamManager(_connection, _user),
 												_prompt(">"),
 												_isRunning(true)
 {
@@ -119,7 +119,7 @@ void Client::playersMenu()
 		switch(option)
 		{
 			case 1:
-				printPlayers();
+				_teamManager.printPlayers();
 				break;
 			default:
 				break;
@@ -168,15 +168,6 @@ void Client::notificationsMenu()
 	}
 }
 
-void Client::printPlayers(){
-	_players = getPlayers(_user.username);//modif
-	cout << "================ YOUR PLAYERS ================" << endl;
-	for(size_t i =0; i<_players.size();++i){
-		cout << _players[i] << endl; //modif
-	}
-	cout << "==============================================" << endl;
-}
-
 /* Market menu */
 void Client::marketMenu(){
 	Menu _menu;
@@ -203,16 +194,16 @@ void Client::marketMenu(){
 }
 
 void Client::salePlayer(){
-	printPlayers();			//this function updates _players
+	_teamManager.printPlayers();			//this function updates _players
 	int player_id, bidValue;
 	bool found = false;
 	Player * player;
 	cout << "Choose a player to sale by entering his ID :" <<endl;
 	cout << _prompt;
 	cin >> player_id;
-	for(size_t i = 0; i<_players.size(); ++i){
-		if(_players[i].getMemberID() == player_id)
-			player = &(_players[i]);
+	for(size_t i = 0; i<_user.players.size(); ++i){
+		if(_user.players[i].getMemberID() == player_id)
+			player = &(_user.players[i]);
 			found = true;
 	}
 	if(found){
@@ -481,27 +472,6 @@ void Client::addPlayerOnMarket(int player_id,std::string username, int value){
 			if(res == net::MSG::PLAYER_ALREADY_ON_MARKET)
 				throw playerAlreadyOnMarketException();
 		}
-}
-
-std::vector<Player> Client::getPlayers(std::string username){//modif
-	JSON::Dict query, data;
-	data.set(net::MSG::USERNAME, username);//modif
-	query.set("type", net::MSG::PLAYERS_LIST);
-	query.set("data",data);
-	_connection.send(query);
-	JSON::Value *serverResponse = _connection.waitForMsg(net::MSG::PLAYERS_LIST);
-	JSON::Dict const & received = DICT(serverResponse);
-	JSON::List toFill;
-	if(ISLIST(received.get("data"))){
-		toFill = LIST(received.get("data"));
-	}
-	vector<Player> myplayers;
-	for(size_t i=0; i<toFill.len();++i){
-		Player player(DICT(toFill[i]));
-		myplayers.push_back(player);
-	}
-	delete serverResponse;
-	return myplayers;
 }
 
 
