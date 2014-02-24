@@ -560,15 +560,18 @@ void CLI::loginUser(string username, string passwd){
 	JSON::Value *serverMessage = _connection.waitForMsg(net::MSG::STATUS);
 	JSON::Dict const & received = DICT(serverMessage); 	// receiving server response
 	if (ISSTR(received.get("data"))) {
-		if (STR(received.get("data")).value() == net::MSG::PASSWORD_ERROR)
-		{
+		std::string const & payload = STR(received.get("data"));
+		if (payload == net::MSG::PASSWORD_ERROR){
 			delete serverMessage;
 			throw WrongPasswordException();
 		}
-		else if (STR(received.get("data")).value() == net::MSG::USER_NOT_FOUND)
-		{
+		else if (payload == net::MSG::USER_NOT_FOUND){
 			delete serverMessage;
 			throw UserNotFoundException();
+		}
+		else if (payload == net::MSG::ALREADY_LOGGED_IN){
+			delete serverMessage;
+			throw AlreadyLoggedInException();
 		}
 	}
 	delete serverMessage;

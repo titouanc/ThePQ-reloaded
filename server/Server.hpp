@@ -70,6 +70,10 @@ private:
 	net::ConnectionManager _connectionManager;
     PlayerMarket *market;
     std::deque<MatchManager*> _matches;
+
+    /* Return a pointer to the user object with given username,
+       or NULL if not connected */
+    User *getUserByName(std::string username);
 };
 
 #endif

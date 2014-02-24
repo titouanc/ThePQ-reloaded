@@ -152,25 +152,6 @@ void Server::treatMessage(const Message &message)
 				} else if (messageType == MSG::INSTALLATION_DOWNGRADE) {
 					downgradeInstallation(message.peer_id, data);
 				}
-			} else if (messageType == "42"){
-				if (_users.size() >= 2){
-					std::map<int, User*>::iterator i;
-					int other = -1;
-					for (i=_users.begin(); i!=_users.end(); i++){
-						if (i->first != message.peer_id){
-							other = i->first;
-							break;
-						}
-					}
-					if (other > 0)
-						startMatch(message.peer_id, other);
-				}
-				else {
-					cout << "NOT ENOUGH PLAYERS" << endl;
-					std::map<int, User*>::iterator it;
-					for (it=_users.begin(); it!=_users.end(); it++)
-						cout << it->first << ": " << it->second->getUsername() << endl;
-				}
 			}
 		}
 	}
@@ -214,25 +195,27 @@ void Server::logUserIn(const JSON::Dict &credentials, int peer_id)
 
 		JSON::Dict response;
 		response.set("type", MSG::STATUS);
-
-		User *user = User::load(username);
-		if (user != NULL){
-			if (user->getPassword() == password){
-				// correct password
-				// mapping user to its peer_id to keep a list of connected users.
-				_users.insert(std::pair<int, User*>(peer_id, user));
-				response.set("data", MSG::USER_LOGIN);
-			} else {
-				// wrong password
-				response.set("data", MSG::PASSWORD_ERROR);
-			}
+		if (getUserByName(username)){
+			response.set("data", MSG::ALREADY_LOGGED_IN);
 		} else {
-			// user not found
-			response.set("data", MSG::USER_NOT_FOUND);
+			User *user = User::load(username);
+			if (user != NULL){
+				if (user->getPassword() == password){
+					// correct password
+					// mapping user to its peer_id to keep a list of connected users.
+					_users.insert(std::pair<int, User*>(peer_id, user));
+					response.set("data", MSG::USER_LOGIN);
+				} else {
+					// wrong password
+					delete user;
+					response.set("data", MSG::PASSWORD_ERROR);
+				}
+			} else {
+				// user not found
+				response.set("data", MSG::USER_NOT_FOUND);
+			}
 		}
-
-		Message status(peer_id, response.clone());
-		_outbox.push(status);
+		_outbox.push(Message(peer_id, response.clone()));
 	}
 }
 
@@ -360,14 +343,7 @@ void Server::sendInvitationResponseToPlayer(const JSON::Dict &response, int peer
 			}
 		}
 	}
-
-
 }
-
-// void Server::deletePlayerOfMarket(const JSON::Dict &sale, int peer_id){//modif
-// 	Message status(peer_id, market.deletePlayer(sale).clone());
-// 	_outbox.push(status);
-// }
 
 void Server::addPlayerOnMarket(const JSON::Dict &sale, int peer_id){
 	Message status(peer_id, market->addPlayer(sale).clone());
@@ -378,6 +354,7 @@ void Server::sendPlayersOnMarketList(int peer_id){
 	Message status(peer_id, market->allSales().clone());
 	_outbox.push(status);
 }
+
 void Server::placeBidOnPlayer(const JSON::Dict &bid, int peer_id){
 	Message status(peer_id, market->bid(bid).clone());
 	_outbox.push(status);
@@ -392,7 +369,6 @@ void Server::sendPlayersList(const JSON::Dict &data, int peer_id){//modif
 	playersList.set("data", players);
 	Message status(peer_id, playersList.clone());
 	_outbox.push(status);
-
 }
 
 int Server::getPeerID(std::string const &username){
@@ -411,4 +387,13 @@ void Server::sendMarketMessage(std::string const &username, const JSON::Dict &me
 	toSend.set("data",message);
 	Message status(to_peer, toSend.clone());
 	_outbox.push(status); 
+}
+
+User *Server::getUserByName(std::string username)
+{
+	std::map<int, User*>::const_iterator iter;
+	for (iter=_users.begin(); iter!=_users.end(); iter++)
+		if (username == iter->second->getUsername())
+			return iter->second;
+	return NULL;
 }

@@ -16,6 +16,11 @@ public:
 	UserNotFoundException():runtime_error("User not found"){};
 };
 
+class AlreadyLoggedInException : public std::runtime_error {
+public:
+	AlreadyLoggedInException():runtime_error("Already logged in"){};
+};
+
 //------Register------
 class UserAlreadyExistsException : public std::runtime_error{
 public:
