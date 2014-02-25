@@ -1,6 +1,6 @@
 #include "UserManager.hpp"
 
-UserManager::UserManager(net::ClientConnectionManager& connection, User& user) : 
+UserManager::UserManager(net::ClientConnectionManager& connection, UserData& user) : 
 	_connection(connection), _user(user)
 {
 }
@@ -80,7 +80,7 @@ void UserManager::doRegisterMenu()
 			cout << "You have successfully registered! You can now login." << endl;
 		}
 		catch (UserAlreadyExistsException e) {
-			cout << "User name already exists. Try again with a different username." << endl;		
+			cout << "Username already exists. Try again with a different username." << endl;		
 		}
 	}
 }

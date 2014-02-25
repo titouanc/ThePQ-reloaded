@@ -5,7 +5,6 @@
 #include <string>
 #include <typeinfo>
 #include <cxxabi.h>
-#include "Message.hpp"
 #include "Exception.hpp"
 #include "Menu.hpp"
 #include <Config.hpp>
@@ -16,8 +15,10 @@
 #include <model/Installation.hpp>
 #include <model/Sale.hpp>
 #include "UserManager.hpp"
-#include "User.hpp"
+#include "UserData.hpp"
 #include "StadiumManager.hpp"
+#include "TeamManager.hpp"
+#include "MarketManager.hpp"
 
 
 struct NetConfig : public Config {
@@ -48,60 +49,39 @@ public:
 
 private:
 	// Cache
-	User _user;
-	std::vector<Sale> _playersOnSale;
-	std::vector<Player> _players;
-	std::string _username;
+	UserData _user;
 	
 	// Managers
 	net::ClientConnectionManager _connection;
 	UserManager _userManager;
 	StadiumManager _stadiumManager;
 	ClientMatchManager _matchManager;
+	TeamManager _teamManager;
+	MarketManager _marketManager;
 	
 	// CLI
-	std::string _prompt;
 	bool _isRunning;
+	std::string splashScreen();
+	std::string goodBye();
 	
 	// Menus
 	void mainMenu();
 	void managementMenu();
-	void playersMenu();
 	void friendlyMatchMenu();
-	void marketMenu();
 	void notificationsMenu();
 	
 	// Notifications
 	void handleNotification(JSON::Value* notification);
-
-	// Match
+	void handleEndOfSaleNotification(JSON::Dict&);
 	void handleFriendlyGameInvitation(JSON::Dict &message);
+	
+	// Match
 	void acceptInvitationFromUser(string username);
 	void denyInvitationFromUser(string username);
 	std::vector<std::string> getConnectedUsersList();
 	void printConnectedUsersList();
 	void chooseUser();
 	void startMatch();
-
-	// Market
-	std::vector<Sale> updatePlayersOnSale();
-	void bidOnPlayer(int player_id, std::string username, int value);
-	void addPlayerOnMarket(int player_id, std::string username, int value);
-	void printPlayersOnSale();
-	void salePlayer();
-	vector<int> getBidValueRange(Player *player);
-	void placeBid();
-	void handleEndOfSaleNotification(JSON::Dict&);
-
-	// Players
-	std::vector<Player> getPlayers(std::string username);
-	void printPlayers();
-
-	// utils
-	std::string askForUserData(std::string prompt); // returns the user input.
-	std::string askForNewPassword(); // prompts the user to create a new password with 
-							// confirmation. returns the password.
-
 };
 
 #endif // __CLIENT_HPP

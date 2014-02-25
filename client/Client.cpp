@@ -12,15 +12,13 @@ std::string humanExcName(const char *name)
 	return res;
 }
 
-Client::Client(NetConfig const &config) : 	
-												_user(),
-												_playersOnSale(),
-												_players(),
+Client::Client(NetConfig const &config) : 	_user(),
 												_connection(config.host, config.port),
 												_userManager(_connection, _user),
 												_stadiumManager(_connection, _user),
 												_matchManager(_connection, _user),
-												_prompt(">"),
+												_teamManager(_connection, _user),
+												_marketManager(_connection, _user),
 												_isRunning(true)
 {
 }
@@ -31,7 +29,7 @@ Client::~Client()
 
 void Client::run()
 {
-	cout << Message::splashScreen();
+	cout << splashScreen();
 	while (_isRunning == true)
 	{
 		if (_user.isLogged() == true)
@@ -43,7 +41,7 @@ void Client::run()
 			_isRunning = _userManager.displayMenu();
 		}
 	}
-	cout << Message::goodBye();
+	cout << goodBye();
 }	
 
 /* main menu */
@@ -65,7 +63,7 @@ void Client::mainMenu()
 				managementMenu();
 				break;
 			case 2:
-				marketMenu();
+				_marketManager.displayMenu();
 				break;
 			case 3:
 				friendlyMatchMenu();
@@ -98,7 +96,7 @@ void Client::managementMenu()
 				_stadiumManager.displayMenu();
 				break;
 			case 2:
-				playersMenu();
+				_teamManager.displayMenu();
 				break;
 			default:
 				break;
@@ -107,26 +105,6 @@ void Client::managementMenu()
 	while (option != 3);
 }
 
-void Client::playersMenu()
-{
-	Menu _menu;
-	_menu.addToDisplay("	- Show list of players");
-	_menu.addToDisplay("    - quit to management menu\n");
-	int option;
-	do
-	{
-		option = _menu.run();
-		switch(option)
-		{
-			case 1:
-				printPlayers();
-				break;
-			default:
-				break;
-		}
-	}
-	while (option != 1);
-}
 
 /* main menu */
 void Client::notificationsMenu()
@@ -168,151 +146,8 @@ void Client::notificationsMenu()
 	}
 }
 
-void Client::printPlayers(){
-	_players = getPlayers(_user.getUsername());//modif
-	cout << "================ YOUR PLAYERS ================" << endl;
-	for(size_t i =0; i<_players.size();++i){
-		cout << _players[i] << endl; //modif
-	}
-	cout << "==============================================" << endl;
-}
-
 /* Market menu */
-void Client::marketMenu(){
-	Menu _menu;
-	_menu.addToDisplay("   - put a player on sale\n");
-	_menu.addToDisplay("   - see the players on sale\n");
-	_menu.addToDisplay("   - quit to main menu\n");
-	int option;
-	do
-	{
-		option = _menu.run();
-		switch(option)
-		{
-			case 1:
-				salePlayer();
-				break;
-			case 2:
-				printPlayersOnSale();
-				break;
-			default:
-				break;
-		}
-	}
-	while(option != 3);
-}
 
-void Client::salePlayer(){
-	printPlayers();			//this function updates _players
-	int player_id, bidValue;
-	bool found = false;
-	Player * player;
-	cout << "Choose a player to sale by entering his ID :" <<endl;
-	cout << _prompt;
-	cin >> player_id;
-	for(size_t i = 0; i<_players.size(); ++i){
-		if(_players[i].getMemberID() == player_id)
-			player = &(_players[i]);
-			found = true;
-	}
-	if(found){
-		vector<int> range = getBidValueRange(player);
-		cout << "Enter the starting bid value (must be between " << range[0] << " and " << range[1] << ") :" << endl;
-		cout << _prompt;
-		cin >> bidValue;
-		while(bidValue<range[0] or bidValue>range[1]){
-			cout << bidValue << " is not between " << range[0] << " and " << range[1] << " !\nTry again :" << endl;//modif
-			cout << _prompt;
-			cin >> bidValue;
-		}
-		try{
-		addPlayerOnMarket(player_id, _user.getUsername(), bidValue);
-		cout << "Your player was successfully added on market." << endl;
-		}
-		catch(playerAlreadyOnMarketException e){
-			cout << "Error : you are already saling this player." << endl;
-		}
-	}
-	else{
-		cout << "Wrong ID." << endl;
-	}
-}
-
-vector<int> Client::getBidValueRange(Player *player){
-	int allowedRangeFromEstimatedValue = 10000; //TODO : in Constants.hpp (should do that for many others variables !)
-	vector<int> range;
-	range.push_back(player->estimatedValue() - (int) allowedRangeFromEstimatedValue/2);
-	range.push_back(player->estimatedValue() + (int) allowedRangeFromEstimatedValue/2);
-	return range;
-}
-
-void Client::printPlayersOnSale(){
-	_playersOnSale = updatePlayersOnSale();
-	cout << "================ PLAYERS ON SALE ================" << endl;
-	for(size_t i=0;i<_playersOnSale.size();++i){
-		std::cout<<_playersOnSale[i]<<std::endl;
-	}
-	cout << "=================================================" << endl;
-	Menu _menu;
-	_menu.addToDisplay("   - place a bid on a player\n");
-	_menu.addToDisplay("   - quit to market menu\n");
-	int option;
-	do
-	{
-		option = _menu.run();
-		switch(option)
-		{
-			case 1:
-				placeBid();
-				break;
-			default:
-				break;
-		}
-	}
-	while (option != 2);
-}
-
-void Client::placeBid(){
-	int player_id, value;
-	string response;
-	bool found=false;
-	cout << "Enter the ID of the player you wish to bid on : " << endl;
-	cout << _prompt;
-	cin >> player_id;
-	for(size_t i = 0; i<_playersOnSale.size();++i){		//Getting the next bid value (which is in the JSON::Dict sent by server)
-		if(player_id == _playersOnSale[i].getID()){
-			found = true;
-			value = _playersOnSale[i].getNextBidValue();
-		}
-	}
-	if (found){
-		try{
-			bidOnPlayer(player_id, _user.getUsername(), value);
-			
-			cout << "Bid successfully placed ! Hurra !" << endl;
-			cout << "Updated list :" << endl;
-			printPlayersOnSale();
-		}
-		catch(bidValueNotUpdatedException e){
-			cout << "Error : bid value not correct (update your market list)."<<endl;
-		}
-		catch(turnException e){
-			cout << "Error : you did not bid last turn."<<endl;
-		}
-		catch(bidEndedException e){
-			cout << "Error : player not on market any more (update your market list)."<<endl;
-		}
-		catch(bidOnYourPlayerException e){
-			cout << "Error : cannot bid on your player."<<endl;
-		}
-		catch(lastBidderException e){
-			cout << "Error : you are currently winning this sale. Cannot bid on your own bid."<<endl;
-		}
-	}
-	else {
-		cout << "Error : this player is not in the list." << endl;
-	}
-}
 
 //Market notifs
 
@@ -365,7 +200,7 @@ void Client::chooseUser()
 
 		}
 		else if (answer == net::MSG::USER_NOT_FOUND) {
-			cout << "User not found" << endl;
+			cout << "Username not found" << endl;
 		}
 		else {
 			cout << STR(DICT(received.get("data")).get("username")).value();
@@ -381,28 +216,6 @@ void Client::printConnectedUsersList(){
  		cout << "  - " << connectedUsers[i] << endl;
 }
 
-
-/* Private methods */
-
-string Client::askForUserData(string prompt){
-	string data;
-	cout<<endl;
-	cout << prompt;
-	cin >> data;
-	return data;
-}
-
-string Client::askForNewPassword(){
-	string password = "a";
-	string passwordConfirmation;
-	while (password != passwordConfirmation){
-		password = askForUserData("Enter a new password : ");
-		passwordConfirmation = askForUserData("Confirm password : ");
-		if (password != passwordConfirmation)
-			cout << "The two passwords entered were not the same." << endl;
-	}
-	return password;
-}
 
 vector<std::string> Client::getConnectedUsersList(){// TODO
 	vector<std::string> res;
@@ -423,86 +236,6 @@ vector<std::string> Client::getConnectedUsersList(){// TODO
 
 ///////// END NEW
 
-std::vector<Sale> Client::updatePlayersOnSale(){
-	JSON::Dict query;
-	query.set("type", net::MSG::PLAYERS_ON_MARKET_LIST);
-	query.set("data", "");
-	_connection.send(query);
-	JSON::Value *serverResponse = _connection.waitForMsg(net::MSG::PLAYERS_ON_MARKET_LIST);
-	JSON::Dict const & received = DICT(serverResponse);
-	std::vector<Sale> res;
-	
-	if (ISLIST(received.get("data"))){
-		JSON::List & sales = LIST(received.get("data"));
-		for(size_t i = 0; i<sales.len();++i)
-			res.push_back(Sale(DICT(sales[i]), Player(DICT(DICT(sales[i]).get(net::MSG::PLAYER)))));
-	}
-	return res; 
-}
-
-void Client::bidOnPlayer(int player_id,std::string username, int value){//modif
-	JSON::Dict query, data;
-	data.set(net::MSG::USERNAME,username);
-	data.set(net::MSG::PLAYER_ID,player_id);
-	data.set(net::MSG::BID_VALUE,value);
-	query.set("type", net::MSG::BID_ON_PLAYER_QUERY);
-	query.set("data", data);
-	_connection.send(query);
-	JSON::Value *serverResponse = _connection.waitForMsg(net::MSG::BID_ON_PLAYER_QUERY);
-	JSON::Dict const & received = DICT(serverResponse);
-	
-	if(ISSTR(received.get("data"))){
-		std::string res = STR(received.get("data")).value();
-		if(res == net::MSG::BID_VALUE_NOT_UPDATED)
-			throw bidValueNotUpdatedException();
-		else if(res == net::MSG::BID_TURN_ERROR)
-			throw turnException();
-		else if(res == net::MSG::BID_ENDED)
-			throw bidEndedException();
-		else if(res == net::MSG::CANNOT_BID_ON_YOUR_PLAYER)
-			throw bidOnYourPlayerException();
-		else if(res == net::MSG::LAST_BIDDER)
-			throw lastBidderException();
-	}
-}
-
-void Client::addPlayerOnMarket(int player_id,std::string username, int value){
-	JSON::Dict query, data;
-	data.set(net::MSG::USERNAME,username);
-	data.set(net::MSG::PLAYER_ID,player_id);
-	data.set(net::MSG::BID_VALUE,value);
-	query.set("type", net::MSG::ADD_PLAYER_ON_MARKET_QUERY);
-	query.set("data", data);
-	_connection.send(query);
-	JSON::Value *serverResponse = _connection.waitForMsg(net::MSG::ADD_PLAYER_ON_MARKET_QUERY);
-	JSON::Dict const & received = DICT(serverResponse);
-		if(ISSTR(received.get("data"))){
-			std::string res = STR((received.get("data"))).value();
-			if(res == net::MSG::PLAYER_ALREADY_ON_MARKET)
-				throw playerAlreadyOnMarketException();
-		}
-}
-
-std::vector<Player> Client::getPlayers(std::string username){//modif
-	JSON::Dict query, data;
-	data.set(net::MSG::USERNAME, username);//modif
-	query.set("type", net::MSG::PLAYERS_LIST);
-	query.set("data",data);
-	_connection.send(query);
-	JSON::Value *serverResponse = _connection.waitForMsg(net::MSG::PLAYERS_LIST);
-	JSON::Dict const & received = DICT(serverResponse);
-	JSON::List toFill;
-	if(ISLIST(received.get("data"))){
-		toFill = LIST(received.get("data"));
-	}
-	vector<Player> myplayers;
-	for(size_t i=0; i<toFill.len();++i){
-		Player player(DICT(toFill[i]));
-		myplayers.push_back(player);
-	}
-	delete serverResponse;
-	return myplayers;
-}
 
 
 void Client::handleNotification(JSON::Value *notification){
@@ -596,4 +329,40 @@ void Client::handleEndOfSaleNotification(JSON::Dict & json){
 		cout << "You bought player " << INT(json.get(net::MSG::PLAYER_ID)) << " for " << INT(json.get(net::MSG::BID_VALUE)) << "." <<endl;
 		cout << "This player comes from " << STR(json.get(net::MSG::SALE_OWNER)).value() << "'s team." << endl;
 	}
+}
+
+
+string Client::splashScreen(){
+	string message;
+	message+="	             _____ _            ____            \n";
+	message+="	            |_   _| |__   ___  |  _ \\ _ __ ___ \n";
+	message+="		      | | | '_ \\ / _ \\ | |_) | '__/ _ \\\n ";
+	message+="		      | | | | | |  __/ |  __/| | | (_) |\n";
+	message+="		      |_| |_| |_|\\___| |_|   |_|  \\___/ \n";
+	message+="		   ___        _     _     _ _ _       _ \n";
+	message+="		  / _ \\ _   _(_) __| | __| (_) |_ ___| |__ \n";
+	message+="		 | | | | | | | |/ _` |/ _` | | __/ __| '_ \\ \n";
+	message+="		 | |_| | |_| | | (_| | (_| | | |_ (__| | | |\n";
+	message+="		  \\__\\_ \\__,_|_|\\__,_|\\__,_|_|\\__\\___|_| |_|\n";
+	message+= "        =======||\\    	Just a game, no bullshit!\n";
+	message+= "    ===========|| \\___________________________  ___            |\n";
+	message+= "  =============|| |___________________________==___|>        - * -\n";
+	message+= "    ===========|| /                                            |\n";
+	message+= "        =======||/ 		\n";
+	message+="		  _ __ ___   __ _ _ __   __ _  __ _  ___ _ __ \n";
+	message+="		 | '_ ` _ \\ / _` | '_ \\ / _` |/ _` |/ _ \\ '__|\n";
+	message+="		 | | | | | | (_| | | | | (_| | (_| |  __/ |\n";
+	message+="		 |_| |_| |_|\\__,_|_| |_|\\__,_|\\__, |\\___|_|\n";
+	message+="   		               	              |___/\n";
+	message+="			Welcome to The Pro Quidditch Manager 2014!\n";
+return message;
+}
+
+string Client::goodBye(){
+	string message;
+	message+= "                 =========================            \n";
+	message+= "   Thank you for playing the Pro Quidditch Manager 2014!\n";
+	message+= "                   See you next time! :)\n";
+	message+= "                 =========================            \n";
+	return message;
 }
