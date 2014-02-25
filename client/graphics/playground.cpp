@@ -16,7 +16,7 @@ int main(int argc, char const *argv[])
 	window.clear(sf::Color(0xff, 0xff, 0xff, 0xff));
 
 	Dummy d;
-	Button<Dummy> newButton(&Dummy::myMethod, &d);
+	Button<Dummy> newButton(&Dummy::myMethod, &d, "This button's size is determined by its text.");
 
 	try{
 		newButton.renderTo(window);
