@@ -51,7 +51,6 @@ public:
 private:
 	// Cache
 	User _user;
-	std::vector<Sale> _playersOnSale;
 	
 	// Managers
 	net::ClientConnectionManager _connection;

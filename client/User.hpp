@@ -16,7 +16,6 @@ struct User
 
 	// Cache
 	std::vector<Installation> installations;
-	std::vector<Sale> sales;
 	std::vector<Player> players;
 	std::string username;
 };

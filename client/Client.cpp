@@ -13,7 +13,6 @@ std::string humanExcName(const char *name)
 }
 
 Client::Client(NetConfig const &config) : 	_user(),
-												_playersOnSale(),
 												_connection(config.host, config.port),
 												_userManager(_connection, _user),
 												_stadiumManager(_connection, _user),
