@@ -23,7 +23,7 @@ private:
 	void printInstallationsList();
 	void upgradeInstallation();
 	void downgradeInstallation();
-	std::vector<Installation> getInstallationsList();
+	void loadInstallations();
 };
 
 #endif // __STADIUM_MANAGER_HPP

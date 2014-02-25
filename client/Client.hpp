@@ -66,7 +66,6 @@ private:
 	// Menus
 	void mainMenu();
 	void managementMenu();
-	void playersMenu();
 	void friendlyMatchMenu();
 	void marketMenu();
 	void notificationsMenu();

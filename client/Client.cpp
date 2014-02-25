@@ -12,8 +12,7 @@ std::string humanExcName(const char *name)
 	return res;
 }
 
-Client::Client(NetConfig const &config) : 	
-												_user(),
+Client::Client(NetConfig const &config) : 	_user(),
 												_playersOnSale(),
 												_connection(config.host, config.port),
 												_userManager(_connection, _user),
@@ -98,7 +97,7 @@ void Client::managementMenu()
 				_stadiumManager.displayMenu();
 				break;
 			case 2:
-				playersMenu();
+				_teamManager.displayMenu();
 				break;
 			default:
 				break;
@@ -107,26 +106,6 @@ void Client::managementMenu()
 	while (option != 3);
 }
 
-void Client::playersMenu()
-{
-	Menu _menu;
-	_menu.addToDisplay("	- Show list of players");
-	_menu.addToDisplay("    - quit to management menu\n");
-	int option;
-	do
-	{
-		option = _menu.run();
-		switch(option)
-		{
-			case 1:
-				_teamManager.printPlayers();
-				break;
-			default:
-				break;
-		}
-	}
-	while (option != 1);
-}
 
 /* main menu */
 void Client::notificationsMenu()

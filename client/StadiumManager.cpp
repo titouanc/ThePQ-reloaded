@@ -36,7 +36,7 @@ void StadiumManager::displayMenu()
 void StadiumManager::printInstallationsList(){
 	if (_user.installations.empty())
 	{
-		_user.installations = this->getInstallationsList();
+		loadInstallations();
 	}
 	// TODO implement printInstallationsList
 	cout << "Here are all the installations you own :" << endl;
@@ -86,7 +86,7 @@ void StadiumManager::downgradeInstallation()
 	}
 }
 
-vector<Installation> StadiumManager::getInstallationsList(){
+void StadiumManager::loadInstallations(){
 	JSON::Dict query;
 	JSON::List toFill;
 	query.set("type", net::MSG::INSTALLATIONS_LIST);
@@ -96,17 +96,16 @@ vector<Installation> StadiumManager::getInstallationsList(){
 	JSON::Value *serverResponse = _connection.waitForMsg(net::MSG::INSTALLATIONS_LIST);
 	JSON::Dict const & response = DICT(serverResponse);
 	
-	vector<Installation> vec;
+	_user.installations.clear();
 	if (ISLIST(response.get("data")))
 	{
 		toFill = LIST(response.get("data"));
 		for (size_t i = 0; i < toFill.len(); ++i)
 		{
-			vec.push_back(DICT(toFill[i]));
+			_user.installations.push_back(DICT(toFill[i]));
 		}
 	}
 	delete serverResponse;
-	return vec;
 }
 
 bool StadiumManager::upgradeInstallation(size_t i)

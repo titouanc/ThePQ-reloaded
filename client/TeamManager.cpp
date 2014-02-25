@@ -4,6 +4,28 @@ TeamManager::TeamManager(net::ClientConnectionManager &connection, User& user) :
 	_connection(connection), _user(user)
 {}
 
+
+void TeamManager::displayMenu()
+{
+	Menu _menu;
+	_menu.addToDisplay("	- Show list of players");
+	_menu.addToDisplay("    - quit to management menu\n");
+	int option;
+	do
+	{
+		option = _menu.run();
+		switch(option)
+		{
+			case 1:
+				printPlayers();
+				break;
+			default:
+				break;
+		}
+	}
+	while (option != 1);
+}
+
 void TeamManager::loadPlayers(){
 	JSON::Dict query, data;
 	data.set(net::MSG::USERNAME, _user.username);
