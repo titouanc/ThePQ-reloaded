@@ -19,6 +19,7 @@
 #include "User.hpp"
 #include "StadiumManager.hpp"
 #include "TeamManager.hpp"
+#include "MarketManager.hpp"
 
 
 struct NetConfig : public Config {
@@ -58,6 +59,7 @@ private:
 	StadiumManager _stadiumManager;
 	ClientMatchManager _matchManager;
 	TeamManager _teamManager;
+	MarketManager _marketManager;
 	
 	// CLI
 	std::string _prompt;
@@ -67,11 +69,11 @@ private:
 	void mainMenu();
 	void managementMenu();
 	void friendlyMatchMenu();
-	void marketMenu();
 	void notificationsMenu();
 	
 	// Notifications
 	void handleNotification(JSON::Value* notification);
+	void handleEndOfSaleNotification(JSON::Dict&);
 
 	// Match
 	void handleFriendlyGameInvitation(JSON::Dict &message);
@@ -81,16 +83,6 @@ private:
 	void printConnectedUsersList();
 	void chooseUser();
 	void startMatch();
-
-	// Market
-	std::vector<Sale> updatePlayersOnSale();
-	void bidOnPlayer(int player_id, std::string username, int value);
-	void addPlayerOnMarket(int player_id, std::string username, int value);
-	void printPlayersOnSale();
-	void salePlayer();
-	vector<int> getBidValueRange(Player *player);
-	void placeBid();
-	void handleEndOfSaleNotification(JSON::Dict&);
 
 	// utils
 	std::string askForUserData(std::string prompt); // returns the user input.

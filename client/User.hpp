@@ -10,13 +10,13 @@
 struct User
 {
 	// Login
-	void login(std::string username) { username = username; }
+	void login(std::string name) { username = name; }
 	void logout() { username = ""; }
 	bool isLogged() { return username != ""; }
 
 	// Cache
 	std::vector<Installation> installations;
-	//~ std::vector<Sale> _playersOnSale;
+	std::vector<Sale> sales;
 	std::vector<Player> players;
 	std::string username;
 };
