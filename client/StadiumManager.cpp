@@ -1,6 +1,6 @@
 #include "StadiumManager.hpp"
 
-StadiumManager::StadiumManager(net::ClientConnectionManager &connection, User &user) :
+StadiumManager::StadiumManager(net::ClientConnectionManager &connection, UserData &user) :
 	_connection(connection), _user(user)
 {}
 
@@ -34,19 +34,19 @@ void StadiumManager::displayMenu()
 }
 
 void StadiumManager::printInstallationsList(){
-	if (_user.getInstallations().empty())
+	if (_user.installations.empty())
 	{
-		_user.loadInstallations(this->getInstallationsList());
+		loadInstallations();
 	}
 	// TODO implement printInstallationsList
 	cout << "Here are all the installations you own :" << endl;
-	for (size_t i = 0; i < _user.getInstallations().size(); ++i){
-		cout << i << " - " << _user.getInstallations()[i].getName() << endl;
-		cout << "      Level : 				" << _user.getInstallations()[i].getLevel() << endl;
-		cout << "      Current Value : 		" << _user.getInstallations()[i].getCurrentValue() << endl;
-		cout << "      Upgrade Cost : 		" << _user.getInstallations()[i].getUpgradeCost() << endl;
-		cout << "      Refund Ratio :       " << _user.getInstallations()[i].getRefundRatio() << endl;
-		cout << "      Downgrade Refunds : 	" << _user.getInstallations()[i].getDowngradeRefunds() << endl;
+	for (size_t i = 0; i < _user.installations.size(); ++i){
+		cout << i << " - " << _user.installations[i].getName() << endl;
+		cout << "      Level : 				" << _user.installations[i].getLevel() << endl;
+		cout << "      Current Value : 		" << _user.installations[i].getCurrentValue() << endl;
+		cout << "      Upgrade Cost : 		" << _user.installations[i].getUpgradeCost() << endl;
+		cout << "      Refund Ratio :       " << _user.installations[i].getRefundRatio() << endl;
+		cout << "      Downgrade Refunds : 	" << _user.installations[i].getDowngradeRefunds() << endl;
 	}
 }
 
@@ -55,11 +55,11 @@ void StadiumManager::upgradeInstallation()
 	size_t choice;
 	cout << "Enter the number of the installation you want to upgrade" << endl << ">";
 	cin >> choice;
-	if (choice < _user.getInstallations().size())
+	if (choice < _user.installations.size())
 	{
 		if (upgradeInstallation(choice))
 		{
-			_user.getInstallations()[choice].upgrade();
+			_user.installations[choice].upgrade();
 		}
 	}
 	else
@@ -73,11 +73,11 @@ void StadiumManager::downgradeInstallation()
 	size_t choice;
 	cout << "Enter the number of the installation you want to downgrade" << endl << ">";
 	cin >> choice;
-	if (choice < _user.getInstallations().size())
+	if (choice < _user.installations.size())
 	{
 		if (downgradeInstallation(choice))
 		{
-			_user.getInstallations()[choice].downgrade();
+			_user.installations[choice].downgrade();
 		}
 	}
 	else
@@ -86,7 +86,7 @@ void StadiumManager::downgradeInstallation()
 	}
 }
 
-vector<Installation> StadiumManager::getInstallationsList(){
+void StadiumManager::loadInstallations(){
 	JSON::Dict query;
 	JSON::List toFill;
 	query.set("type", net::MSG::INSTALLATIONS_LIST);
@@ -96,17 +96,16 @@ vector<Installation> StadiumManager::getInstallationsList(){
 	JSON::Value *serverResponse = _connection.waitForMsg(net::MSG::INSTALLATIONS_LIST);
 	JSON::Dict const & response = DICT(serverResponse);
 	
-	vector<Installation> vec;
+	_user.installations.clear();
 	if (ISLIST(response.get("data")))
 	{
 		toFill = LIST(response.get("data"));
 		for (size_t i = 0; i < toFill.len(); ++i)
 		{
-			vec.push_back(DICT(toFill[i]));
+			_user.installations.push_back(DICT(toFill[i]));
 		}
 	}
 	delete serverResponse;
-	return vec;
 }
 
 bool StadiumManager::upgradeInstallation(size_t i)

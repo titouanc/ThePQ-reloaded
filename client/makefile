@@ -1,4 +1,4 @@
-OBJS = Menu.o Message.o ClientMatchManager.o Client.o UserManager.o User.o StadiumManager.o
+OBJS = Menu.o ClientMatchManager.o Client.o UserManager.o StadiumManager.o TeamManager.o MarketManager.o
 LIBS = ../common/json/libjson.a ../common/network/libnetwork.a ../common/model/libmodel.a
 CPPFLAGS = -I../common
 

@@ -5,6 +5,13 @@
 /* Buffer size for incoming messages */
 static const size_t MSG_SIZE = 4096;
 
+static void* runClientThread(void* arg)
+{
+	net::ClientConnectionManager* connection = (net::ClientConnectionManager*)arg;
+	connection->start();
+	pthread_exit(NULL);
+}
+	
 void net::ClientConnectionManager::send(JSON::Value const & json)
 {
 	std::string dump = json.dumps();
@@ -127,7 +134,7 @@ net::ClientConnectionManager::ClientConnectionManager(const std::string hostname
 	{
 		throw ConnectionFailedException();
 	}
-	pthread_create(&_thread, NULL, net::runClientThread, this);
+	pthread_create(&_thread, NULL, runClientThread, this);
 }
 
 net::ClientConnectionManager::~ClientConnectionManager()
