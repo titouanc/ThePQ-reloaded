@@ -5,6 +5,7 @@
 #include <pthread.h>
 #include <stdexcept>
 #include <cstring>
+#include <string>
 
 /* Excellent PThread examples: 
  * https://computing.llnl.gov/tutorials/pthreads/ 

@@ -24,6 +24,14 @@ Dict::Dict(const Dict & other) : Dict()
         setPtr(it->first, it->second->clone());
 }
 
+Dict::Dict(std::initializer_list<Pair> initial) : Dict()
+{
+    std::initializer_list<Pair>::iterator it;
+    for (it=initial.begin(); it!=initial.end(); it++){
+        set(it->key, it->val);
+    }
+}
+
 Dict & Dict::operator=(const Dict & other)
 {
     for (Dict::iterator it=begin(); it!=end(); it++)

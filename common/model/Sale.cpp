@@ -1,5 +1,6 @@
 #include "Sale.hpp"
 #include <Constants.hpp>
+#include <Exception.hpp>
 //Thread
 
 void * Sale::staticSaleStart(void * p){
@@ -18,8 +19,6 @@ void Sale::saleStart(){
 		for(int i=0; i<getTotalTime(); ++i){
 			sleep(1);
 			--_timeLeft;
-			updateDict(_timeLeft);
-			save(getSalePath(_saleID));
 		}
 		resolveEndOfTurn();
 	}
@@ -32,26 +31,23 @@ void Sale::resolveEndOfTurn(){
 	_canBidTeams = _turnTeams;
 	_turnTeams.clear();
 	_timeLeft = getTotalTime();
-	updateDict();
 	save(getSalePath(_saleID));
 	unlock();
 }
 
 Sale::Sale() : _turnTeams(), _canBidTeams(), _bidValue(0),_bidRatio(BIDRATIO),
 _turn(1),_currentBidder(""),_owner(""), _marketPath("data/PlayerMarket/"),_playerPath("data/"),
-_timeLeft(FIRST_TURN), _saleID(0), _repr(), _thread(), 
+_timeLeft(FIRST_TURN), _saleID(0), _thread(), 
 _mymutex(PTHREAD_MUTEX_INITIALIZER), _player(Player()), _ended(false) {}
 
-Sale::Sale(int bidValue, std::string owner, int id, const Player & player) : 
-_turnTeams(), _canBidTeams(), _bidValue(bidValue),_bidRatio(BIDRATIO),
-_turn(1),_currentBidder(""),_owner(owner), _marketPath("data/PlayerMarket/"),_playerPath("data/"), _timeLeft(FIRST_TURN), 
-_saleID(id), _repr(), _thread(), _mymutex(PTHREAD_MUTEX_INITIALIZER), _player(player), _ended(false)
+Sale::Sale(int bidValue, std::string owner, int id, const Player & player) : Sale()
 {
-	_repr.set(net::MSG::USERNAME,_owner);
-	_repr.set(net::MSG::PLAYER_ID,_saleID);
-	_repr.set(net::MSG::PLAYER,JSON::Dict(_player)); 
-	//Those values are supposed consts during the sale. That's why they are not updated in updateDict().
+	_bidValue = bidValue;
+	_owner = owner;
+	_saleID = id;
+	_player = player;
 }
+
 Sale::Sale(JSON::Dict const & json): Sale() 
 {
 	if(json.hasKey(net::MSG::PLAYER)) 			{_player=Player(DICT(json.get(net::MSG::PLAYER)));}
@@ -75,31 +71,28 @@ Sale::Sale(JSON::Dict const & json): Sale()
 				_canBidTeams.push_back(STR(canbid[i]).value()); 
 		}
 	}
-	_repr.set(net::MSG::USERNAME,_owner);
-	_repr.set(net::MSG::PLAYER_ID,_saleID);
-	_repr.set(net::MSG::PLAYER,JSON::Dict(_player));
-
 }
+
 Sale::Sale(const JSON::Dict & json, const Player & player): Sale(json) {_player = player;}
 
 Sale::Sale(const Sale & other): _turnTeams(other._turnTeams), _canBidTeams(other._canBidTeams), 
 _bidValue(other._bidValue),_bidRatio(other._bidRatio),_turn(other._turn),_currentBidder(other._currentBidder),
 _owner(other._owner),_marketPath(other._marketPath),_playerPath(other._playerPath),
-_timeLeft(other._timeLeft), _saleID(other._saleID), _repr(other._repr), _thread(), 
+_timeLeft(other._timeLeft), _saleID(other._saleID), _thread(), 
 _mymutex(PTHREAD_MUTEX_INITIALIZER), _player(other._player), _ended(other._ended)
 {}
 
 
 
 //Test functions
-bool Sale::isSaler(std::string username){
+bool Sale::isSaler(std::string username) const{
 	return (username == getOwner());
 }
 
-bool Sale::allowedToBidForThisTurn(std::string username){
+bool Sale::allowedToBidForThisTurn(std::string username) const{
 	if(_turn == 1){return true;}
 	else{
-		for(size_t i;i<_canBidTeams.size();++i){
+		for(size_t i=0;i<_canBidTeams.size();++i){
 			if(_canBidTeams[i] == username){return true;}
 		}
 	}
@@ -108,36 +101,45 @@ bool Sale::allowedToBidForThisTurn(std::string username){
 
 //Services
 void Sale::placeBid(std::string username, int bid_value){
+	lock();
+	if(isSaler(username)) 
+		throw bidOnYourPlayerException();
+	else if(!(allowedToBidForThisTurn(username)))
+		throw turnException();
+	else if(getCurrentBidder() == username)
+		throw lastBidderException();
+	else if(getNextBidValue() != bid_value)
+		throw bidValueNotUpdatedException();
 	_currentBidder = username;
 	_turnTeams.push_back(username);
 	_bidValue = bid_value;
-	updateDict();
+	unlock();
 }
 
-
-
-void Sale::updateDict(int timer){
-	_repr.set(net::MSG::BID_TIMER, timer);
+void Sale::save(std::string path){
+	JSON::Dict repr = *this;
+	repr.save(path.c_str());
 }
 
-void Sale::updateDict(){
-	JSON::List bidding, canBid;	
+Sale::operator JSON::Dict(){
+	JSON::Dict ret;
+	JSON::List bidding, canBid;
 	for(size_t i=0;i<_turnTeams.size();++i){
 		bidding.append(_turnTeams[i]);
 	}
 	for(size_t i=0;i<_canBidTeams.size();++i){
 		canBid.append(_canBidTeams[i]);
 	}
-	_repr.set(net::MSG::TEAMS_BIDDING, bidding);
-	_repr.set(net::MSG::CAN_BID_TEAMS, canBid);
-	_repr.set(net::MSG::BID_VALUE, _bidValue);
-	_repr.set(net::MSG::BID_TIMER, _timeLeft);
-	_repr.set(net::MSG::TURN_NUMBER, _turn);
-	_repr.set(net::MSG::CURRENT_BIDDER, _currentBidder);
-}
-
-void Sale::save(std::string path){
-	_repr.save(path.c_str());
+	ret.set(net::MSG::TEAMS_BIDDING, bidding);
+	ret.set(net::MSG::CAN_BID_TEAMS, canBid);
+	ret.set(net::MSG::BID_VALUE, _bidValue);
+	ret.set(net::MSG::BID_TIMER, _timeLeft);
+	ret.set(net::MSG::TURN_NUMBER, _turn);
+	ret.set(net::MSG::CURRENT_BIDDER, _currentBidder);
+	ret.set(net::MSG::USERNAME,_owner);
+	ret.set(net::MSG::PLAYER_ID,_saleID);
+	ret.set(net::MSG::PLAYER,JSON::Dict(_player)); 
+	return ret;
 }
 
 std::ostream& operator<< (std::ostream& out, const Sale& sale){
