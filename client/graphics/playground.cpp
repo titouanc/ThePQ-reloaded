@@ -30,10 +30,15 @@ int main(int argc, char const *argv[])
 		sf::Event ev;
 		window.waitEvent(ev);
 		if (ev.type == sf::Event::MouseButtonPressed && ev.mouseButton.button == sf::Mouse::Left){
-			if (ev.mouseButton.x <= 110 && ev.mouseButton.x >=10 && ev.mouseButton.y >=10 && ev.mouseButton.y <=50){
+			if (newButton.isInBounds(ev.mouseButton.x, ev.mouseButton.y)) {
 				newButton.triggerAction();
 			}
 		}
+		if (
+			(ev.type == sf::Event::Closed) ||
+			(ev.type==sf::Event::KeyPressed && ev.key.code==sf::Keyboard::Escape)
+		)
+			window.close();
 	}
 	return 0;
 }

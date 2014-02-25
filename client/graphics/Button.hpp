@@ -9,6 +9,9 @@ public:
 					_backgroundRect(sf::Vector2f(_w, _h)) {
 		_backgroundRect.setFillColor(sf::Color(0x00, 0xae, 0xef, 0xff));
 	}
+	bool isInBounds (int x, int y) const {
+		return ((x >=_x) && (x <= _x+_w) && (y >=_y) && (y <= _y+_h));
+	}
 	void renderTo(sf::RenderTarget & dest){
 		_backgroundRect.setPosition(_x, _y);
 		dest.draw(_backgroundRect);
