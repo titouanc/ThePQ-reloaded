@@ -49,11 +49,11 @@ public:
 	Sale(const JSON::Dict & json);
 	Sale(const JSON::Dict & json, const Player & player);
 	Sale(const Sale & other);
+	operator JSON::Dict();
 	void start();
 	std::string getCurrentBidder(){return _currentBidder;}
 	int getID(){return _saleID;}
-	std::string getOwner(){return _owner;}
-	JSON::Dict * getDict(){return &_repr;}
+	std::string getOwner() const {return _owner;}
 	std::string getSalePath(int id) const {return (_marketPath + "sale_" + std::to_string(id) + ".json");}
 	std::string getPlayerPath(std::string owner) const {return (_playerPath + "users/" + owner + "/" + "players.json");}
 	int getNextBidValue() const {return (_bidValue + (int)_bidValue*_bidRatio);}
@@ -61,6 +61,7 @@ public:
 		if(_turn==1){return FIRST_TURN;}
 		else{return TURN_TIME;}
 	}
+	int getBidValue() const {return _bidValue;}
 	bool isOver() const {return _ended;}
 	bool isSaler(std::string username) const;
 	bool allowedToBidForThisTurn(std::string username) const;

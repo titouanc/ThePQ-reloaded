@@ -2,13 +2,13 @@
 #include <Constants.hpp>
 #include <sys/stat.h>
 #include <stdio.h>
-#include <model/Exception.hpp>
+#include <Exception.hpp>
 
 
 PlayerMarket::PlayerMarket(Server *server): _server(server), _sales(), _marketPath("data/playerMarket/"), _playerPath("data/"),
 _thread(),_runChecker(true), _deleting(PTHREAD_MUTEX_INITIALIZER) {
 	mkdir(_marketPath.c_str(), 0755);
-	loadSales();
+	//loadSales();
 	startChecker();
 }
 
@@ -59,7 +59,7 @@ void PlayerMarket::createSale(const JSON::Dict &json){
 
 
 void PlayerMarket::transfert(Sale * sale){//REFACTOR THIS SHIT
-	if(sale->_currentBidder.empty()){//Player not sold
+	if(sale->getCurrentBidder().empty()){//Player not sold
 		JSON::Dict toOwner;
 		toOwner.set("type",net::MSG::END_OF_OWNED_SALE_RAPPORT);
 		toOwner.set(net::MSG::RAPPORT_SALE_STATUS, net::MSG::PLAYER_NOT_SOLD);
@@ -99,12 +99,12 @@ void PlayerMarket::transfert(Sale * sale){//REFACTOR THIS SHIT
 		toOwner.set("type",net::MSG::END_OF_OWNED_SALE_RAPPORT);
 		toOwner.set(net::MSG::RAPPORT_SALE_STATUS, net::MSG::PLAYER_SOLD);
 		toOwner.set(net::MSG::PLAYER_ID, sale->getID());
-		toOwner.set(net::MSG::BID_VALUE, sale->_bidValue);
+		toOwner.set(net::MSG::BID_VALUE, sale->getBidValue());
 		toOwner.set(net::MSG::CURRENT_BIDDER, sale->getCurrentBidder());
 		sendMessageToUser(sale->getOwner(), toOwner);
 		toWinner.set("type",net::MSG::WON_SALE_RAPPORT);
 		toWinner.set(net::MSG::PLAYER_ID,sale->getID());
-		toWinner.set(net::MSG::BID_VALUE, sale->_bidValue);
+		toWinner.set(net::MSG::BID_VALUE, sale->getBidValue());
 		toWinner.set(net::MSG::SALE_OWNER, sale->getOwner());
 		sendMessageToUser(sale->getCurrentBidder(), toWinner);
 	}
@@ -121,7 +121,7 @@ Sale * PlayerMarket::getSale(int id){
 	return NULL;
 }
 
-JSON::Dict PlayerMarket::allSales() const {
+JSON::Dict PlayerMarket::allSales() {
 	deletingLock();
 	JSON::Dict response;
 	response.set("type", net::MSG::PLAYERS_ON_MARKET_LIST);
@@ -159,14 +159,18 @@ JSON::Dict PlayerMarket::bid(const JSON::Dict &json){
 		try{
 			sale->placeBid(username, bid_value);
 		}
-		catch(bidValueNotUpdatedException e)
+		catch(bidValueNotUpdatedException e){
 			response.set("data", net::MSG::BID_VALUE_NOT_UPDATED);
-		catch(turnException e)
+		}
+		catch(turnException e){
 			response.set("data", net::MSG::BID_TURN_ERROR);
-		catch(bidOnYourPlayerException e)
+		}
+		catch(bidOnYourPlayerException e){
 			response.set("data", net::MSG::CANNOT_BID_ON_YOUR_PLAYER);
-		catch(lastBidderException e)
+		}
+		catch(lastBidderException e){
 			response.set("data", net::MSG::LAST_BIDDER);
+		}
 	}
 	else{
 		response.set("data", net::MSG::BID_ENDED);

@@ -1,6 +1,6 @@
 #include "Sale.hpp"
 #include <Constants.hpp>
-#include <model/Exception.hpp>
+#include <Exception.hpp>
 //Thread
 
 void * Sale::staticSaleStart(void * p){
@@ -21,7 +21,6 @@ void Sale::saleStart(){
 			--_timeLeft;
 		}
 		resolveEndOfTurn();
-		save();
 	}
 	_ended = true;
 }
@@ -86,14 +85,14 @@ _mymutex(PTHREAD_MUTEX_INITIALIZER), _player(other._player), _ended(other._ended
 
 
 //Test functions
-bool Sale::isSaler(std::string username){
+bool Sale::isSaler(std::string username) const{
 	return (username == getOwner());
 }
 
-bool Sale::allowedToBidForThisTurn(std::string username){
+bool Sale::allowedToBidForThisTurn(std::string username) const{
 	if(_turn == 1){return true;}
 	else{
-		for(size_t i;i<_canBidTeams.size();++i){
+		for(size_t i=0;i<_canBidTeams.size();++i){
 			if(_canBidTeams[i] == username){return true;}
 		}
 	}
@@ -123,17 +122,24 @@ void Sale::save(std::string path){
 }
 
 Sale::operator JSON::Dict(){
-	JSON::Dict repr;
-	repr.set(net::MSG::TEAMS_BIDDING, _turnTeams);
-	repr.set(net::MSG::CAN_BID_TEAMS, _canBidTeams);
-	repr.set(net::MSG::BID_VALUE, _bidValue);
-	repr.set(net::MSG::BID_TIMER, _timeLeft);
-	repr.set(net::MSG::TURN_NUMBER, _turn);
-	repr.set(net::MSG::CURRENT_BIDDER, _currentBidder);
-	repr.set(net::MSG::USERNAME,_owner);
-	repr.set(net::MSG::PLAYER_ID,_saleID);
-	repr.set(net::MSG::PLAYER,JSON::Dict(_player)); 
-	return repr;
+	JSON::Dict ret;
+	JSON::List bidding, canBid;
+	for(size_t i=0;i<_turnTeams.size();++i){
+		bidding.append(_turnTeams[i]);
+	}
+	for(size_t i=0;i<_canBidTeams.size();++i){
+		canBid.append(_canBidTeams[i]);
+	}
+	ret.set(net::MSG::TEAMS_BIDDING, bidding);
+	ret.set(net::MSG::CAN_BID_TEAMS, canBid);
+	ret.set(net::MSG::BID_VALUE, _bidValue);
+	ret.set(net::MSG::BID_TIMER, _timeLeft);
+	ret.set(net::MSG::TURN_NUMBER, _turn);
+	ret.set(net::MSG::CURRENT_BIDDER, _currentBidder);
+	ret.set(net::MSG::USERNAME,_owner);
+	ret.set(net::MSG::PLAYER_ID,_saleID);
+	ret.set(net::MSG::PLAYER,JSON::Dict(_player)); 
+	return ret;
 }
 
 std::ostream& operator<< (std::ostream& out, const Sale& sale){

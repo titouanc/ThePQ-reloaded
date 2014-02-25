@@ -3,7 +3,7 @@
 
 #include <network/ConnectionManager.hpp>
 #include <json/json.hpp>
-#include "Exception.hpp"
+#include <Exception.hpp>
 #include <Constants.hpp>
 #include <string>
 #include <vector>

@@ -7,7 +7,7 @@
 #include <cxxabi.h>
 #include "Message.hpp"
 #include "Client.hpp"
-#include "Exception.hpp"
+#include <Exception.hpp>
 #include "Menu.hpp"
 #include <Config.hpp>
 #include <model/Player.hpp>
