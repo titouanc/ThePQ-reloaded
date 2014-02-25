@@ -54,13 +54,6 @@ namespace net
 		struct sockaddr_in _servAddr;
 		struct sockaddr_in _cliAddr;
 	};
-	
-	static void* runClientThread(void* arg)
-	{
-		ClientConnectionManager* connection = (ClientConnectionManager*)arg;
-		connection->start();
-		pthread_exit(NULL);
-	}
 }
 
 #endif // __CLIENT_CONNECTION_MANAGER_HPP
