@@ -201,7 +201,7 @@ void Client::chooseUser()
 
 		}
 		else if (answer == net::MSG::USER_NOT_FOUND) {
-			cout << "User not found" << endl;
+			cout << "Username not found" << endl;
 		}
 		else {
 			cout << STR(DICT(received.get("data")).get("username")).value();

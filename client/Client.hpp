@@ -16,7 +16,7 @@
 #include <model/Installation.hpp>
 #include <model/Sale.hpp>
 #include "UserManager.hpp"
-#include "User.hpp"
+#include "UserData.hpp"
 #include "StadiumManager.hpp"
 #include "TeamManager.hpp"
 #include "MarketManager.hpp"
@@ -50,7 +50,7 @@ public:
 
 private:
 	// Cache
-	User _user;
+	UserData _user;
 	
 	// Managers
 	net::ClientConnectionManager _connection;

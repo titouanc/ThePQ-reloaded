@@ -6,12 +6,12 @@
 #include <Constants.hpp>
 #include "Menu.hpp"
 #include "Exception.hpp"
-#include "User.hpp"
+#include "UserData.hpp"
 
 class UserManager
 {
 public:
-	UserManager(net::ClientConnectionManager& connection, User& user);
+	UserManager(net::ClientConnectionManager& connection, UserData& user);
 	
 	bool displayMenu();
 	
@@ -24,7 +24,7 @@ private:
 	void doesUserExist(std::string username);
 	
 	net::ClientConnectionManager& _connection;
-	User& _user;
+	UserData& _user;
 	
 };
 

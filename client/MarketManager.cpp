@@ -1,6 +1,6 @@
 #include "MarketManager.hpp"
 
-MarketManager::MarketManager(net::ClientConnectionManager& connection, User& user) :
+MarketManager::MarketManager(net::ClientConnectionManager& connection, UserData& user) :
 	_connection(connection), _user(user), _prompt('>'), _sales()
 {}
 

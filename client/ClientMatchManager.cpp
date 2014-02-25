@@ -4,7 +4,7 @@
 using namespace std;
 using namespace net;
 
-ClientMatchManager::ClientMatchManager(ClientConnectionManager &connection, User &user) : 
+ClientMatchManager::ClientMatchManager(ClientConnectionManager &connection, UserData &user) : 
 																	_connection(connection),
 																	_user(user),
 																	 _isMatchFinished(false){}

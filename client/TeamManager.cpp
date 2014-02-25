@@ -1,6 +1,6 @@
 #include "TeamManager.hpp"
 
-TeamManager::TeamManager(net::ClientConnectionManager &connection, User& user) : 
+TeamManager::TeamManager(net::ClientConnectionManager &connection, UserData& user) : 
 	_connection(connection), _user(user)
 {}
 

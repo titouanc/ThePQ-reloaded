@@ -3,7 +3,7 @@
 
 #include <vector>
 #include <network/ClientConnectionManager.hpp>
-#include "User.hpp"
+#include "UserData.hpp"
 #include "Menu.hpp"
 #include "Exception.hpp"
 #include <model/Sale.hpp>
@@ -11,7 +11,7 @@
 class MarketManager
 {
 public:
-	MarketManager(net::ClientConnectionManager& connection, User& user);
+	MarketManager(net::ClientConnectionManager& connection, UserData& user);
 	void displayMenu();
 
 private:
@@ -26,7 +26,7 @@ private:
 	void printPlayers();
 	
 	net::ClientConnectionManager& _connection;
-	User& _user;
+	UserData& _user;
 	char _prompt;
 	std::vector<Sale> _sales;
 };

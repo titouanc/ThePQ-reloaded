@@ -1,5 +1,5 @@
-#ifndef __USER_HPP
-#define __USER_HPP
+#ifndef __USER_DATA_HPP
+#define __USER_DATA_HPP
 
 #include <vector>
 #include <string>
@@ -7,7 +7,7 @@
 #include <model/Sale.hpp>
 #include <model/Player.hpp>
 
-struct User
+struct UserData
 {
 	// Login
 	void login(std::string name) { username = name; }
@@ -20,4 +20,4 @@ struct User
 	std::string username;
 };
 
-#endif // __USER_HPP
+#endif // __USER_DATA_HPP

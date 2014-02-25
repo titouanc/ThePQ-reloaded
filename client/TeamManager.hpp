@@ -3,13 +3,13 @@
 
 #include <vector>
 #include <network/ClientConnectionManager.hpp>
-#include "User.hpp"
+#include "UserData.hpp"
 #include "Menu.hpp"
 
 class TeamManager
 {
 public:
-	TeamManager(net::ClientConnectionManager& connection, User& user);
+	TeamManager(net::ClientConnectionManager& connection, UserData& user);
 	
 	void displayMenu();
 	void printPlayers();
@@ -17,7 +17,7 @@ public:
 private:
 	void loadPlayers();
 	net::ClientConnectionManager& _connection;
-	User& _user;
+	UserData& _user;
 };
 
 #endif // __TEAM_MANAGER_HPP

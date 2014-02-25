@@ -3,20 +3,20 @@
 
 #include <vector>
 #include <network/ClientConnectionManager.hpp>
-#include "User.hpp"
+#include "UserData.hpp"
 #include "Menu.hpp"
 #include <model/Installation.hpp>
 
 class StadiumManager
 {
 public:
-	StadiumManager(net::ClientConnectionManager& connection, User& user);
+	StadiumManager(net::ClientConnectionManager& connection, UserData& user);
 
 	void displayMenu();
 	
 private:
 	net::ClientConnectionManager& _connection;
-	User& _user;
+	UserData& _user;
 	
 	bool upgradeInstallation(size_t i);
 	bool downgradeInstallation(size_t i);

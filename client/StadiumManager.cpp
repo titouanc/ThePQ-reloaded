@@ -1,6 +1,6 @@
 #include "StadiumManager.hpp"
 
-StadiumManager::StadiumManager(net::ClientConnectionManager &connection, User &user) :
+StadiumManager::StadiumManager(net::ClientConnectionManager &connection, UserData &user) :
 	_connection(connection), _user(user)
 {}
 
