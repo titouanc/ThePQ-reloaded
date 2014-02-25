@@ -218,28 +218,6 @@ void Client::printConnectedUsersList(){
 }
 
 
-/* Private methods */
-
-string Client::askForUserData(string prompt){
-	string data;
-	cout<<endl;
-	cout << prompt;
-	cin >> data;
-	return data;
-}
-
-string Client::askForNewPassword(){
-	string password = "a";
-	string passwordConfirmation;
-	while (password != passwordConfirmation){
-		password = askForUserData("Enter a new password : ");
-		passwordConfirmation = askForUserData("Confirm password : ");
-		if (password != passwordConfirmation)
-			cout << "The two passwords entered were not the same." << endl;
-	}
-	return password;
-}
-
 vector<std::string> Client::getConnectedUsersList(){// TODO
 	vector<std::string> res;
 	JSON::Dict query;

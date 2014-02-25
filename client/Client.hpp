@@ -82,12 +82,6 @@ private:
 	void printConnectedUsersList();
 	void chooseUser();
 	void startMatch();
-
-	// utils
-	std::string askForUserData(std::string prompt); // returns the user input.
-	std::string askForNewPassword(); // prompts the user to create a new password with 
-							// confirmation. returns the password.
-
 };
 
 #endif // __CLIENT_HPP
