@@ -90,4 +90,18 @@ namespace net
 	}
 }
 
+namespace memory
+{
+	static const std::string USERS_PATH = "data/users/";
+	static const std::string USER_FILE = "user";
+	static const std::string PLAYERS_DIR = "Players/";
+	static const std::string INSTALLATIONS_DIR = "Installations/";
+	static const std::string FILE_FORMAT = ".json";
+	static const std::string MARKET_PATH = "data/PlayerMarket";
+	static const std::string SALE_FILE = "_sale";
+	static const std::string FANSHOP = "fanshop";
+	static const std::string MEDIC_CENTER = "medical_center";
+
+}
+
 #endif
