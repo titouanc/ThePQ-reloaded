@@ -50,7 +50,7 @@ class GraphicPitch {
 		int height() const {return _pitch.height()*vOffset();}
 		void renderTo(sf::RenderTarget & dest){
 			int xwin=0, ywin=0;
-			for (int y=_pitch.ymin(); y<_pitch.ymax(); y++){
+			for (int y=_pitch.ymax()-1; y>=_pitch.ymin(); y--){
 				xwin = (abs(y)%2)*_size/2;
 				for (int x=_pitch.xmin(); x<_pitch.xmax(); x++){
 					if (! _pitch.isValid(x, y)) 
