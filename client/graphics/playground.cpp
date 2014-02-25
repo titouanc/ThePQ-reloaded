@@ -1,6 +1,6 @@
 #include <SFML/Window.hpp>
 #include <iostream>
-#include "Button.hpp"
+#include "UIButton.hpp"
 
 using namespace std;
 
@@ -21,10 +21,10 @@ int main(int argc, char const *argv[])
 	window.clear(sf::Color(0xff, 0xff, 0xff, 0xff));
 
 	Dummy d;
-	Button<Dummy> newButton(&Dummy::myMethod, &d, "This button's size is determined by its text.");
+	UIButton<Dummy> newButton(&Dummy::myMethod, &d, "This button's size is determined by its text.");
 
 	OtherDummy od;
-	Button<OtherDummy> otherButton(&OtherDummy::superMethod, &od, "Wow", 10, 60);
+	UIButton<OtherDummy> otherButton(&OtherDummy::superMethod, &od, "Wow", 10, 60);
 	try{
 		newButton.renderTo(window);
 		otherButton.renderTo(window);
