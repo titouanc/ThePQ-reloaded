@@ -2,6 +2,7 @@
 #include <string>
 #include "Clickable.hpp"
 #include <iostream>
+#include "GUIConstants.hpp"
 
 using namespace std;
 
@@ -16,11 +17,11 @@ public:
 			throw "Could not load font!";
 		_text.setFont(_font);
 		_text.setString(text);
-		_text.setCharacterSize(20);
-		_text.setColor(sf::Color(0xff, 0xff, 0xff, 0xff));
-		_w = (int)_text.getLocalBounds().width + 30;
+		_text.setCharacterSize(GUI::BUTTON_TEXT_SIZE);
+		_text.setColor(GUI::BUTTON_TEXT_COLOR);
+		_w = (int)_text.getLocalBounds().width + 2*GUI::BUTTON_SIDE_PADDING;
 		_backgroundRect = sf::RectangleShape(sf::Vector2f(_w, _h));
-		_backgroundRect.setFillColor(sf::Color(0x00, 0xae, 0xef, 0xff));
+		_backgroundRect.setFillColor(GUI::BUTTON_BACKGROUND_COLOR);
 	}
 	bool isInBounds (int x, int y) const {
 		return ((x >=_x) && (x <= _x+_w) && (y >=_y) && (y <= _y+_h));
@@ -28,7 +29,7 @@ public:
 	void renderTo(sf::RenderTarget & dest){
 		_backgroundRect.setPosition(_x, _y);
 		dest.draw(_backgroundRect);
-		_text.setPosition(_x+15, _y+7);
+		_text.setPosition(_x+GUI::BUTTON_SIDE_PADDING, _y+GUI::BUTTON_TOP_PADDING);
 		dest.draw(_text);
 	}
 
