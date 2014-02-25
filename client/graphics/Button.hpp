@@ -8,12 +8,12 @@ using namespace std;
 
 template <typename T> class Button : public Clickable<T> {
 public:
-	Button(	const typename Clickable<T>::Callback& callback, T* target, 
-			std::string text="Button", int x=10, int y=10, int w=100, int h=40):
-					Clickable<T>(callback, target),
-					_x(x), _y(y), _w(w), _h(h) {
+	Button(	const typename Clickable<T>::Callback& callback, T* target, std::string text="Button", 
+			int x=GUI::MARGIN, int y=GUI::MARGIN, int w=100, int h=GUI::BUTTON_HEIGHT):
+								Clickable<T>(callback, target),
+								_x(x), _y(y), _w(w), _h(h) {
 
-		if (!_font.loadFromFile("fonts/akashi.ttf"))
+		if (!_font.loadFromFile(GUI::BODY_FONT_PATH))
 			throw "Could not load font!";
 		_text.setFont(_font);
 		_text.setString(text);
