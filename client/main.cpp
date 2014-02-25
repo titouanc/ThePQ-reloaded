@@ -1,4 +1,4 @@
-#include "CLI.hpp"
+#include "Client.hpp"
 #include <unistd.h>
 #include <cstring>
 
@@ -23,7 +23,7 @@ int main(int argc, char const *argv[])
 	if (argc == 1)
 		config.load();
 	
-	CLI client(config);
+	Client client(config);
 	if (! has_chdir)
 		config.save();
 	

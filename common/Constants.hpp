@@ -29,6 +29,7 @@ namespace net
 		static const std::string PASSWORD_ERROR = "U_P";
 		static const std::string USER_NOT_FOUND = "U_NF";
 		static const std::string USER_REGISTERED = "U_R";
+		static const std::string ALREADY_LOGGED_IN = "U_ALI";
 
 		static const std::string PLAYER = "P_DICT"; 		//JSON::Dict of players
 		static const std::string PLAYER_ID = "memberID";						

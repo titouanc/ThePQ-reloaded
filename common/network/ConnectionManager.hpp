@@ -1,91 +1,9 @@
-#ifndef DEFINE_BaseConnectionManager_HEADER
-#define DEFINE_BaseConnectionManager_HEADER
+#ifndef DEFINE_CONNECTIONMANAGER_HEADER
+#define DEFINE_CONNECTIONMANAGER_HEADER
 
-#include <iostream>
-#include <set>
-#include <stdexcept>
-#include <netinet/in.h>
-#include <pthread.h>
-#include <Constants.hpp>
-#include <sharedqueue.hpp>
-#include <json/json.hpp>
-#include "Exception.hpp"
+#include "BaseConnectionManager.hpp"
 
 namespace net {
-	
-	struct Message {
-		int peer_id;
-		JSON::Value *data;
-		Message(int p, JSON::Value *d) : peer_id(p), data(d) {}
-	};
-
-	/*
-     * Maintain a set of file descriptors; read from and write to them.
-     * start(): spawn 1 read and 1 write thread (to incoming & from outgoing)
-	 */
-	class BaseConnectionManager {
-		private:
-			/* Communication threads */
-			pthread_t   _in_thread, _out_thread;
-			/* isRunning() mutex , fd set manipulation mutex */
-			pthread_mutex_t _mutex, _fdset_mutex;
-			/* Is IO thread running ? */
-			bool _running;
-			/* Currently connected clients */
-			std::set<int> _clients;
-		protected:
-			/* Incoming message queue */
-			SharedQueue<Message> & _incoming, & _outgoing;
-			/* Log exchanged messages */
-			bool _logger;
-			/* Call to select, and read from all known selected clients */
-			int  _doSelect(int fdmax, fd_set *readable);
-			/* Write obj to fd */
-			bool _doWrite(int fd, const JSON::Value *obj);
-			/* Read a json object from fd and push it in incoming queue */
-			bool _doRead(int fd);
-			/* Close fd, remove client from managed clients and 
-			   emit DISCONNECT message */
-			void _doDisconnect(int fd);
-			/* Add client to managed clients and emit CONNECT message */
-			void _doConnect(int fd);
-			
-			/* iterator on managed clients */
-			typedef std::set<int>::iterator iterator;
-			iterator _iterClients(void){return _clients.begin();}
-			iterator _iterEnd(void){return _clients.end();}
-		public:
-			explicit BaseConnectionManager(
-				SharedQueue<Message> & incoming_queue,
-				SharedQueue<Message> & outgoing_queue,
-				bool logger=true
-			);
-			~BaseConnectionManager();
-
-			/* Start the main IO loops in a background thread */
-			bool start(void);
-
-			/* Stop the main IO loops */
-			bool stop(void);
-
-			/* Add fd to managed clients */
-			void addClient(int fd);
-
-			/* Remove fd from managed clients */
-			bool removeClient(int fd);
-
-			/* Are the I/O threads up ? */
-			bool isRunning(void);
-
-			/* Number of connected clients */
-			size_t nClients(void);
-
-			/* Main in loop: feed incoming queue */
-			virtual void _mainloop_in(void);
-			/* Main out loop: eat outgoing queue */
-			virtual void _mainloop_out(void);
-	};
-
 	/*
      * A connection manager that first bind(), then accept() in read loop.
 	 */
@@ -105,49 +23,6 @@ namespace net {
 			);
 			~ConnectionManager();
 
-			void _mainloop_in(void);
-
-			/* Getters */
-			const char *ip(void) const;
-			unsigned short port(void) const;
-	};
-
-	/*
-	 * A connection manager which can temporarily borrow FDs from another CM.
-	 * Useful to make temporary local dedicated communication channels (eg. matches)
-	 */
-	class SubConnectionManager : public BaseConnectionManager {
-		private:
-			BaseConnectionManager & _parent;
-		public:
-			/* ConnectionManager which takes its managed clients from a parent
-			   ConnectionManager. It cannot accept connections by itself. */
-			SubConnectionManager(
-			    SharedQueue<Message> & incoming_queue,
-			    SharedQueue<Message> & outgoing_queue,
-			    BaseConnectionManager & parent
-			);
-			/* Remove client_id from parent (if any) and add to self. */
-			bool acquireClient(int client_id);
-			/* Remove client_id from self (if any) and add to parent. */
-			bool releaseClient(int client_id);
-			/* Remove all managed clients before destroying. */
-			~SubConnectionManager();
-	};
-	
-	class ClientConnectionManager : public BaseConnectionManager {
-		private:
-			struct sockaddr_in _host_addr;
-			int _sockfd;
-		public:
-			explicit ClientConnectionManager(
-				SharedQueue<Message> & incoming_queue,
-				SharedQueue<Message> & outgoing_queue,
-				const char *host_addr="127.0.0.1", 
-				unsigned short host_port=32123
-			);
-
-			void _mainloop_out(void);
 			void _mainloop_in(void);
 
 			/* Getters */

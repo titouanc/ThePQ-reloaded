@@ -1,272 +1,368 @@
 #include "Client.hpp"
+#include <pthread.h>
 
 using namespace std;
 
-Client::Client(std::string host, int port) : _inbox(), _outbox(),
-_connectionManager(_inbox, _outbox, host.c_str(), port)
+std::string humanExcName(const char *name)
 {
-	_connectionManager.start();
+	int status;
+	char *str = abi::__cxa_demangle(name, 0, 0, &status);
+	std::string res(str);
+	free(str);
+	return res;
 }
 
-void Client::loginUser(string username, string passwd)
+Client::Client(NetConfig const &config) : 	_user(),
+												_connection(config.host, config.port),
+												_userManager(_connection, _user),
+												_stadiumManager(_connection, _user),
+												_matchManager(_connection, _user),
+												_teamManager(_connection, _user),
+												_marketManager(_connection, _user),
+												_isRunning(true)
 {
-	JSON::Dict toSend, credentials;
-	credentials.set(net::MSG::USERNAME, username);
-	credentials.set(net::MSG::PASSWORD, passwd);
-	toSend.set("type", net::MSG::LOGIN);
-	toSend.set("data", credentials);
-	net::Message msg(0, toSend.clone());
-	_outbox.push(msg);
+}
 
-	JSON::Value *serverMessage = _inbox.pop().data;	// receiving server response
+Client::~Client()
+{
+}
 
-	if (ISDICT(serverMessage)){
-		JSON::Dict const &received = DICT(serverMessage);
-		if (received.hasKey("type") && ISSTR(received.get("type")) 
-			&& STR(received.get("type")).value() == net::MSG::STATUS){
-			if (received.hasKey("data") && ISSTR(received.get("data"))) {
-				if (STR(received.get("data")).value() == net::MSG::PASSWORD_ERROR)
-				{
-					delete serverMessage;
-					throw WrongPasswordException();
-				}
-				else if (STR(received.get("data")).value() == net::MSG::USER_NOT_FOUND)
-				{
-					delete serverMessage;
-					throw UserNotFoundException();
-				}
-			}
+void Client::run()
+{
+	cout << splashScreen();
+	while (_isRunning == true)
+	{
+		if (_user.isLogged() == true)
+		{
+			mainMenu();
+		}
+		else
+		{
+			_isRunning = _userManager.displayMenu();
 		}
 	}
-	delete serverMessage;
-	// User is logged in at this point.
+	cout << goodBye();
+}	
+
+/* main menu */
+void Client::mainMenu()
+{
+	Menu _menu;
+	_menu.addToDisplay("   - manage your team and stadium\n");
+	_menu.addToDisplay("   - access market\n");
+	_menu.addToDisplay("   - play a friendly game\n");
+	_menu.addToDisplay("   - see notifications\n");
+	_menu.addToDisplay("   - quit\n");
+	int option;
+	do
+	{
+		option = _menu.run();
+		switch(option)
+		{
+			case 1:
+				managementMenu();
+				break;
+			case 2:
+				_marketManager.displayMenu();
+				break;
+			case 3:
+				friendlyMatchMenu();
+				break;
+			case 4:
+				notificationsMenu();
+			case 5:
+				_user.logout();
+			default:
+				break;
+		}
+	}
+	while (option != 5);
 }
 
-void Client::doesUserExist(string username){
+/* Management menu */
+void Client::managementMenu()
+{
+	Menu _menu;
+	_menu.addToDisplay("   - manage your stadium and installations\n");
+	_menu.addToDisplay("   - manage your players\n");
+	_menu.addToDisplay("   - quit to main menu\n");
+	int option;
+	do
+	{
+		option = _menu.run();
+		switch(option)
+		{
+			case 1:
+				_stadiumManager.displayMenu();
+				break;
+			case 2:
+				_teamManager.displayMenu();
+				break;
+			default:
+				break;
+		}
+	}
+	while (option != 3);
+}
+
+
+/* main menu */
+void Client::notificationsMenu()
+{
+	_connection.updateNotifications();
+	cout << "You have " << _connection.notifications.size() << "notifications." << endl;
+	Menu _menu;
+	_menu.addToDisplay("   - handle this notification\n");
+	_menu.addToDisplay("   - see next notification\n");
+	_menu.addToDisplay("   - quit\n");
+	int option;
+	bool quit = false;
+	while (_connection.notifications.available() && ! quit)
+	{
+		JSON::Value * currentNotification = _connection.notifications.front();
+		JSON::Dict const & notif = DICT(currentNotification);
+		if (STR(notif.get("type")).value() == net::MSG::FRIENDLY_GAME_INVITATION
+			&& ISSTR(notif.get("data")))
+		{
+			cout << STR(notif.get("data")).value() << " invited you to a game" << endl;
+		}
+		option = _menu.run();
+		switch(option)
+		{
+			case 1:
+				handleNotification(currentNotification);
+				_connection.notifications.pop();
+				break;
+			case 2:
+				_connection.notifications.push(_connection.notifications.front());
+				_connection.notifications.pop();
+				break;
+			case 3:
+				quit = true;
+				break;
+			default:
+				break;
+		}
+	}
+}
+
+/* Market menu */
+
+
+//Market notifs
+
+
+/* Friendly match menu */
+void Client::friendlyMatchMenu()
+{
+	Menu _menu;
+	_menu.addToDisplay("   - list all connected players\n");
+	_menu.addToDisplay("   - choose one to play a friendly game with\n");
+	_menu.addToDisplay("   - quit to main menu\n");
+	int option;
+	do
+	{
+		option = _menu.run();
+		switch(option)
+		{
+			case 1:
+				printConnectedUsersList();
+				break;
+			case 2:
+				chooseUser();
+				break;
+			default:
+				break;
+		}
+	}
+	while(option != 3);
+}
+
+void Client::chooseUser()
+{
+	cout << "Enter a username to send an invitation to another user : ";
+	string userInput;
+	cin >> userInput;
 	JSON::Dict toSend;
-	toSend.set("type", net::MSG::USER_EXISTS);
-	toSend.set("data", username);
-	net::Message msg(0, toSend.clone());
-	_outbox.push(msg);
+	toSend.set("type", net::MSG::FRIENDLY_GAME_USERNAME);
+	toSend.set("data", userInput);
+	_connection.send(toSend);
 
-	JSON::Value *serverMessage = _inbox.pop().data; // receiving server response
+	cout << "Please wait for " << userInput << " to answer to your invitation..." << endl;
+	JSON::Value *serverMessage = _connection.waitForMsg(net::MSG::FRIENDLY_GAME_INVITATION_RESPONSE);
+	JSON::Dict const & received = DICT(serverMessage);
+	if (ISDICT(received.get("data")) && ISSTR(DICT(received.get("data")).get("answer"))){
+		string answer = STR(DICT(received.get("data")).get("answer")).value();
+		if (answer == net::MSG::FRIENDLY_GAME_INVITATION_ACCEPT){
+			cout << STR(DICT(received.get("data")).get("username")).value();
+			cout << " accepted your invitation!" << endl;
+			startMatch();
 
-	if(ISDICT(serverMessage)){
-		JSON::Dict const &received = DICT(serverMessage);
-		if (received.hasKey("type") && ISSTR(received.get("type")) 
-			&& STR(received.get("type")).value() == net::MSG::STATUS){
-			if (received.hasKey("data") && ISSTR(received.get("data")) 
-				&& STR(received.get("data")).value() == net::MSG::USER_EXISTS){
-				throw UserAlreadyExistsException();
-			}
+		}
+		else if (answer == net::MSG::USER_NOT_FOUND) {
+			cout << "Username not found" << endl;
+		}
+		else {
+			cout << STR(DICT(received.get("data")).get("username")).value();
+			cout << " denied your invitation. Sorry!" << endl;
 		}
 	}
 }
 
-void Client::registerUser(string username, string passwd)
-{
-	JSON::Dict toSend, received, credentials;
-	credentials.set(net::MSG::USERNAME, username);
-	credentials.set(net::MSG::PASSWORD, passwd);
-	toSend.set("type", net::MSG::REGISTER);
-	toSend.set("data", credentials);
-	net::Message msg(0, toSend.clone());
-	_outbox.push(msg);
-
-	JSON::Value *serverMessage = _inbox.pop().data;	// receiving server response
-
-	if (ISDICT(serverMessage)){
-		JSON::Dict const &received = DICT(serverMessage);
-		if (received.hasKey("type") && ISSTR(received.get("type")) 
-			&& STR(received.get("type")).value() == net::MSG::STATUS){
-			if (received.hasKey("data") && ISSTR(received.get("data"))) {
-				if (STR(received.get("data")).value() == net::MSG::USER_EXISTS)
-					throw UserAlreadyExistsException();
-			}
-		}
-	}
-	// User is registered
+void Client::printConnectedUsersList(){
+	vector<std::string> connectedUsers = getConnectedUsersList();
+	cout << "Here are all the connected users : " << endl;
+ 	for (size_t i=0; i < connectedUsers.size(); ++i)
+ 		cout << "  - " << connectedUsers[i] << endl;
 }
 
-vector<Installation> Client::getInstallationsList(){
-	JSON::Dict query;
-	JSON::List toFill;
-	query.set("type", net::MSG::INSTALLATIONS_LIST);
-	query.set("data", "");
-	net::Message msg(0, query.clone());
-	_outbox.push(msg);
 
-	JSON::Value *serverResponse = _inbox.pop().data;
-	if (ISDICT(serverResponse))
-	{
-		JSON::Dict response = DICT(serverResponse);
-		if (ISLIST(response.get("data")))
-		{
-			toFill = LIST(response.get("data"));
-		}
-	}
-	vector<Installation> vec;
-	for (size_t i = 0; i < toFill.len(); ++i)
-	{
-		vec.push_back(DICT(toFill[i]));
-	}
-	delete serverResponse;
-	return vec;
-}
-
-bool Client::upgradeInstallation(size_t i)
-{
-	bool ret = false;
-	JSON::Dict query;
-	query.set("type", net::MSG::INSTALLATION_UPGRADE);
-	query.set("data", i);
-	net::Message msg(0, query.clone());
-	_outbox.push(msg);
-	
-	JSON::Value *serverResponse = _inbox.pop().data;
-	if (ISDICT(serverResponse))
-	{
-		JSON::Dict const & received = DICT(serverResponse);
-		if (ISSTR(received.get("type")) && ISBOOL(received.get("data"))
-			&& STR(received.get("type")).value() == net::MSG::INSTALLATION_UPGRADE)
-		{
-			ret = received.get("data");
-		}
-	}
-	return ret;
-}
-
-bool Client::downgradeInstallation(size_t i)
-{
-	bool ret = false;
-	JSON::Dict query;
-	query.set("type", net::MSG::INSTALLATION_DOWNGRADE);
-	query.set("data", i);
-	net::Message msg(0, query.clone());
-	_outbox.push(msg);
-	
-	JSON::Value *serverResponse = _inbox.pop().data;
-	if (ISDICT(serverResponse))
-	{
-		JSON::Dict const &received = DICT(serverResponse);
-		
-		if (ISSTR(received.get("type")) && ISBOOL(received.get("data"))
-			&& STR(received.get("type")).value() == net::MSG::INSTALLATION_DOWNGRADE)
-		{
-			ret = received.get("data");
-		}
-	}
-	delete serverResponse;
-	return ret;
-}
-
-vector<std::string> Client::getConnectedUsersList(){
+vector<std::string> Client::getConnectedUsersList(){// TODO
 	vector<std::string> res;
 	JSON::Dict query;
 	query.set("type", net::MSG::CONNECTED_USERS_LIST);
 	query.set("data", "");
-	net::Message msg(0, query.clone());
-	_outbox.push(msg);
+	_connection.send(query);
 
-	JSON::Value *serverResponse = _inbox.pop().data;
-	if (ISDICT(serverResponse)){
-		JSON::Dict received = DICT(serverResponse);
-		if (ISSTR(received.get("type")) && ISLIST(received.get("data"))){
-			JSON::List & connectedUsers = LIST(received.get("data"));
-			for (size_t i = 0; i<connectedUsers.len(); ++i)
-				res.push_back(STR(connectedUsers[i]));
-		}
+	JSON::Value *serverResponse = _connection.waitForMsg(net::MSG::CONNECTED_USERS_LIST);
+	JSON::Dict const & received = DICT(serverResponse);
+	if (ISLIST(received.get("data"))) {
+		JSON::List & connectedUsers = LIST(received.get("data"));
+		for (size_t i = 0; i<connectedUsers.len(); ++i)
+			res.push_back(STR(connectedUsers[i]));
 	}
 	return res;
 }
 
-std::vector<Sale> Client::updatePlayersOnSale(){
-	JSON::Dict query;
-	query.set("type", net::MSG::PLAYERS_ON_MARKET_LIST);
-	query.set("data", "");
-	net::Message msg(0, query.clone());
-	_outbox.push(msg);
-	JSON::Value *serverResponse = _inbox.pop().data;
-	std::vector<Sale> res;
-	if (ISDICT(serverResponse)) {
-		JSON::Dict & received = DICT(serverResponse);
-		if (ISSTR(received.get("type")) && ISLIST(received.get("data"))){
-			JSON::List & sales = LIST(received.get("data"));
-			for(size_t i = 0; i<sales.len();++i)
-				res.push_back(Sale(DICT(sales[i]), Player(DICT(DICT(sales[i]).get(net::MSG::PLAYER)))));
-		}
-	}
-	return res; 
+///////// END NEW
+
+
+
+void Client::handleNotification(JSON::Value *notification){
+	JSON::Dict message = DICT(notification);
+	string messageType;
+	if (ISSTR(message.get("type")))
+		messageType = STR(message.get("type")).value();
+
+		if (messageType == net::MSG::FRIENDLY_GAME_INVITATION)
+			handleFriendlyGameInvitation(message);
+		if (messageType == net::MSG::MARKET_MESSAGE)
+			handleEndOfSaleNotification(DICT(message.get("data")));
 }
 
-void Client::bidOnPlayer(int player_id,std::string username, int value){//modif
-	JSON::Dict query, data;
-	data.set(net::MSG::USERNAME,username);
-	data.set(net::MSG::PLAYER_ID,player_id);
-	data.set(net::MSG::BID_VALUE,value);
-	query.set("type", net::MSG::BID_ON_PLAYER_QUERY);
-	query.set("data", data);
-	net::Message msg(0, query.clone());
-	_outbox.push(msg);
-	JSON::Value *serverResponse = _inbox.pop().data;
-	if(ISDICT(serverResponse)){
-		JSON::Dict received = DICT(serverResponse);
-		if(ISSTR(received.get("type")) && ISDICT(received.get("data"))){
-			std::string res = STR(DICT(received.get("data")).get(net::MSG::SERVER_RESPONSE));
-			if(res == net::MSG::BID_VALUE_NOT_UPDATED)
-				throw bidValueNotUpdatedException();
-			else if(res == net::MSG::BID_TURN_ERROR)
-				throw turnException();
-			else if(res == net::MSG::BID_ENDED)
-				throw bidEndedException();
-			else if(res == net::MSG::CANNOT_BID_ON_YOUR_PLAYER)
-				throw bidOnYourPlayerException();
-			else if(res == net::MSG::LAST_BIDDER)
-				throw lastBidderException();
+void Client::handleFriendlyGameInvitation(JSON::Dict &message){
+	if (ISSTR(message.get("data"))){
+		Menu _menu;
+		_menu.addToDisplay("   - accept\n");
+		_menu.addToDisplay("   - deny\n");
+		int option;
+		bool chosen = false; // user has to accept or deny, he cannot quit.
+		do
+		{
+			option = _menu.run();
+			switch(option)
+			{
+				case 1:
+					chosen = true;
+					acceptInvitationFromUser(STR(message.get("data")).value());
+					// TODO start to play game
+					break;
+				case 2:
+					chosen = true;
+					denyInvitationFromUser(STR(message.get("data")).value());
+					break;
+				default:
+					break;
+			}
 		}
-	}
-}
-
-void Client::addPlayerOnMarket(int player_id,std::string username, int value){//modif
-	JSON::Dict query, data;
-	data.set(net::MSG::USERNAME,username);
-	data.set(net::MSG::PLAYER_ID,player_id);
-	data.set(net::MSG::BID_VALUE,value);
-	query.set("type", net::MSG::ADD_PLAYER_ON_MARKET_QUERY);
-	query.set("data", data);
-	net::Message msg(0, query.clone());
-	_outbox.push(msg);
-	JSON::Value *serverResponse = _inbox.pop().data;
-	if(ISDICT(serverResponse)){
-		JSON::Dict received = DICT(serverResponse);
-		if(ISSTR(received.get("type")) && ISSTR(received.get("data"))){
-			std::string res = STR((received.get("data"))).value();
-			if(res == net::MSG::PLAYER_ALREADY_ON_MARKET)
-				throw playerAlreadyOnMarketException();
-		}
+		while(!chosen);
 	}
 }
 
-std::vector<Player> Client::getPlayers(std::string username){//modif
-	JSON::Dict query, data;
-	data.set(net::MSG::USERNAME, username);//modif
-	query.set("type", net::MSG::PLAYERS_LIST);
-	query.set("data",data);
-	net::Message msg(0, query.clone());
-	_outbox.push(msg);
-	JSON::Value *serverResponse = _inbox.pop().data;
-	JSON::List toFill;
-	if(ISDICT(serverResponse)){
-		JSON::Dict received = DICT(serverResponse);
-		if(ISLIST(received.get("data"))){
-			toFill = LIST(received.get("data"));
+void Client::acceptInvitationFromUser(string username){
+	JSON::Dict toSend;
+	toSend.set("type", net::MSG::FRIENDLY_GAME_INVITATION_RESPONSE);
+	JSON::Dict data;
+	data.set("username", username);
+	data.set("answer", net::MSG::FRIENDLY_GAME_INVITATION_ACCEPT);
+	toSend.set("data", data);
+	_connection.send(toSend);
+	startMatch();
+}
+
+void Client::denyInvitationFromUser(string username){
+	JSON::Dict toSend;
+	toSend.set("type", net::MSG::FRIENDLY_GAME_INVITATION_RESPONSE);
+	JSON::Dict data;
+	data.set("username", username);
+	data.set("answer", net::MSG::FRIENDLY_GAME_INVITATION_DENY);
+	toSend.set("data", data);
+	_connection.send(toSend);
+}
+
+void Client::startMatch(){
+	JSON::Value *serverBalls = _connection.waitForMsg(net::MSG::MATCH_BALLS);
+	JSON::Dict const &receivedBalls = DICT(serverBalls);
+	_matchManager.initBalls(receivedBalls);
+	JSON::Value *serverSquads = _connection.waitForMsg(net::MSG::MATCH_SQUADS);
+	JSON::Dict const &receivedSquads = DICT(serverSquads);
+	_matchManager.initSquads(receivedSquads);
+	//_connection.waitForMsg(net::MSG::MATCH_START);
+	_matchManager.startMatch();
+}
+
+
+/*Market notifications*/
+
+void Client::handleEndOfSaleNotification(JSON::Dict & json){
+	cout << "<<MESSAGE : SALE ENDED>>" << endl;
+	if(STR(json.get("type")).value()==net::MSG::END_OF_OWNED_SALE_RAPPORT){
+		if(STR(json.get(net::MSG::RAPPORT_SALE_STATUS)).value() == net::MSG::PLAYER_NOT_SOLD){
+			cout << "Your player " << INT(json.get(net::MSG::PLAYER_ID)) << "was not sold. :(" << endl; 
+		}
+		else if(STR(json.get(net::MSG::RAPPORT_SALE_STATUS)).value() == net::MSG::PLAYER_SOLD){
+			cout << "Your player " << INT(json.get(net::MSG::PLAYER_ID)) << " has been sold for " << INT(json.get(net::MSG::BID_VALUE)) 
+			<< " to " << STR(json.get(net::MSG::CURRENT_BIDDER)).value() << endl;
 		}
 	}
-	vector<Player> myplayers;
-	for(size_t i=0; i<toFill.len();++i){
-		Player player(DICT(toFill[i]));
-		myplayers.push_back(player);
+	else if(STR(json.get("type")).value()==net::MSG::WON_SALE_RAPPORT){
+		cout << "You bought player " << INT(json.get(net::MSG::PLAYER_ID)) << " for " << INT(json.get(net::MSG::BID_VALUE)) << "." <<endl;
+		cout << "This player comes from " << STR(json.get(net::MSG::SALE_OWNER)).value() << "'s team." << endl;
 	}
-	delete serverResponse;
-	return myplayers;
+}
+
+
+string Client::splashScreen(){
+	string message;
+	message+="	             _____ _            ____            \n";
+	message+="	            |_   _| |__   ___  |  _ \\ _ __ ___ \n";
+	message+="		      | | | '_ \\ / _ \\ | |_) | '__/ _ \\\n ";
+	message+="		      | | | | | |  __/ |  __/| | | (_) |\n";
+	message+="		      |_| |_| |_|\\___| |_|   |_|  \\___/ \n";
+	message+="		   ___        _     _     _ _ _       _ \n";
+	message+="		  / _ \\ _   _(_) __| | __| (_) |_ ___| |__ \n";
+	message+="		 | | | | | | | |/ _` |/ _` | | __/ __| '_ \\ \n";
+	message+="		 | |_| | |_| | | (_| | (_| | | |_ (__| | | |\n";
+	message+="		  \\__\\_ \\__,_|_|\\__,_|\\__,_|_|\\__\\___|_| |_|\n";
+	message+= "        =======||\\    	Just a game, no bullshit!\n";
+	message+= "    ===========|| \\___________________________  ___            |\n";
+	message+= "  =============|| |___________________________==___|>        - * -\n";
+	message+= "    ===========|| /                                            |\n";
+	message+= "        =======||/ 		\n";
+	message+="		  _ __ ___   __ _ _ __   __ _  __ _  ___ _ __ \n";
+	message+="		 | '_ ` _ \\ / _` | '_ \\ / _` |/ _` |/ _ \\ '__|\n";
+	message+="		 | | | | | | (_| | | | | (_| | (_| |  __/ |\n";
+	message+="		 |_| |_| |_|\\__,_|_| |_|\\__,_|\\__, |\\___|_|\n";
+	message+="   		               	              |___/\n";
+	message+="			Welcome to The Pro Quidditch Manager 2014!\n";
+return message;
+}
+
+string Client::goodBye(){
+	string message;
+	message+= "                 =========================            \n";
+	message+= "   Thank you for playing the Pro Quidditch Manager 2014!\n";
+	message+= "                   See you next time! :)\n";
+	message+= "                 =========================            \n";
+	return message;
 }

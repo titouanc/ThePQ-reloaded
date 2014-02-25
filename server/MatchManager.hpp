@@ -16,6 +16,7 @@
 #include <model/Player.hpp>
 #include <model/Squad.hpp>
 #include <Constants.hpp>
+#include <network/SubConnectionManager.hpp>
 
 using namespace net;
 

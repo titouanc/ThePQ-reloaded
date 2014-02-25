@@ -1,38 +1,88 @@
-#ifndef CONNECTION_HPP
-#define CONNECTION_HPP
+#ifndef __CLIENT_HPP
+#define __CLIENT_HPP
 
-#include <network/ConnectionManager.hpp>
-#include <json/json.hpp>
-#include <Exception.hpp>
-#include <Constants.hpp>
+
+#include <iostream>
 #include <string>
-#include <vector>
-#include "model/Installation.hpp"
+#include <typeinfo>
+#include <cxxabi.h>
+#include "Exception.hpp"
+#include "Menu.hpp"
+#include <Config.hpp>
 #include <model/Player.hpp>
+#include <network/ClientConnectionManager.hpp>
+#include <queue>
+#include "ClientMatchManager.hpp"
+#include <model/Installation.hpp>
 #include <model/Sale.hpp>
+#include "UserManager.hpp"
+#include "UserData.hpp"
+#include "StadiumManager.hpp"
+#include "TeamManager.hpp"
+#include "MarketManager.hpp"
+
+
+struct NetConfig : public Config {
+    std::string host;
+    unsigned short port;
+
+    NetConfig() : Config("netconfig.json"), host("127.0.0.1"), port(32123){}
+    void fromDict(JSON::Dict const & json){
+        if (ISSTR(json.get("host")))
+            host = STR(json.get("host")).value();
+        if (ISINT(json.get("port")))
+            port = INT(json.get("port"));
+    }
+    operator JSON::Dict() const{
+        JSON::Dict res;
+        res.set("host", host);
+        res.set("port", port);
+        return res;
+    }
+};
 
 class Client
 {
 public:
-	Client(std::string host, int port);
-	
-	void loginUser(std::string username, std::string passwd);
-	void doesUserExist(std::string username);
-	void registerUser(std::string username, std::string passwd);
-	
-	std::vector<Installation> getInstallationsList();
-	bool upgradeInstallation(size_t i);
-	bool downgradeInstallation(size_t i);
-	std::vector<std::string> getConnectedUsersList();
-
-	std::vector<Sale> updatePlayersOnSale();
-	void bidOnPlayer(int player_id, std::string username, int value);//modif
-	void addPlayerOnMarket(int player_id, std::string username, int value);//modif
-	std::vector<Player> getPlayers(std::string username);//modif
+	Client(NetConfig const &config);
+	~Client();
+	void run();
 
 private:
-	SharedQueue<net::Message> _inbox, _outbox;
-	net::ClientConnectionManager _connectionManager;
+	// Cache
+	UserData _user;
+	
+	// Managers
+	net::ClientConnectionManager _connection;
+	UserManager _userManager;
+	StadiumManager _stadiumManager;
+	ClientMatchManager _matchManager;
+	TeamManager _teamManager;
+	MarketManager _marketManager;
+	
+	// CLI
+	bool _isRunning;
+	std::string splashScreen();
+	std::string goodBye();
+	
+	// Menus
+	void mainMenu();
+	void managementMenu();
+	void friendlyMatchMenu();
+	void notificationsMenu();
+	
+	// Notifications
+	void handleNotification(JSON::Value* notification);
+	void handleEndOfSaleNotification(JSON::Dict&);
+	void handleFriendlyGameInvitation(JSON::Dict &message);
+	
+	// Match
+	void acceptInvitationFromUser(string username);
+	void denyInvitationFromUser(string username);
+	std::vector<std::string> getConnectedUsersList();
+	void printConnectedUsersList();
+	void chooseUser();
+	void startMatch();
 };
 
-#endif
+#endif // __CLIENT_HPP

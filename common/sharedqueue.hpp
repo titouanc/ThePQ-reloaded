@@ -5,6 +5,7 @@
 #include <pthread.h>
 #include <stdexcept>
 #include <cstring>
+#include <string>
 
 /* Excellent PThread examples: 
  * https://computing.llnl.gov/tutorials/pthreads/ 
@@ -54,6 +55,25 @@ class SharedQueue {
 			}
 			return *res;
 		}
+		
+		
+		T const & front(void){
+			int lock = pthread_mutex_lock(&_mutex);
+			const T * res;
+			if (lock != 0){
+				throw std::runtime_error(
+					std::string("Couldn't acquire lock: ") + strerror(lock)
+				);
+			} else {
+				while (_queue.size() == 0)
+					pthread_cond_wait(&_cond, &_mutex);
+				T & ref = _queue.front();
+				pthread_mutex_unlock(&_mutex);
+				res = &ref;
+			}
+			return *res;
+		}
+		
 		bool available(void){
 			bool res = false;
 			int lock = pthread_mutex_lock(&_mutex);
@@ -63,6 +83,20 @@ class SharedQueue {
 				);
 			} else {
 				res = _queue.size() > 0;
+				pthread_mutex_unlock(&_mutex);
+			}
+			return res;
+		}
+		size_t size()
+		{
+			int lock = pthread_mutex_lock(&_mutex);
+			size_t res;
+			if (lock != 0){
+				throw std::runtime_error(
+					std::string("Couldn't acquire lock: ") + strerror(lock)
+				);
+			} else {
+				res = _queue.size();
 				pthread_mutex_unlock(&_mutex);
 			}
 			return res;
