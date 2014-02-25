@@ -391,16 +391,26 @@ int Server::getPeerID(std::string const &username){
 			return it->first;
 		}
 	}
-	return 0;
+	return -1;
 }
 
 void Server::sendMarketMessage(std::string const &username, const JSON::Dict &message){
-	int to_peer = getPeerID(username);
 	JSON::Dict toSend;
 	toSend.set("type",net::MSG::MARKET_MESSAGE);
 	toSend.set("data",message);
-	Message status(to_peer, toSend.clone());
-	_outbox.push(status); 
+
+	int to_peer = getPeerID(username);
+	if (to_peer >= 0){
+		/* User currently connected to server */
+		Message status(to_peer, toSend.clone());
+		_outbox.push(status); 
+	} else {
+		User *user = User::load(username);
+		if (user != NULL){
+			user->sendOfflineMsg(toSend);
+			delete user;
+		}
+	}
 }
 
 User *Server::getUserByName(std::string username)
