@@ -10,7 +10,8 @@
 #include "Gear.hpp"
 #include "Moveable.hpp"
 
-class Player : public Member, public Moveable 
+
+class Player : public Member, public Moveable
 {
 	friend std::ostream& operator<< (std::ostream&, const Player&);//modif
 public:
@@ -26,7 +27,8 @@ public:
     	if (_jersey != NULL) delete _jersey; 
     }
     operator JSON::Dict();
-    
+    void save();
+    Player* load(int id, std::string username = "");
 
 	int getRemainingLife () const	{ return _lifeBar; }
 	int getRemainingMana ()const	{ return _manaBar; }

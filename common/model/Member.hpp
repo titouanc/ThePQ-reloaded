@@ -6,10 +6,11 @@
 #include <json/json.hpp>
 #include <Constants.hpp>
 #include <sys/stat.h>
+#include <model/Savable.hpp>
 
 using namespace std;
 
-class Member 
+class Member : public Savable<Member>
 {
 public:
 	// TODO set random name in constructor-<<<<load first/last name from playerNames.txt
@@ -22,14 +23,15 @@ public:
     	if (ISINT(json.get("salary"))) _salary = INT(json.get("salary")).value();
     	if (ISINT(json.get("price"))) _price = INT(json.get("price")).value();
     }
-    operator JSON::Dict(){
-		JSON::Dict res;
-		res.set("memberID", _memberID);
-		res.set("name", _name);
-		res.set("salary", _salary);
-		res.set("price", _price);
-		return res;  
-    }
+
+	operator JSON::Dict(){
+	JSON::Dict res;
+	res.set("memberID", _memberID);
+    res.set("name", _name);
+    res.set("salary", _salary);
+    res.set("price", _price);
+    return res;
+}
     /*========Getters===================*/
     string getName () 	{ return _name; }
 	int getSalary () 	{ return _salary; }

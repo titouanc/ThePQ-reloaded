@@ -49,13 +49,29 @@ void PlayerMarket::createSale(const JSON::Dict &json){
 	int bidValue = INT(json.get(net::MSG::BID_VALUE));
 	std::string username = STR(json.get(net::MSG::USERNAME)).value();
 	//create sale, save and start it
-	Player player = loadPlayerInfos (username, player_id);
+	Player player;
+	player.load(player_id);
 	_sales.push_back(new Sale(bidValue, username, player_id, player));
 	Sale *added = getSale(player_id);
-	added->save(added->getSalePath(player_id));
+	added->save();
 	added->start();
 }
 
+std::vector<Player> getPlayers(std::string username){
+	Player util;
+	std::vector<Player> ret;
+	JSON::Value* loaded = JSON::load(util.getPlayersPath(username));
+	JSON::List & players = *((JSON::List*)loaded);
+	for(size_t i = 0; i<players.len();++i){
+		ret.push_back(DICT(players[i]));
+	}
+	delete loaded;
+	return ret;
+}
+
+void removePlayer()
+
+void addPlayer()
 
 
 void PlayerMarket::transfert(Sale * sale){//REFACTOR THIS SHIT
@@ -179,22 +195,22 @@ JSON::Dict PlayerMarket::bid(const JSON::Dict &json){
 	return response;
 }
 
-Player PlayerMarket::loadPlayerInfos(std::string username, int id){
-	Player toFind;
-	JSON::Value* loaded = JSON::load(getPlayersPath(username).c_str());
-	if(ISLIST(loaded)){
-		JSON::List & playersList = LIST(loaded);
-		for(size_t i=0; i<playersList.len();++i){
-			if(ISDICT(playersList[i])){
-				JSON::Dict & player = DICT(playersList[i]);
-				if(INT(player.get(net::MSG::PLAYER_ID)) == id) {
-					toFind = DICT(playersList[i]);
-				}
-			}
-		}
-	}
-	return toFind;
-}
+// Player PlayerMarket::loadPlayerInfos(std::string username, int id){
+// 	Player toFind;
+// 	JSON::Value* loaded = JSON::load(getPlayersPath(username).c_str());
+// 	if(ISLIST(loaded)){
+// 		JSON::List & playersList = LIST(loaded);
+// 		for(size_t i=0; i<playersList.len();++i){
+// 			if(ISDICT(playersList[i])){
+// 				JSON::Dict & player = DICT(playersList[i]);
+// 				if(INT(player.get(net::MSG::PLAYER_ID)) == id) {
+// 					toFind = DICT(playersList[i]);
+// 				}
+// 			}
+// 		}
+// 	}
+// 	return toFind;
+// }
 
 void PlayerMarket::sendMessageToUser(std::string username, const JSON::Dict & message){
 	_server->sendMarketMessage(username, message);

@@ -31,7 +31,7 @@ void Sale::resolveEndOfTurn(){
 	_canBidTeams = _turnTeams;
 	_turnTeams.clear();
 	_timeLeft = getTotalTime();
-	save(getSalePath(_saleID));
+	save();
 	unlock();
 }
 
@@ -116,9 +116,16 @@ void Sale::placeBid(std::string username, int bid_value){
 	unlock();
 }
 
-void Sale::save(std::string path){
+void Sale::save(){
 	JSON::Dict repr = *this;
-	repr.save(path.c_str());
+	repr.save(getSalePath(_saleID).c_str());
+}
+
+Sale* Sale::load(int id, std::string username){
+	JSON::Value* loaded = JSON::load(getSalePath(id).c_str());
+	Sale* sale = new Sale(*((JSON::Dict*)loaded));
+	delete loaded;
+	return sale;
 }
 
 Sale::operator JSON::Dict(){

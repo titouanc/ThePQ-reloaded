@@ -38,8 +38,6 @@ public:
 	void transfert(Sale * sale);
 	//~ void loadSales();
 	Sale * getSale(int id);
-	Player loadPlayerInfos(std::string username, int id);
-	std::string getPlayersPath(std::string owner){return (_playerPath + "users/" + owner + "/" + "players.json");}
 	void sendMessageToUser(std::string, const JSON::Dict&);
 	JSON::Dict allSales();
 	JSON::Dict addPlayer(const JSON::Dict &json);

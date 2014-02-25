@@ -57,10 +57,9 @@ Player::Player(const Player & player) : Member(player._memberID,player._name,pla
 }//modif
 
 Player::operator JSON::Dict(){
-    JSON::Dict res = (Member)*this; 
-    JSON::Dict subres = (Moveable)*this;
+    JSON::Dict res = Member::operator JSON::Dict();
+    JSON::Dict subres = Moveable::operator JSON::Dict();
     res.stealMerge(subres);
-    res.set("memberID", _memberID);
     res.set("maxLife", _maxLife);
     res.set("maxMana", _maxMana);
     res.set("lifeBar", _lifeBar);
@@ -78,6 +77,22 @@ Player::operator JSON::Dict(){
     return res;
 }
 
+void Player::save(){
+
+}
+
+Player* Player::load(int id, std::string username){
+    JSON::Value *loaded = JSON::load(getPlayersFile(username).c_str());
+    JSON::List & players = *((JSON::List*)loaded);
+    for(size_t i =0; i<players.len();++i){
+        if(INT(DICT(players[i]).get(net::MSG::PLAYER_ID)) == id){
+            delete loaded;
+            return (new Player(DICT(players[i])));
+        }
+    }
+    delete loaded;
+    return NULL;
+}
 
 
 void Player::equipBroomstick (Broomstick aBroom){
