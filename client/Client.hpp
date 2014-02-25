@@ -5,7 +5,6 @@
 #include <string>
 #include <typeinfo>
 #include <cxxabi.h>
-#include "Message.hpp"
 #include "Exception.hpp"
 #include "Menu.hpp"
 #include <Config.hpp>
@@ -61,8 +60,9 @@ private:
 	MarketManager _marketManager;
 	
 	// CLI
-	std::string _prompt;
 	bool _isRunning;
+	std::string splashScreen();
+	std::string goodBye();
 	
 	// Menus
 	void mainMenu();
@@ -73,9 +73,9 @@ private:
 	// Notifications
 	void handleNotification(JSON::Value* notification);
 	void handleEndOfSaleNotification(JSON::Dict&);
-
-	// Match
 	void handleFriendlyGameInvitation(JSON::Dict &message);
+	
+	// Match
 	void acceptInvitationFromUser(string username);
 	void denyInvitationFromUser(string username);
 	std::vector<std::string> getConnectedUsersList();

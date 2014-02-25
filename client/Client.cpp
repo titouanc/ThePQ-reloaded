@@ -19,7 +19,6 @@ Client::Client(NetConfig const &config) : 	_user(),
 												_matchManager(_connection, _user),
 												_teamManager(_connection, _user),
 												_marketManager(_connection, _user),
-												_prompt(">"),
 												_isRunning(true)
 {
 }
@@ -30,7 +29,7 @@ Client::~Client()
 
 void Client::run()
 {
-	cout << Message::splashScreen();
+	cout << splashScreen();
 	while (_isRunning == true)
 	{
 		if (_user.isLogged() == true)
@@ -42,7 +41,7 @@ void Client::run()
 			_isRunning = _userManager.displayMenu();
 		}
 	}
-	cout << Message::goodBye();
+	cout << goodBye();
 }	
 
 /* main menu */
@@ -330,4 +329,40 @@ void Client::handleEndOfSaleNotification(JSON::Dict & json){
 		cout << "You bought player " << INT(json.get(net::MSG::PLAYER_ID)) << " for " << INT(json.get(net::MSG::BID_VALUE)) << "." <<endl;
 		cout << "This player comes from " << STR(json.get(net::MSG::SALE_OWNER)).value() << "'s team." << endl;
 	}
+}
+
+
+string Client::splashScreen(){
+	string message;
+	message+="	             _____ _            ____            \n";
+	message+="	            |_   _| |__   ___  |  _ \\ _ __ ___ \n";
+	message+="		      | | | '_ \\ / _ \\ | |_) | '__/ _ \\\n ";
+	message+="		      | | | | | |  __/ |  __/| | | (_) |\n";
+	message+="		      |_| |_| |_|\\___| |_|   |_|  \\___/ \n";
+	message+="		   ___        _     _     _ _ _       _ \n";
+	message+="		  / _ \\ _   _(_) __| | __| (_) |_ ___| |__ \n";
+	message+="		 | | | | | | | |/ _` |/ _` | | __/ __| '_ \\ \n";
+	message+="		 | |_| | |_| | | (_| | (_| | | |_ (__| | | |\n";
+	message+="		  \\__\\_ \\__,_|_|\\__,_|\\__,_|_|\\__\\___|_| |_|\n";
+	message+= "        =======||\\    	Just a game, no bullshit!\n";
+	message+= "    ===========|| \\___________________________  ___            |\n";
+	message+= "  =============|| |___________________________==___|>        - * -\n";
+	message+= "    ===========|| /                                            |\n";
+	message+= "        =======||/ 		\n";
+	message+="		  _ __ ___   __ _ _ __   __ _  __ _  ___ _ __ \n";
+	message+="		 | '_ ` _ \\ / _` | '_ \\ / _` |/ _` |/ _ \\ '__|\n";
+	message+="		 | | | | | | (_| | | | | (_| | (_| |  __/ |\n";
+	message+="		 |_| |_| |_|\\__,_|_| |_|\\__,_|\\__, |\\___|_|\n";
+	message+="   		               	              |___/\n";
+	message+="			Welcome to The Pro Quidditch Manager 2014!\n";
+return message;
+}
+
+string Client::goodBye(){
+	string message;
+	message+= "                 =========================            \n";
+	message+= "   Thank you for playing the Pro Quidditch Manager 2014!\n";
+	message+= "                   See you next time! :)\n";
+	message+= "                 =========================            \n";
+	return message;
 }
