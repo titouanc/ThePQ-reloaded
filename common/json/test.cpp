@@ -511,6 +511,21 @@ TEST(stealmerge)
 	ASSERT(d1.len() == 0);
 ENDTEST()
 
+TEST(dict_shortcut)
+	JSON::Dict d = {
+		{"a", JSON::String("a")},
+		{"b", JSON::Integer(0xB16B00B5)},
+		{"c", JSON::Dict()},
+		{"haha", JSON::List()}
+	};
+
+	ASSERT(ISSTR(d.get("a")));
+	ASSERT(ISINT(d.get("b")));
+	ASSERT(ISDICT(d.get("c")));
+	ASSERT(ISLIST(d.get("haha")))
+	ASSERT(d.len() == 4);
+ENDTEST()
+
 int main(int argc, const char **argv)
 {
 	TestFunc testSuite[] = {
@@ -556,7 +571,8 @@ int main(int argc, const char **argv)
 		ADDTEST(list_assign),
 		ADDTEST(dict_assign),
 		ADDTEST(dict_with_bool),
-		ADDTEST(stealmerge)
+		ADDTEST(stealmerge),
+		ADDTEST(dict_shortcut)
 	};
 
 	return RUN(testSuite);

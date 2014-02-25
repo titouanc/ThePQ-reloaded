@@ -18,6 +18,7 @@
 #include <stdexcept>
 #include <vector>
 #include <unordered_map>
+#include <initializer_list>
 
 /* Convenience cast macros */
 #define INT(obj)   (*((JSON::Integer *)(obj)))
@@ -130,6 +131,12 @@ namespace JSON {
             void append(std::string const & val);
     };
 
+    struct Pair {
+        std::string const & key; 
+        Value const & val;
+        Pair(std::string const & k, Value const & v) : key(k), val(v) {}
+    };
+    
     class Dict : public Value {
         private:
             std::unordered_map<std::string, Value*> _content;
@@ -138,6 +145,7 @@ namespace JSON {
             Dict();
             ~Dict();
             Dict(Dict const & other);
+            Dict(std::initializer_list<Pair> initial);
             Dict & operator=(Dict const & other);
 
             Type type(void) const;
