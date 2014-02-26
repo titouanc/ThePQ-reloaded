@@ -1,54 +1,24 @@
-#include <SFML/Window.hpp>
 #include <iostream>
-#include "Button.hpp"
-#include "MainController.hpp"
 #include <string>
+
+#include "GraphicManager.hpp"
 
 using namespace std;
 using namespace GUI;
 
-class GraphicManager {
-public:
-	GraphicManager(MainController &uic) : _uic(uic), _isRunning(true){}
-	void run(){
-		_uic.window.display();
-		while(_uic.window.isOpen() && _isRunning){
-			sf::Event event;
-			_uic.window.waitEvent(event);
-			if (event.type == sf::Event::MouseButtonPressed 
-				&& event.mouseButton.button == sf::Mouse::Left){
-				_uic.handleClick(event);
-			}
-			else if (event.type == sf::Event::Closed ||
-					(event.type==sf::Event::KeyPressed 
-					&& event.key.code==sf::Keyboard::Escape)){
-				_uic.window.close();
-			}
-		}
-	}
-	void disappear() {
-		_isRunning = false;
-		_uic.deleteTopLayer();
-	}
-protected:
-	MainController &_uic;
-	Layer _layer;
-	bool _isRunning;
-};
-
 class GraphicManager2 : public GraphicManager {
 public:
 	GraphicManager2(MainController &uic) : GraphicManager(uic){
-		Button<GraphicManager2> *button = _layer.addButton<GraphicManager2>(&GraphicManager2::superMethod, this, "gm 2");
+		Button<GraphicManager2> *button = _canvas.addButton<GraphicManager2>(&GraphicManager2::superMethod, this, "gm 2");
 		button->setPos(100, 100);
-		_uic.addLayer(_layer);
+		displayCanvas();
 		run();
 	}
 	~GraphicManager2(){}
 
 	void superMethod() { 
 		cout << "deleting gm2" << endl; 
-		disappear();
+		deleteCanvas();
 	}
 
 };
@@ -56,14 +26,14 @@ public:
 class GraphicManager1 : public GraphicManager {
 public:
 	GraphicManager1(MainController &uic) : GraphicManager(uic){
-		_layer.addButton<GraphicManager1>(&GraphicManager1::myMethod, this, "gm 1");
-		_uic.addLayer(_layer);
+		_canvas.addButton<GraphicManager1>(&GraphicManager1::myMethod, this, "gm 1");
+		displayCanvas();
 		run();
 	}
 
 	void myMethod() { 
 		cout << "constructing gm2!" << endl; 
-		GraphicManager2 gm2(_uic);
+		GraphicManager2 gm2(_controller);
 	}
 };
 
