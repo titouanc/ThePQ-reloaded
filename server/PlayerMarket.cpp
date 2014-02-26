@@ -3,6 +3,7 @@
 #include <sys/stat.h>
 #include <stdio.h>
 #include <Exception.hpp>
+#include "MemoryAccess.hpp"
 
 
 PlayerMarket::PlayerMarket(Server *server): _server(server), _sales(), _marketPath("data/playerMarket/"), _playerPath("data/"),
@@ -26,7 +27,7 @@ void * saleChecker(void * p){
 			if(market->_sales[i]->isOver()){
 				market->deletingLock();
 				market->transfert(market->_sales[i]);
-				remove(market->_sales[i]->getSalePath(market->_sales[i]->getID()).c_str());
+				MemoryAccess::removeFile(*(market->_sales[i]));//TODO
 				delete market->_sales[i];
 				market->_sales.erase(market->_sales.begin()+i);
 				market->deletingUnlock();
@@ -48,30 +49,19 @@ void PlayerMarket::createSale(const JSON::Dict &json){
 	int bidValue = INT(json.get(net::MSG::BID_VALUE));
 	std::string username = STR(json.get(net::MSG::USERNAME)).value();
 	//create sale, save and start it
-	Player player;
-	player.load(player_id);
+	Player player(player_id, username);
+	player = MemoryAccess::load(player);
 	_sales.push_back(new Sale(bidValue, username, player_id, player));
 	Sale *added = getSale(player_id);
 	added->save();
 	added->start();
 }
 
-std::vector<Player> getPlayers(std::string username){
-	Player util;
-	std::vector<Player> ret;
-	JSON::Value* loaded = JSON::load(util.getPlayersPath(username));
-	JSON::List & players = *((JSON::List*)loaded);
-	for(size_t i = 0; i<players.len();++i){
-		ret.push_back(DICT(players[i]));
-	}
-	delete loaded;
+std::vector<Player*> getPlayers(std::string username){//need delete on players!!
+	std::vector<Player*> ret;
+	MemoryAccess::load(ret, username);
 	return ret;
 }
-
-void removePlayer()
-
-void addPlayer()
-
 
 void PlayerMarket::transfert(Sale * sale){//REFACTOR THIS SHIT
 	if(sale->getCurrentBidder().empty()){//Player not sold
@@ -82,33 +72,25 @@ void PlayerMarket::transfert(Sale * sale){//REFACTOR THIS SHIT
 		sendMessageToUser(sale->getOwner(), toOwner);
 	}
 	else{
-		std::vector<Player> from, to;
-		JSON::List delUpdated, addUpdated;
+		std::vector<Player*> from, to;
 		Player *toTransfert;
-		JSON::Value* delLoad = JSON::load(getPlayersPath(sale->getOwner()).c_str());
-		JSON::Value* addLoad = JSON::load(getPlayersPath(sale->getCurrentBidder()).c_str());
-		JSON::List & delTeamPlayers = LIST(delLoad);
-		JSON::List & addTeamPlayers = LIST(addLoad);
-		for(size_t i=0;i<delTeamPlayers.len();++i){
-			if(INT(DICT(delTeamPlayers[i]).get(net::MSG::PLAYER_ID))==sale->getID()){
-				toTransfert = new Player(DICT(delTeamPlayers[i]));
-			}
-			else{
-				from.push_back(Player(DICT(delTeamPlayers[i])));
-			}
+		MemoryAccess::load(from, sale->getOwner());
+		MemoryAccess::load(to, sale->getCurrentBidder());
+		for(size_t i =0;i<from.size();++i){
+			if(from[i]->getMemberID() == sale->getID())
+				toTransfert = new Player(*from[i]);
+				delete from[i];
+				from.erase(from.begin()+i);
 		}
-		for(size_t i=0;i<addTeamPlayers.len();++i){
-			to.push_back(Player(DICT(addTeamPlayers[i])));
-		}
-		to.push_back(*toTransfert);
+		to.push_back(toTransfert);
+		MemoryAccess::save(from);
+		MemoryAccess::save(to);
 		for(size_t i=0;i<from.size();++i){
-			delUpdated.append(JSON::Dict(from[i]));
+			delete from[i];
 		}
 		for(size_t i=0;i<to.size();++i){
-			addUpdated.append(JSON::Dict(to[i]));
+			delete to[i];
 		}
-		delUpdated.save(getPlayersPath(sale->getOwner()).c_str());
-		addUpdated.save(getPlayersPath(sale->getCurrentBidder()).c_str());
 		delete toTransfert;
 		JSON::Dict toOwner, toWinner;
 		toOwner.set("type",net::MSG::END_OF_OWNED_SALE_RAPPORT);

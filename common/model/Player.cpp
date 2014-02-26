@@ -1,4 +1,5 @@
 #include "Player.hpp"
+#include "../../server/MemoryAccess.hpp"
 
 std::ostream& operator<< (std::ostream& out, const Player& player)//modif
     {
@@ -14,6 +15,7 @@ std::ostream& operator<< (std::ostream& out, const Player& player)//modif
         out << "Precision:      " << player._precision << std::endl;
         out << "Chance:         " << player._chance << std::endl;
         out << "ID:             " << player._memberID << std::endl;//modif
+        //TODO : display mum and dad (aka super classes)
         return out;
     }
     
@@ -45,7 +47,7 @@ Player::Player(JSON::Dict const & json) : Member(json), Moveable(json),
         if (ISINT(json.get("chance"))) _chance = INT(json.get("chance")).value();
 }
 
-Player::Player(const Player & player) : Member(player._memberID,player._name,player._salary,player._price), 
+Player::Player(const Player & player) : Member(player._memberID,player._name,player._salary,player._price,player._owner), 
                 Moveable(player._uniqueID,player._speed,player._position), 
                 _maxLife(player._maxLife), _maxMana(player._maxMana),_lifeBar(player._lifeBar), 
                 _manaBar(player._manaBar), _broomstick(), 
@@ -77,22 +79,22 @@ Player::operator JSON::Dict(){
     return res;
 }
 
-void Player::save(){
+//void Player::save(){}
 
-}
 
-Player* Player::load(int id, std::string username){
-    JSON::Value *loaded = JSON::load(getPlayersFile(username).c_str());
-    JSON::List & players = *((JSON::List*)loaded);
-    for(size_t i =0; i<players.len();++i){
-        if(INT(DICT(players[i]).get(net::MSG::PLAYER_ID)) == id){
-            delete loaded;
-            return (new Player(DICT(players[i])));
-        }
-    }
-    delete loaded;
-    return NULL;
-}
+// Player* Player::load(int id, std::string username){
+//     MemoryAccess::load()
+//     JSON::Value *loaded = JSON::load(getPlayersFile(username).c_str());
+//     JSON::List & players = *((JSON::List*)loaded);
+//     for(size_t i =0; i<players.len();++i){
+//         if(INT(DICT(players[i]).get(net::MSG::PLAYER_ID)) == id){
+//             delete loaded;
+//             return (new Player(DICT(players[i])));
+//         }
+//     }
+//     delete loaded;
+//     return NULL;
+// }
 
 
 void Player::equipBroomstick (Broomstick aBroom){

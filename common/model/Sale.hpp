@@ -8,7 +8,6 @@
 #include <pthread.h>
 #include <json/json.hpp>
 #include <model/Player.hpp>
-#include <model/Savable.hpp>
 
 /*
 TODO :
@@ -18,7 +17,7 @@ TODO :
 #define TURN_TIME 30
 #define BIDRATIO 0.05 	//5%
 
-class Sale : public Savable<Sale>{
+class Sale{
 	friend std::ostream& operator<< (std::ostream&, const Sale&);
 private:
 	std::vector<std::string> _turnTeams;
@@ -66,6 +65,6 @@ public:
 	void placeBid(std::string username, int bid_value);
 
 	void save();
-	Sale* load(int id, std::string username="");
+	void load();
 };
 #endif

@@ -1,6 +1,7 @@
 #include "Sale.hpp"
 #include <Constants.hpp>
 #include <Exception.hpp>
+#include "../../server/MemoryAccess.hpp"
 //Thread
 
 void * Sale::staticSaleStart(void * p){
@@ -117,15 +118,11 @@ void Sale::placeBid(std::string username, int bid_value){
 }
 
 void Sale::save(){
-	JSON::Dict repr = *this;
-	repr.save(getSalePath(_saleID).c_str());
+	MemoryAccess::save(*this);
 }
 
-Sale* Sale::load(int id, std::string username){
-	JSON::Value* loaded = JSON::load(getSalePath(id).c_str());
-	Sale* sale = new Sale(*((JSON::Dict*)loaded));
-	delete loaded;
-	return sale;
+void Sale::load(){
+	MemoryAccess::load(*this);
 }
 
 Sale::operator JSON::Dict(){

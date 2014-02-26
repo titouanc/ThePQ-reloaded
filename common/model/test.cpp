@@ -13,14 +13,14 @@ TEST(default_constructor)
 ENDTEST()
 
 TEST(parameters_constructor_and_getters)
-	Installation i("name", 123,3);
+	Installation i("name", 123,3,"michel");
 	ASSERT(i.getLevel() == 3);
 	ASSERT(i.getBaseValue() == 123);
 	ASSERT(i.getCurrentValue() == 16*123);
 ENDTEST()
 
 TEST(setters)
-	Installation i("name", 123,3);
+	Installation i("name", 123,3,"michel");
 	i.setLevel(5);
 	i.setBaseValue(456);
 	ASSERT(i.getLevel() == 5);
@@ -31,7 +31,7 @@ TEST(setters)
 ENDTEST()
 
 TEST(upgrade_installation)
-	Installation inst("name", 100, 0);
+	Installation inst("name", 100, 0,"michel");
 	for (int i = 0; i < 5; ++i){
 		inst.upgrade();
 		ASSERT(inst.getLevel() == i+1);
@@ -40,7 +40,7 @@ TEST(upgrade_installation)
 ENDTEST()
 
 TEST(downgrade_installation)
-	Installation inst("name", 100, 0);
+	Installation inst("name", 100, 0,"michel");
 	inst.upgrade();
 	ASSERT(inst.getDowngradeRefunds() == 200);
 	for (int i = 0; i < 4; ++i){

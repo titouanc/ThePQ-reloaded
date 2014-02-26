@@ -1,9 +1,14 @@
 #include <Constants.hpp>
-#include <MemoryAccess.hpp>
+#include "MemoryAccess.hpp"
 #include "dirent.h"
+#include <stdio.h>
+#include <model/Player.hpp>
+#include <model/Sale.hpp>
+#include <model/Installation.hpp>
+#include "User.hpp"
 
 std::string MemoryAccess::getUserDirectory(std::string username){
-	return memory::USERS_PATH + username + "/";
+	return memory::USERS_DIR + username + "/";
 }
 std::string MemoryAccess::getUserPath(std::string username){
     return getUserDirectory(username) + memory::USER_FILE + memory::FILE_FORMAT;
@@ -47,12 +52,18 @@ template<> void MemoryAccess::save(User& user){
 	mkdir((getUserPath(user.getUsername())+memory::PLAYERS_DIR).c_str(), 0755);
 	mkdir((getUserPath(user.getUsername())+memory::INSTALLATIONS_DIR).c_str(), 0755);
 	JSON::Dict userInfos = user;
-	user.save(getSavePath(user).c_str());
+	userInfos.save(getSavePath(user).c_str());
 }
 
 template<typename T> void MemoryAccess::save(std::vector<T>& vec){
 	for(size_t i=0; i<vec.size();++i){
 		save(vec[i]);
+	}
+}
+
+template<typename T> void MemoryAccess::save(std::vector<T*>& vec){
+	for(size_t i=0; i<vec.size();++i){
+		save(*vec[i]);
 	}
 }
 
@@ -76,18 +87,21 @@ void MemoryAccess::load(std::vector<Installation*>& installs, std::string userna
 }
 
 template<typename T> void MemoryAccess::loadFilesInVector(std::vector<T*>& vec, std::string directory){
-	DIR* rep = NULL;
+	DIR* dir = NULL;
 	struct dirent* file = NULL;
 	dir = opendir(directory.c_str());
-	if(dir==NULL)
-		throw JSON::IOError();
-	while((file = readdir(dir)) != NULL){
-		std::string filename = file->d_name;
-		if(filename[0] != "."){
-			JSON::Value* loaded = JSON::load((directory+filename).c_str());
-			sales.push_back(new T(DICT(loaded)));
-			delete loaded;
+	if(dir!=NULL){		
+		while((file = readdir(dir)) != NULL){
+			if(file->d_name[0] == '.'){
+				JSON::Value* loaded = JSON::load((directory+file->d_name).c_str());
+				vec.push_back(new T(DICT(loaded)));
+				delete loaded;
+			}
 		}
 	}
 	closedir(dir);
+}
+
+template<typename T> void MemoryAccess::removeFile(T& t){
+	remove(getSavePath(t).c_str());
 }

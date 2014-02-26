@@ -5,7 +5,10 @@
 #include <string>
 #include <vector>
 
-class Player, Sale, User, Installation;
+class Player;
+class Sale;
+class User; 
+class Installation;
 namespace MemoryAccess{
 	std::string getUserDirectory(std::string);
 	std::string getUserPath(std::string);
@@ -28,6 +31,7 @@ namespace MemoryAccess{
    	
    	/* Saves a vector of objects depending on each owner's (or/and ID). */
    	template<typename T> void save(std::vector<T>&);
+   	template<typename T> void save(std::vector<T*>&);
 
    	/* Loads the object in memory corresponding to the parameter, the given parameter therefore
    	needs some attributes :
@@ -46,5 +50,7 @@ namespace MemoryAccess{
    	void load(std::vector<Player*>& players, std::string username);
    	void load(std::vector<Installation*>& installs, std::string username);
    	template<typename T> void loadFilesInVector(std::vector<T*>& vec, std::string directory);
+
+   	template<typename T> void removeFile(T&);
 }
 #endif

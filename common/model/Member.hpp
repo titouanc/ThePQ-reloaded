@@ -6,22 +6,22 @@
 #include <json/json.hpp>
 #include <Constants.hpp>
 #include <sys/stat.h>
-#include <model/Savable.hpp>
 
 using namespace std;
 
-class Member : public Savable<Member>
+class Member
 {
 public:
 	// TODO set random name in constructor-<<<<load first/last name from playerNames.txt
-    Member() : _memberID(-1), _name("Lasty Cotter"), _salary(5000), _price(25000){}
-    Member(int memberID,string name,int salary,int price) : _memberID(memberID), _name(name), _salary(salary), 
-    _price(price){}//modif
+    Member() : _memberID(-1), _name("Lasty Cotter"), _salary(5000), _price(25000), _owner(""){}
+    Member(int memberID,string name,int salary,int price,string owner) : _memberID(memberID), _name(name), _salary(salary), 
+    _price(price), _owner(owner){}//modif
     Member(JSON::Dict const& json): Member() {
 		if (ISINT(json.get("memberID"))) _memberID = INT(json.get("memberID"));
     	if (ISSTR(json.get("name"))) _name = STR(json.get("name")).value();
     	if (ISINT(json.get("salary"))) _salary = INT(json.get("salary")).value();
     	if (ISINT(json.get("price"))) _price = INT(json.get("price")).value();
+    	if (ISSTR(json.get(net::MSG::USERNAME))) _owner =  STR(json.get(net::MSG::USERNAME)).value();
     }
 
 	operator JSON::Dict(){
@@ -30,6 +30,7 @@ public:
     res.set("name", _name);
     res.set("salary", _salary);
     res.set("price", _price);
+    res.set(net::MSG::USERNAME, _owner);
     return res;
 }
     /*========Getters===================*/
@@ -37,6 +38,7 @@ public:
 	int getSalary () 	{ return _salary; }
 	int getPrice () 	{ return _price; }
 	int getMemberID()	{ return _memberID; }
+	string getOwner()	{ return _owner; }
 	//Team getOwner () 	{ return _owner; } // TODO
 	//void setOwner (Team aTeam) { _owner = aTeam; } // TODO
 	void setMemberID() { _memberID = Member::getNextMemberID(); }
@@ -47,6 +49,7 @@ protected://modif
     string _name;
 	int _salary;
 	int _price;
+	string _owner;
 	
 	static int getNextMemberID()
 	{
