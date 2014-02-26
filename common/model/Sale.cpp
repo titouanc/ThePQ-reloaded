@@ -1,6 +1,8 @@
 #include "Sale.hpp"
 #include <Constants.hpp>
 #include <Exception.hpp>
+#include <model/MemoryAccess.hpp>
+
 //Thread
 
 void * Sale::staticSaleStart(void * p){
@@ -31,7 +33,7 @@ void Sale::resolveEndOfTurn(){
 	_canBidTeams = _turnTeams;
 	_turnTeams.clear();
 	_timeLeft = getTotalTime();
-	save(getSalePath(_saleID));
+	save();
 	unlock();
 }
 
@@ -116,9 +118,13 @@ void Sale::placeBid(std::string username, int bid_value){
 	unlock();
 }
 
-void Sale::save(std::string path){
+void Sale::save(){
 	JSON::Dict repr = *this;
-	repr.save(path.c_str());
+	MemoryAccess::save(memory::SALE,repr);
+}
+
+void Sale::load(){
+	MemoryAccess::load(memory::SALE,_saleID);
 }
 
 Sale::operator JSON::Dict(){

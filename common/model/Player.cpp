@@ -1,4 +1,5 @@
 #include "Player.hpp"
+#include <model/MemoryAccess.hpp>
 
 std::ostream& operator<< (std::ostream& out, const Player& player)//modif
     {
@@ -14,6 +15,7 @@ std::ostream& operator<< (std::ostream& out, const Player& player)//modif
         out << "Precision:      " << player._precision << std::endl;
         out << "Chance:         " << player._chance << std::endl;
         out << "ID:             " << player._memberID << std::endl;//modif
+        //TODO : display mum and dad (aka super classes)
         return out;
     }
     
@@ -45,7 +47,7 @@ Player::Player(JSON::Dict const & json) : Member(json), Moveable(json),
         if (ISINT(json.get("chance"))) _chance = INT(json.get("chance")).value();
 }
 
-Player::Player(const Player & player) : Member(player._memberID,player._name,player._salary,player._price), 
+Player::Player(const Player & player) : Member(player._memberID,player._name,player._salary,player._price,player._owner), 
                 Moveable(player._uniqueID,player._speed,player._position), 
                 _maxLife(player._maxLife), _maxMana(player._maxMana),_lifeBar(player._lifeBar), 
                 _manaBar(player._manaBar), _broomstick(), 
@@ -57,10 +59,9 @@ Player::Player(const Player & player) : Member(player._memberID,player._name,pla
 }//modif
 
 Player::operator JSON::Dict(){
-    JSON::Dict res = (Member)*this; 
-    JSON::Dict subres = (Moveable)*this;
+    JSON::Dict res = Member::operator JSON::Dict();
+    JSON::Dict subres = Moveable::operator JSON::Dict();
     res.stealMerge(subres);
-    res.set("memberID", _memberID);
     res.set("maxLife", _maxLife);
     res.set("maxMana", _maxMana);
     res.set("lifeBar", _lifeBar);
@@ -78,6 +79,22 @@ Player::operator JSON::Dict(){
     return res;
 }
 
+//void Player::save(){}
+
+
+// Player* Player::load(int id, std::string username){
+//     MemoryAccess::load()
+//     JSON::Value *loaded = JSON::load(getPlayersFile(username).c_str());
+//     JSON::List & players = *((JSON::List*)loaded);
+//     for(size_t i =0; i<players.len();++i){
+//         if(INT(DICT(players[i]).get(net::MSG::PLAYER_ID)) == id){
+//             delete loaded;
+//             return (new Player(DICT(players[i])));
+//         }
+//     }
+//     delete loaded;
+//     return NULL;
+// }
 
 
 void Player::equipBroomstick (Broomstick aBroom){
