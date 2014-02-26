@@ -31,6 +31,7 @@ namespace MemoryAccess
 	JSON::List loadFilesInVec(std::string);
 	void load(std::vector<Installation>*,std::string);
 	void load(std::vector<Player>*,std::string);
+	void load(std::vector<Sale>*);
 
 	void removeFile(Player&);
 	void removeFile(Sale&);

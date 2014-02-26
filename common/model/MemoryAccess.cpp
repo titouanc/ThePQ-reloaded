@@ -121,6 +121,13 @@ void MemoryAccess::load(std::vector<Player> *toFill,std::string username){
 	}
 }
 
+void MemoryAccess::load(std::vector<Sale> *toFill){
+	JSON::List sales = loadFilesInVec(memory::MARKET_PATH);
+	for(size_t i=0;i<sales.len();++i){
+		toFill->push_back(DICT(sales[i]));
+	}
+}
+
 void MemoryAccess::removeFile(Player &player){
 	remove(getPlayerPath(player.getOwner(), player.getMemberID()).c_str());
 }
