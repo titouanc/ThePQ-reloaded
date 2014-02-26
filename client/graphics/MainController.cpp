@@ -18,6 +18,8 @@ void GUI::MainController::addLayer(Layer & layer){
 void GUI::MainController::deleteTopLayer(){
 	if (_layers.size() != 0){
 		_layers.pop();
+		// don't delete the layer that has just been popped, it will be deleted by
+		// its manager
 		if (_layers.size() != 0){
 			_layers.top()->activate();
 			_layers.top()->renderTo(window);
