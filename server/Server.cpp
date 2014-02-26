@@ -120,9 +120,6 @@ void Server::treatMessage(const Message &message)
 					logUserIn(DICT(received.get("data")), message.peer_id);
 				else if (messageType == MSG::REGISTER) 
 					registerUser(DICT(received.get("data")), message.peer_id);
-				// else if (messageType == MSG::DELETE_PLAYER_OF_MARKET_QUERY){//modif
-				// 	deletePlayerOfMarket(DICT(received.get("data")), message.peer_id);
-				// }
 				else if (messageType == MSG::ADD_PLAYER_ON_MARKET_QUERY){
 					addPlayerOnMarket(DICT(received.get("data")), message.peer_id);
 				}
@@ -206,6 +203,8 @@ void Server::logUserIn(const JSON::Dict &credentials, int peer_id)
 			if (user != NULL){
 				if (user->getPassword() == password){
 					// correct password
+					// load the user's team info into Team (installations, players, funds, etc.)
+					user->loadTeam();
 					// mapping user to its peer_id to keep a list of connected users.
 					_users.insert(std::pair<int, User*>(peer_id, user));
 					response.set("data", MSG::USER_LOGIN);

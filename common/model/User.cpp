@@ -2,39 +2,23 @@
 #include <model/MemoryAccess.hpp>
 #include <Constants.hpp>
 
-User::User(const string& username, const string& password) : _username(username), 
-																_password(password), 
-																_funds(500000), _installations()
-{
-	
-}
+User::User(const string& username, const string& password) : 
+_username(username), _password(password), _team(){}
 
 
-User::User(const JSON::Dict* json)
-{
+User::User(const JSON::Dict* json) : User() {
 	setUsername(STR(json->get(net::MSG::USERNAME)).value());
 	setPassword(STR(json->get("password")).value());
-	setFunds(INT(json->get("funds")).value());
 }
 
-User::operator JSON::Dict()
-{
+User::operator JSON::Dict(){
 	JSON::Dict ret;
 	ret.set(net::MSG::USERNAME, _username);
 	ret.set("password", _password);
-	ret.set("funds", _funds);
 	return ret;
 }
 
-int User::buyStuff(int price){
-	if(price>_funds){
-		_funds-=price;
-		return 0;
-	}else return -1;	
-}
-
-User* User::load(string username)
-{
+User* User::load(string username){
 	try {
 		User* user = new User(username, "");
 		*user = MemoryAccess::load(*user);
@@ -46,9 +30,13 @@ User* User::load(string username)
 	}
 }
 
-void User::save()
-{
+void User::save(){
 	MemoryAccess::save(*this);
+}
+
+void User::loadTeam(){
+	_team.setOwner(getUsername());
+	_team.load();
 }
 
 vector<Installation>& User::getInstallations()

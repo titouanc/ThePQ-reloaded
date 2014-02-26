@@ -96,6 +96,7 @@ namespace memory
 	static const std::string USER_FILE = "user";
 	static const std::string PLAYERS_DIR = "Players/";
 	static const std::string INSTALLATIONS_DIR = "Installations/";
+	static const std::string TEAM_INFOS_FILE = "teamInfos";
 	static const std::string FILE_FORMAT = ".json";
 	static const std::string MARKET_PATH = "data/PlayerMarket/";
 	static const std::string SALE_FILE = "_sale";

@@ -31,6 +31,9 @@ std::string MemoryAccess::getInstallationPath(std::string username, std::string 
 std::string MemoryAccess::getSalePath(int id){
 	return memory::MARKET_PATH + std::to_string(id) + memory::SALE_FILE + memory::FILE_FORMAT;
 }
+std::string MemoryAccess::getTeamInfosPath(std::string username){
+	return getUserDirectory(username) + memory::TEAM_INFOS_FILE + memory::FILE_FORMAT;
+}
 
 void MemoryAccess::save(Installation& install){
 	std::string path = getInstallationPath(install.getOwner(), install.getName());
@@ -57,6 +60,11 @@ void MemoryAccess::save(Sale& sale){
 	JSON::Dict toSave = sale;
 	toSave.save(path.c_str());
 }
+void MemoryAccess::save(Team& team){
+	std::string path = getTeamInfosPath(team.getOwner());
+	JSON::Dict toSave = team;
+	toSave.save(path.c_str());
+}
 
 Player MemoryAccess::load(Player& player){
 	JSON::Value *loaded = JSON::load(getPlayerPath(player.getOwner(),player.getMemberID()).c_str());
@@ -81,6 +89,12 @@ Sale MemoryAccess::load(Sale& sale){
 Installation MemoryAccess::load(Installation& install){
 	JSON::Value *loaded = JSON::load(getInstallationPath(install.getOwner(),install.getName()).c_str());
 	Installation ret(DICT(loaded));
+	delete loaded;
+	return ret;
+}
+Team MemoryAccess::load(Team& team){
+	JSON::Value *loaded = JSON::load(getTeamInfosPath(team.getOwner()).c_str());
+	Team ret(DICT(loaded));
 	delete loaded;
 	return ret;
 }
