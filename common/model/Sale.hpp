@@ -19,8 +19,6 @@ TODO :
 
 class PlayerMarket;
 class Sale{
-	friend class PlayerMarket;
-	friend void * saleChecker(void *);
 	friend std::ostream& operator<< (std::ostream&, const Sale&);
 private:
 	std::vector<std::string> _turnTeams;
@@ -28,13 +26,12 @@ private:
 	int _bidValue;
 	float _bidRatio;
 	int _turn;
-	std::string _currentBidder; 		//Team id currently winning bid
+	std::string _currentBidder; 		//User currently winning sale
 	std::string _owner;
 	std::string _marketPath;
 	std::string _playerPath;
 	int _timeLeft;
 	int _saleID;
-	JSON::Dict _repr; 
 	pthread_t _thread;
 	pthread_mutex_t _mymutex;
 	Player _player;
@@ -42,7 +39,7 @@ private:
 
 	static void * staticSaleStart(void * p);
 	void saleStart();
-	void start();
+	
 	void resolveEndOfTurn();
 	void lock(){pthread_mutex_lock(&_mymutex);}
 	void unlock(){pthread_mutex_unlock(&_mymutex);}
@@ -52,25 +49,25 @@ public:
 	Sale(const JSON::Dict & json);
 	Sale(const JSON::Dict & json, const Player & player);
 	Sale(const Sale & other);
-	
+	operator JSON::Dict();
+	void start();
 	std::string getCurrentBidder(){return _currentBidder;}
 	int getID(){return _saleID;}
-	std::string getOwner(){return _owner;}
-	JSON::Dict * getDict(){return &_repr;}
-	std::string getSalePath(int id){return (_marketPath + "sale_" + std::to_string(id) + ".json");}
-	std::string getPlayerPath(std::string owner){return (_playerPath + "users/" + owner + "/" + "players.json");}
+	std::string getOwner() const {return _owner;}
+	std::string getSalePath(int id) const {return (_marketPath + "sale_" + std::to_string(id) + ".json");}
+	std::string getPlayerPath(std::string owner) const {return (_playerPath + "users/" + owner + "/" + "players.json");}
 	int getNextBidValue() const {return (_bidValue + (int)_bidValue*_bidRatio);}
-	int getTotalTime(){
+	int getTotalTime() const {
 		if(_turn==1){return FIRST_TURN;}
 		else{return TURN_TIME;}
 	}
-	bool isOver(){return _ended;}
-	bool isSaler(std::string username);
-	bool allowedToBidForThisTurn(std::string username);
+	int getBidValue() const {return _bidValue;}
+	bool isOver() const {return _ended;}
+	bool isSaler(std::string username) const;
+	bool allowedToBidForThisTurn(std::string username) const;
 	void placeBid(std::string username, int bid_value);
-	
-	void updateDict();
-	void updateDict(int timer);
+
 	void save(std::string path);
+	void load(std::string path, int id);
 };
 #endif
