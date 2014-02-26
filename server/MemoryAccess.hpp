@@ -2,64 +2,49 @@
 #define __MEMORYACCESS_HPP
 
 #include <json/json.hpp>
-#include <Constants.hpp>
 #include <string>
 #include <vector>
 
+class Player, Sale, User, Installation;
 namespace MemoryAccess{
-	std::string getUserPath(std::string username){
-    	return memory::USERS_PATH + username + "/";
-    }
-    std::string getUserFile(std::string username){
-    	return getUserPath(username) + memory::USER_FILE + memory::FILE_FORMAT;
-    }
-   	std::string getPlayerFile(std::string username, int id){
-   		return getUserPath(username) + memory::PLAYERS_DIR + std::to_string(id) + memory::FILE_FORMAT;
-   	}
-   	std::string getInstallationFile(std::string username, std::string type){
-   		return getUserPath(username) + memory::INSTALLATIONS_DIR + type + memory::FILE_FORMAT;
-   	}
-   	std::string getSalePath(int id){
-   		return memory::MARKET_PATH + std::to_string(id) + memory::SALE_FILE + memory::FILE_FORMAT;
-   	}
+	std::string getUserDirectory(std::string);
+	std::string getUserPath(std::string);
+	std::string getPlayersDirectory(std::string);
+   	std::string getPlayerPath(std::string, int);
+   	std::string getInstallationsDirectory(std::string);
+   	std::string getInstallationPath(std::string, std::string);
+   	std::string getSalePath(int);
 
-   	std::string getSavePath(Player& player){
-   		return getPlayerFile(player.getOwner(), player.getMemberID());
-   	}
-  	std::string getSavePath(Sale& sale){
-   		return getSalePath(sale.getID());
-   	}
-   	std::string getSavePath(User& user){
-   		return getUserPath(user.getUsername());
-   	}
+   	std::string getSavePath(Player&);
+  	std::string getSavePath(Sale&);
+   	std::string getSavePath(User&);
+   	std::string getSavePath(Installation&);
 
-   	template<typename T> void save(T& t){
-   	/* Saves the object given as parameter. An operator JSON::Dict() for this object is needed. */
-   		JSON::Dict toSave = t;
-   		toSave.save(getSavePath(t).c_str());
-   	}
-   	template<> void save(User& user){
-   	/* Global saves for an user (user infos + installations + players). */
-   		mkdir(getUserPath(user.getUsername()).c_str(), 0755);
-   		mkdir((getUserPath(user.getUsername())+PLAYERS_DIR).c_str(), 0755);
-   		mkdir((getUserPath(user.getUsername())+INSTALLATIONS_DIR).c_str(), 0755);
-   		save(user.getPlayers());
-   		save(user.getInstallations());
-   		JSON::Dict userInfos = user;
-   		user.save(getUserFile(user.getUsername()).c_str());
-   	}
+	/* Saves the object given as parameter. An operator JSON::Dict() for this object is required. */
+   	template<typename T> void save(T&);
 
-   	template<> void save(std::vector<Player>& players){
-   	/* Saves a vector of players depending on each owner's. */
-   		for(size_t i=0; i<players.size();++i){
-   			JSON::Dict toSave = player[i];
-   			toSave.save(getPlayerFile(player[i].getOwner(),player[i].getMemberID()));
-   		}
-   	}
+   	/* Saves the user's infos and creates the needed directories. */
+   	template<> void save(User&);
+   	
+   	/* Saves a vector of objects depending on each owner's (or/and ID). */
+   	template<typename T> void save(std::vector<T>&);
 
-	template<> void save(std::vector<Installation>& installs){
+   	/* Loads the object in memory corresponding to the parameter, the given parameter therefore
+   	needs some attributes :
+   		+ Sale : needs ID;
+   		+ Player : needs owner (username) and ID;
+   		+ User : needs username;
+   		+ Installation : needs owner (username) and type (Fan Shop, etc.). */
+   	template<typename T> T load(T&);
 
-   	}
-
+   	/* The next functions will fill the given vector with respectively :
+   		+ all the sales in memory;
+   		+ all the players of the user given as parameter;
+   		+ all the installations of the user given as parameter.
+   	N.B. : the values in the vectors are dynamically allocated ! */
+   	void load(std::vector<Sale*>& sales);
+   	void load(std::vector<Player*>& players, std::string username);
+   	void load(std::vector<Installation*>& installs, std::string username);
+   	template<typename T> void loadFilesInVector(std::vector<T*>& vec, std::string directory);
 }
 #endif

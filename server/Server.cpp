@@ -23,6 +23,8 @@ Server::Server(NetConfig const & config) :
 	_connectionManager(_inbox, _outbox, config.ip.c_str(), config.port, config.maxClients),
 	market(new PlayerMarket(this)),_matches()
 {
+	mkdir(memory::USERS_PATH.c_str(), 0755);
+	mkdir(memory::MARKET_PATH.c_str(), 0755);
 	_connectionManager.start();
 	cout << "Launched server on " << _connectionManager.ip() << ":" << _connectionManager.port() << endl;
 }

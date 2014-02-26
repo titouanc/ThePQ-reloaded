@@ -7,7 +7,6 @@
 
 PlayerMarket::PlayerMarket(Server *server): _server(server), _sales(), _marketPath("data/playerMarket/"), _playerPath("data/"),
 _thread(),_runChecker(true), _deleting(PTHREAD_MUTEX_INITIALIZER) {
-	mkdir(_marketPath.c_str(), 0755);
 	//loadSales();
 	startChecker();
 }

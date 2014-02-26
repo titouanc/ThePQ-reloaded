@@ -86,6 +86,8 @@ void User::saveInstallations()
 	json.save(path.c_str());
 }
 
+ 
+
 void User::createUser(){
 	// Initialization
 	JSON::Dict json = *this;
