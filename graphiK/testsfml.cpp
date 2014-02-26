@@ -68,15 +68,8 @@ class GraphicPitch {
 							dest.draw(_grass);
 						}
 					}
-					xwin += _size;
 				}
-				ywin += vOffset();
 			}
-			drawOverlay(dest, game2GUI(0, 0));
-			drawOverlay(dest, game2GUI(_pitch.xmin(), 0));
-			drawOverlay(dest, game2GUI(_pitch.xmax()-1, 0));
-			drawOverlay(dest, game2GUI(0, _pitch.ymin()));
-			drawOverlay(dest, game2GUI(0, _pitch.ymax()-1));
 		}
 
 		/* Translate a position in GUI coordinate system to game coordinates
@@ -87,7 +80,6 @@ class GraphicPitch {
 			if (! _pitch.isValid(x, y)){
 				x--;
 			}
-			cout << pos.toJson() << " -> " << x << ", " << y;
 			return Position(x, y);
 		}
 		Position GUI2game(int x, int y, int left=0, int top=0){
@@ -96,7 +88,6 @@ class GraphicPitch {
 		Position game2GUI(Position const & pos){
 			int x = (width()-_size)/2 + pos.x()*_size/2;
 			int y = (height()-vOffset())/2 - pos.y()*vOffset();
-			cout << pos.toJson() << " -> " << x << ", " << y << endl;
 			return Position(x, y);
 		}
 		Position game2GUI(int x, int y, int left=0, int top=0){
@@ -120,7 +111,7 @@ class GraphicPitch {
 			
 			drawOverlay(dest, clicked);
 			for (size_t i=0; i<6; i++){
-				for (int j=1; j<=3; j++)
+				for (int j=1; j<=5; j++)
 					drawOverlay(dest, game2GUI(gamepos + j*Pitch::directions[i]));
 			}
 
