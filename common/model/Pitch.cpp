@@ -10,6 +10,14 @@ const Position Pitch::NorthWest(-1, 1);
 const Position Pitch::SouthWest(-1, -1);
 const Position Pitch::NorthEast(1, 1);
 const Position Pitch::SouthEast(1, -1);
+const Position Pitch::directions[6] = {
+	Pitch::West, 
+	Pitch::NorthWest, 
+	Pitch::NorthEast, 
+	Pitch::East, 
+	Pitch::SouthEast, 
+	Pitch::SouthWest
+};
 
 size_t Pitch::_index(int x, int y) const 
 {

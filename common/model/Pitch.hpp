@@ -19,6 +19,7 @@ class Pitch {
 		static const Position SouthWest;
 		static const Position NorthEast;
 		static const Position SouthEast;
+		static const Position directions[6];
 
 		Pitch(size_t width = 100, size_t height = 36);
 		~Pitch();
