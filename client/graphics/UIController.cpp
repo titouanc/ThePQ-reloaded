@@ -21,6 +21,7 @@ void UIController::deleteTopLayer(){
 			_layers.top()->renderTo(_window);
 		}
 	}
+	_window.display();
 }
 
 void UIController::handleClick(sf::Event e){

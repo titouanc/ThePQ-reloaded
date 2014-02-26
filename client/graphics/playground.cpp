@@ -57,7 +57,7 @@ public:
 	GraphicManager1(UIController &uic) : GraphicManager(uic){
 		_layer.addButton<GraphicManager1>(&GraphicManager1::myMethod, this, "gm 1");
 		_uic.addLayer(_layer);
-		run("1");
+		run();
 	}
 
 	void myMethod() { 
@@ -74,11 +74,8 @@ int main(int argc, char const *argv[])
 	//window.setFramerateLimit(60);
 
 	UIController controller;
-	cout << "a" << endl;	
 	GraphicManager1 d(controller);
-	cout << "b" << endl;
 	//controller.run();
-	cout << "c" << endl;
 	//GraphicManager2 od(&controller);
 	/*
 	try{
