@@ -64,6 +64,10 @@ class Pitch {
 		bool isValid(int x, int y) const {
 			return abs(x%2) == abs(y%2);
 		}
+
+		bool isValid(Position const & pos) const {
+			return isValid(pos.x(), pos.y());
+		}
 		
 		bool isInKeeperZone(int x, int y) const {
 			return isInEastKeeperZone(x, y) || isInWestKeeperZone(x, y);
@@ -78,6 +82,9 @@ class Pitch {
 		bool isEastGoal(int x, int y) const;
 		bool isGoal(int x, int y) const {
 			return isEastGoal(x, y) || isWestGoal(x, y);
+		}
+		bool isGoal(Position const & pos) const {
+			return isGoal(pos.x(), pos.y());
 		}
 
 		// TODO DOC

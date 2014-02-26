@@ -48,9 +48,7 @@ class GraphicPitch {
 		int width() const {return _pitch.width()*_size/2;}
 		int height() const {return _pitch.height()*vOffset();}
 		void renderTo(sf::RenderTarget & dest){
-			int xwin=0, ywin=0;
 			for (int y=_pitch.ymax()-1; y>=_pitch.ymin(); y--){
-				xwin = (abs(y)%2)*_size/2;
 				for (int x=_pitch.xmin(); x<_pitch.xmax(); x++){
 					if (! _pitch.isValid(x, y)) 
 						continue; /* Skip position that arent valid */
@@ -108,11 +106,12 @@ class GraphicPitch {
 			Position const & clicked = game2GUI(gamepos);
 			Position const & delta = clicked-arg;
 
-			
-			drawOverlay(dest, clicked);
 			for (size_t i=0; i<6; i++){
-				for (int j=1; j<=5; j++)
-					drawOverlay(dest, game2GUI(gamepos + j*Pitch::directions[i]));
+				for (int j=1; j<=5; j++){
+					Position toDraw = gamepos + j*Pitch::directions[i];
+					if (_pitch.inEllipsis(toDraw))
+						drawOverlay(dest, game2GUI(toDraw));
+				}
 			}
 
 			if (abs(delta.x()) > _size || abs(delta.y()) > vOffset()){
@@ -136,12 +135,7 @@ int main(int argc, const char **argv)
 	window.setFramerateLimit(5);
 
 	window.clear(sf::Color(0xff, 0xff, 0xff, 0xff));
-	try {
-		repr.renderTo(window);
-	} catch (const char *msg){
-		cerr << msg << endl;
-		return EXIT_FAILURE;
-	}
+	repr.renderTo(window);
 	
 	bool hasChanged = false;
 	window.display();
@@ -153,13 +147,22 @@ int main(int argc, const char **argv)
 		}
 		sf::Event ev;
 		window.waitEvent(ev);
-		if (
-			(ev.type == sf::Event::Closed) ||
-			(ev.type==sf::Event::KeyPressed && ev.key.code==sf::Keyboard::Escape)
-		)
+		if (ev.type == sf::Event::Closed)
 			window.close();
-
-		else if (ev.type == sf::Event::MouseButtonPressed){
+		else if (ev.type == sf::Event::KeyPressed){
+			switch (ev.key.code){
+				case sf::Keyboard::Escape:
+					window.close();
+					break;
+				case sf::Keyboard::Space:
+					window.clear(sf::Color(0xff, 0xff, 0xff, 0xff));
+					repr.renderTo(window);
+					hasChanged = true;
+					break;
+				default:
+					break;
+			}
+		}else if (ev.type == sf::Event::MouseButtonPressed){
 			repr.onClick(window, ev.mouseButton.x, ev.mouseButton.y);
 			hasChanged = true;
 		}
