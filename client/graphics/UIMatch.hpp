@@ -11,7 +11,6 @@ class UIMatch : public sf::Drawable {
         sf::CircleShape _hexagon;   /* hilight shape */
         sf::RenderTexture _bkg;     /* Constant background */
         sf::RenderTexture _overlay; /* Variable foreground */
-        bool _hasChanged;           /* The overlay has changed */
 
         /* Return the radius of a circle enclosing an hexagon of _size */
         double circleSize(void) const;

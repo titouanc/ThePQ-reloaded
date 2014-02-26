@@ -18,8 +18,9 @@ Position UIMatch::GUI2pitch(Position const & pos) const
 
 Position UIMatch::pitch2GUI(Position const & pos) const
 {
-    int x = (width()-_size)/2 + pos.x()*_size/2;
-    int y = (height()-vAlign())/2 - pos.y()*vAlign();
+    int w=width(), h=height(), s=_size;
+    int x = (w-s)/2 + pos.x()*s/2;
+    int y = (h-vAlign())/2 - pos.y()*vAlign();
     return Position(x, y);
 }
 
@@ -51,12 +52,11 @@ void UIMatch::createBackground(void)
     goal.setScale(sf::Vector2f(rx, ry));
 
     _bkg.create(width(), height());
-    _bkg.clear(sf::Color::White);
+    _bkg.clear(sf::Color(0, 0, 0, 0));
 
     for (int y=_pitch.ymax()-1; y>=_pitch.ymin(); y--){
         for (int x=_pitch.xmin(); x<_pitch.xmax(); x++){
             Position pos(x, y);
-
             if (! _pitch.isValid(pos)) 
                 continue; /* Skip position that arent valid */
 
@@ -78,8 +78,6 @@ void UIMatch::createBackground(void)
             }
         }
     }
-
-    _hasChanged = true;
 }
 
 double UIMatch::circleSize(void) const 
@@ -105,10 +103,10 @@ UIMatch::UIMatch(Pitch & pitch, int hexagonSize) :
     _size(hexagonSize), 
     _hexagon(circleSize(), 6), /* 6 sides regular polygon */
     _bkg(),
-    _overlay(),
-    _hasChanged(false)
+    _overlay()
 {
     _overlay.create(width(), height());
+    _overlay.clear(sf::Color(0x00, 0x00, 0x00, 0x00));
     createBackground();
 }
 
@@ -127,8 +125,7 @@ void UIMatch::draw(sf::RenderTarget &target, sf::RenderStates states) const
 {
     sf::Sprite bkg(_bkg.getTexture()), overlay(_overlay.getTexture());
     target.draw(bkg);
-    target.draw(overlay);
-    _hasChanged = false;
+    //target.draw(overlay);
 }
 
 /* Draw a colored hexagon at given position */
@@ -137,10 +134,4 @@ void UIMatch::hilight(Position const & pos, sf::Color const & color)
     _hexagon.setFillColor(color);
     _hexagon.setPosition(pos.x(), pos.y());
     _overlay.draw(_hexagon);
-    _hasChanged = true;
-}
-
-bool UIMatch::hasChanged(void) const
-{
-    return _hasChanged;
 }
