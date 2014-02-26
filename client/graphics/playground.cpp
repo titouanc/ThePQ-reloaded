@@ -1,30 +1,66 @@
 #include <SFML/Window.hpp>
 #include <iostream>
 #include "UIButton.hpp"
+#include "UIController.hpp"
 
 using namespace std;
 
-class Dummy {
+class GraphicManager2 {
 public:
-	void myMethod() { cout << "called!" << endl; }
+	GraphicManager2(UIController &uic) : _uic(uic), _isRunning(true){
+		UIButton<GraphicManager2> *button = _layer.addButton<GraphicManager2>(&GraphicManager2::superMethod, this, "gm 2");
+		button->setPos(100, 100);
+		_uic.addLayer(_layer);
+
+	}
+	~GraphicManager2(){
+	}
+	void run(){
+		_uic.run();
+	}
+	void superMethod() { 
+		cout << "deleting gm2" << endl; 
+		_uic.deleteTopLayer();
+	}
+private:
+	UIController &_uic;
+	UILayer _layer;
+	bool _isRunning;
 };
 
-class OtherDummy {
+class GraphicManager1 {
 public:
-	void superMethod() { cout << "other dummy!" << endl; }
+	GraphicManager1(UIController &uic) : _uic(uic){
+		_layer.addButton<GraphicManager1>(&GraphicManager1::myMethod, this, "gm 1");
+		_uic.addLayer(_layer);
+	}
+
+	void myMethod() { 
+		cout << "constructing gm2!" << endl; 
+		GraphicManager2 gm2(_uic);
+		gm2.run();
+	}
+private:
+	UIController &_uic;
+	UILayer _layer;
+	bool _isRunning;
 };
+
+
 
 int main(int argc, char const *argv[])
 {
-	sf::RenderWindow window(sf::VideoMode(1280, 720), "The Pro Quidditch");
-	window.setFramerateLimit(60);
-	window.clear(sf::Color(0xff, 0xff, 0xff, 0xff));
+	//sf::RenderWindow window(sf::VideoMode(1280, 720), "The Pro Quidditch");
+	//window.setFramerateLimit(60);
 
-	Dummy d;
-	UIButton<Dummy> newButton(&Dummy::myMethod, &d, "This button's size is determined by its text.");
-
-	OtherDummy od;
-	UIButton<OtherDummy> otherButton(&OtherDummy::superMethod, &od, "Wow", 10, 60);
+	UIController controller;
+	cout << "a" << endl;	
+	GraphicManager1 d(controller);
+	cout << "b" << endl;
+	controller.run();
+	cout << "c" << endl;
+	//GraphicManager2 od(&controller);
+	/*
 	try{
 		newButton.renderTo(window);
 		otherButton.renderTo(window);
@@ -32,7 +68,8 @@ int main(int argc, char const *argv[])
 		cerr << msg << endl;
 		return EXIT_FAILURE;
 	}
-
+	*/
+	/*
 	window.display();
 	while(window.isOpen()){
 		sf::Event ev;
@@ -51,6 +88,7 @@ int main(int argc, char const *argv[])
 		)
 			window.close();
 	}
+	*/
 	return 0;
 }
 

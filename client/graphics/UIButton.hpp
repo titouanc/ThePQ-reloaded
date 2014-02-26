@@ -1,6 +1,6 @@
 #ifndef UIBUTTON_HPP
 #define UIBUTTON_HPP
-#endif
+
 
 #include <SFML/Graphics.hpp>
 #include <string>
@@ -37,6 +37,11 @@ public:
 		dest.draw(_text);
 	}
 
+	void setPos(int x, int y){
+		_x = x; 
+		_y = y;
+	}
+
 	void setText(std::string text) { _text.setString(text); }
 private:
 	sf::Text _text;
@@ -47,3 +52,5 @@ private:
 	int _h;
 	sf::RectangleShape _backgroundRect;
 };
+
+#endif
