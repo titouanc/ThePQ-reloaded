@@ -1,7 +1,8 @@
 #include "Sale.hpp"
 #include <Constants.hpp>
 #include <Exception.hpp>
-#include "../../server/MemoryAccess.hpp"
+#include <model/MemoryAccess.hpp>
+
 //Thread
 
 void * Sale::staticSaleStart(void * p){
@@ -118,11 +119,12 @@ void Sale::placeBid(std::string username, int bid_value){
 }
 
 void Sale::save(){
-	MemoryAccess::save(*this);
+	JSON::Dict repr = *this;
+	MemoryAccess::save(memory::SALE,repr);
 }
 
 void Sale::load(){
-	MemoryAccess::load(*this);
+	MemoryAccess::load(memory::SALE,_saleID);
 }
 
 Sale::operator JSON::Dict(){

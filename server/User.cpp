@@ -1,4 +1,6 @@
 #include "User.hpp"
+#include <model/MemoryAccess.hpp>
+#include <Constants.hpp>
 
 User::User(const string& username, const string& password) : _username(username), 
 																_password(password), 
@@ -10,7 +12,7 @@ User::User(const string& username, const string& password) : _username(username)
 
 User::User(const JSON::Dict* json)
 {
-	setUsername(STR(json->get("username")).value());
+	setUsername(STR(json->get(net::MSG::USERNAME)).value());
 	setPassword(STR(json->get("password")).value());
 	setFunds(INT(json->get("funds")).value());
 }
@@ -18,7 +20,7 @@ User::User(const JSON::Dict* json)
 User::operator JSON::Dict()
 {
 	JSON::Dict ret;
-	ret.set("username", _username);
+	ret.set(net::MSG::USERNAME, _username);
 	ret.set("password", _password);
 	ret.set("funds", _funds);
 	return ret;
@@ -31,17 +33,11 @@ int User::buyStuff(int price){
 	}else return -1;	
 }
 
-string User::getUserDirectoryPath(){
-	return USER_PATH + getUsername() + "/";
-}
-
 User* User::load(string username)
 {
-	string fileName = USER_PATH + username + "/user.json";
 	try {
-		JSON::Value* json = JSON::load(fileName.c_str());
-		User* user = new User((JSON::Dict*)json);
-		delete json;
+		JSON::Dict infos = MemoryAccess::load(memory::USER,username);
+		User* user = new User(&infos);
 		return user;
 	}
 	catch (JSON::IOError e)
@@ -52,38 +48,29 @@ User* User::load(string username)
 
 void User::save()
 {
-	JSON::Dict json = *this;
-	mkdir(getUserDirectoryPath().c_str(), 0755);
-	json.save(string(getUserDirectoryPath() + "user.json").c_str());
+	JSON::Dict tosave = *this;
+	MemoryAccess::save(memory::USER,tosave);
 }
 
 vector<Installation>& User::getInstallations()
 {
 	if (_installations.empty())
 	{
-		string listPath = getUserDirectoryPath() + "installations.json";
-		JSON::Value* json = JSON::load(listPath);
-		JSON::List installationsList = LIST(json);
+		JSON::List installationsList = MemoryAccess::loadList(memory::INST_LIST,_username);
 		for (size_t i = 0; i < installationsList.len(); ++i)
 		{
 			_installations.push_back(DICT(installationsList[i]));
 		}
-		delete json;
 	}
 	return _installations;
 }
 
 void User::saveInstallations()
 {
-	JSON::List json;
-	for (size_t i = 0; i < _installations.size(); ++i)
-	{
-		JSON::Dict install = _installations[i];
-		json.append(install);
+	for(size_t i =0; i<_installations.size();++i){
+		JSON::Dict inst = _installations[i];
+		MemoryAccess::save(memory::INSTALLATION, inst);
 	}
-	string path = getUserDirectoryPath() + "installations.json";
-	cout << json.dumps() << endl;
-	json.save(path.c_str());
 }
 
  
@@ -91,22 +78,23 @@ void User::saveInstallations()
 void User::createUser(){
 	// Initialization
 	JSON::Dict json = *this;
-	mkdir("data", 0755);
-	mkdir("data/users/", 0755);
-	mkdir(getUserDirectoryPath().c_str(), 0755);
-	json.save(string(getUserDirectoryPath() + "user.json").c_str());
+	MemoryAccess::save(memory::USER,json);
 	// Installations
-	fstream f("data/skel/installations.json", fstream::in|fstream::binary);
-	f << noskipws;
-	istream_iterator<unsigned char> begin(f);
-	istream_iterator<unsigned char> end;
-	fstream f2(getUserDirectoryPath()+"installations.json", fstream::out|fstream::trunc|fstream::binary);
-	ostream_iterator<char> begin2(f2);
-	copy(begin, end, begin2);
+	/* TODO : add function in MemoryAccess to load object bases (like the basic 
+	installations in data/skel/installations.json */
+	JSON::Value *loaded = JSON::load(std::string("data/skel/installations.json").c_str());
+	JSON::List & base = LIST(loaded);
+	for(size_t i=0;i<base.len();++i){
+		DICT(base[i]).set(net::MSG::USERNAME,getUsername());
+		MemoryAccess::save(memory::INSTALLATION,DICT(base[i]));
+	}
+	delete loaded;
 	// Players
 	JSON::List baseSquad;
 	generateBaseSquad(baseSquad);
-	baseSquad.save(string(getUserDirectoryPath()+ "players.json").c_str());
+	for(size_t i=0;i<baseSquad.len();++i){
+		MemoryAccess::save(memory::PLAYER,DICT(baseSquad[i]));
+	}
 }
 
 
@@ -116,6 +104,7 @@ void User::generateBaseSquad(JSON::List &toFill){
 		Player p;
 		p.setName(gen.getRandomName());
 		p.setMemberID();
+		p.setOwner(getUsername());
 		JSON::Value* tmp = JSON::load("data/skel/broomstick.json");
 		p.equipBroomstick(DICT(tmp));
 		delete tmp;

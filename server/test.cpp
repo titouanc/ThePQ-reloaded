@@ -3,13 +3,15 @@
 #include <lighttest/lighttest.hpp>
 #include "MatchManager.hpp"
 #include "RandomNameGenerator.hpp"
+#include <Constants.hpp>
+#include <iostream>
 
 TEST(user)
 	User user("usertest", "passwdtest");
 	ASSERT(user.getUsername() == "usertest");
 	ASSERT(user.getPassword() == "passwdtest");
 	JSON::Dict json = user;
-	ASSERT(STR(json.get("username")).value() == "usertest");
+	ASSERT(STR(json.get(net::MSG::USERNAME)).value() == "usertest");
 	ASSERT(STR(json.get("password")).value() == "passwdtest");
 	user = User(&json);
 	ASSERT(user.getUsername() == "usertest");

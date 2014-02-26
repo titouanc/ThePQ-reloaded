@@ -39,6 +39,8 @@ public:
 	int getPrice () 	{ return _price; }
 	int getMemberID()	{ return _memberID; }
 	string getOwner()	{ return _owner; }
+
+	void setOwner(string owner)	{_owner=owner; }
 	//Team getOwner () 	{ return _owner; } // TODO
 	//void setOwner (Team aTeam) { _owner = aTeam; } // TODO
 	void setMemberID() { _memberID = Member::getNextMemberID(); }

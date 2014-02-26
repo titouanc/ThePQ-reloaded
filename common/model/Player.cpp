@@ -1,5 +1,5 @@
 #include "Player.hpp"
-#include "../../server/MemoryAccess.hpp"
+#include <model/MemoryAccess.hpp>
 
 std::ostream& operator<< (std::ostream& out, const Player& player)//modif
     {

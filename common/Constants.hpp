@@ -92,6 +92,13 @@ namespace net
 
 namespace memory
 {
+	static const std::string PLAYER = "DT_P";
+	static const std::string SALE = "DT_S";
+	static const std::string INSTALLATION = "DT_I";
+	static const std::string USER = "DT_U";
+	static const std::string PLAYERS_LIST = "DT_PL";
+	static const std::string INST_LIST = "DT_IL";
+	static const std::string SALES_LIST = "DT_SL";
 	static const std::string USERS_DIR = "data/users/";
 	static const std::string USER_FILE = "user";
 	static const std::string PLAYERS_DIR = "Players/";
@@ -99,6 +106,7 @@ namespace memory
 	static const std::string FILE_FORMAT = ".json";
 	static const std::string MARKET_PATH = "data/PlayerMarket/";
 	static const std::string SALE_FILE = "_sale";
+	static const std::string INST_TYPE = "name";
 	static const std::string FANSHOP = "Fan Shop";
 	static const std::string MEDIC_CENTER = "Medical Center";
 	static const std::string FOOD_STAND = "Food Stand";

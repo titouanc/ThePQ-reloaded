@@ -5,6 +5,8 @@
 #include <cxxabi.h>
 #include <Constants.hpp>
 #include "Server.hpp"
+#include <sys/stat.h>
+#include <model/MemoryAccess.hpp>
 
 using namespace std;
 using namespace net;
@@ -240,14 +242,17 @@ void Server::checkIfUserExists(string username, int peer_id)
 	delete user;
 }
 
-void Server::sendInstallationsList(int peer_id)
+void Server::sendInstallationsList(int peer_id)//should use getInstallations instead of accessing memory
 {
-	string listPath = _users[peer_id]->getUserDirectoryPath() + "installations.json";
-	JSON::Value * installationsList = JSON::load(listPath);
+	std::string username = _users[peer_id]->getUsername();
+	JSON::List installationsList = MemoryAccess::loadList(memory::INST_LIST,username);
 	JSON::Dict msg;
 	msg.set("type", net::MSG::INSTALLATIONS_LIST);
-	msg.set("data", *installationsList);
+	msg.set("data", installationsList);
 	_outbox.push(Message(peer_id, msg.clone()));
+	for(size_t i = 0;i<installationsList.len();++i){
+		delete installationsList[i];
+	}
 }
 
 void Server::upgradeInstallation(int peer_id, size_t i)
@@ -362,14 +367,12 @@ void Server::placeBidOnPlayer(const JSON::Dict &bid, int peer_id){
 	_outbox.push(status);
 }
 
-void Server::sendPlayersList(const JSON::Dict &data, int peer_id){//modif
-	std::string username = STR(data.get(net::MSG::USERNAME));
-	std::string path = "data/users/" + username + "/"+"players.json";
-	JSON::Dict playersList;
-	JSON::List players = LIST(JSON::load(path.c_str()));
-	playersList.set("type",net::MSG::PLAYERS_LIST);
-	playersList.set("data", players);
-	Message status(peer_id, playersList.clone());
+void Server::sendPlayersList(const JSON::Dict &data, int peer_id){//TODO : Should not access memory
+	JSON::List players = MemoryAccess::loadList(memory::PLAYERS_LIST,STR(data.get(net::MSG::USERNAME)).value());
+	JSON::Dict toSend;
+	toSend.set("type",net::MSG::PLAYERS_LIST);
+	toSend.set("data", players);
+	Message status(peer_id, toSend.clone());
 	_outbox.push(status);
 }
 

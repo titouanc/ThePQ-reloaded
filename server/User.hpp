@@ -40,7 +40,6 @@ public:
 	int buyStuff(int price);
 	void getPayed(int price) {_funds+=price;}
 	/* Serializable */
-	string getUserDirectoryPath();
 	void save();
 
 	static User* load(string username);

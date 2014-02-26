@@ -61,4 +61,21 @@ class playerAlreadyOnMarketException : public std::runtime_error{
 public:
 	playerAlreadyOnMarketException():runtime_error("Player already on market"){};
 };
+
+//-------Memory Access-----------
+class wrongLoadFunctionException : public std::runtime_error{
+public:
+	wrongLoadFunctionException():runtime_error("Bad function call for required datatype"){};
+};
+
+class wrongRemoveFunctionException : public std::runtime_error{
+public:
+	wrongRemoveFunctionException():runtime_error("Bad function call for required datatype"){};
+};
+
+class IncompleteDictException : public std::runtime_error{
+public:
+	IncompleteDictException():runtime_error("Incomplete or wrong dict for required data type"){};
+};
+
 #endif // __EXCEPTION_HPP

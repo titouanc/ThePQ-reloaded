@@ -3,7 +3,7 @@
 #include <sys/stat.h>
 #include <stdio.h>
 #include <Exception.hpp>
-#include "MemoryAccess.hpp"
+#include <model/MemoryAccess.hpp>
 
 
 PlayerMarket::PlayerMarket(Server *server): _server(server), _sales(), _marketPath("data/playerMarket/"), _playerPath("data/"),
@@ -27,7 +27,7 @@ void * saleChecker(void * p){
 			if(market->_sales[i]->isOver()){
 				market->deletingLock();
 				market->transfert(market->_sales[i]);
-				MemoryAccess::removeFile(*(market->_sales[i]));//TODO
+				MemoryAccess::removeFile(memory::SALE,market->_sales[i]->getID());
 				delete market->_sales[i];
 				market->_sales.erase(market->_sales.begin()+i);
 				market->deletingUnlock();
@@ -49,17 +49,19 @@ void PlayerMarket::createSale(const JSON::Dict &json){
 	int bidValue = INT(json.get(net::MSG::BID_VALUE));
 	std::string username = STR(json.get(net::MSG::USERNAME)).value();
 	//create sale, save and start it
-	Player player(player_id, username);
-	player = MemoryAccess::load(player);
+	Player player(MemoryAccess::load(memory::PLAYER,username,player_id));
 	_sales.push_back(new Sale(bidValue, username, player_id, player));
 	Sale *added = getSale(player_id);
 	added->save();
 	added->start();
 }
 
-std::vector<Player*> getPlayers(std::string username){//need delete on players!!
-	std::vector<Player*> ret;
-	MemoryAccess::load(ret, username);
+std::vector<Player> getPlayers(std::string username){
+	std::vector<Player> ret;
+	JSON::List players = MemoryAccess::loadList(memory::PLAYERS_LIST,username);
+	for(size_t i = 0;i<players.len();++i){
+		ret.push_back(DICT(players[i]));
+	}
 	return ret;
 }
 
@@ -71,40 +73,40 @@ void PlayerMarket::transfert(Sale * sale){//REFACTOR THIS SHIT
 		toOwner.set(net::MSG::PLAYER_ID, sale->getID());
 		sendMessageToUser(sale->getOwner(), toOwner);
 	}
-	else{
-		std::vector<Player*> from, to;
-		Player *toTransfert;
-		MemoryAccess::load(from, sale->getOwner());
-		MemoryAccess::load(to, sale->getCurrentBidder());
-		for(size_t i =0;i<from.size();++i){
-			if(from[i]->getMemberID() == sale->getID())
-				toTransfert = new Player(*from[i]);
-				delete from[i];
-				from.erase(from.begin()+i);
-		}
-		to.push_back(toTransfert);
-		MemoryAccess::save(from);
-		MemoryAccess::save(to);
-		for(size_t i=0;i<from.size();++i){
-			delete from[i];
-		}
-		for(size_t i=0;i<to.size();++i){
-			delete to[i];
-		}
-		delete toTransfert;
-		JSON::Dict toOwner, toWinner;
-		toOwner.set("type",net::MSG::END_OF_OWNED_SALE_RAPPORT);
-		toOwner.set(net::MSG::RAPPORT_SALE_STATUS, net::MSG::PLAYER_SOLD);
-		toOwner.set(net::MSG::PLAYER_ID, sale->getID());
-		toOwner.set(net::MSG::BID_VALUE, sale->getBidValue());
-		toOwner.set(net::MSG::CURRENT_BIDDER, sale->getCurrentBidder());
-		sendMessageToUser(sale->getOwner(), toOwner);
-		toWinner.set("type",net::MSG::WON_SALE_RAPPORT);
-		toWinner.set(net::MSG::PLAYER_ID,sale->getID());
-		toWinner.set(net::MSG::BID_VALUE, sale->getBidValue());
-		toWinner.set(net::MSG::SALE_OWNER, sale->getOwner());
-		sendMessageToUser(sale->getCurrentBidder(), toWinner);
-	}
+	// else{
+	// 	std::vector<Player*> from, to;
+	// 	Player *toTransfert;
+	// 	MemoryAccess::load(from, sale->getOwner());
+	// 	MemoryAccess::load(to, sale->getCurrentBidder());
+	// 	for(size_t i =0;i<from.size();++i){
+	// 		if(from[i]->getMemberID() == sale->getID())
+	// 			toTransfert = new Player(*from[i]);
+	// 			delete from[i];
+	// 			from.erase(from.begin()+i);
+	// 	}
+	// 	to.push_back(toTransfert);
+	// 	MemoryAccess::save(from);
+	// 	MemoryAccess::save(to);
+	// 	for(size_t i=0;i<from.size();++i){
+	// 		delete from[i];
+	// 	}
+	// 	for(size_t i=0;i<to.size();++i){
+	// 		delete to[i];
+	// 	}
+	// 	delete toTransfert;
+	// 	JSON::Dict toOwner, toWinner;
+	// 	toOwner.set("type",net::MSG::END_OF_OWNED_SALE_RAPPORT);
+	// 	toOwner.set(net::MSG::RAPPORT_SALE_STATUS, net::MSG::PLAYER_SOLD);
+	// 	toOwner.set(net::MSG::PLAYER_ID, sale->getID());
+	// 	toOwner.set(net::MSG::BID_VALUE, sale->getBidValue());
+	// 	toOwner.set(net::MSG::CURRENT_BIDDER, sale->getCurrentBidder());
+	// 	sendMessageToUser(sale->getOwner(), toOwner);
+	// 	toWinner.set("type",net::MSG::WON_SALE_RAPPORT);
+	// 	toWinner.set(net::MSG::PLAYER_ID,sale->getID());
+	// 	toWinner.set(net::MSG::BID_VALUE, sale->getBidValue());
+	// 	toWinner.set(net::MSG::SALE_OWNER, sale->getOwner());
+	// 	sendMessageToUser(sale->getCurrentBidder(), toWinner);
+	// }
 }
 
 
