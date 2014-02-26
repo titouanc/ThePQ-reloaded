@@ -2,48 +2,68 @@
 #include <iostream>
 #include "UIButton.hpp"
 #include "UIController.hpp"
+#include <string>
 
 using namespace std;
 
-class GraphicManager2 {
+class GraphicManager {
 public:
-	GraphicManager2(UIController &uic) : _uic(uic), _isRunning(true){
-		UIButton<GraphicManager2> *button = _layer.addButton<GraphicManager2>(&GraphicManager2::superMethod, this, "gm 2");
-		button->setPos(100, 100);
-		_uic.addLayer(_layer);
-
-	}
-	~GraphicManager2(){
-	}
+	GraphicManager(UIController &uic) : _uic(uic), _isRunning(true){}
 	void run(){
-		_uic.run();
+		_uic._window.display();
+		while(_uic._window.isOpen() && _isRunning){
+			sf::Event event;
+			_uic._window.waitEvent(event);
+			if (event.type == sf::Event::MouseButtonPressed 
+				&& event.mouseButton.button == sf::Mouse::Left){
+				_uic.handleClick(event);
+			}
+			else if (event.type == sf::Event::Closed ||
+					(event.type==sf::Event::KeyPressed 
+					&& event.key.code==sf::Keyboard::Escape)){
+				_uic._window.close();
+			}
+		}
 	}
-	void superMethod() { 
-		cout << "deleting gm2" << endl; 
+	void disappear() {
+		_isRunning = false;
 		_uic.deleteTopLayer();
 	}
-private:
+protected:
 	UIController &_uic;
 	UILayer _layer;
 	bool _isRunning;
 };
 
-class GraphicManager1 {
+class GraphicManager2 : public GraphicManager {
 public:
-	GraphicManager1(UIController &uic) : _uic(uic){
+	GraphicManager2(UIController &uic) : GraphicManager(uic){
+		UIButton<GraphicManager2> *button = _layer.addButton<GraphicManager2>(&GraphicManager2::superMethod, this, "gm 2");
+		button->setPos(100, 100);
+		_uic.addLayer(_layer);
+		run();
+	}
+	~GraphicManager2(){}
+
+	void superMethod() { 
+		cout << "deleting gm2" << endl; 
+		disappear();
+	}
+
+};
+
+class GraphicManager1 : public GraphicManager {
+public:
+	GraphicManager1(UIController &uic) : GraphicManager(uic){
 		_layer.addButton<GraphicManager1>(&GraphicManager1::myMethod, this, "gm 1");
 		_uic.addLayer(_layer);
+		run("1");
 	}
 
 	void myMethod() { 
 		cout << "constructing gm2!" << endl; 
 		GraphicManager2 gm2(_uic);
-		gm2.run();
 	}
-private:
-	UIController &_uic;
-	UILayer _layer;
-	bool _isRunning;
 };
 
 
@@ -57,7 +77,7 @@ int main(int argc, char const *argv[])
 	cout << "a" << endl;	
 	GraphicManager1 d(controller);
 	cout << "b" << endl;
-	controller.run();
+	//controller.run();
 	cout << "c" << endl;
 	//GraphicManager2 od(&controller);
 	/*

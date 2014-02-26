@@ -9,7 +9,6 @@
 class UIController {
 public:
 	UIController();
-	void run();
 	void addLayer(UILayer& layer);
 	void deleteTopLayer();
 
