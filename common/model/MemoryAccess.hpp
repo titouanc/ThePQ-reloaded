@@ -5,7 +5,10 @@
 #include <string>
 #include <vector>
 
-
+class Installation;
+class User;
+class Player;
+class Sale;
 namespace MemoryAccess
 {
 	std::string getUserDirectory(std::string);
@@ -16,20 +19,22 @@ namespace MemoryAccess
 	std::string getInstallationPath(std::string, std::string);
 	std::string getSalePath(int);
 
-	void save(std::string, JSON::Dict&);
+	void save(Installation&);
+	void save(User&);
+	void save(Player&);
+	void save(Sale&);
 
-	JSON::Dict load(std::string, std::string, int);
-	JSON::Dict load(std::string, std::string);
-	JSON::Dict load(std::string, std::string, std::string);
-	JSON::Dict load(std::string, int);
+	Player load(Player&);
+	User load(User&);
+	Sale load(Sale&);
+	Installation load(Installation&);
+	JSON::List loadFilesInVec(std::string);
+	void load(std::vector<Installation>*,std::string);
+	void load(std::vector<Player>*,std::string);
 
-	JSON::List loadFilesInDir(std::string);
-	JSON::List loadList(std::string);
-	JSON::List loadList(std::string, std::string);
-
-	void removeFile(std::string, std::string);
-	void removeFile(std::string, int);
-	void removeFile(std::string, std::string, int);
-	void removeFile(std::string, std::string, std::string);
+	void removeFile(Player&);
+	void removeFile(Sale&);
+	void removeFile(User&);
+	void removeFile(Installation&);
 }
 #endif

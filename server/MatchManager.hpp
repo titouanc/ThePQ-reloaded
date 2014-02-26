@@ -11,7 +11,7 @@
 #include <model/Player.hpp>
 #include <model/Ball.hpp>
 #include <cstring>
-#include "User.hpp"
+#include <model/User.hpp>
 #include <network/ConnectionManager.hpp>
 #include <model/Player.hpp>
 #include <model/Squad.hpp>

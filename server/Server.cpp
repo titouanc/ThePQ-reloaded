@@ -245,14 +245,16 @@ void Server::checkIfUserExists(string username, int peer_id)
 void Server::sendInstallationsList(int peer_id)//should use getInstallations instead of accessing memory
 {
 	std::string username = _users[peer_id]->getUsername();
-	JSON::List installationsList = MemoryAccess::loadList(memory::INST_LIST,username);
+	std::vector<Installation>* toLoad = new std::vector<Installation>;
+	MemoryAccess::load(toLoad,username);
+	JSON::List installationsList;
+	for(size_t i = 0; i<toLoad->size();++i){
+		installationsList.append(JSON::Dict((*toLoad)[i]));
+	}
 	JSON::Dict msg;
 	msg.set("type", net::MSG::INSTALLATIONS_LIST);
 	msg.set("data", installationsList);
 	_outbox.push(Message(peer_id, msg.clone()));
-	for(size_t i = 0;i<installationsList.len();++i){
-		delete installationsList[i];
-	}
 }
 
 void Server::upgradeInstallation(int peer_id, size_t i)
@@ -368,12 +370,18 @@ void Server::placeBidOnPlayer(const JSON::Dict &bid, int peer_id){
 }
 
 void Server::sendPlayersList(const JSON::Dict &data, int peer_id){//TODO : Should not access memory
-	JSON::List players = MemoryAccess::loadList(memory::PLAYERS_LIST,STR(data.get(net::MSG::USERNAME)).value());
+	std::vector<Player> *players = new std::vector<Player>;
+	MemoryAccess::load(players, STR(data.get(net::MSG::USERNAME)).value());
+	JSON::List jsonPlayers;
+	for(size_t i = 0; i<players->size();++i){
+		jsonPlayers.append(JSON::Dict((*players)[i]));
+	}
 	JSON::Dict toSend;
 	toSend.set("type",net::MSG::PLAYERS_LIST);
-	toSend.set("data", players);
+	toSend.set("data", jsonPlayers);
 	Message status(peer_id, toSend.clone());
 	_outbox.push(status);
+	delete players;
 }
 
 int Server::getPeerID(std::string const &username){

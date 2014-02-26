@@ -36,8 +36,8 @@ int User::buyStuff(int price){
 User* User::load(string username)
 {
 	try {
-		JSON::Dict infos = MemoryAccess::load(memory::USER,username);
-		User* user = new User(&infos);
+		User* user = new User(username, "");
+		*user = MemoryAccess::load(*user);
 		return user;
 	}
 	catch (JSON::IOError e)
@@ -48,19 +48,20 @@ User* User::load(string username)
 
 void User::save()
 {
-	JSON::Dict tosave = *this;
-	MemoryAccess::save(memory::USER,tosave);
+	MemoryAccess::save(*this);
 }
 
 vector<Installation>& User::getInstallations()
 {
 	if (_installations.empty())
 	{
-		JSON::List installationsList = MemoryAccess::loadList(memory::INST_LIST,_username);
-		for (size_t i = 0; i < installationsList.len(); ++i)
+		vector<Installation>* toLoad = new vector<Installation>;
+		MemoryAccess::load(toLoad,_username);
+		for (size_t i = 0; i < toLoad->size(); ++i)
 		{
-			_installations.push_back(DICT(installationsList[i]));
+			_installations.push_back((*toLoad)[i]);
 		}
+		delete toLoad;
 	}
 	return _installations;
 }
@@ -68,8 +69,7 @@ vector<Installation>& User::getInstallations()
 void User::saveInstallations()
 {
 	for(size_t i =0; i<_installations.size();++i){
-		JSON::Dict inst = _installations[i];
-		MemoryAccess::save(memory::INSTALLATION, inst);
+		MemoryAccess::save(_installations[i]);
 	}
 }
 
@@ -77,23 +77,24 @@ void User::saveInstallations()
 
 void User::createUser(){
 	// Initialization
-	JSON::Dict json = *this;
-	MemoryAccess::save(memory::USER,json);
+	MemoryAccess::save(*this);
 	// Installations
 	/* TODO : add function in MemoryAccess to load object bases (like the basic 
 	installations in data/skel/installations.json */
 	JSON::Value *loaded = JSON::load(std::string("data/skel/installations.json").c_str());
 	JSON::List & base = LIST(loaded);
 	for(size_t i=0;i<base.len();++i){
-		DICT(base[i]).set(net::MSG::USERNAME,getUsername());
-		MemoryAccess::save(memory::INSTALLATION,DICT(base[i]));
+		Installation inst(DICT(base[i]));
+		inst.setOwner(getUsername());
+		MemoryAccess::save(inst);
 	}
 	delete loaded;
 	// Players
 	JSON::List baseSquad;
 	generateBaseSquad(baseSquad);
 	for(size_t i=0;i<baseSquad.len();++i){
-		MemoryAccess::save(memory::PLAYER,DICT(baseSquad[i]));
+		Player player(DICT(baseSquad[i]));
+		MemoryAccess::save(player);
 	}
 }
 
