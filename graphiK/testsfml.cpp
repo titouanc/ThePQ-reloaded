@@ -19,15 +19,14 @@ class GraphicPitch {
 		Pitch & _pitch;
 		int _size;
 		sf::Texture _grass_texture, _sand_texture, _goal_texture;
-		sf::CircleShape _grass, _sand;
-		sf::RectangleShape _overlay;
+		sf::CircleShape _grass, _sand, _overlay;
 		sf::Sprite _goal;
 		double vOffset(void) const {return H_VOFF*_size;}
 		double circleSize(void) const {return H_SQ2C*_size;}
 	public:
 		GraphicPitch(Pitch & pitch, unsigned cell_size=25) : 
 		_pitch(pitch), _size(cell_size), _grass(circleSize(), 6), 
-		_sand(circleSize(), 6), _overlay(sf::Vector2f(cell_size, cell_size)) {
+		_sand(circleSize(), 6), _overlay(circleSize(), 6) {
 			if (! _grass_texture.loadFromFile("textures/grass1.png"))
 				throw "File not found !";
 			_grass.setTexture(&_grass_texture);
@@ -83,9 +82,13 @@ class GraphicPitch {
 		/* Translate a position in GUI coordinate system to game coordinates
 		   where the upper left corner of the pitch is at (left,top) in window */
 		Position GUI2game(Position const & pos){
-			int x = (2*pos.x() - (width()-_size)/2)/_size;
-			int y = (pos.y() - (height()-vOffset())/2)/vOffset();
-			return Position(round(x), round(y));
+			int x = 1 + (2*pos.x() - _size/2 - width())/_size;
+			int y = ((height()-vOffset())/2 - pos.y())/vOffset();
+			if (! _pitch.isValid(x, y)){
+				x--;
+			}
+			cout << pos.toJson() << " -> " << x << ", " << y;
+			return Position(x, y);
 		}
 		Position GUI2game(int x, int y, int left=0, int top=0){
 			return GUI2game(Position(x, y)) - Position(left, top);
@@ -94,7 +97,7 @@ class GraphicPitch {
 			int x = (width()-_size)/2 + pos.x()*_size/2;
 			int y = (height()-vOffset())/2 - pos.y()*vOffset();
 			cout << pos.toJson() << " -> " << x << ", " << y << endl;
-			return Position(round(x), round(y));
+			return Position(x, y);
 		}
 		Position game2GUI(int x, int y, int left=0, int top=0){
 			return game2GUI(Position(x, y)) + Position(left, top);
@@ -110,10 +113,17 @@ class GraphicPitch {
 
 		void onClick(sf::RenderTarget & dest, int x, int y){
 			Position arg(x, y);
-			Position const & clicked = game2GUI(GUI2game(arg));
+			Position const & gamepos = GUI2game(arg);
+			Position const & clicked = game2GUI(gamepos);
 			Position const & delta = clicked-arg;
 
+			
 			drawOverlay(dest, clicked);
+			for (size_t i=0; i<6; i++){
+				for (int j=1; j<=3; j++)
+					drawOverlay(dest, game2GUI(gamepos + j*Pitch::directions[i]));
+			}
+
 			if (abs(delta.x()) > _size || abs(delta.y()) > vOffset()){
 				JSON::Dict res = {
 					{"event", arg.toJson()},
