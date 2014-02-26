@@ -1,19 +1,20 @@
 #include <SFML/Window.hpp>
 #include <iostream>
 #include "UIButton.hpp"
-#include "UIController.hpp"
+#include "MainController.hpp"
 #include <string>
 
 using namespace std;
+using namespace GUI;
 
 class GraphicManager {
 public:
-	GraphicManager(UIController &uic) : _uic(uic), _isRunning(true){}
+	GraphicManager(MainController &uic) : _uic(uic), _isRunning(true){}
 	void run(){
-		_uic._window.display();
-		while(_uic._window.isOpen() && _isRunning){
+		_uic.window.display();
+		while(_uic.window.isOpen() && _isRunning){
 			sf::Event event;
-			_uic._window.waitEvent(event);
+			_uic.window.waitEvent(event);
 			if (event.type == sf::Event::MouseButtonPressed 
 				&& event.mouseButton.button == sf::Mouse::Left){
 				_uic.handleClick(event);
@@ -21,7 +22,7 @@ public:
 			else if (event.type == sf::Event::Closed ||
 					(event.type==sf::Event::KeyPressed 
 					&& event.key.code==sf::Keyboard::Escape)){
-				_uic._window.close();
+				_uic.window.close();
 			}
 		}
 	}
@@ -30,14 +31,14 @@ public:
 		_uic.deleteTopLayer();
 	}
 protected:
-	UIController &_uic;
+	MainController &_uic;
 	UILayer _layer;
 	bool _isRunning;
 };
 
 class GraphicManager2 : public GraphicManager {
 public:
-	GraphicManager2(UIController &uic) : GraphicManager(uic){
+	GraphicManager2(MainController &uic) : GraphicManager(uic){
 		UIButton<GraphicManager2> *button = _layer.addButton<GraphicManager2>(&GraphicManager2::superMethod, this, "gm 2");
 		button->setPos(100, 100);
 		_uic.addLayer(_layer);
@@ -54,7 +55,7 @@ public:
 
 class GraphicManager1 : public GraphicManager {
 public:
-	GraphicManager1(UIController &uic) : GraphicManager(uic){
+	GraphicManager1(MainController &uic) : GraphicManager(uic){
 		_layer.addButton<GraphicManager1>(&GraphicManager1::myMethod, this, "gm 1");
 		_uic.addLayer(_layer);
 		run();
@@ -73,7 +74,7 @@ int main(int argc, char const *argv[])
 	//sf::RenderWindow window(sf::VideoMode(1280, 720), "The Pro Quidditch");
 	//window.setFramerateLimit(60);
 
-	UIController controller;
+	MainController controller;
 	GraphicManager1 d(controller);
 	//controller.run();
 	//GraphicManager2 od(&controller);
