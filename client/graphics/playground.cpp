@@ -1,6 +1,6 @@
 #include <SFML/Window.hpp>
 #include <iostream>
-#include "UIButton.hpp"
+#include "Button.hpp"
 #include "MainController.hpp"
 #include <string>
 
@@ -32,14 +32,14 @@ public:
 	}
 protected:
 	MainController &_uic;
-	UILayer _layer;
+	Layer _layer;
 	bool _isRunning;
 };
 
 class GraphicManager2 : public GraphicManager {
 public:
 	GraphicManager2(MainController &uic) : GraphicManager(uic){
-		UIButton<GraphicManager2> *button = _layer.addButton<GraphicManager2>(&GraphicManager2::superMethod, this, "gm 2");
+		Button<GraphicManager2> *button = _layer.addButton<GraphicManager2>(&GraphicManager2::superMethod, this, "gm 2");
 		button->setPos(100, 100);
 		_uic.addLayer(_layer);
 		run();
