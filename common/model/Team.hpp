@@ -8,6 +8,7 @@
 #include <vector>
 #include <model/MemoryAccess.hpp>
 #include <Constants.hpp>
+#include <Exception.hpp>
 
 class Team{
 private:
@@ -61,9 +62,37 @@ public:
 	void setOwner(std::string owner){_owner=owner;}
 	std::string getName(){return _name;}
 	int getFunds(){return _funds;}
-	void setFunds(int amount){ _funds = amount;}
+	void getPayed(int amount){_funds+=amount;}
+	void buy(int amount){_funds-=amount;}
 	std::vector<Player>& getPlayers(){return _players;}
 	std::vector<Installation>& getInstallations(){return _installations;}
+
+	bool removePlayer(int id){
+		for(size_t i=0;i<_players.size();++i){
+			if(_players[i].getMemberID()==id){
+				MemoryAccess::removeObject(_players[i]);
+				_players.erase(_players.begin()+i);
+				return true;
+			}
+		}
+		return false;
+	}
+
+	void addPlayer(Player &player){
+		player.setOwner(getOwner());
+		MemoryAccess::save(player);
+		_players.push_back(player);
+	}
+
+	Player getPlayer(int id){
+		for(size_t i=0;i<_players.size();++i){
+			if(_players[i].getMemberID() == id){
+				return _players[i];
+			}
+		}
+		throw PlayerNotFoundException();
+	}
+
 
 	void generateBaseSquad(){
 		RandomNameGenerator gen;

@@ -318,7 +318,7 @@ void Client::handleEndOfSaleNotification(JSON::Dict & json){
 	cout << "<<MESSAGE : SALE ENDED>>" << endl;
 	if(STR(json.get("type")).value()==net::MSG::END_OF_OWNED_SALE_RAPPORT){
 		if(STR(json.get(net::MSG::RAPPORT_SALE_STATUS)).value() == net::MSG::PLAYER_NOT_SOLD){
-			cout << "Your player " << INT(json.get(net::MSG::PLAYER_ID)) << "was not sold. :(" << endl; 
+			cout << "Your player " << INT(json.get(net::MSG::PLAYER_ID)) << " was not sold. :(" << endl; 
 		}
 		else if(STR(json.get(net::MSG::RAPPORT_SALE_STATUS)).value() == net::MSG::PLAYER_SOLD){
 			cout << "Your player " << INT(json.get(net::MSG::PLAYER_ID)) << " has been sold for " << INT(json.get(net::MSG::BID_VALUE)) 

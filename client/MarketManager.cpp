@@ -204,7 +204,7 @@ void MarketManager::printPlayers()
 {
 	cout << "================ YOUR PLAYERS ================" << endl;
 	for(size_t i =0; i<_user.players.size();++i){
-		cout << _user.players[i] << endl; //modif
+		cout << _user.players[i] << endl;
 	}
 	cout << "==============================================" << endl;
 }

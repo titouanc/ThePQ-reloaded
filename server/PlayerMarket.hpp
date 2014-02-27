@@ -17,8 +17,6 @@ class PlayerMarket{
 private:
 	Server *_server;
 	std::vector<Sale*> _sales;
-	std::string _marketPath;
-	std::string _playerPath;
 	pthread_t _thread;
 	bool _runChecker;
 	pthread_mutex_t _deleting;
@@ -30,8 +28,8 @@ public:
 	PlayerMarket(Server*);
 	~PlayerMarket();
 	void createSale(const JSON::Dict &json);
-	void transfert(Sale * sale);
-	void loadSales();
+	void resolveEndOfSale(Sale * sale);
+	void transfert(std::string,std::string,int,int);
 	Sale * getSale(int id);
 	void sendMessageToUser(std::string, const JSON::Dict&);
 	JSON::Dict allSales();

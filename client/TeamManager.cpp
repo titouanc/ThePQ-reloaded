@@ -27,6 +27,7 @@ void TeamManager::displayMenu()
 }
 
 void TeamManager::loadPlayers(){
+	_user.players.clear();
 	JSON::Dict query, data;
 	data.set(net::MSG::USERNAME, _user.username);
 	query.set("type", net::MSG::PLAYERS_LIST);
@@ -48,10 +49,7 @@ void TeamManager::loadPlayers(){
 }
 
 void TeamManager::printPlayers(){
-	if (_user.players.size() == 0)
-	{
-		loadPlayers();
-	}
+	loadPlayers();
 	cout << "================ YOUR PLAYERS ================" << endl;
 	for(size_t i =0; i<_user.players.size();++i){
 		cout << _user.players[i] << endl; //modif

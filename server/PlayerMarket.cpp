@@ -6,7 +6,7 @@
 #include <model/MemoryAccess.hpp>
 
 
-PlayerMarket::PlayerMarket(Server *server): _server(server), _sales(), _marketPath("data/playerMarket/"), _playerPath("data/"),
+PlayerMarket::PlayerMarket(Server *server): _server(server), _sales(),
 _thread(),_runChecker(true), _deleting(PTHREAD_MUTEX_INITIALIZER) {
 	MemoryAccess::load(_sales);
 	for(size_t i=0;i<_sales.size();++i){
@@ -29,7 +29,7 @@ void * saleChecker(void * p){
 		for(size_t i = 0; i<market->_sales.size();++i){
 			if(market->_sales[i]->isOver()){
 				market->deletingLock();
-				market->transfert(market->_sales[i]);
+				market->resolveEndOfSale(market->_sales[i]);
 				MemoryAccess::removeObject(*(market->_sales[i]));
 				delete market->_sales[i];
 				market->_sales.erase(market->_sales.begin()+i);
@@ -60,7 +60,42 @@ void PlayerMarket::createSale(const JSON::Dict &json){//TODO : Should not access
 	added->start();
 }
 
-void PlayerMarket::transfert(Sale * sale){//REFACTOR THIS SHIT
+void PlayerMarket::transfert(std::string fromName, std::string toName, int id, int bidValue){
+	User* from = _server->getUserByName(fromName);
+	Player toTransfert;
+	if(from == NULL){	//User not connected : load.
+		Team fromTeam(fromName);
+		fromTeam.load();
+		toTransfert = fromTeam.getPlayer(id);
+		fromTeam.removePlayer(id);
+		fromTeam.getPayed(bidValue);
+		fromTeam.save();
+	}
+	else{				//User connected : use ref.
+		Team & fromTeam = from->getTeam();
+		toTransfert = fromTeam.getPlayer(id);
+		fromTeam.removePlayer(id);
+		fromTeam.getPayed(bidValue);
+		fromTeam.save();
+	}
+	toTransfert.setOwner(toName);
+	User* to= _server->getUserByName(toName);
+	if(to == NULL){
+		Team toTeam(toName);
+		toTeam.load();
+		toTeam.addPlayer(toTransfert);
+		toTeam.buy(bidValue);
+		toTeam.save();
+	}
+	else{
+		Team & toTeam = to->getTeam();
+		toTeam.addPlayer(toTransfert);
+		toTeam.buy(bidValue);
+		toTeam.save();
+	}
+
+}
+void PlayerMarket::resolveEndOfSale(Sale * sale){
 	if(sale->getCurrentBidder().empty()){//Player not sold
 		JSON::Dict toOwner;
 		toOwner.set("type",net::MSG::END_OF_OWNED_SALE_RAPPORT);
@@ -68,45 +103,23 @@ void PlayerMarket::transfert(Sale * sale){//REFACTOR THIS SHIT
 		toOwner.set(net::MSG::PLAYER_ID, sale->getID());
 		sendMessageToUser(sale->getOwner(), toOwner);
 	}
-	// else{
-	// 	std::vector<Player*> from, to;
-	// 	Player *toTransfert;
-	// 	MemoryAccess::load(from, sale->getOwner());
-	// 	MemoryAccess::load(to, sale->getCurrentBidder());
-	// 	for(size_t i =0;i<from.size();++i){
-	// 		if(from[i]->getMemberID() == sale->getID())
-	// 			toTransfert = new Player(*from[i]);
-	// 			delete from[i];
-	// 			from.erase(from.begin()+i);
-	// 	}
-	// 	to.push_back(toTransfert);
-	// 	MemoryAccess::save(from);
-	// 	MemoryAccess::save(to);
-	// 	for(size_t i=0;i<from.size();++i){
-	// 		delete from[i];
-	// 	}
-	// 	for(size_t i=0;i<to.size();++i){
-	// 		delete to[i];
-	// 	}
-	// 	delete toTransfert;
-	// 	JSON::Dict toOwner, toWinner;
-	// 	toOwner.set("type",net::MSG::END_OF_OWNED_SALE_RAPPORT);
-	// 	toOwner.set(net::MSG::RAPPORT_SALE_STATUS, net::MSG::PLAYER_SOLD);
-	// 	toOwner.set(net::MSG::PLAYER_ID, sale->getID());
-	// 	toOwner.set(net::MSG::BID_VALUE, sale->getBidValue());
-	// 	toOwner.set(net::MSG::CURRENT_BIDDER, sale->getCurrentBidder());
-	// 	sendMessageToUser(sale->getOwner(), toOwner);
-	// 	toWinner.set("type",net::MSG::WON_SALE_RAPPORT);
-	// 	toWinner.set(net::MSG::PLAYER_ID,sale->getID());
-	// 	toWinner.set(net::MSG::BID_VALUE, sale->getBidValue());
-	// 	toWinner.set(net::MSG::SALE_OWNER, sale->getOwner());
-	// 	sendMessageToUser(sale->getCurrentBidder(), toWinner);
-	// }
+	else{
+		transfert(sale->getOwner(),sale->getCurrentBidder(),sale->getID(),sale->getBidValue());
+		JSON::Dict toOwner, toWinner;
+		toOwner.set("type",net::MSG::END_OF_OWNED_SALE_RAPPORT);
+		toOwner.set(net::MSG::RAPPORT_SALE_STATUS, net::MSG::PLAYER_SOLD);
+		toOwner.set(net::MSG::PLAYER_ID, sale->getID());
+		toOwner.set(net::MSG::BID_VALUE, sale->getBidValue());
+		toOwner.set(net::MSG::CURRENT_BIDDER, sale->getCurrentBidder());
+		sendMessageToUser(sale->getOwner(), toOwner);
+
+		toWinner.set("type",net::MSG::WON_SALE_RAPPORT);
+		toWinner.set(net::MSG::PLAYER_ID,sale->getID());
+		toWinner.set(net::MSG::BID_VALUE, sale->getBidValue());
+		toWinner.set(net::MSG::SALE_OWNER, sale->getOwner());
+		sendMessageToUser(sale->getCurrentBidder(), toWinner);
+	}
 }
-
-
-
-
 
 Sale * PlayerMarket::getSale(int id){
 	for(size_t i = 0; i<_sales.size();++i){
