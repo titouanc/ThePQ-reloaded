@@ -132,7 +132,7 @@ float Beater::shootBludger (){
 }
 
 // CHASER ----------------------------------------------------------------------
-int Chaser::speed (){
+float Chaser::speed (){
     float res = 4*getVelocity();
     res = res * (100000000 +(rand()%10000000))/100000000;
     return res;
@@ -144,7 +144,7 @@ float Chaser::pass (){
     return res;
 }
 
-int Chaser::shoot (){
+float Chaser::shoot (){
     float res = 2*getStrength()+getPrecision()+getChance();
     res = res * (100000000 +(rand()%10000000))/100000000;
     return res;
