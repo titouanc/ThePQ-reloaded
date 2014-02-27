@@ -101,7 +101,7 @@ class Jersey : public Gear
 public:
 
 	Jersey(JSON::Dict const &json = JSON::Dict()): Gear(json),
-		_strengthBonus(0), _constitutionBonus(0), _magicBonus(0), _spiritBonus(0) {
+		_strengthBonus(0) {
 		if (ISINT(json.get("strengthBonus"))) _strengthBonus = INT(json.get("strengthBonus")).value();		
 	}
 
