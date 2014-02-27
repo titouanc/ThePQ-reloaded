@@ -2,6 +2,7 @@
 #include "Installation.hpp"
 #include "Member.hpp"
 #include "Player.hpp"
+#include "PosMatrix.hpp"
 #include <cmath>
 
 TEST(default_constructor)
@@ -88,6 +89,29 @@ TEST(collision_score)
 	cout << p.collisionScore() << ", " <<p.collisionScore() << ", "  << p.collisionScore() << endl;
 ENDTEST()
 
+TEST(posmatrix)
+	PosMatrix<int> matrix;
+	Position p(42, 0);
+	ASSERT(matrix.getAt(p) == NULL);
+
+	int val;
+	matrix.setAt(Position(p), &val);
+	ASSERT(matrix.getAt(p) == &val);
+
+	PosMatrix<int>::iterator it = matrix.begin();
+	ASSERT(it != matrix.end());
+	ASSERT(it->second == &val);
+
+	it++;
+	ASSERT(it == matrix.end());
+
+
+	matrix.setAt(Position(p), NULL);
+	ASSERT(matrix.getAt(p) == NULL);
+	it = matrix.begin();
+	ASSERT(it == matrix.end());
+ENDTEST()
+
 
 int main(int argc, const char **argv){
 	TestFunc tests[] = {
@@ -98,7 +122,8 @@ int main(int argc, const char **argv){
 		ADDTEST(downgrade_installation),
 		ADDTEST(player_instanciation),
 		ADDTEST(beaters_instanciation),
-		ADDTEST(collision_score)
+		ADDTEST(collision_score),
+		ADDTEST(posmatrix)
 	};
 	return RUN(tests);
 }
