@@ -30,23 +30,24 @@ namespace MemoryAccess
 	void save(Sale&);
 	void save(Team&);
 
-	Player load(Player&);
-	User load(User&);
-	Sale load(Sale&);
-	Installation load(Installation&);
-	Team load(Team&);//Loads _funds, etc.
+	void load(Player&);
+	void load(User&);
+	void load(Sale&);
+	void load(Installation&);
+	void load(Team&);//Loads _funds, etc.
+
 	JSON::List loadFilesInVec(std::string);
-	void load(std::vector<Installation>*,std::string);
-	void load(std::vector<Player>*,std::string);
-	void load(std::vector<Sale>*);
+	void load(std::vector<Installation>&,std::string);
+	void load(std::vector<Player>&,std::string);
+	void load(std::vector<Sale>&);
 
 	void loadSkel(Broomstick&);
 	void loadSkel(Jersey&);
 	void loadSkel(std::vector<Installation>&);
 
-	void removeFile(Player&);
-	void removeFile(Sale&);
-	void removeFile(User&);
-	void removeFile(Installation&);
+	void removeObject(Player&);
+	void removeObject(Sale&);
+	void removeObject(User&);
+	void removeObject(Installation&);
 }
 #endif

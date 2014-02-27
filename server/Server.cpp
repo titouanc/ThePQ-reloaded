@@ -367,18 +367,16 @@ void Server::placeBidOnPlayer(const JSON::Dict &bid, int peer_id){
 }
 
 void Server::sendPlayersList(const JSON::Dict &data, int peer_id){//TODO : Should not access memory
-	std::vector<Player> *players = new std::vector<Player>;
-	MemoryAccess::load(players, STR(data.get(net::MSG::USERNAME)).value());
+	std::vector<Player> & players = _users[peer_id]->getTeam().getPlayers();
 	JSON::List jsonPlayers;
-	for(size_t i = 0; i<players->size();++i){
-		jsonPlayers.append(JSON::Dict((*players)[i]));
+	for(size_t i = 0; i<players.size();++i){
+		jsonPlayers.append(JSON::Dict(players[i]));
 	}
 	JSON::Dict toSend;
 	toSend.set("type",net::MSG::PLAYERS_LIST);
 	toSend.set("data", jsonPlayers);
 	Message status(peer_id, toSend.clone());
 	_outbox.push(status);
-	delete players;
 }
 
 int Server::getPeerID(std::string const &username){
