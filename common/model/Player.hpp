@@ -101,8 +101,8 @@ public:
     		_bat = new Bat(5, 5); /* TODO: Too much magic here !!! */
     }
 	bool isBeater () const { return true; }
-	int getStrength() const { return Player::getStrength() + _bat->getStrength() ; }
-    int getPrecision() const { return Player::getPrecision() + _bat->getPrecision(); }
+	int getStrength() const { return Player::getStrength() + _bat->getStrengthBonus() ; }
+    int getPrecision() const { return Player::getPrecision() + _bat->getPrecisionBonus(); }
     void equipBat (Bat aBat);
     void unequipBat ();
     int collision ();
