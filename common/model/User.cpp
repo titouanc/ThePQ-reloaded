@@ -1,6 +1,8 @@
 #include "User.hpp"
 #include <model/MemoryAccess.hpp>
 #include <Constants.hpp>
+#include <errno.h>
+#include <unistd.h>
 
 User::User(const std::string& username, const std::string& password) : 
 _username(username), _password(password), _team(){}
@@ -43,4 +45,32 @@ void User::createUser(){
 	_team.setOwner(_username);
 	_team.generateStartingTeam();
 	_team.save();
+}
+#define OFFLINE_MSG_FILENAME "offline_messages.json"
+void User::sendOfflineMsg(JSON::Value const & message) const
+{
+	JSON::List messages = getOfflineMsg();
+	messages.append(message);
+	messages.save(MemoryAccess::getUserDirectory(_username) + OFFLINE_MSG_FILENAME);
+}
+
+JSON::List User::getOfflineMsg(void) const
+{
+	JSON::Value *loaded = NULL;
+	try {
+		loaded = JSON::load(MemoryAccess::getUserDirectory(_username) + OFFLINE_MSG_FILENAME);
+	} catch (JSON::Error & err){}
+
+	JSON::List res = (loaded) ? LIST(loaded) : JSON::List();
+	if (loaded)
+		delete loaded;
+	return res;
+}
+
+bool User::clearOfflineMsg(void) const
+{
+	int r = unlink((MemoryAccess::getUserDirectory(_username) + OFFLINE_MSG_FILENAME).c_str());
+	/* delete successes if unlink() returns 0 or if there was no file */
+	return (r == 0 || errno == ENOENT);
+	/* errno = error number -> ENOENT == "file not found" */
 }
