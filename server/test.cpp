@@ -16,11 +16,11 @@ TEST(user)
 	user = User(&json);
 	ASSERT(user.getUsername() == "usertest");
 	ASSERT(user.getPassword() == "passwdtest");
-	user.createUser();
-	User *test = User::load("usertest");
-	ASSERT(user.getUsername() == "usertest");
-	ASSERT(user.getPassword() == "passwdtest");
-	delete test;
+	//~ user.createUser();
+	//~ User *test = User::load("usertest");
+	//~ ASSERT(user.getUsername() == "usertest");
+	//~ ASSERT(user.getPassword() == "passwdtest");
+	//~ delete test;
 ENDTEST()
 
 
