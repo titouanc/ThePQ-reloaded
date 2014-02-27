@@ -1,6 +1,7 @@
 #include "MainController.hpp"
 #include "Layer.hpp"
 #include "Button.hpp"
+#include "Textbox.hpp"
 
 namespace GUI {
 	class GraphicManager {
