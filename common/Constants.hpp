@@ -90,6 +90,15 @@ namespace net
 	}
 }
 
+namespace gameconfig
+{
+	static const std::string UNNAMED_TEAM = "NO NAME";
+	static const std::string MAX_COACHES = 5;
+	static const std::string MAX_PLAYERS = 15;
+	static const std::string MIN_PLAYERS = 7;
+	static const std::string STARTING_FUNDS = 10 000;
+}
+
 namespace memory
 {
 	static const std::string USERS_DIR = "data/users/";

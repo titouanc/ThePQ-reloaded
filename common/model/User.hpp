@@ -29,17 +29,12 @@ public:
 	void setUsername(const string& username){ _username = username;};
 	string getPassword() { return _password; }
 	void setPassword(const string& password) { _password = password; }
-	int getFunds() const {return _funds;}
-	void setFunds(int funds) {_funds=funds;}
-	int buyStuff(int price);
-	void getPayed(int price) {_funds+=price;}
+	Team& getTeam(){return _team;}
 
 	void save();
 	static User* load(string username);
 	void loadTeam();
-	/* Installations */
-	vector<Installation>& getInstallations();
-	void saveInstallations();
+	
 	void createUser();
 	void generateBaseSquad(JSON::List &toFill);
 };

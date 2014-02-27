@@ -7,20 +7,6 @@
 #include <string>
 #include <vector>
 
-/*
-TODO Think about :
-- Determinate consts values
-- Already got a sponsor at start ? Coach ?
-- Nbr starting players ? (7?)
-- update installations (Fanshop, MedicalCenter, AlimentationService, Stand)
-*/
-
-//Consts
-std::string UNNAMED_TEAM = "unnamed_";
-int MAX_COACHES = 5;
-int MAX_PLAYERS = 15;
-int STARTING_FUNDS = 0;
-
 class Team{
 private:
     std::string _name;
@@ -29,11 +15,15 @@ private:
 	std::vector<Player> _players;
 	std::vector<Installation> _installations;
 public:
-	Team(): _name(UNNAMED_TEAM), _owner(), _funds(STARTING_FUNDS), _players(), _installations(){}
+	Team(): _name(gameconfig::UNNAMED_TEAM), _owner(), _funds(gameconfig::STARTING_FUNDS), 
+	_players(), _installations(){}
 	Team(std::string owner, std::string teamname=""): Team(){
 		_owner = owner;
 		_name = name;
 	}
+	Team(const Team& other) : _name(other._name), _owner(other._owner), _funds(other._funds), 
+	_players(other._players), _installations(other._installations) {}
+
 	Team(const JSON::Dict &json) Team() {
 		if(json.hasKey(memory::net::MSG::USERNAME)) {_owner = STR(json.get(net::MSG::USERNAME)).value();}
 		if(json.hasKey(memory::FUNDS)) 				{_funds = INT(json.get(memory::FUNDS));}
@@ -68,12 +58,30 @@ public:
 		for(size_t i = 0;i<_installations;++i){
 			MemoryAccess::save(_installations[i]);
 		}
-	
 	}
 	std::string getOwner(){return _owner};
 	std::string getName(){return _name;}
 	int getFunds(){return _funds;}
+	std::vector<Player>& getPlayers(){return _players;}
+	std::vector<Installation>& getInstallations{return _installations;}
 
+	void generateBaseSquad(JSON::List &toFill){
+	RandomNameGenerator gen;
+	for (int i=0; i<7; i++){
+		Player p;
+		p.setName(gen.getRandomName());
+		p.setMemberID();
+		p.setOwner(getUsername());
+		JSON::Value* tmp = JSON::load("data/skel/broomstick.json");
+		p.equipBroomstick(DICT(tmp));
+		delete tmp;
+		tmp = JSON::load("data/skel/jersey.json");
+		p.equipJersey(DICT(tmp));
+		delete tmp;
+		JSON::Dict dict = p;
+		toFill.append(DICT(dict.clone()));
+	}
+}
 
 };
 

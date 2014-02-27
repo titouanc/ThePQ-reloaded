@@ -39,29 +39,7 @@ void User::loadTeam(){
 	_team.load();
 }
 
-vector<Installation>& User::getInstallations()
-{
-	if (_installations.empty())
-	{
-		vector<Installation>* toLoad = new vector<Installation>;
-		MemoryAccess::load(toLoad,_username);
-		for (size_t i = 0; i < toLoad->size(); ++i)
-		{
-			_installations.push_back((*toLoad)[i]);
-		}
-		delete toLoad;
-	}
-	return _installations;
-}
 
-void User::saveInstallations()
-{
-	for(size_t i =0; i<_installations.size();++i){
-		MemoryAccess::save(_installations[i]);
-	}
-}
-
- 
 
 void User::createUser(){
 	// Initialization
@@ -87,22 +65,6 @@ void User::createUser(){
 }
 
 
-void User::generateBaseSquad(JSON::List &toFill){
-	RandomNameGenerator gen;
-	for (int i=0; i<7; i++){
-		Player p;
-		p.setName(gen.getRandomName());
-		p.setMemberID();
-		p.setOwner(getUsername());
-		JSON::Value* tmp = JSON::load("data/skel/broomstick.json");
-		p.equipBroomstick(DICT(tmp));
-		delete tmp;
-		tmp = JSON::load("data/skel/jersey.json");
-		p.equipJersey(DICT(tmp));
-		delete tmp;
-		JSON::Dict dict = p;
-		toFill.append(DICT(dict.clone()));
-	}
-}
+
 
 // TODO add User.delete
