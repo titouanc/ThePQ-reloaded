@@ -48,7 +48,7 @@ public:
 	virtual bool isChaser () const { return false; }
 	virtual bool isKeeper () const { return false; }
 	virtual bool isSeeker () const { return false; }
-	int getStrength () const 		{ return _strength; }
+	int getStrength () const 		{ return _strength + *_jersey.getStrengthBonus; }
 	int getVelocity () const 		{ return _velocity + *_broomstick.getVelocityBonus ;}
 	int getPrecision () const 		{ return _precision; }
 	int getChance () const 			{ return _chance; }
