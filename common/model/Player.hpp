@@ -10,15 +10,20 @@
 #include "Gear.hpp"
 #include "Moveable.hpp"
 
-class Player : public Member, public Moveable 
+
+class Player : public Member, public Moveable
 {
 	friend std::ostream& operator<< (std::ostream&, const Player&);//modif
 public:
-	//~ Player ():  Member(), _maxLife(100), _maxMana(100), _lifeBar(100), 
-                //~ _manaBar(100), _broomstick(new Broomstick(5,50)), 
-                //~ _jersey(new Jersey()), _strength(5), _constitution(5), 
-                //~ _magic(5), _spirit(5), _velocity(5), _precision(5), _chance(5){}
+	// Player ():  Member(), _maxLife(100), _maxMana(100), _lifeBar(100), 
+ //                _manaBar(100), _broomstick(new Broomstick(5,50)), 
+ //                _jersey(new Jersey()), _strength(5), _constitution(5), 
+ //                _magic(5), _spirit(5), _velocity(5), _precision(5), _chance(5){}
 
+    Player(int id, std::string username): Player() {
+    	_memberID = id;
+    	_owner = username;
+    }
     Player(JSON::Dict const & json = JSON::Dict());
     Player(const Player&);//modif
     ~Player(){
@@ -26,7 +31,8 @@ public:
     	if (_jersey != NULL) delete _jersey; 
     }
     operator JSON::Dict();
-    
+    //void save();
+    //Player* load(int id, std::string username = "");
 
 	int getRemainingLife () const	{ return _lifeBar; }
 	int getRemainingMana ()const	{ return _manaBar; }

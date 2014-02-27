@@ -5,6 +5,8 @@
 #include <cxxabi.h>
 #include <Constants.hpp>
 #include "Server.hpp"
+#include <sys/stat.h>
+#include <model/MemoryAccess.hpp>
 
 using namespace std;
 using namespace net;
@@ -23,6 +25,8 @@ Server::Server(NetConfig const & config) :
 	_connectionManager(_inbox, _outbox, config.ip.c_str(), config.port, config.maxClients),
 	market(new PlayerMarket(this)),_matches()
 {
+	mkdir(memory::USERS_DIR.c_str(), 0755);
+	mkdir(memory::MARKET_PATH.c_str(), 0755);
 	_connectionManager.start();
 	cout << "Launched server on " << _connectionManager.ip() << ":" << _connectionManager.port() << endl;
 }
@@ -238,13 +242,18 @@ void Server::checkIfUserExists(string username, int peer_id)
 	delete user;
 }
 
-void Server::sendInstallationsList(int peer_id)
+void Server::sendInstallationsList(int peer_id)//should use getInstallations instead of accessing memory
 {
-	string listPath = _users[peer_id]->getUserDirectoryPath() + "installations.json";
-	JSON::Value * installationsList = JSON::load(listPath);
+	std::string username = _users[peer_id]->getUsername();
+	std::vector<Installation>* toLoad = new std::vector<Installation>;
+	MemoryAccess::load(toLoad,username);
+	JSON::List installationsList;
+	for(size_t i = 0; i<toLoad->size();++i){
+		installationsList.append(JSON::Dict((*toLoad)[i]));
+	}
 	JSON::Dict msg;
 	msg.set("type", net::MSG::INSTALLATIONS_LIST);
-	msg.set("data", *installationsList);
+	msg.set("data", installationsList);
 	_outbox.push(Message(peer_id, msg.clone()));
 }
 
@@ -360,15 +369,19 @@ void Server::placeBidOnPlayer(const JSON::Dict &bid, int peer_id){
 	_outbox.push(status);
 }
 
-void Server::sendPlayersList(const JSON::Dict &data, int peer_id){//modif
-	std::string username = STR(data.get(net::MSG::USERNAME));
-	std::string path = "data/users/" + username + "/"+"players.json";
-	JSON::Dict playersList;
-	JSON::List players = LIST(JSON::load(path.c_str()));
-	playersList.set("type",net::MSG::PLAYERS_LIST);
-	playersList.set("data", players);
-	Message status(peer_id, playersList.clone());
+void Server::sendPlayersList(const JSON::Dict &data, int peer_id){//TODO : Should not access memory
+	std::vector<Player> *players = new std::vector<Player>;
+	MemoryAccess::load(players, STR(data.get(net::MSG::USERNAME)).value());
+	JSON::List jsonPlayers;
+	for(size_t i = 0; i<players->size();++i){
+		jsonPlayers.append(JSON::Dict((*players)[i]));
+	}
+	JSON::Dict toSend;
+	toSend.set("type",net::MSG::PLAYERS_LIST);
+	toSend.set("data", jsonPlayers);
+	Message status(peer_id, toSend.clone());
 	_outbox.push(status);
+	delete players;
 }
 
 int Server::getPeerID(std::string const &username){

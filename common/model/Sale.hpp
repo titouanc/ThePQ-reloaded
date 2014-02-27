@@ -13,11 +13,10 @@
 TODO :
 - CONST /!\
 */
-#define FIRST_TURN 30 	//10 min
+#define FIRST_TURN 30 	//TBD
 #define TURN_TIME 30
 #define BIDRATIO 0.05 	//5%
 
-class PlayerMarket;
 class Sale{
 	friend std::ostream& operator<< (std::ostream&, const Sale&);
 private:
@@ -54,8 +53,6 @@ public:
 	std::string getCurrentBidder(){return _currentBidder;}
 	int getID(){return _saleID;}
 	std::string getOwner() const {return _owner;}
-	std::string getSalePath(int id) const {return (_marketPath + "sale_" + std::to_string(id) + ".json");}
-	std::string getPlayerPath(std::string owner) const {return (_playerPath + "users/" + owner + "/" + "players.json");}
 	int getNextBidValue() const {return (_bidValue + (int)_bidValue*_bidRatio);}
 	int getTotalTime() const {
 		if(_turn==1){return FIRST_TURN;}
@@ -67,7 +64,7 @@ public:
 	bool allowedToBidForThisTurn(std::string username) const;
 	void placeBid(std::string username, int bid_value);
 
-	void save(std::string path);
-	void load(std::string path, int id);
+	void save();
+	void load();
 };
 #endif

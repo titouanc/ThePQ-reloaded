@@ -8,6 +8,8 @@
 namespace GUI{
 	// General
 	static const int MARGIN = 10;
+	static const int WINDOW_WIDTH = 1280;
+	static const int WINDOW_HEIGHT = 720;
 
 	// Fonts
 	static const std::string HEADER_FONT_PATH = "fonts/akashi.ttf";

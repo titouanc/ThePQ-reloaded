@@ -1,5 +1,7 @@
 PKGCONFIG = PKG_CONFIG_PATH=/usr/local/lib/pkgconfig/ pkg-config
-OBJS = UIMatch.o
+
+OBJS = Layer.o MainController.o GraphicManager.o UIMatch.o
+
 LIBS = ../../common/model/libmodel.a ../../common/json/libjson.a
 ifeq ($(shell uname -s),Darwin)
 	CPPFLAGS = -I/Library/Frameworks/SFML.framework/Headers/ -I../../common

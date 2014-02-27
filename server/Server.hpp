@@ -6,7 +6,7 @@
 #include <deque>
 #include <Config.hpp>
 #include <network/ConnectionManager.hpp>
-#include "User.hpp"
+#include <model/User.hpp>
 #include <Config.hpp>
 #include "MatchManager.hpp"
 #include "PlayerMarket.hpp"
@@ -64,6 +64,9 @@ public:
     void sendPlayersList(const JSON::Dict &data,int peer_id);
     void sendMarketMessage(const std::string&, const JSON::Dict&);
     int getPeerID(const std::string&);
+        /* Return a pointer to the user object with given username,
+       or NULL if not connected */
+    User *getUserByName(std::string username);
 private:
 	SharedQueue<net::Message> _inbox, _outbox;
 	map<int, User*> _users;
@@ -71,9 +74,7 @@ private:
     PlayerMarket *market;
     std::deque<MatchManager*> _matches;
 
-    /* Return a pointer to the user object with given username,
-       or NULL if not connected */
-    User *getUserByName(std::string username);
+
 };
 
 #endif

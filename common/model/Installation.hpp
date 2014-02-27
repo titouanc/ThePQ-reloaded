@@ -7,13 +7,14 @@
 
 #include <json/json.hpp>
 #include <string>
-
+#include <Constants.hpp>
 class Installation{
 private:
 	std::string _name;
 	int _level;
 	int _baseValue;
 	float _refundRatio;
+	std::string _owner;
 public:
 	Installation(JSON::Dict json) : _name(STR(json.get("name")).value()),
 									   _level(INT(json.get("level"))), 
@@ -28,17 +29,18 @@ public:
 		json.set("level", _level);
 		json.set("baseValue", _baseValue);
 		json.set("refundRatio", _refundRatio);
+		json.set(net::MSG::USERNAME, _owner);
 		return json;
 	}
 	
 	Installation():_name(""), _level(0), _baseValue(100), _refundRatio(0.5) {} 
-	Installation(std::string name, int baseValue, int level, float refundRatio=0.5) :
+	Installation(std::string name, int baseValue, int level, std::string owner, float refundRatio=0.5) :
 			_name(name),
 			_level(level), 
-			_baseValue(baseValue), _refundRatio(refundRatio){}
+			_baseValue(baseValue), _refundRatio(refundRatio), _owner(owner){}
 
 	/*=========Getters==========*/
-	
+	std::string getOwner() const {return _owner;}
 	int getLevel() const { return _level; }
 	void setLevel(int level) { if (level < getMaxLevel()) _level = level; }
 	int getCurrentValue() const { return getValueAtLevel(getLevel()); }
@@ -54,7 +56,7 @@ public:
 								// funds that will be refunded when downgraded 1 level.
 	
 	/*=========Setters===========*/
-	
+	void setOwner(std::string username) {_owner = username;}
 	void setRefundRatio(float refundRatio) { _refundRatio = refundRatio; } 
 	void setName(std::string name) { _name = name; }
 
