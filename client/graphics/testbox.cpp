@@ -11,8 +11,8 @@ public:
 	TestBoxManager(MainController &mc):GraphicManager(mc){
 		//Textbox myTextbox;
 		//myTextbox.renderTo(_controller.window);
-		_canvas.addTextbox("wow");
-		myTextbox = _canvas.addTextbox("superwow");
+		_canvas.addTextbox("such");
+		myTextbox = _canvas.addTextbox("wow");
 		myTextbox->setPosition(10, 60);
 
 		Button<TestBoxManager> *myButton = _canvas.addButton<TestBoxManager>(&TestBoxManager::printWowTextBox, this, "Cout Wow Box");
@@ -24,7 +24,7 @@ public:
 
 	void printWowTextBox(){
 		cout << "directly accessed : " << myTextbox->getText() << endl;
-		cout << "searched from id  : " << _canvas.textboxWithID("superwow")->getText() << endl;
+		cout << "searched from id  : " << _canvas.textboxWithID("wow")->getText() << endl;
 	}
 
 private:

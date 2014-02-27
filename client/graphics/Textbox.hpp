@@ -11,14 +11,14 @@
 namespace GUI {
 	class Textbox {
 	public:
-		Textbox(int x=MARGIN, int y=MARGIN, int w=250, int h=BUTTON_HEIGHT):
+		Textbox(std::string id, int x=MARGIN, int y=MARGIN, int w=250, int h=BUTTON_HEIGHT):
 					_x(x), _y(y), _w(w), _h(h), _isFocused(false), 
 					_selecter(Button<Textbox>(&Textbox::focus, this, "")){
 
 			if (!_font.loadFromFile(BODY_FONT_PATH))
 				throw "Could not load font!";
 			_text.setFont(_font);
-			_text.setString("kewkew"); // TODO delete?
+			_text.setString(id);
 			_text.setCharacterSize(TEXTBOX_TEXT_SIZE);
 			_text.setColor(TEXTBOX_TEXT_COLOR);
 			_backgroundRect = sf::RectangleShape(sf::Vector2f(_w, _h));

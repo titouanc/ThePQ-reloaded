@@ -6,6 +6,7 @@ using namespace GUI;
 
 GUI::Layer::~Layer(){
 	_clickables.clear();
+	_textboxes.clear();
 }
 
 void GUI::Layer::renderTo(sf::RenderTarget & dest){
@@ -42,13 +43,15 @@ void GUI::Layer::handleTextEntered(sf::Event event){
 }
 
 GUI::Textbox* GUI::Layer::addTextbox(string id){
-	Textbox* res = new Textbox();
+	Textbox* res = new Textbox(id);
 
 	_textboxes.insert(pair<string, Textbox*>(id, res));
 	return res;
 }
 
 GUI::Textbox* GUI::Layer::textboxWithID(string id){
+	if (_textboxes[id] == NULL)
+		throw "There is no textbox with id " + id + ".";
 	return _textboxes[id];
 }
 
