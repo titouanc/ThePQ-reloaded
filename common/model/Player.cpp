@@ -8,9 +8,6 @@ std::ostream& operator<< (std::ostream& out, const Player& player)//modif
         out << "Life:           " << player._lifeBar << "/" << player._maxLife << std::endl;
         out << "Mana:           " << player._manaBar << "/" << player._maxMana << std::endl;
         out << "Strength:       " << player._strength << std::endl;
-        out << "Constitution:   " << player._constitution << std::endl;
-        out << "Magic:          " << player._magic << std::endl;
-        out << "Spirit:         " << player._spirit << std::endl;
         out << "Velocity:       " << player._velocity << std::endl;
         out << "Precision:      " << player._precision << std::endl;
         out << "Chance:         " << player._chance << std::endl;
@@ -39,9 +36,6 @@ Player::Player(JSON::Dict const & json) : Member(json), Moveable(json),
         else
             _jersey = new Jersey();
         if (ISINT(json.get("strength"))) _strength = INT(json.get("strength")).value();
-        if (ISINT(json.get("constitution"))) _constitution = INT(json.get("constitution")).value();
-        if (ISINT(json.get("magic"))) _magic = INT(json.get("magic")).value();
-        if (ISINT(json.get("spirit"))) _spirit = INT(json.get("spirit")).value();
         if (ISINT(json.get("velocity"))) _velocity = INT(json.get("velocity")).value();
         if (ISINT(json.get("precision"))) _precision = INT(json.get("precision")).value();
         if (ISINT(json.get("chance"))) _chance = INT(json.get("chance")).value();
