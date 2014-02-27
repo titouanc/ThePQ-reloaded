@@ -119,12 +119,11 @@ void Sale::placeBid(std::string username, int bid_value){
 }
 
 void Sale::save(){
-	JSON::Dict repr = *this;
-	MemoryAccess::save(memory::SALE,repr);
+	MemoryAccess::save(*this);
 }
 
 void Sale::load(){
-	MemoryAccess::load(memory::SALE,_saleID);
+	*this = MemoryAccess::load(*this);
 }
 
 Sale::operator JSON::Dict(){

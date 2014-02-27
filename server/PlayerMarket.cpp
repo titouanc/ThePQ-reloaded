@@ -27,7 +27,7 @@ void * saleChecker(void * p){
 			if(market->_sales[i]->isOver()){
 				market->deletingLock();
 				market->transfert(market->_sales[i]);
-				MemoryAccess::removeFile(memory::SALE,market->_sales[i]->getID());
+				MemoryAccess::removeFile(*(market->_sales[i]));
 				delete market->_sales[i];
 				market->_sales.erase(market->_sales.begin()+i);
 				market->deletingUnlock();
@@ -43,26 +43,18 @@ void PlayerMarket::startChecker(){
 	}
 }
 
-void PlayerMarket::createSale(const JSON::Dict &json){
+void PlayerMarket::createSale(const JSON::Dict &json){//TODO : Should not access memory
 	//json infos
 	int player_id = INT(json.get(net::MSG::PLAYER_ID));
 	int bidValue = INT(json.get(net::MSG::BID_VALUE));
 	std::string username = STR(json.get(net::MSG::USERNAME)).value();
 	//create sale, save and start it
-	Player player(MemoryAccess::load(memory::PLAYER,username,player_id));
+	Player player(player_id, username);
+	player = MemoryAccess::load(player);
 	_sales.push_back(new Sale(bidValue, username, player_id, player));
 	Sale *added = getSale(player_id);
 	added->save();
 	added->start();
-}
-
-std::vector<Player> getPlayers(std::string username){
-	std::vector<Player> ret;
-	JSON::List players = MemoryAccess::loadList(memory::PLAYERS_LIST,username);
-	for(size_t i = 0;i<players.len();++i){
-		ret.push_back(DICT(players[i]));
-	}
-	return ret;
 }
 
 void PlayerMarket::transfert(Sale * sale){//REFACTOR THIS SHIT

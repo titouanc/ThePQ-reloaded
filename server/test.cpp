@@ -1,8 +1,8 @@
-#include "User.hpp"
+#include <model/User.hpp>
 #include <json/json.hpp>
 #include <lighttest/lighttest.hpp>
 #include "MatchManager.hpp"
-#include "RandomNameGenerator.hpp"
+#include <model/RandomNameGenerator.hpp>
 #include <Constants.hpp>
 #include <iostream>
 

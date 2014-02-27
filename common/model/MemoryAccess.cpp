@@ -4,6 +4,10 @@
 #include <stdio.h>
 #include <Constants.hpp>
 #include <sys/stat.h>
+#include <model/Player.hpp>
+#include <model/Sale.hpp>
+#include <model/Installation.hpp>
+#include <model/User.hpp>
 #include <iostream>
 
 std::string MemoryAccess::getUserDirectory(std::string username){
@@ -28,77 +32,61 @@ std::string MemoryAccess::getSalePath(int id){
 	return memory::MARKET_PATH + std::to_string(id) + memory::SALE_FILE + memory::FILE_FORMAT;
 }
 
-void MemoryAccess::save(std::string datatype, JSON::Dict &tosave){
-	std::string owner = "";
-	std::string type = "";
-	int id = -1;
-	if(tosave.hasKey(net::MSG::USERNAME)) {owner=STR(tosave.get(net::MSG::USERNAME)).value();}
-	if(tosave.hasKey(net::MSG::PLAYER_ID)){id=INT(tosave.get(net::MSG::PLAYER_ID));}
-	if(tosave.hasKey(memory::INST_TYPE))  {type=STR(tosave.get(memory::INST_TYPE)).value();}
-	if(datatype == memory::PLAYER){
-		if(id == -1 || owner.empty())
-			throw IncompleteDictException();
-		tosave.save(getPlayerPath(owner, id).c_str());
-	}
-	else if(datatype == memory::USER){
-		if(owner.empty())
-			throw IncompleteDictException();
-		mkdir(getUserDirectory(owner).c_str(), 0755);
-		mkdir((getUserDirectory(owner)+memory::PLAYERS_DIR).c_str(), 0755);
-		mkdir((getUserDirectory(owner)+memory::INSTALLATIONS_DIR).c_str(), 0755);
-		tosave.save(getUserPath(owner).c_str());
-	}
-	else if(datatype == memory::INSTALLATION){
-		if(owner.empty() || type.empty())
-			throw IncompleteDictException();
-		tosave.save(getInstallationPath(owner, type));
-	}
-	else if(datatype == memory::SALE){
-		if(id == -1)
-			throw IncompleteDictException();
-		tosave.save(getSalePath(id));
-	}
+void MemoryAccess::save(Installation& install){
+	std::string path = getInstallationPath(install.getOwner(), install.getName());
+	JSON::Dict toSave = install;
+	toSave.save(path.c_str());
+}
+void MemoryAccess::save(User& user){
+	std::string username = user.getUsername();
+	mkdir(getUserDirectory(username).c_str(), 0755);
+    mkdir((getUserDirectory(username)+memory::PLAYERS_DIR).c_str(), 0755);
+    mkdir((getUserDirectory(username)+memory::INSTALLATIONS_DIR).c_str(), 0755);
+	std::string path = getUserPath(user.getUsername());
+	JSON::Dict toSave = user;
+	toSave.save(path.c_str());
+}
+void MemoryAccess::save(Player& player){
+	std::string path = getPlayerPath(player.getOwner(), player.getMemberID());
+	JSON::Dict toSave = player;
+	toSave.save(path.c_str());
+}
+void MemoryAccess::save(Sale& sale){
+	mkdir(memory::MARKET_PATH.c_str(), 0755);
+	std::string path = getSalePath(sale.getID());
+	JSON::Dict toSave = sale;
+	toSave.save(path.c_str());
 }
 
-JSON::Dict MemoryAccess::load(std::string datatype, std::string owner, int id){
-	if(datatype != memory::PLAYER)
-		throw wrongLoadFunctionException();
-	JSON::Value *loaded = JSON::load(getPlayerPath(owner,id).c_str());
-	JSON::Dict ret = DICT(loaded);
+Player MemoryAccess::load(Player& player){
+	JSON::Value *loaded = JSON::load(getPlayerPath(player.getOwner(),player.getMemberID()).c_str());
+	Player ret(DICT(loaded));
 	delete loaded;
 	return ret;
 }
 
-JSON::Dict MemoryAccess::load(std::string datatype, std::string username){
-	if(datatype != memory::USER)
-		throw wrongLoadFunctionException();
-	JSON::Value *loaded = JSON::load(getUserPath(username).c_str());
-	JSON::Dict ret = DICT(loaded);
+User MemoryAccess::load(User& user){
+	JSON::Value *loaded = JSON::load(getUserPath(user.getUsername()).c_str());
+	User ret(&DICT(loaded)); //Constructor by pointer in User ... 
 	delete loaded;
 	return ret;
 }
 
-JSON::Dict MemoryAccess::load(std::string datatype, std::string owner, std::string type){
-	if(datatype != memory::INSTALLATION)
-		throw wrongLoadFunctionException();
-	JSON::Value *loaded = JSON::load(getInstallationPath(owner,type));
-	JSON::Dict ret = DICT(loaded);
+Sale MemoryAccess::load(Sale& sale){
+	JSON::Value *loaded = JSON::load(getSalePath(sale.getID()).c_str());
+	Sale ret(DICT(loaded));
+	delete loaded;
+	return ret;
+}
+Installation MemoryAccess::load(Installation& install){
+	JSON::Value *loaded = JSON::load(getInstallationPath(install.getOwner(),install.getName()).c_str());
+	Installation ret(DICT(loaded));
 	delete loaded;
 	return ret;
 }
 
-/*Only for sales*/
-JSON::Dict MemoryAccess::load(std::string datatype, int id){
-	if(datatype != memory::SALE)
-		throw wrongLoadFunctionException();
-	JSON::Value *loaded = JSON::load(getSalePath(id));
-	JSON::Dict ret = DICT(loaded);
-	delete loaded;
-	return ret;
-}
-
-JSON::List MemoryAccess::loadFilesInDir(std::string directory){
-	JSON::List ret;
+JSON::List MemoryAccess::loadFilesInVec(std::string directory){/*Check for memleaks*/
+	JSON::List ret = JSON::List();
 	DIR* dir = NULL;
 	struct dirent* file = NULL;
 	dir = opendir(directory.c_str());
@@ -109,8 +97,7 @@ JSON::List MemoryAccess::loadFilesInDir(std::string directory){
 			if(str1.size()>str2.size()){
 				if(str1.compare(str1.size()-str2.size(),str2.size(),str2) == 0){
 					JSON::Value* loaded = JSON::load((directory+file->d_name).c_str());
-					JSON::Dict cpy = DICT(loaded);
-					ret.append(cpy);
+					ret.append(DICT(loaded));
 					delete loaded;
 				}
 			}
@@ -120,45 +107,39 @@ JSON::List MemoryAccess::loadFilesInDir(std::string directory){
 	return ret;
 }
 
-JSON::List MemoryAccess::loadList(std::string datatype){
-	if(datatype != memory::SALES_LIST)
-		throw wrongLoadFunctionException();
-	JSON::List cont;
-	std::string path = memory::MARKET_PATH;
-	return loadFilesInDir(path);
+void MemoryAccess::load(std::vector<Installation> *toFill,std::string username){
+	JSON::List installs = loadFilesInVec(getInstallationsDirectory(username));
+	for(size_t i=0;i<installs.len();++i){
+		toFill->push_back(DICT(installs[i]));
+	}
 }
 
-JSON::List MemoryAccess::loadList(std::string datatype, std::string username){
-	std::string path;
-	if(datatype == memory::INST_LIST)
-		path = getInstallationsDirectory(username);
-	else if(datatype == memory::PLAYERS_LIST)
-		path = getPlayersDirectory(username);
-	else
-		throw wrongLoadFunctionException();
-	return loadFilesInDir(path);
+void MemoryAccess::load(std::vector<Player> *toFill,std::string username){
+	JSON::List players = loadFilesInVec(getPlayersDirectory(username));
+	for(size_t i=0;i<players.len();++i){
+		toFill->push_back(DICT(players[i]));
+	}
 }
 
-void MemoryAccess::removeFile(std::string datatype, std::string username){
-	if(datatype != memory::USER)
-		throw wrongRemoveFunctionException();
-	remove(getUserPath(username).c_str());
+void MemoryAccess::load(std::vector<Sale> *toFill){
+	JSON::List sales = loadFilesInVec(memory::MARKET_PATH);
+	for(size_t i=0;i<sales.len();++i){
+		toFill->push_back(DICT(sales[i]));
+	}
 }
 
-void MemoryAccess::removeFile(std::string datatype, int id){
-	if(datatype != memory::SALE)
-		throw wrongRemoveFunctionException();
-	remove(getSalePath(id).c_str());
+void MemoryAccess::removeFile(Player &player){
+	remove(getPlayerPath(player.getOwner(), player.getMemberID()).c_str());
 }
 
-void MemoryAccess::removeFile(std::string datatype, std::string owner, int id){
-	if(datatype != memory::PLAYER)
-		throw wrongRemoveFunctionException();
-	remove(getPlayerPath(owner, id).c_str());
+void MemoryAccess::removeFile(Sale &sale){
+	remove(getSalePath(sale.getID()).c_str());
 }
 
-void MemoryAccess::removeFile(std::string datatype, std::string owner, std::string type){
-	if(datatype != memory::INSTALLATION)
-		throw wrongRemoveFunctionException();
-	remove(getInstallationPath(owner,type).c_str());
+void MemoryAccess::removeFile(User &user){
+	remove(getUserPath(user.getUsername()).c_str());
+}
+
+void MemoryAccess::removeFile(Installation &install){
+	remove(getInstallationPath(install.getOwner(),install.getName()).c_str());
 }

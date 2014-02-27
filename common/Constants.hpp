@@ -92,13 +92,6 @@ namespace net
 
 namespace memory
 {
-	static const std::string PLAYER = "DT_P";
-	static const std::string SALE = "DT_S";
-	static const std::string INSTALLATION = "DT_I";
-	static const std::string USER = "DT_U";
-	static const std::string PLAYERS_LIST = "DT_PL";
-	static const std::string INST_LIST = "DT_IL";
-	static const std::string SALES_LIST = "DT_SL";
 	static const std::string USERS_DIR = "data/users/";
 	static const std::string USER_FILE = "user";
 	static const std::string PLAYERS_DIR = "Players/";

@@ -6,7 +6,7 @@
 #include <deque>
 #include <Config.hpp>
 #include <network/ConnectionManager.hpp>
-#include "User.hpp"
+#include <model/User.hpp>
 #include <Config.hpp>
 #include "MatchManager.hpp"
 #include "PlayerMarket.hpp"
