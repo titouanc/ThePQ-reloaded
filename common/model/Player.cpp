@@ -19,8 +19,7 @@ std::ostream& operator<< (std::ostream& out, const Player& player)//modif
 Player::Player(JSON::Dict const & json) : Member(json), Moveable(json), 
 				_maxLife(100), _maxMana(100), _lifeBar(100), 
                 _manaBar(100), _broomstick(), 
-                _jersey(), _strength(5), _constitution(5), 
-                _magic(5), _spirit(5), _velocity(5), _precision(5), _chance(5) {
+                _jersey(), _strength(5), _velocity(5), _precision(5), _chance(5) {
 		if (ISINT(json.get("memberID"))) _memberID = INT(json.get("memberID")).value();
 		if (ISSTR(json.get("name"))) _name = STR(json.get("name")).value();
         if (ISINT(json.get("maxLife"))) _maxLife = INT(json.get("maxLife")).value();
@@ -116,7 +115,7 @@ void Player::loseMana (int spelled){
 }
 
 float Player::collisionScore(){
-    float res = (getStrength()+getConstitution()+getVelocity()+getChance());
+    float res = (getStrength()+getVelocity()+getChance());
     res = res * (100000000 +(rand()%10000000))/100000000;
     return res;
 } 
