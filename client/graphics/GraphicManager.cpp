@@ -11,7 +11,6 @@ void GUI::GraphicManager::run(){
 			_controller.handleClick(event);
 		}
 		else if (event.type == sf::Event::TextEntered){
-			std::cout << "graphicManager" << std::endl;
 			_controller.handleTextEntered(event);
 		}
 		else if (event.type == sf::Event::Closed ||

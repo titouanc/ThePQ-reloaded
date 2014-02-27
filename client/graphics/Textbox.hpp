@@ -65,6 +65,7 @@ namespace GUI {
 		}
 
 		void setText(std::string text) { _text.setString(text); }
+		std::string getText() { return std::string(_text.getString()); }
 	private:
 		sf::Text _text;
 		sf::Font _font;

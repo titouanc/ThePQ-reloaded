@@ -12,9 +12,20 @@ public:
 		//Textbox myTextbox;
 		//myTextbox.renderTo(_controller.window);
 		_canvas.addTextbox("wow");
+		myTextbox = _canvas.addTextbox("superwow");
+		myTextbox->setPosition(10, 60);
+		Button<TestBoxManager> *myButton = _canvas.addButton<TestBoxManager>(&TestBoxManager::printWowTextBox, this, "Cout Wow Box");
+		myButton->setPosition(270, 60);
 		displayCanvas();
 		run();
 	}
+
+	void printWowTextBox(){
+		cout << "directly accessed : " << myTextbox->getText() << endl;
+	}
+
+private:
+	Textbox *myTextbox;
 	
 };
 
