@@ -60,7 +60,6 @@ void MemoryAccess::save(Player& player){
 	toSave.save(path.c_str());
 }
 void MemoryAccess::save(Sale& sale){
-	mkdir(memory::MARKET_PATH.c_str(), 0755);
 	std::string path = getSalePath(sale.getID());
 	JSON::Dict toSave = sale;
 	toSave.save(path.c_str());
@@ -135,7 +134,7 @@ void MemoryAccess::load(std::vector<Player> &toFill,std::string username){
 	}
 }
 
-void MemoryAccess::load(std::vector<Sale*> toFill){
+void MemoryAccess::load(std::vector<Sale*> &toFill){
 	JSON::List sales = loadFilesInVec(memory::MARKET_PATH);
 	for(size_t i=0;i<sales.len();++i){
 		toFill.push_back(new Sale(DICT(sales[i])));

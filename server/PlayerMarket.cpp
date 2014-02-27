@@ -8,6 +8,7 @@
 
 PlayerMarket::PlayerMarket(Server *server): _server(server), _sales(),
 _thread(),_runChecker(true), _deleting(PTHREAD_MUTEX_INITIALIZER) {
+	mkdir(memory::MARKET_PATH.c_str(), 0755);
 	MemoryAccess::load(_sales);
 	for(size_t i=0;i<_sales.size();++i){
 		_sales[i]->start();
@@ -165,6 +166,7 @@ JSON::Dict PlayerMarket::bid(const JSON::Dict &json){
 	if(sale != NULL and !(sale->isOver())){
 		try{
 			sale->placeBid(username, bid_value);
+			response.set("data", net::MSG::BID_PLACED);
 		}
 		catch(bidValueNotUpdatedException e){
 			response.set("data", net::MSG::BID_VALUE_NOT_UPDATED);
@@ -178,6 +180,7 @@ JSON::Dict PlayerMarket::bid(const JSON::Dict &json){
 		catch(lastBidderException e){
 			response.set("data", net::MSG::LAST_BIDDER);
 		}
+
 	}
 	else{
 		response.set("data", net::MSG::BID_ENDED);
