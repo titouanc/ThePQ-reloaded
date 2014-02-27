@@ -10,6 +10,10 @@ void GUI::GraphicManager::run(){
 			&& event.mouseButton.button == sf::Mouse::Left){
 			_controller.handleClick(event);
 		}
+		else if (event.type == sf::Event::TextEntered){
+			std::cout << "graphicManager" << std::endl;
+			_controller.handleTextEntered(event);
+		}
 		else if (event.type == sf::Event::Closed ||
 				(event.type==sf::Event::KeyPressed 
 				&& event.key.code==sf::Keyboard::Escape)){

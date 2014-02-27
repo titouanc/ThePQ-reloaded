@@ -36,6 +36,11 @@ void GUI::Layer::handleClick(int x, int y){
 		_focusedTextbox = NULL;
 }
 
+void GUI::Layer::handleTextEntered(sf::Event event){
+	if (_focusedTextbox != NULL)
+		_focusedTextbox->updateText(event);
+}
+
 GUI::Textbox* GUI::Layer::addTextbox(string id){
 	Textbox* res = new Textbox();
 

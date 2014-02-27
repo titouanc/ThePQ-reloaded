@@ -30,6 +30,7 @@ namespace GUI {
 
 		GUI::Textbox* textboxWithID(std::string id);
 		void unfocusAllTextboxes();
+		void handleTextEntered(sf::Event event);
 	private:
 		bool _active;
 		sf::Color _backgroundColor;

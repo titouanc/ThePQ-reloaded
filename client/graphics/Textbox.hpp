@@ -45,6 +45,17 @@ namespace GUI {
 			_y = y;
 		}
 
+		void updateText(sf::Event event){
+			if (event.text.unicode == '\b' && _text.getString().getSize() != 0){
+				sf::String oldText = _text.getString();
+				oldText.erase(oldText.getSize()-1, 1);
+				_text.setString(oldText);
+			}
+			else {
+				_text.setString(_text.getString() + event.text.unicode);
+			}
+		}
+
 		void focus(){
 			std::cout << "focused!"<< std::endl;
 			_isFocused = true;
