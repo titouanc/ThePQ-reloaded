@@ -1,5 +1,5 @@
 PKGCONFIG = PKG_CONFIG_PATH=/usr/local/lib/pkgconfig/ pkg-config
-OBJS = Layer.o MainController.o GraphicManager.o playground.o
+OBJS = Layer.o MainController.o GraphicManager.o 
 LIBS = ../../common/model/libmodel.a ../../common/json/libjson.a
 ifeq ($(shell uname -s),Darwin)
 	CPPFLAGS = -I/Library/Frameworks/SFML.framework/Headers/ -I../../common
@@ -7,8 +7,7 @@ else
 	CPPFLAGS = $(shell ${PKGCONFIG} --cflags sfml-all) -I../../common/
 endif
 
-all: playground.app
-	LD_LIBRARY_PATH=/usr/local/lib/:${LD_LIBRARY_PATH} ./$<
+all: playground.app testbox.app
 
 include ../../Makefile.includes
 

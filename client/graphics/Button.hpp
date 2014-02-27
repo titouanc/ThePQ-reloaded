@@ -40,6 +40,18 @@ namespace GUI {
 			_x = x; 
 			_y = y;
 		}
+		void setWidth(int w){ 
+			_w = w; 
+			_backgroundRect.setSize(sf::Vector2f(_w, _h));
+		}
+		void setHeight(int h){ 
+			_h = h; 
+			_backgroundRect.setSize(sf::Vector2f(_w, _h));
+		}
+
+		void setBackgroundColor(sf::Color color){
+			_backgroundRect.setFillColor(color);
+		}
 
 		void setText(std::string text) { _text.setString(text); }
 	private:

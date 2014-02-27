@@ -32,3 +32,11 @@ void GUI::MainController::handleClick(sf::Event e){
 	if (_layers.size() != 0)
 		_layers.top()->handleClick(e.mouseButton.x, e.mouseButton.y);
 }
+
+void GUI::MainController::handleTextEntered(sf::Event e){
+	if (_layers.size() != 0){
+		_layers.top()->handleTextEntered(e);
+		_layers.top()->renderTo(window);
+	}
+	window.display();
+}
