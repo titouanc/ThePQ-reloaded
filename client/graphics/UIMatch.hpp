@@ -11,6 +11,7 @@ class UIMatch : public sf::Drawable {
         sf::CircleShape _hexagon;   /* hilight shape */
         sf::RenderTexture _bkg;     /* Constant background */
         sf::RenderTexture _overlay; /* Variable foreground */
+        int _left, _top;            /* Alignment offset */
 
         /* Return the radius of a circle enclosing an hexagon of _size */
         double circleSize(void) const;
@@ -23,12 +24,6 @@ class UIMatch : public sf::Drawable {
         void createBackground(void);
 
         std::string texturePath(std::string const & name) const;
-
-        /* return pos (given in pitch coordinates) in GUI coordinate system */
-        Position pitch2GUI(Position const & pos) const;
-
-        /* return pos (given in GUI coordinates) in pitch coordinate system */
-        Position GUI2pitch(Position const & pos) const;
     public:
         static const sf::Color hilightYellow, hilightRed;
 
@@ -41,10 +36,20 @@ class UIMatch : public sf::Drawable {
         /* Return graphical pitch width, in pixels */
         unsigned int height(void) const;
 
+        void setPosition(int left, int top);
+
+        /* return pos (given in pitch coordinates) in GUI coordinate system */
+        Position pitch2GUI(Position const & pos) const;
+        /* return pos (given in GUI coordinates) in pitch coordinate system */
+        Position GUI2pitch(Position const & pos) const;
+
+        bool isInBounds(int x, int y) const;
+        bool isInBounds(Position const & pos) const;
+
         /* Conform to Drawable interface */
         void draw(sf::RenderTarget &target, sf::RenderStates states=sf::RenderStates()) const;
 
-        /* Draw a colored hexagon at given position */
+        /* Draw a colored hexagon at given pitch position */
         void hilight(Position const & pos, sf::Color const & color=hilightRed);
 
         /* Return true if it should be redrawn */
@@ -52,7 +57,3 @@ class UIMatch : public sf::Drawable {
 };
 
 #endif
-
-/*
-!!! FR76 3000 3022 2300 0505 2543 635 / SOGEFRPP !!!
-*/

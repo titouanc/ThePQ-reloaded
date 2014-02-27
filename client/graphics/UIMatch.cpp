@@ -6,24 +6,6 @@ class TextureNotFound : public std::runtime_error {
 };
 
 /* === Private === */
-Position UIMatch::GUI2pitch(Position const & pos) const
-{
-    int x = 1 + (2*pos.x() - _size/2 - width())/_size;
-    int y = ((height()-vAlign())/2 - pos.y())/vAlign();
-    if (! _pitch.isValid(x, y)){
-        x--;
-    }
-    return Position(x, y);
-}
-
-Position UIMatch::pitch2GUI(Position const & pos) const
-{
-    int w=width(), h=height(), s=_size;
-    int x = (w-s)/2 + pos.x()*s/2;
-    int y = (h-vAlign())/2 - pos.y()*vAlign();
-    return Position(x, y);
-}
-
 std::string UIMatch::texturePath(std::string const & name) const
 {
     return std::string("textures/") + name + ".png";
@@ -78,6 +60,8 @@ void UIMatch::createBackground(void)
             }
         }
     }
+
+    _bkg.display();
 }
 
 double UIMatch::circleSize(void) const 
@@ -94,8 +78,8 @@ double UIMatch::vAlign(void) const
 
 /* === Public === */
 #define ALPHA 0x40
-const sf::Color hilightYellow(0xcc, 0xcc, 0x00, ALPHA);
-const sf::Color hilightRed(0xcc, 0x00, 0x00, ALPHA);
+const sf::Color UIMatch::hilightYellow(0xcc, 0xcc, 0x00, ALPHA);
+const sf::Color UIMatch::hilightRed(0xcc, 0x00, 0x00, ALPHA);
 
 UIMatch::UIMatch(Pitch & pitch, int hexagonSize) : 
     sf::Drawable(),
@@ -103,7 +87,8 @@ UIMatch::UIMatch(Pitch & pitch, int hexagonSize) :
     _size(hexagonSize), 
     _hexagon(circleSize(), 6), /* 6 sides regular polygon */
     _bkg(),
-    _overlay()
+    _overlay(),
+    _left(0), _top(0)
 {
     _overlay.create(width(), height());
     _overlay.clear(sf::Color(0x00, 0x00, 0x00, 0x00));
@@ -120,18 +105,59 @@ unsigned int UIMatch::height(void) const
     return _pitch.height()*vAlign();
 }
 
+void UIMatch::setPosition(int left, int top)
+{
+    _left = left;
+    _top = top;
+}
+
+Position UIMatch::GUI2pitch(Position const & pos) const
+{
+    Position const & relpos = pos - Position(_left, _top);
+    int w=width(), h=width(), s=_size; /* Signed versions */
+    int x = 1 + (2*relpos.x() - s/2 - w)/s;
+    int y = ((h-vAlign())/2 - relpos.y())/vAlign();
+    if (! _pitch.isValid(x, y)){
+        x--;
+    }
+    return Position(x, y);
+}
+
+Position UIMatch::pitch2GUI(Position const & pos) const
+{
+    int w=width(), h=height(), s=_size; /* Signed versions */
+    int x = (w-s)/2 + pos.x()*s/2;
+    int y = (h-vAlign())/2 - pos.y()*vAlign();
+    return Position(_left+x, _top+y);
+}
+
+bool UIMatch::isInBounds(int x, int y) const
+{
+    int right = _left + width();
+    int bottom = _top + height();
+    return (_left<=x && x<right && _top<=y && y<bottom);
+}
+
+bool UIMatch::isInBounds(Position const & pos) const
+{
+    return isInBounds(pos.x(), pos.y());
+}
+
 /* Conform to Drawable interface */
 void UIMatch::draw(sf::RenderTarget &target, sf::RenderStates states) const
 {
     sf::Sprite bkg(_bkg.getTexture()), overlay(_overlay.getTexture());
     target.draw(bkg);
-    //target.draw(overlay);
+    target.draw(overlay);
 }
 
 /* Draw a colored hexagon at given position */
 void UIMatch::hilight(Position const & pos, sf::Color const & color)
 {
+    Position const & GUIpos = pitch2GUI(pos);
     _hexagon.setFillColor(color);
-    _hexagon.setPosition(pos.x(), pos.y());
+    _hexagon.setPosition(GUIpos.x(), GUIpos.y());
     _overlay.draw(_hexagon);
+    _overlay.display();
+    std::cout << "Hilight " << pos.toJson() << endl;
 }
