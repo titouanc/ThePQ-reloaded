@@ -23,15 +23,13 @@ int main(int argc, const char **argv)
 
 		else if (ev.type == sf::Event::MouseButtonPressed){
 			const Position click(ev.mouseButton.x, ev.mouseButton.y);
-			cout << "CLICK: " << click.toJson() << endl;
+
 			if (match.isInBounds(click)){
 				Position const & pos = match.GUI2pitch(click);
-				cout << "RECLICK: " << match.pitch2GUI(pos).toJson() << endl;
 				match.hilight(pos);
 				window.draw(match);
 				window.display();
 			}
-			cout << "---------" << endl;
 		}
 
 		else if (ev.type == sf::Event::KeyPressed){

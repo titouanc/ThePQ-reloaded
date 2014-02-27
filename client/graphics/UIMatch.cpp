@@ -114,7 +114,7 @@ void UIMatch::setPosition(int left, int top)
 Position UIMatch::GUI2pitch(Position const & pos) const
 {
     Position const & relpos = pos - Position(_left, _top);
-    int w=width(), h=width(), s=_size; /* Signed versions */
+    int w=width(), h=height(), s=_size; /* Signed versions */
     int x = 1 + (2*relpos.x() - s/2 - w)/s;
     int y = ((h-vAlign())/2 - relpos.y())/vAlign();
     if (! _pitch.isValid(x, y)){
@@ -159,5 +159,4 @@ void UIMatch::hilight(Position const & pos, sf::Color const & color)
     _hexagon.setPosition(GUIpos.x(), GUIpos.y());
     _overlay.draw(_hexagon);
     _overlay.display();
-    std::cout << "Hilight " << pos.toJson() << endl;
 }
