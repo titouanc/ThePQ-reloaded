@@ -3,8 +3,10 @@
 
 #include <SFML/Graphics.hpp>
 #include <vector>
+#include <map>
 #include <string>
 #include "Button.hpp"
+#include "Textbox.hpp"
 #include "GUIConstants.hpp"
 
 namespace GUI {
@@ -23,11 +25,15 @@ namespace GUI {
 		template <typename T> 
 		GUI::Button<T>* addButton(	const typename GUI::Clickable<T>::Callback& callback, 
 								T* target, std::string text="Button");
+		GUI::Textbox* addTextbox(std::string id);
 
+		GUI::Textbox* textboxWithID(std::string id);
+		void unfocusAllTextboxes();
 	private:
 		bool _active;
 		sf::Color _backgroundColor;
 		std::vector<GUI::ClickableInterface*> _clickables;
+		std::map<std::string, GUI::Textbox*> _textboxes;
 	};
 }
 
