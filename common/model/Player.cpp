@@ -143,60 +143,45 @@ float Player::collisionScore(){
 
 // BEATER ----------------------------------------------------------------------
 void Beater::equipBat(Bat aBat){
-    _strength += (aBat.getStrengthBonus());
-    _precision += (aBat.getPrecisionBonus());
     *_bat = aBat;
 }
 
 void Beater::unequipBat(){
-    _strength -= _bat->getStrengthBonus();
-    _precision -= _bat->getPrecisionBonus();
 }
 
 int Beater::collision (){
-    return static_cast<int>( (float) getStrength() * .85 + (float) getMagic() * .1 + (float) getChance() * .05) * 100; 
 }
 int Beater::anticollision (){
-    return static_cast<int>( (float) getConstitution() * .85 + (float) getMagic() * .1 + (float) getChance() * .05) * 100;
 }
 
 int Beater::shootBludger (){ 
-    return static_cast<int>( (float) getStrength() * .5 + (float) getPrecision() * .35 + (float) getMagic() * .1 + (float) getChance() * .05 ) * 100;
 }
 
 // CHASER ----------------------------------------------------------------------
 int Chaser::speed (){
-    return static_cast<int>( (float) getVelocity() * .85 + (float) getStrength() * .1 + (float) getChance() * .05 ) * 100;
 }
 
 int Chaser::collisionner (){
-    return static_cast<int>( (float) getStrength() * .65 + (float) getMagic() * .3 + (float) getChance() * .05 ) * 100;
 }
 
 int Chaser::anticollision (){
-    return static_cast<int>( (float) getConstitution() * .65 + (float) getSpirit() * .3 + (float) getChance() * .05 ) * 100 ;
 }
 
 int Chaser::pass (){
-    return static_cast<int>( (float) getStrength() * .4 + (float) getPrecision() * .5 + (float) getChance() * 0.1 ) * 100 ;
 }
 
 int Chaser::shoot (){
-    return static_cast<int>( (float) getStrength() * .6 + (float) getPrecision() * .35 + (float) getChance() * .05 ) *100 ;
 }
 
 // KEEPER ----------------------------------------------------------------------
 int Keeper::catchBall (){
-    return static_cast<int>( (float) getVelocity() * .65 + (float) getPrecision() * .3 + (float) getChance() * .05 ) * 100;
 }
 
 int Keeper::pass (){
-    return static_cast<int>( (float) getStrength() * .65 + (float) getPrecision() * .25 + (float) getChance() * .1) * 100 ;
 }
 
 // KEEPER ----------------------------------------------------------------------
 int Seeker::catchGS (){
-    return static_cast<int>( (float) getPrecision() * .50 + (float) getVelocity() * .20 + (float) getStrength() * .10 + (float) getMagic() * .1 + (float) getChance() * .1 ) * 100 ;
 }
 
 
