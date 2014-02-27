@@ -12,7 +12,8 @@
 namespace GUI {
 	class Layer {
 	public:
-		Layer(sf::Color backgroundColor=sf::Color(0xff, 0xff, 0xff, 0xff)): _active(false), _backgroundColor(backgroundColor){}
+		Layer(sf::Color backgroundColor=sf::Color(0xff, 0xff, 0xff, 0xff)): 
+				_active(false), _backgroundColor(backgroundColor), _focusedTextbox(NULL){}
 		~Layer();
 
 		bool isActive() 	{ return _active; }
@@ -34,6 +35,7 @@ namespace GUI {
 		sf::Color _backgroundColor;
 		std::vector<GUI::ClickableInterface*> _clickables;
 		std::map<std::string, GUI::Textbox*> _textboxes;
+		GUI::Textbox* _focusedTextbox;
 	};
 }
 

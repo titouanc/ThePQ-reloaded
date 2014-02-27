@@ -23,13 +23,17 @@ void GUI::Layer::handleClick(int x, int y){
 			_clickables[i]->triggerAction();
 	}
 	// checking for textboxes
+	bool hasTextboxBeenSelected = false;
 	map<string, Textbox*>::iterator it = _textboxes.begin();
 	for(; it != _textboxes.end(); it++){
 		if (it->second->isInBounds(x, y)){
-			unfocusAllTextboxes();
+			hasTextboxBeenSelected = true;
+			_focusedTextbox = it->second;
 			it->second->focus();
 		}
 	}
+	if (!hasTextboxBeenSelected)
+		_focusedTextbox = NULL;
 }
 
 GUI::Textbox* GUI::Layer::addTextbox(string id){
