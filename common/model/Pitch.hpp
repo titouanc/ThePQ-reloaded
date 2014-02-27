@@ -2,16 +2,12 @@
 #define DEFINE_PITCH_HEADER 
 
 #include "Moveable.hpp"
-#include <vector>
+#include "PosMatrix.hpp"
 
-class Pitch {
+class Pitch : public PosMatrix<Moveable> {
 	private:
 		/* Pitch dimensions */
 		size_t _width, _height;
-		/* Matrix representation for fast position->player lookup */
-		Moveable **_matrix;
-		/* Translate x,y position to index in inner representation */
-		size_t _index(int x, int y) const;
 	public:
 		static const Position West;
 		static const Position East;
@@ -42,8 +38,18 @@ class Pitch {
 		 * @param x The column (the middle column is 0)
 		 * @param y The row (the middle row is 0)
 		 */
+		using PosMatrix<Moveable>::getAt;
 		Moveable * getAt(int x, int y) const;
-		Moveable * getAt(Position const & pos) const;
+
+		/*!
+		 * @meth void Pitch::setAt(int x, int y, Moveable *moveable)
+		 * @brief Set Moveable at position x,y
+		 * @param x The column (the middle column is 0)
+		 * @param y The row (the middle row is 0)
+		 * @param moveable The moveable to place on the pitch
+		 */
+		using PosMatrix<Moveable>::setAt;
+		void setAt(int x, int y, Moveable *moveable);
 
 		/*!
 		 * @meth bool Pitch::inEllipsis(int x, int y) const
@@ -55,29 +61,25 @@ class Pitch {
 		bool inEllipsis(Position position);
 		bool inEllipsis(Moveable *moveable) const;
 
-		// TODO DOC
+		/* Return true if (x,y) is in a keeper zone */
 		bool isInWestKeeperZone(int x, int y) const;
 		bool isInWestKeeperZone(Moveable *moveable) const;
 		bool isInEastKeeperZone(int x, int y) const;
 		bool isInEastKeeperZone(Moveable *moveable) const;
-		
-		bool isValid(int x, int y) const {
-			return abs(x%2) == abs(y%2);
-		}
-
-		bool isValid(Position const & pos) const {
-			return isValid(pos.x(), pos.y());
-		}
-		
 		bool isInKeeperZone(int x, int y) const {
 			return isInEastKeeperZone(x, y) || isInWestKeeperZone(x, y);
 		}
-
 		bool isInKeeperZone(Position const & pos) const {
 			return isInKeeperZone(pos.x(), pos.y());
 		}
 
-		// TODO DOC
+		/* Return true if (x,y) is an hexagon in the rectangular pitch area */
+		bool isValid(int x, int y) const {return abs(x%2) == abs(y%2);}
+		bool isValid(Position const & pos) const {
+			return isValid(pos.x(), pos.y());
+		}
+
+		/* Return true if (x,y) is in a goal */
 		bool isWestGoal(int x, int y) const;
 		bool isEastGoal(int x, int y) const;
 		bool isGoal(int x, int y) const {
@@ -89,17 +91,6 @@ class Pitch {
 
 		// TODO DOC
 		std::vector<Position> freePositionsAround(Position &position);
-
-		/*!
-		 * @meth void Pitch::setAt(int x, int y, Moveable *moveable)
-		 * @brief Set Moveable at position x,y
-		 * @param x The column (the middle column is 0)
-		 * @param y The row (the middle row is 0)
-		 * @param moveable The moveable to place on the pitch
-		 */
-		bool setAt(int x, int y, Moveable *moveable);
-		
-		bool setAt(Position const & pos, Moveable *moveable);
 
 		/*!
 		 * @meth void Pitch::insert(Moveable *moveable)

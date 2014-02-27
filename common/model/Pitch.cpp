@@ -19,26 +19,13 @@ const Position Pitch::directions[6] = {
 	Pitch::SouthWest
 };
 
-size_t Pitch::_index(int x, int y) const 
-{
-	x += _width/2;
-	y += _height/2;
-	assert(0<=x && x<(int)_width);
-	assert(0<=y && y<(int)_height);
-	return y*_width + x;
-}
-
-Pitch::Pitch(size_t width, size_t height) : _width(width), _height(height)
-{
-	_matrix = new Moveable*[width*height];
-	memset(_matrix, 0, width*height*sizeof(Moveable*));
-}
+Pitch::Pitch(size_t width, size_t height) : 
+PosMatrix<Moveable>(), _width(width), _height(height)
+{}
 
 Pitch::~Pitch()
-{
-	/*Destructor*/
-	delete[] _matrix;
-}
+{}
+
 /*================Getters=====================*/
 size_t Pitch::width(void) const {return _width;}
 size_t Pitch::height(void) const {return _height;}
@@ -53,12 +40,7 @@ Position Pitch::center(void) const {return Position(0, 0);}
 
 Moveable * Pitch::getAt(int x, int y) const 
 {
-	return _matrix[_index(x, y)];
-}
-
-Moveable * Pitch::getAt(Position const & pos) const
-{
-	return getAt(pos.x(), pos.y());
+	return getAt(Position(x, y));
 }
 
 bool Pitch::inEllipsis(int x, int y) const
@@ -120,32 +102,24 @@ bool Pitch::isEastGoal(int x, int y) const {
 
 vector<Position> Pitch::freePositionsAround(Position &position){
 	vector<Position> res;
-	if (inEllipsis(position+West) && getAt(position+West) == NULL) res.push_back(position+West);
-	if (inEllipsis(position+NorthWest) && getAt(position+NorthWest) == NULL) res.push_back(position+NorthWest);
-	if (inEllipsis(position+NorthEast) && getAt(position+NorthEast) == NULL) res.push_back(position+NorthEast);
-	if (inEllipsis(position+East) && getAt(position+East) == NULL) res.push_back(position+East);
-	if (inEllipsis(position+SouthEast) && getAt(position+SouthEast) == NULL) res.push_back(position+SouthEast);
-	if (inEllipsis(position+SouthWest) && getAt(position+SouthWest) == NULL) res.push_back(position+SouthWest);
+	if (inEllipsis(position+West) && getAt(position+West) == NULL) 
+		res.push_back(position+West);
+	if (inEllipsis(position+NorthWest) && getAt(position+NorthWest) == NULL) 
+		res.push_back(position+NorthWest);
+	if (inEllipsis(position+NorthEast) && getAt(position+NorthEast) == NULL) 
+		res.push_back(position+NorthEast);
+	if (inEllipsis(position+East) && getAt(position+East) == NULL) 
+		res.push_back(position+East);
+	if (inEllipsis(position+SouthEast) && getAt(position+SouthEast) == NULL) 
+		res.push_back(position+SouthEast);
+	if (inEllipsis(position+SouthWest) && getAt(position+SouthWest) == NULL) 
+		res.push_back(position+SouthWest);
 	return res;
 }
 
-bool Pitch::setAt(int x, int y, Moveable *moveable)
+void Pitch::setAt(int x, int y, Moveable *moveable)
 {
-	/*Method checking position is correct insisde the pitch
-	 * and setting at position <<<x,y>>> if position is valid
-	 */
-	if (inEllipsis(x, y)){
-		_matrix[_index(x, y)] = moveable;
-		return true;
-	}
-	return false;
-}
-
-bool Pitch::setAt(Position const & pos, Moveable *moveable)
-{
-	/*Method checking position is correct insisde the pitch
-	 * and setting at position <<<x,y>>> if position is valid*/
-	return setAt(pos.x(), pos.y(), moveable);
+	setAt(Position(x, y), moveable);
 }
 
 bool Pitch::insert(Moveable *moveable)
@@ -153,7 +127,12 @@ bool Pitch::insert(Moveable *moveable)
 	/*Method checking position is correct insisde the pitch
 	 * and setting at position <<<x,y>>> if position is valid
 	 */
-	return setAt(moveable->getPosition(), moveable);
+	Position const & pos = moveable->getPosition();
+	if (isValid(pos) && inEllipsis(pos)){
+		setAt(pos, moveable);
+		return true;
+	}
+	return false;
 }
 
 std::ostream & operator<<(std::ostream & out, Pitch const & pitch)
@@ -183,17 +162,6 @@ std::ostream & operator<<(std::ostream & out, Pitch const & pitch)
 						out << "\033[35m*\033[0m";
 				} else if (atPos->isPlayer()) {
 					out << "\033[31mo\033[0m";
-					/* Dynamic cast error  Oo
-					Player & player = (Player &)*atPos;
-					if (player.isSeeker())
-						out << "\033[33mo\033[0m";
-					else if (player.isChaser())
-						out << "\033[34mo\033[0m";
-					else if (player.isBeater())
-						out << "\033[35mo\033[0m";
-					else if (player.isKeeper())
-						out << "\033[36mo\033[0m";
-					//*/
 				}
 			}
 		}
