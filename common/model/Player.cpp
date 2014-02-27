@@ -115,7 +115,7 @@ void Player::loseMana (int spelled){
 }
 
 float Player::collisionScore(){
-    float res = (getStrength()+getVelocity()+getChance());
+    float res = (2*getStrength()+getVelocity()+getChance());
     res = res * (100000000 +(rand()%10000000))/100000000;
     return res;
 } 
@@ -125,31 +125,49 @@ void Beater::equipBat(Bat aBat){
     *_bat = aBat;
 }
 
-void Beater::unequipBat(){
-}
-
 float Beater::shootBludger (){ 
+    float res = (2*getStrength()+getPrecision()+getChance());
+    res = res * (100000000 +(rand()%10000000))/100000000;
+    return res;
 }
 
 // CHASER ----------------------------------------------------------------------
 int Chaser::speed (){
+    float res = 4*getVelocity();
+    res = res * (100000000 +(rand()%10000000))/100000000;
+    return res;
 }
 
 float Chaser::pass (){
+    float res = getStrength()+2*getPrecision()+getChance();
+    res = res * (100000000 +(rand()%10000000))/100000000;
+    return res;
 }
 
 int Chaser::shoot (){
+    float res = 2*getStrength()+getPrecision()+getChance();
+    res = res * (100000000 +(rand()%10000000))/100000000;
+    return res;
 }
 
 // KEEPER ----------------------------------------------------------------------
 float Keeper::catchBall (){
+    float res = 2*getPrecision()+getVelocity()+getChance();
+    res = res * (100000000 +(rand()%10000000))/100000000;
+    return res;
 }
 
 float Keeper::pass (){
+    float res = getStrength()+2*getPrecision()+getChance();
+    res = res * (100000000 +(rand()%10000000))/100000000;
+    return res;
 }
 
 // KEEPER ----------------------------------------------------------------------
 float Seeker::catchGS (){
+    float res = 2*getPrecision()+getVelocity()+getChance();
+    res = res * (100000000 +(rand()%10000000))/100000000;
+    return res;
 }
 
 

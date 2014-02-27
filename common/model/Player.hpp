@@ -104,7 +104,6 @@ public:
 	int getStrength() const { return Player::getStrength() + _bat->getStrengthBonus() ; }
     int getPrecision() const { return Player::getPrecision() + _bat->getPrecisionBonus(); }
     void equipBat (Bat aBat);
-    void unequipBat ();
     float shootBludger ();
 private:
 	Bat * _bat;
