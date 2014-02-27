@@ -101,43 +101,27 @@ class Jersey : public Gear
 public:
 
 	Jersey(JSON::Dict const &json = JSON::Dict()): Gear(json),
-		_strengthBonus(0), _constitutionBonus(0), _magicBonus(0), _spiritBonus(0) {
+		_strengthBonus(0) {
 		if (ISINT(json.get("strengthBonus"))) _strengthBonus = INT(json.get("strengthBonus")).value();		
-		if (ISINT(json.get("constitutionBonus"))) _constitutionBonus = INT(json.get("constitutionBonus")).value();		
-		if (ISINT(json.get("magicBonus"))) _magicBonus = INT(json.get("magicBonus")).value();		
-		if (ISINT(json.get("spiritBonus"))) _spiritBonus = INT(json.get("spiritBonus")).value();		
 	}
 
 	Jersey(const Jersey & jersey): Gear(jersey._name,jersey._description,jersey._price),
-	_strengthBonus(jersey._strengthBonus), _constitutionBonus(jersey._constitutionBonus), _magicBonus(jersey._magicBonus),
-	_spiritBonus(jersey._spiritBonus) {}//modif
+	_strengthBonus(jersey._strengthBonus){}//modif
 
 	operator JSON::Dict(){
 		JSON::Dict res = JSON::Dict((Gear)*this);
 		res.set("strengthBonus", _strengthBonus);
-		res.set("constitutionBonus", _constitutionBonus);
-		res.set("magicBonus", _magicBonus);
-		res.set("spiritBonus", _spiritBonus);
 		return res;
 	}	
 	/*===Getters for Bonuses===*/
 	int getStrengthBonus () const 			{ return _strengthBonus; }
-	int getConstitutionBonus () const 		{ return _constitutionBonus; }
-	int getMagicBonus () const 				{ return _magicBonus; }
-	int getSpiritBonus () const 			{ return _spiritBonus; }
 	/*===Setters for Bonuses===*/
 	void setStrengthBonus(int bonus)		{ _strengthBonus=bonus;}
-	void setConstitutionBonus(int bonus)	{ _constitutionBonus=bonus;}
-	void setMagicBonus(int bonus)			{ _magicBonus=bonus;}
-	void setSpiritBonus(int bonus)			{ _spiritBonus=bonus;}
 	void setName(string name)				{ Gear::setName(name);}
 	void setPrice(int price)				{ Gear::setPrice(price);}
 
 private:
 	int _strengthBonus;
-	int _constitutionBonus;
-	int _magicBonus;
-	int _spiritBonus;
 
 };
 
