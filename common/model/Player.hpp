@@ -105,9 +105,7 @@ public:
     int getPrecision() const { return Player::getPrecision() + _bat->getPrecisionBonus(); }
     void equipBat (Bat aBat);
     void unequipBat ();
-    int collision ();
-    int anticollision ();
-    int shootBludger ();
+    float shootBludger ();
 private:
 	Bat * _bat;
 };
@@ -119,10 +117,8 @@ public:
 	using Player::Player;
     bool isChaser () const { return true; }
     int speed ();
-    int collisionner ();
-    int anticollision ();
-    int pass ();
-    int shoot ();
+    float pass ();
+    float shoot ();
 };
 
 /*================================CHASER================================*/
@@ -132,7 +128,7 @@ public:
     using Player::Player;
 	bool isKeeper () const { return true; }
     int catchBall ();
-    int pass ();
+    float pass ();
 };
 
 // SEEKER ----------------------------------------------------------------------
@@ -141,7 +137,7 @@ class Seeker : public Player
 public:
     using Player::Player;
 	bool isSeeker () const { return true; }
-    int catchGS ();
+    float catchGS ();
 
 };
 

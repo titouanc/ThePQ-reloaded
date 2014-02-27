@@ -128,39 +128,28 @@ void Beater::equipBat(Bat aBat){
 void Beater::unequipBat(){
 }
 
-int Beater::collision (){
-}
-int Beater::anticollision (){
-}
-
-int Beater::shootBludger (){ 
+float Beater::shootBludger (){ 
 }
 
 // CHASER ----------------------------------------------------------------------
 int Chaser::speed (){
 }
 
-int Chaser::collisionner (){
-}
-
-int Chaser::anticollision (){
-}
-
-int Chaser::pass (){
+float Chaser::pass (){
 }
 
 int Chaser::shoot (){
 }
 
 // KEEPER ----------------------------------------------------------------------
-int Keeper::catchBall (){
+float Keeper::catchBall (){
 }
 
-int Keeper::pass (){
+float Keeper::pass (){
 }
 
 // KEEPER ----------------------------------------------------------------------
-int Seeker::catchGS (){
+float Seeker::catchGS (){
 }
 
 
