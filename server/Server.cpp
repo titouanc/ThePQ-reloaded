@@ -110,14 +110,25 @@ void Server::treatMessage(const Message &message)
 		if (ISSTR(received.get("type"))) {
 			string messageType = STR(received.get("type")).value();
 			if (messageType == MSG::DISCONNECT){
+				/* Disconnect user */
 				map<int, User*>::iterator it = _users.find(message.peer_id);
 				if (it != _users.end()){
 					delete it->second;
 					_users.erase(it);
 				}
 			} else if (ISDICT(received.get("data"))){
-				if (messageType == MSG::LOGIN)
-					logUserIn(DICT(received.get("data")), message.peer_id);
+				if (messageType == MSG::LOGIN){
+					User *loggedIn = logUserIn(DICT(received.get("data")), message.peer_id);
+					/* If someone successfully logged in; send his offline 
+					   messages and reset queue */
+					if (loggedIn){
+						JSON::List const & offlineMsg = loggedIn->getOfflineMsg();
+						for (size_t i=0; i<offlineMsg.len(); i++){
+							_outbox.push(Message(message.peer_id, offlineMsg[i]->clone()));
+						}
+						loggedIn->clearOfflineMsg();
+					}
+				}
 				else if (messageType == MSG::REGISTER) 
 					registerUser(DICT(received.get("data")), message.peer_id);
 				else if (messageType == MSG::ADD_PLAYER_ON_MARKET_QUERY){
@@ -188,8 +199,9 @@ void Server::registerUser(const JSON::Dict &credentials, int peer_id)
 	}
 }
 
-void Server::logUserIn(const JSON::Dict &credentials, int peer_id)
+User *Server::logUserIn(const JSON::Dict &credentials, int peer_id)
 {
+	User *res = NULL;
 	if (ISSTR(credentials.get(MSG::USERNAME)) && ISSTR(credentials.get(MSG::PASSWORD))){
 		std::string const & username = STR(credentials.get(MSG::USERNAME));
 		std::string const & password = STR(credentials.get(MSG::PASSWORD));
@@ -208,6 +220,7 @@ void Server::logUserIn(const JSON::Dict &credentials, int peer_id)
 					// mapping user to its peer_id to keep a list of connected users.
 					_users.insert(std::pair<int, User*>(peer_id, user));
 					response.set("data", MSG::USER_LOGIN);
+					res = user;
 				} else {
 					// wrong password
 					delete user;
@@ -220,6 +233,7 @@ void Server::logUserIn(const JSON::Dict &credentials, int peer_id)
 		}
 		_outbox.push(Message(peer_id, response.clone()));
 	}
+	return res;
 }
 
 void Server::checkIfUserExists(string username, int peer_id)
@@ -385,16 +399,26 @@ int Server::getPeerID(std::string const &username){
 			return it->first;
 		}
 	}
-	return 0;
+	return -1;
 }
 
 void Server::sendMarketMessage(std::string const &username, const JSON::Dict &message){
-	int to_peer = getPeerID(username);
 	JSON::Dict toSend;
 	toSend.set("type",net::MSG::MARKET_MESSAGE);
 	toSend.set("data",message);
-	Message status(to_peer, toSend.clone());
-	_outbox.push(status); 
+
+	int to_peer = getPeerID(username);
+	if (to_peer >= 0){
+		/* User currently connected to server */
+		Message status(to_peer, toSend.clone());
+		_outbox.push(status); 
+	} else {
+		User *user = User::load(username);
+		if (user != NULL){
+			user->sendOfflineMsg(toSend);
+			delete user;
+		}
+	}
 }
 
 User *Server::getUserByName(std::string username)

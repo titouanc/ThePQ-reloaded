@@ -44,7 +44,7 @@ public:
 	void treatMessage(const net::Message &message);
 
 	void registerUser(const JSON::Dict &credentials, int peer_id);
-	void logUserIn(const JSON::Dict &credentials, int peer_id);
+	User *logUserIn(const JSON::Dict &credentials, int peer_id);
 	void checkIfUserExists(string username, int peer_id);
 	void sendInstallationsList(int peer_id);
 	void upgradeInstallation(int peer_id, size_t i);

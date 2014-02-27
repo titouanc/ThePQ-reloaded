@@ -36,6 +36,13 @@ public:
 	void loadTeam();
 	
 	void createUser();
+	
+	/* Enqueue a message to send when user gets back online */
+	void sendOfflineMsg(JSON::Value const & message) const;
+	/* Get all enqueued messages for this user */
+	JSON::List getOfflineMsg(void) const;
+	/* Erase all enqueued messages for this user */
+	bool clearOfflineMsg(void) const;
 };
 
 #endif
