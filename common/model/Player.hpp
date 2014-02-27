@@ -48,8 +48,8 @@ public:
 	virtual bool isChaser () const { return false; }
 	virtual bool isKeeper () const { return false; }
 	virtual bool isSeeker () const { return false; }
-	int getStrength () const 		{ return _strength + *_jersey.getStrengthBonus; }
-	int getVelocity () const 		{ return _velocity + *_broomstick.getVelocityBonus ;}
+	int getStrength () const 		{ return _strength + *_jersey.getStrengthBonus(); }
+	int getVelocity () const 		{ return _velocity + *_broomstick.getVelocityBonus() ;}
 	int getPrecision () const 		{ return _precision; }
 	int getChance () const 			{ return _chance; }
 	void improveStrength (int added) 		{ _strength+=added; }
@@ -101,7 +101,9 @@ public:
     		_bat = new Bat(5, 5); /* TODO: Too much magic here !!! */
     }
 	bool isBeater () const { return true; }
-	void equipBat (Bat aBat);
+	int getStrength() const { return Player::getStrength() + *_bat.getStrength() ; }
+    int getPrecision() const { return Player::getPrecision() + *_bat.getPrecision(); }
+    void equipBat (Bat aBat);
     void unequipBat ();
     int collision ();
     int anticollision ();
