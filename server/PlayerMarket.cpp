@@ -27,7 +27,7 @@ void * saleChecker(void * p){
 			if(market->_sales[i]->isOver()){
 				market->deletingLock();
 				market->transfert(market->_sales[i]);
-				MemoryAccess::removeFile(*(market->_sales[i]));
+				MemoryAccess::removeObject(*(market->_sales[i]));
 				delete market->_sales[i];
 				market->_sales.erase(market->_sales.begin()+i);
 				market->deletingUnlock();
@@ -50,7 +50,7 @@ void PlayerMarket::createSale(const JSON::Dict &json){//TODO : Should not access
 	std::string username = STR(json.get(net::MSG::USERNAME)).value();
 	//create sale, save and start it
 	Player player(player_id, username);
-	player = MemoryAccess::load(player);
+	MemoryAccess::load(player);
 	_sales.push_back(new Sale(bidValue, username, player_id, player));
 	Sale *added = getSale(player_id);
 	added->save();

@@ -42,15 +42,9 @@ public:
 	}
 	void load(){
 		/* _owner has to be initialized to an username else throws a JSON::IOError */
-		*this = MemoryAccess::load(*this); //Only loads funds, owner, name (TODO : fame, wins, games, etc.).
-		std::vector<Installation> *fillInstallations = new std::vector<Installation>;
-		MemoryAccess::load(fillInstallations,_owner);
-		_installations = *fillInstallations;
-		delete fillInstallations;
-		std::vector<Player> *fillPlayers = new std::vector<Player>;
-		MemoryAccess::load(fillPlayers,_owner);
-		_players = *fillPlayers;
-		delete fillPlayers;
+		MemoryAccess::load(*this); //Only loads funds, owner, name (TODO : fame, wins, games, etc.).
+		MemoryAccess::load(_installations,_owner);
+		MemoryAccess::load(_players,_owner);
 	}
 
 	void save(){

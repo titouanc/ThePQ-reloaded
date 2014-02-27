@@ -21,7 +21,7 @@ User::operator JSON::Dict(){
 User* User::load(std::string username){
 	try {
 		User* user = new User(username);
-		*user = MemoryAccess::load(*user);
+		MemoryAccess::load(*user);
 		return user;
 	}
 	catch (JSON::IOError e){

@@ -123,7 +123,7 @@ void Sale::save(){
 }
 
 void Sale::load(){
-	*this = MemoryAccess::load(*this);
+	MemoryAccess::load(*this);
 }
 
 Sale::operator JSON::Dict(){
