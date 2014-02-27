@@ -49,6 +49,9 @@ class UIMatch : public sf::Drawable {
         /* Conform to Drawable interface */
         void draw(sf::RenderTarget &target, sf::RenderStates states=sf::RenderStates()) const;
 
+        /* Draw moveables on top layer */
+        void drawMoveables(void);
+
         /* Draw a colored hexagon at given pitch position */
         void hilight(Position const & pos, sf::Color const & color=hilightRed);
 

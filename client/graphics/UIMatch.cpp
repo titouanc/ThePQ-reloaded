@@ -143,6 +143,28 @@ bool UIMatch::isInBounds(Position const & pos) const
     return isInBounds(pos.x(), pos.y());
 }
 
+void UIMatch::drawMoveables(void)
+{
+    sf::CircleShape shape(circleSize());
+    shape.setFillColor(sf::Color(0, 0, 0xff, 0xff));
+
+    for (int y=_pitch.ymin(); y<_pitch.ymax(); y++){
+        for (int x=_pitch.xmin(); x<_pitch.xmax(); x++){
+            if (! (_pitch.inEllipsis(x, y) && _pitch.isValid(x, y)))
+                continue;
+            Moveable *atPos = _pitch.getAt(x, y);
+            if (atPos){
+                Position const & destPos = pitch2GUI(Position(x, y));
+                shape.setPosition(destPos.x(), destPos.y());
+                _overlay.draw(shape);
+            }
+        }
+    }
+
+    _overlay.display();
+}
+
+
 /* Conform to Drawable interface */
 void UIMatch::draw(sf::RenderTarget &target, sf::RenderStates states) const
 {

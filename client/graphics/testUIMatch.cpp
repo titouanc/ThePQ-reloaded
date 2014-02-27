@@ -1,5 +1,6 @@
 #include "UIMatch.hpp"
 #include <SFML/Graphics.hpp>
+#include <model/Player.hpp>
 
 using namespace std;
 
@@ -9,7 +10,9 @@ int main(int argc, const char **argv)
 	UIMatch match(myPitch);
 	sf::RenderWindow window(sf::VideoMode(1280, 720), "This is a test !");
 
-	match.hilight(Position(0, 0));
+	Seeker harry;
+	myPitch.setAt(-12, 2, &harry);
+	match.drawMoveables();
 
 	window.clear(sf::Color::Yellow);
 	window.draw(match);
@@ -26,6 +29,7 @@ int main(int argc, const char **argv)
 
 			if (match.isInBounds(click)){
 				Position const & pos = match.GUI2pitch(click);
+				match.drawMoveables();
 				match.hilight(pos);
 				window.draw(match);
 				window.display();

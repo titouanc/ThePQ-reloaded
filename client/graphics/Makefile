@@ -2,11 +2,12 @@ PKGCONFIG = PKG_CONFIG_PATH=/usr/local/lib/pkgconfig/ pkg-config
 
 OBJS = Layer.o MainController.o GraphicManager.o UIMatch.o
 
+CPPFLAGS = -I../../common
 LIBS = ../../common/model/libmodel.a ../../common/json/libjson.a
 ifeq ($(shell uname -s),Darwin)
-	CPPFLAGS = -I/Library/Frameworks/SFML.framework/Headers/ -I../../common
+	CPPFLAGS += -I/Library/Frameworks/SFML.framework/Headers/
 else
-	CPPFLAGS = $(shell ${PKGCONFIG} --cflags sfml-all) -I../../common/
+	CPPFLAGS += $(shell ${PKGCONFIG} --cflags sfml-all)
 endif
 
 all: playground.app
