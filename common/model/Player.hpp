@@ -115,7 +115,7 @@ class Chaser : public Player
 public:
 	using Player::Player;
     bool isChaser () const { return true; }
-    int speed ();
+    float speed ();
     float pass ();
     float shoot ();
 };
@@ -126,7 +126,7 @@ class Keeper : public Player
 public:
     using Player::Player;
 	bool isKeeper () const { return true; }
-    int catchBall ();
+    float catchBall ();
     float pass ();
 };
 
