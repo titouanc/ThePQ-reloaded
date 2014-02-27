@@ -45,8 +45,7 @@ Player::Player(const Player & player) : Member(player._memberID,player._name,pla
                 Moveable(player._uniqueID,player._speed,player._position), 
                 _maxLife(player._maxLife), _maxMana(player._maxMana),_lifeBar(player._lifeBar), 
                 _manaBar(player._manaBar), _broomstick(), 
-                _jersey(), _strength(player._strength), _constitution(player._constitution), 
-                _magic(player._magic), _spirit(player._spirit), _velocity(player._velocity), 
+                _jersey(), _strength(player._strength), _velocity(player._velocity), 
                 _precision(player._precision), _chance(player._chance) {
         _broomstick = new Broomstick(*(player._broomstick));
         _jersey = new Jersey(*(player._jersey));
@@ -63,9 +62,6 @@ Player::operator JSON::Dict(){
     res.set("broomstick", JSON::Dict(*_broomstick));
     res.set("jersey", JSON::Dict(*_jersey));
     res.set("strength", _strength);
-    res.set("constitution", _constitution);
-    res.set("magic", _magic);
-    res.set("spirit", _spirit);
     res.set("velocity", _velocity);
     res.set("precision", _precision);
     res.set("chance", _precision);
