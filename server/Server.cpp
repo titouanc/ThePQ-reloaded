@@ -163,11 +163,8 @@ void Server::registerUser(const JSON::Dict &credentials, int peer_id)
 	if (ISSTR(credentials.get(MSG::USERNAME)) && ISSTR(credentials.get(MSG::PASSWORD))){
 		std::string const & username = STR(credentials.get(MSG::USERNAME));
 		std::string const & password = STR(credentials.get(MSG::PASSWORD));
-
 		JSON::Dict response = JSON::Dict();
-		
 		response.set("type", MSG::STATUS);
-
 		User* newUser = User::load(username);
 		if (newUser != NULL){
 			response.set("data", MSG::USER_EXISTS);
@@ -256,8 +253,9 @@ void Server::sendInstallationsList(int peer_id)
 
 void Server::upgradeInstallation(int peer_id, size_t i)
 {
-	_users[peer_id]->getTeam().getInstallations()[i].upgrade();
-	_users[peer_id]->getTeam().save();
+	Installation & inst = _users[peer_id]->getTeam().getInstallations()[i];
+	inst.upgrade();
+	MemoryAccess::save(inst);
 	JSON::Dict msg;
 	msg.set("type", net::MSG::INSTALLATION_UPGRADE);
 	msg.set("data", JSON::Bool(true));
@@ -266,8 +264,9 @@ void Server::upgradeInstallation(int peer_id, size_t i)
 
 void Server::downgradeInstallation(int peer_id, size_t i)
 {
-	_users[peer_id]->getTeam().getInstallations()[i].downgrade();	
-	_users[peer_id]->getTeam().save();
+	Installation & inst = _users[peer_id]->getTeam().getInstallations()[i];
+	inst.downgrade();
+	MemoryAccess::save(inst);
 	JSON::Dict msg;
 	msg.set("type", net::MSG::INSTALLATION_DOWNGRADE);
 	msg.set("data", JSON::Bool(true));
@@ -366,7 +365,7 @@ void Server::placeBidOnPlayer(const JSON::Dict &bid, int peer_id){
 	_outbox.push(status);
 }
 
-void Server::sendPlayersList(const JSON::Dict &data, int peer_id){//TODO : Should not access memory
+void Server::sendPlayersList(const JSON::Dict &data, int peer_id){
 	std::vector<Player> & players = _users[peer_id]->getTeam().getPlayers();
 	JSON::List jsonPlayers;
 	for(size_t i = 0; i<players.size();++i){
@@ -385,7 +384,7 @@ int Server::getPeerID(std::string const &username){
 			return it->first;
 		}
 	}
-	return 0;
+	return -1;
 }
 
 void Server::sendMarketMessage(std::string const &username, const JSON::Dict &message){

@@ -8,7 +8,10 @@
 
 PlayerMarket::PlayerMarket(Server *server): _server(server), _sales(), _marketPath("data/playerMarket/"), _playerPath("data/"),
 _thread(),_runChecker(true), _deleting(PTHREAD_MUTEX_INITIALIZER) {
-	//loadSales();
+	MemoryAccess::load(_sales);
+	for(size_t i=0;i<_sales.size();++i){
+		_sales[i]->start();
+	}
 	startChecker();
 }
 
@@ -169,23 +172,6 @@ JSON::Dict PlayerMarket::bid(const JSON::Dict &json){
 	deletingUnlock();
 	return response;
 }
-
-// Player PlayerMarket::loadPlayerInfos(std::string username, int id){
-// 	Player toFind;
-// 	JSON::Value* loaded = JSON::load(getPlayersPath(username).c_str());
-// 	if(ISLIST(loaded)){
-// 		JSON::List & playersList = LIST(loaded);
-// 		for(size_t i=0; i<playersList.len();++i){
-// 			if(ISDICT(playersList[i])){
-// 				JSON::Dict & player = DICT(playersList[i]);
-// 				if(INT(player.get(net::MSG::PLAYER_ID)) == id) {
-// 					toFind = DICT(playersList[i]);
-// 				}
-// 			}
-// 		}
-// 	}
-// 	return toFind;
-// }
 
 void PlayerMarket::sendMessageToUser(std::string username, const JSON::Dict & message){
 	_server->sendMarketMessage(username, message);

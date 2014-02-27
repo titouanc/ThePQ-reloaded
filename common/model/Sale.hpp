@@ -9,14 +9,6 @@
 #include <json/json.hpp>
 #include <model/Player.hpp>
 
-/*
-TODO :
-- CONST /!\
-*/
-#define FIRST_TURN 30 	//TBD
-#define TURN_TIME 30
-#define BIDRATIO 0.05 	//5%
-
 class Sale{
 	friend std::ostream& operator<< (std::ostream&, const Sale&);
 private:
@@ -25,7 +17,7 @@ private:
 	int _bidValue;
 	float _bidRatio;
 	int _turn;
-	std::string _currentBidder; 		//User currently winning sale
+	std::string _currentBidder; 
 	std::string _owner;
 	std::string _marketPath;
 	std::string _playerPath;
@@ -55,8 +47,8 @@ public:
 	std::string getOwner() const {return _owner;}
 	int getNextBidValue() const {return (_bidValue + (int)_bidValue*_bidRatio);}
 	int getTotalTime() const {
-		if(_turn==1){return FIRST_TURN;}
-		else{return TURN_TIME;}
+		if(_turn==1){return SALE_FIRST_TURN_TIME;}
+		else{return SALE_TURN_TIME;}
 	}
 	int getBidValue() const {return _bidValue;}
 	bool isOver() const {return _ended;}

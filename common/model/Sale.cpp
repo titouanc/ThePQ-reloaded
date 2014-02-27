@@ -39,7 +39,7 @@ void Sale::resolveEndOfTurn(){
 
 Sale::Sale() : _turnTeams(), _canBidTeams(), _bidValue(0),_bidRatio(BIDRATIO),
 _turn(1),_currentBidder(""),_owner(""), _marketPath("data/PlayerMarket/"),_playerPath("data/"),
-_timeLeft(FIRST_TURN), _saleID(0), _thread(), 
+_timeLeft(SALE_FIRST_TURN_TIME), _saleID(0), _thread(), 
 _mymutex(PTHREAD_MUTEX_INITIALIZER), _player(Player()), _ended(false) {}
 
 Sale::Sale(int bidValue, std::string owner, int id, const Player & player) : Sale()

@@ -39,7 +39,7 @@ namespace MemoryAccess
 	JSON::List loadFilesInVec(std::string);
 	void load(std::vector<Installation>&,std::string);
 	void load(std::vector<Player>&,std::string);
-	void load(std::vector<Sale>&);
+	void load(std::vector<Sale*>);
 
 	void loadSkel(Broomstick&);
 	void loadSkel(Jersey&);

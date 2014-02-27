@@ -10,16 +10,10 @@
 #include <pthread.h>
 #include "Server.hpp"
 
-
-/*
-TODO : 
-- constructor loading all json files in memory (server crash ?)
-- transfert when sale over (if player sold)
-*/
 class Server;
 class Sale;
 class PlayerMarket{
-	friend void * saleChecker(void *);
+	friend void * saleChecker(void *); //Thread deleting the ended sales
 private:
 	Server *_server;
 	std::vector<Sale*> _sales;
@@ -37,7 +31,7 @@ public:
 	~PlayerMarket();
 	void createSale(const JSON::Dict &json);
 	void transfert(Sale * sale);
-	//~ void loadSales();
+	void loadSales();
 	Sale * getSale(int id);
 	void sendMessageToUser(std::string, const JSON::Dict&);
 	JSON::Dict allSales();

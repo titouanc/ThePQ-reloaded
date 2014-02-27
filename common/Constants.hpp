@@ -97,6 +97,9 @@ namespace gameconfig
 	static const int MAX_PLAYERS = 15;
 	static const int MIN_PLAYERS = 7;
 	static const int STARTING_FUNDS = 10000;
+	static const int SALE_FIRST_TURN_TIME = 300;
+	static const int SALE_TURN_TIME = 30;
+	static const float BID_RATIO = 0.05;
 }
 
 namespace memory
