@@ -13,30 +13,29 @@
 #include <fstream>
 #include <iterator>
 #include <istream>
-using namespace std;
+/* TODO : user.delete() */
 
 class User{
 private:
-	string _username;
-	string _password;
+	std::string _username;
+	std::string _password;
 	Team _team;
 public:
-	User(const string& username ="", const string& password="");
+	User(const std::string& username ="", const std::string& password="");
 	User(const JSON::Dict*);
 	operator JSON::Dict();
 
-	string getUsername() {return _username;}
-	void setUsername(const string& username){ _username = username;};
-	string getPassword() { return _password; }
-	void setPassword(const string& password) { _password = password; }
+	std::string getUsername() {return _username;}
+	void setUsername(const std::string& username){ _username = username;};
+	std::string getPassword() { return _password; }
+	void setPassword(const std::string& password) { _password = password; }
 	Team& getTeam(){return _team;}
 
 	void save();
-	static User* load(string username);
+	static User* load(std::string username);
 	void loadTeam();
 	
 	void createUser();
-	void generateBaseSquad(JSON::List &toFill);
 };
 
 #endif

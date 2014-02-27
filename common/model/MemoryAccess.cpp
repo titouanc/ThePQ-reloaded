@@ -8,6 +8,8 @@
 #include <model/Sale.hpp>
 #include <model/Installation.hpp>
 #include <model/User.hpp>
+#include <model/Team.hpp>
+#include <model/Gear.hpp>
 #include <iostream>
 
 std::string MemoryAccess::getUserDirectory(std::string username){
@@ -33,6 +35,9 @@ std::string MemoryAccess::getSalePath(int id){
 }
 std::string MemoryAccess::getTeamInfosPath(std::string username){
 	return getUserDirectory(username) + memory::TEAM_INFOS_FILE + memory::FILE_FORMAT;
+}
+std::string MemoryAccess::getSkelPath(std::string file){
+	return memory::SKEL_DIR + file + memory::FILE_FORMAT;
 }
 
 void MemoryAccess::save(Installation& install){
@@ -141,6 +146,28 @@ void MemoryAccess::load(std::vector<Sale> *toFill){
 		toFill->push_back(DICT(sales[i]));
 	}
 }
+
+void MemoryAccess::loadSkel(Broomstick& broom){
+	JSON::Value *loaded = JSON::load(getSkelPath(memory::BROOM_FILE).c_str());
+	broom = DICT(loaded);
+	delete loaded;
+}
+
+void MemoryAccess::loadSkel(Jersey& jersey){
+	JSON::Value *loaded = JSON::load(getSkelPath(memory::JERSEY_FILE).c_str());
+	jersey = DICT(loaded);
+	delete loaded;
+}
+
+void MemoryAccess::loadSkel(std::vector<Installation> &vec){
+	JSON::Value *loaded = JSON::load(getSkelPath(memory::INSTS_SKEL_FILE).c_str());
+	JSON::List & insts = LIST(loaded);
+	for(size_t i = 0;i<insts.len();++i){
+		vec.push_back(DICT(insts[i]));
+	}
+	delete loaded;
+}
+
 
 void MemoryAccess::removeFile(Player &player){
 	remove(getPlayerPath(player.getOwner(), player.getMemberID()).c_str());

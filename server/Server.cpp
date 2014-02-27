@@ -241,25 +241,23 @@ void Server::checkIfUserExists(string username, int peer_id)
 	delete user;
 }
 
-void Server::sendInstallationsList(int peer_id)//should use getInstallations instead of accessing memory
+void Server::sendInstallationsList(int peer_id)
 {
-	std::string username = _users[peer_id]->getUsername();
-	std::vector<Installation>* toLoad = new std::vector<Installation>;
-	MemoryAccess::load(toLoad,username);
-	JSON::List installationsList;
-	for(size_t i = 0; i<toLoad->size();++i){
-		installationsList.append(JSON::Dict((*toLoad)[i]));
+	JSON::List jsonInst;
+	std::vector<Installation> & insts = _users[peer_id]->getTeam().getInstallations();
+	for(size_t i = 0;i<insts.size();++i){
+		jsonInst.append(JSON::Dict(insts[i]));
 	}
 	JSON::Dict msg;
 	msg.set("type", net::MSG::INSTALLATIONS_LIST);
-	msg.set("data", installationsList);
+	msg.set("data", jsonInst);
 	_outbox.push(Message(peer_id, msg.clone()));
 }
 
 void Server::upgradeInstallation(int peer_id, size_t i)
 {
-	_users[peer_id]->getInstallations()[i].upgrade();
-	_users[peer_id]->saveInstallations();
+	_users[peer_id]->getTeam().getInstallations()[i].upgrade();
+	_users[peer_id]->getTeam().save();
 	JSON::Dict msg;
 	msg.set("type", net::MSG::INSTALLATION_UPGRADE);
 	msg.set("data", JSON::Bool(true));
@@ -268,8 +266,8 @@ void Server::upgradeInstallation(int peer_id, size_t i)
 
 void Server::downgradeInstallation(int peer_id, size_t i)
 {
-	_users[peer_id]->getInstallations()[i].downgrade();	
-	_users[peer_id]->saveInstallations();
+	_users[peer_id]->getTeam().getInstallations()[i].downgrade();	
+	_users[peer_id]->getTeam().save();
 	JSON::Dict msg;
 	msg.set("type", net::MSG::INSTALLATION_DOWNGRADE);
 	msg.set("data", JSON::Bool(true));

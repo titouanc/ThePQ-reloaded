@@ -92,11 +92,11 @@ namespace net
 
 namespace gameconfig
 {
-	static const std::string UNNAMED_TEAM = "NO NAME";
-	static const std::string MAX_COACHES = 5;
-	static const std::string MAX_PLAYERS = 15;
-	static const std::string MIN_PLAYERS = 7;
-	static const std::string STARTING_FUNDS = 10 000;
+	static const std::string UNNAMED_TEAM = "NO_NAME";
+	static const int MAX_COACHES = 5;
+	static const int MAX_PLAYERS = 15;
+	static const int MIN_PLAYERS = 7;
+	static const int STARTING_FUNDS = 10000;
 }
 
 namespace memory
@@ -106,14 +106,23 @@ namespace memory
 	static const std::string PLAYERS_DIR = "Players/";
 	static const std::string INSTALLATIONS_DIR = "Installations/";
 	static const std::string TEAM_INFOS_FILE = "teamInfos";
+	static const std::string FUNDS = "funds";
+	static const std::string TEAM_NAME = "teamname";
 	static const std::string FILE_FORMAT = ".json";
 	static const std::string MARKET_PATH = "data/PlayerMarket/";
 	static const std::string SALE_FILE = "_sale";
 	static const std::string INST_TYPE = "name";
+	static const std::string LEVEL = "level";
+	static const std::string BASE_VALUE = "baseValue";
+	static const std::string REFUND_RATIO = "refundratio";
 	static const std::string FANSHOP = "Fan Shop";
 	static const std::string MEDIC_CENTER = "Medical Center";
 	static const std::string FOOD_STAND = "Food Stand";
 	static const std::string TRIBUNE = "Tribune";
+	static const std::string SKEL_DIR = "data/skel/";
+	static const std::string BROOM_FILE = "broomstick";
+	static const std::string JERSEY_FILE = "jersey";
+	static const std::string INSTS_SKEL_FILE = "installations";
 
 }
 
