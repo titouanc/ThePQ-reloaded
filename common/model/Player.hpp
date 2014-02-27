@@ -49,7 +49,7 @@ public:
 	virtual bool isKeeper () const { return false; }
 	virtual bool isSeeker () const { return false; }
 	int getStrength () const 		{ return _strength; }
-	int getVelocity () const 		{ return _velocity; }
+	int getVelocity () const 		{ return _velocity + *_broomstick.getVelocityBonus ;}
 	int getPrecision () const 		{ return _precision; }
 	int getChance () const 			{ return _chance; }
 	void improveStrength (int added) 		{ _strength+=added; }
