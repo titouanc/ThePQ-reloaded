@@ -49,19 +49,13 @@ public:
 	virtual bool isKeeper () const { return false; }
 	virtual bool isSeeker () const { return false; }
 	int getStrength () const 		{ return _strength; }
-	int getConstitution () const 	{ return _constitution; }
-	int getMagic () const 			{ return _magic; }
-	int getSpirit () const 			{ return _spirit; }
 	int getVelocity () const 		{ return _velocity; }
 	int getPrecision () const 		{ return _precision; }
 	int getChance () const 			{ return _chance; }
 	void improveStrength (int added) 		{ _strength+=added; }
-	void improveConstitution (int added) 	{ _constitution+=added; }
-	void improveMagic (int added) 			{ _magic+=added; }
-	void improveSpirit (int added) 			{ _spirit+=added; }
 	void improveVelocity (int added) 		{ _velocity+=added; }
 	void improvePrecision (int added) 		{ _precision+=added; }
-	int estimatedValue(){ return (_strength+_constitution+_magic+_spirit+_velocity+_precision+_chance)*1000;} //TODO
+	int estimatedValue(){ return (_strength+_velocity+_precision+_chance)*1000;} //TODO
 	float collisionScore();
 
 	Player &operator=(Player const & player){
@@ -74,9 +68,6 @@ public:
 		_broomstick = new Broomstick(*(player._broomstick));
 		_jersey = new Jersey(*(player._jersey));
 		_strength = player._strength;
-		_constitution = player._constitution;
-		_magic = player._magic;
-		_spirit = player._spirit;
 		_velocity = player._velocity;
 		_precision = player._precision;
 		_chance = player._chance;
@@ -90,9 +81,6 @@ protected:
 	Broomstick * _broomstick;
     Jersey * _jersey;
 	int _strength;
-	int _constitution;
-	int _magic;
-	int _spirit;
 	int _velocity;
 	int _precision;
 	int _chance;

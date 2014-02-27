@@ -98,20 +98,10 @@ Player::operator JSON::Dict(){
 
 
 void Player::equipBroomstick (Broomstick aBroom){
-    //improveVelocity(-1 * _broomstick->getVelocityBonus());
-    //improveVelocity(aBroom.getVelocityBonus());//modif
     *_broomstick = aBroom;
 }
 
 void Player::equipJersey (Jersey aJersey){
-    // improveStrength(-1 * _jersey->getStrengthBonus());
-    // improveConstitution(-1 * _jersey->getConstitutionBonus());
-    // improveMagic(-1 * _jersey->getMagicBonus());
-    // improveSpirit(-1 * _jersey->getSpiritBonus());
-    // improveStrength(aJersey.getStrengthBonus());
-    // improveConstitution(aJersey.getConstitutionBonus());
-    // improveMagic(aJersey.getMagicBonus());
-    // improveSpirit(aJersey.getSpiritBonus());
     *_jersey = aJersey;
 }
 
