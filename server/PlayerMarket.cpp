@@ -35,9 +35,7 @@ void * saleChecker(void * p){
 		for(size_t i = 0; i<market->_sales.size();++i){
 			if(market->_sales[i]->isOver()){
 				market->deletingLock();
-				std::cout<<"RESOLVING END OF SALE"<<std::endl;
 				market->resolveEndOfSale(market->_sales[i]);
-				std::cout<<"RESOLVED"<<std::endl;
 				MemoryAccess::removeObject(*(market->_sales[i]));
 				delete market->_sales[i];
 				market->_sales.erase(market->_sales.begin()+i);
