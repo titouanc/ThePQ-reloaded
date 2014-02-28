@@ -64,6 +64,7 @@ namespace net
 		static const std::string TOO_MANY_PLAYERS = "T_M_P";
 		static const std::string NOT_ENOUGH_PLAYERS = "N_E_P";
 		static const std::string INSUFFICIENT_FUNDS = "I_$";
+		static const std::string GENERATED_BY_MARKET = "GEN_B_M";
 		// data queries
 		static const std::string INSTALLATIONS_LIST = "DQ_I_L";
 		static const std::string CONNECTED_USERS_LIST = "DQ_CU_L";

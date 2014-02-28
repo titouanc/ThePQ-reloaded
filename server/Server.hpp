@@ -64,6 +64,7 @@ public:
         /* Return a pointer to the user object with given username,
        or NULL if not connected */
     User *getUserByName(std::string username);
+    size_t nbrUsersConnected(){return _users.size();}
 private:
 	SharedQueue<net::Message> _inbox, _outbox;
 	map<int, User*> _users;
