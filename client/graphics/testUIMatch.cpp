@@ -40,7 +40,10 @@ void handleClick(sf::RenderWindow & win, UIMatch & ui, Position const & pitchPos
                     const Position click(ev.mouseButton.x, ev.mouseButton.y);
                     Position const & pos = ui.GUI2pitch(click);
                     Position const & delta = pos - currentPos;
-                    if (delta.length() <= steps && delta.isDirection()){
+
+                    if (delta == Position(0, 0)){
+                        stopped = true;
+                    } else if (delta.length() <= steps && delta.isDirection()){
                         res.addMove(delta);
                         currentPos = pos;
                         steps -= delta.length();
@@ -52,9 +55,11 @@ void handleClick(sf::RenderWindow & win, UIMatch & ui, Position const & pitchPos
                     }
                 }
             }
-            cout << "Displacement: " << res.toJson() << endl;
-            ui.pitch().setAt(pitchPos, NULL);
-            ui.pitch().setAt(pitchPos + res.position(), atPos);
+            if (res.count() > 0){
+                cout << "Displacement: " << res.toJson() << endl;
+                ui.pitch().setAt(pitchPos, NULL);
+                ui.pitch().setAt(pitchPos + res.position(), atPos);
+            }
         }
     }
 }

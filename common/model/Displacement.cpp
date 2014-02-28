@@ -1,7 +1,8 @@
 #include "Displacement.hpp"
 #include <cassert>
 
-Displacement::Displacement(double tbegin) : _tbeg(tbegin), _moves()
+Displacement::Displacement(double tbegin) :
+ _tbeg(tbegin), _moves(), _totalLength(0)
 {}
 
 Displacement::Displacement(JSON::List const & list) : Displacement() 
@@ -60,6 +61,7 @@ void Displacement::addMove(Position const & move)
     if (! move.isDirection())
         throw NotADirection(move.toJson().dumps());
     _moves.push_back(move);
+    _totalLength += move.length();
 }
 
 size_t Displacement::count(void) const 
@@ -80,9 +82,5 @@ JSON::List Displacement::toJson(void) const
 unsigned int Displacement::length(void) const 
 {
     /*Method for calculating the total distance of the moves*/
-    unsigned int res = 0;
-    for (size_t i=0; i<count(); i++){
-        res += _moves[i].length();
-    }
-    return res;
+    return _totalLength;
 }
