@@ -51,9 +51,6 @@ class MatchManager : public SubConnectionManager {
 		/* initialise moveable positions */
 		void initPositions(void);
 
-		/* Sleep with a microsecond resolution */
-		void minisleep(double secs);
-
 		/* Processing of incoming messages*/
 		void processMessage(Message const & msg);
 		/* Process incoming message with given data (a JSON::Dict)
