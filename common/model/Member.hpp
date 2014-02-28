@@ -34,11 +34,11 @@ public:
     return res;
 }
     /*========Getters===================*/
-    string getName () 	{ return _name; }
-	int getSalary () 	{ return _salary; }
-	int getPrice () 	{ return _price; }
-	int getMemberID()	{ return _memberID; }
-	string getOwner()	{ return _owner; }
+    string getName () const	{ return _name; }
+	int getSalary () const	{ return _salary; }
+	int getPrice () const 	{ return _price; }
+	int getMemberID() const { return _memberID; }
+	string getOwner() const { return _owner; }
 
 	void setOwner(string owner)	{_owner=owner; }
 	//Team getOwner () 	{ return _owner; } // TODO
