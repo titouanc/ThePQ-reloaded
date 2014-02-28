@@ -22,7 +22,7 @@ class GoldenSnitch : public Ball {
 public:
 	using Ball::Ball;
 	bool isGoldenSnitch () const { return true; }
-	string getName() { return "Golden Snitch"; }
+	string getName() const { return "Golden Snitch"; }
 };
 
 class Bludger : public Ball {
@@ -30,8 +30,8 @@ class Bludger : public Ball {
 public:
 	using Ball::Ball;
 	bool isBludger () const { return true; }
-	string getName() { return "Bludger"; }
-	float collisionScore() { return 20; } // TODO implement this
+	string getName() const { return "Bludger"; }
+	float collisionScore() const { return 20; } // TODO implement this
 };
 
 class Quaffle : public Ball {
@@ -39,7 +39,7 @@ class Quaffle : public Ball {
 public:
 	using Ball::Ball;
 	bool isQuaffle () const { return true; }
-	string getName() { return "Quaffle"; }
+	string getName() const { return "Quaffle"; }
 };
 
 

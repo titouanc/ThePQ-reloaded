@@ -36,7 +36,7 @@ public:
 
 	int getRemainingLife () const	{ return _lifeBar; }
 	int getRemainingMana ()const	{ return _manaBar; }
-	string getName() 	 			{ return Member::getName(); }
+	string getName() 	const    	{ return Member::getName(); }
     void setName(string name) { _name = name; }
     void equipBroomstick (Broomstick aBroom);
 	void equipJersey (Jersey aJersey);
@@ -56,7 +56,7 @@ public:
 	void improveVelocity (int added) 		{ _velocity+=added; }
 	void improvePrecision (int added) 		{ _precision+=added; }
 	int estimatedValue(){ return (_strength+_velocity+_precision+_chance)*1000;} //TODO
-	float collisionScore();
+	float collisionScore() const;
 
 	Player &operator=(Player const & player){
 		Moveable::operator=(player);

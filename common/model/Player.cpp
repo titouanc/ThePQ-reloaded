@@ -114,7 +114,7 @@ void Player::loseMana (int spelled){
         _manaBar = 0;
 }
 
-float Player::collisionScore(){
+float Player::collisionScore() const{
     float res = (2*getStrength()+getVelocity()+getChance());
     res = res * (100000000 +(rand()%10000000))/100000000;
     return res;

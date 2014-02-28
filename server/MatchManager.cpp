@@ -1,4 +1,5 @@
 #include "MatchManager.hpp"
+#include <toolbox.hpp>
 
 /* TODO: read from config file */
 #define STROKES_TIMEOUT_SECONDS 60
@@ -63,16 +64,6 @@ void MatchManager::initPositions(void)
 MatchManager::~MatchManager()
 {
 	cout << "[" << this << "] \033[1m\033[32mMatch destroyed\033[0m" << endl;
-}
-
-void MatchManager::minisleep(double secs)
-{
-	assert(secs >= 0);
-	int seconds = secs;
-	int micros  = secs*1000000 - seconds;
-
-	struct timeval interval = {seconds, micros};
-	select(1, NULL, NULL, NULL, &interval);
 }
 
 void MatchManager::processStroke(Message const & msg, JSON::Dict const & data)
