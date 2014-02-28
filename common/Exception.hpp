@@ -55,27 +55,29 @@ class lastBidderException : public std::runtime_error{
 public:
 	lastBidderException():runtime_error("Last bidder"){};
 };
+class tooManyPlayersException : public std::runtime_error{
+public:
+	tooManyPlayersException():runtime_error("Too many players"){};
+};
+class insufficientFundsException : public std::runtime_error{
+public:
+	insufficientFundsException():runtime_error("Too many players"){};
+};
 
 //Adding a player on market
 class playerAlreadyOnMarketException : public std::runtime_error{
 public:
 	playerAlreadyOnMarketException():runtime_error("Player already on market"){};
 };
-
-//-------Memory Access-----------
-class wrongLoadFunctionException : public std::runtime_error{
+class notEnoughPlayersException : public std::runtime_error{
 public:
-	wrongLoadFunctionException():runtime_error("Bad function call for required datatype"){};
+	notEnoughPlayersException():runtime_error("Not enough players"){};
 };
 
-class wrongRemoveFunctionException : public std::runtime_error{
+//-------------Team--------------
+class PlayerNotFoundException : public std::runtime_error{
 public:
-	wrongRemoveFunctionException():runtime_error("Bad function call for required datatype"){};
-};
-
-class IncompleteDictException : public std::runtime_error{
-public:
-	IncompleteDictException():runtime_error("Incomplete or wrong dict for required data type"){};
+	PlayerNotFoundException():runtime_error("Player not found"){};
 };
 
 #endif // __EXCEPTION_HPP

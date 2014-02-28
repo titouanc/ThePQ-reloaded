@@ -69,7 +69,7 @@ protected://modif
 			}
 		}
 		++_staticMemberID;
-		cout << "MEMBER ID: " << _staticMemberID << endl;
+		//cout << "MEMBER ID: " << _staticMemberID << endl;
 		JSON::Integer i(_staticMemberID);
 		i.save(path);
 		return _staticMemberID;

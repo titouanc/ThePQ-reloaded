@@ -6,9 +6,13 @@
 #include <model/MemoryAccess.hpp>
 
 
-PlayerMarket::PlayerMarket(Server *server): _server(server), _sales(), _marketPath("data/playerMarket/"), _playerPath("data/"),
+PlayerMarket::PlayerMarket(Server *server): _server(server), _sales(),
 _thread(),_runChecker(true), _deleting(PTHREAD_MUTEX_INITIALIZER) {
-	//loadSales();
+	mkdir(memory::MARKET_PATH.c_str(), 0755);
+	MemoryAccess::load(_sales);
+	for(size_t i=0;i<_sales.size();++i){
+		_sales[i]->start();
+	}
 	startChecker();
 }
 
@@ -26,8 +30,8 @@ void * saleChecker(void * p){
 		for(size_t i = 0; i<market->_sales.size();++i){
 			if(market->_sales[i]->isOver()){
 				market->deletingLock();
-				market->transfert(market->_sales[i]);
-				MemoryAccess::removeFile(*(market->_sales[i]));
+				market->resolveEndOfSale(market->_sales[i]);
+				MemoryAccess::removeObject(*(market->_sales[i]));
 				delete market->_sales[i];
 				market->_sales.erase(market->_sales.begin()+i);
 				market->deletingUnlock();
@@ -50,14 +54,49 @@ void PlayerMarket::createSale(const JSON::Dict &json){//TODO : Should not access
 	std::string username = STR(json.get(net::MSG::USERNAME)).value();
 	//create sale, save and start it
 	Player player(player_id, username);
-	player = MemoryAccess::load(player);
+	MemoryAccess::load(player);
 	_sales.push_back(new Sale(bidValue, username, player_id, player));
 	Sale *added = getSale(player_id);
 	added->save();
 	added->start();
 }
 
-void PlayerMarket::transfert(Sale * sale){//REFACTOR THIS SHIT
+void PlayerMarket::transfert(std::string fromName, std::string toName, int id, int bidValue){
+	User* from = _server->getUserByName(fromName);
+	Player toTransfert;
+	if(from == NULL){	//User not connected : load.
+		Team fromTeam(fromName);
+		fromTeam.load();
+		toTransfert = fromTeam.getPlayer(id);
+		fromTeam.removePlayer(id);
+		fromTeam.getPayed(bidValue);
+		fromTeam.save();
+	}
+	else{				//User connected : use ref.
+		Team & fromTeam = from->getTeam();
+		toTransfert = fromTeam.getPlayer(id);
+		fromTeam.removePlayer(id);
+		fromTeam.getPayed(bidValue);
+		fromTeam.save();
+	}
+	toTransfert.setOwner(toName);
+	User* to= _server->getUserByName(toName);
+	if(to == NULL){
+		Team toTeam(toName);
+		toTeam.load();
+		toTeam.addPlayer(toTransfert);
+		toTeam.buy(bidValue);
+		toTeam.save();
+	}
+	else{
+		Team & toTeam = to->getTeam();
+		toTeam.addPlayer(toTransfert);
+		toTeam.buy(bidValue);
+		toTeam.save();
+	}
+
+}
+void PlayerMarket::resolveEndOfSale(Sale * sale){
 	if(sale->getCurrentBidder().empty()){//Player not sold
 		JSON::Dict toOwner;
 		toOwner.set("type",net::MSG::END_OF_OWNED_SALE_RAPPORT);
@@ -65,45 +104,23 @@ void PlayerMarket::transfert(Sale * sale){//REFACTOR THIS SHIT
 		toOwner.set(net::MSG::PLAYER_ID, sale->getID());
 		sendMessageToUser(sale->getOwner(), toOwner);
 	}
-	// else{
-	// 	std::vector<Player*> from, to;
-	// 	Player *toTransfert;
-	// 	MemoryAccess::load(from, sale->getOwner());
-	// 	MemoryAccess::load(to, sale->getCurrentBidder());
-	// 	for(size_t i =0;i<from.size();++i){
-	// 		if(from[i]->getMemberID() == sale->getID())
-	// 			toTransfert = new Player(*from[i]);
-	// 			delete from[i];
-	// 			from.erase(from.begin()+i);
-	// 	}
-	// 	to.push_back(toTransfert);
-	// 	MemoryAccess::save(from);
-	// 	MemoryAccess::save(to);
-	// 	for(size_t i=0;i<from.size();++i){
-	// 		delete from[i];
-	// 	}
-	// 	for(size_t i=0;i<to.size();++i){
-	// 		delete to[i];
-	// 	}
-	// 	delete toTransfert;
-	// 	JSON::Dict toOwner, toWinner;
-	// 	toOwner.set("type",net::MSG::END_OF_OWNED_SALE_RAPPORT);
-	// 	toOwner.set(net::MSG::RAPPORT_SALE_STATUS, net::MSG::PLAYER_SOLD);
-	// 	toOwner.set(net::MSG::PLAYER_ID, sale->getID());
-	// 	toOwner.set(net::MSG::BID_VALUE, sale->getBidValue());
-	// 	toOwner.set(net::MSG::CURRENT_BIDDER, sale->getCurrentBidder());
-	// 	sendMessageToUser(sale->getOwner(), toOwner);
-	// 	toWinner.set("type",net::MSG::WON_SALE_RAPPORT);
-	// 	toWinner.set(net::MSG::PLAYER_ID,sale->getID());
-	// 	toWinner.set(net::MSG::BID_VALUE, sale->getBidValue());
-	// 	toWinner.set(net::MSG::SALE_OWNER, sale->getOwner());
-	// 	sendMessageToUser(sale->getCurrentBidder(), toWinner);
-	// }
+	else{
+		transfert(sale->getOwner(),sale->getCurrentBidder(),sale->getID(),sale->getBidValue());
+		JSON::Dict toOwner, toWinner;
+		toOwner.set("type",net::MSG::END_OF_OWNED_SALE_RAPPORT);
+		toOwner.set(net::MSG::RAPPORT_SALE_STATUS, net::MSG::PLAYER_SOLD);
+		toOwner.set(net::MSG::PLAYER_ID, sale->getID());
+		toOwner.set(net::MSG::BID_VALUE, sale->getBidValue());
+		toOwner.set(net::MSG::CURRENT_BIDDER, sale->getCurrentBidder());
+		sendMessageToUser(sale->getOwner(), toOwner);
+
+		toWinner.set("type",net::MSG::WON_SALE_RAPPORT);
+		toWinner.set(net::MSG::PLAYER_ID,sale->getID());
+		toWinner.set(net::MSG::BID_VALUE, sale->getBidValue());
+		toWinner.set(net::MSG::SALE_OWNER, sale->getOwner());
+		sendMessageToUser(sale->getCurrentBidder(), toWinner);
+	}
 }
-
-
-
-
 
 Sale * PlayerMarket::getSale(int id){
 	for(size_t i = 0; i<_sales.size();++i){
@@ -131,6 +148,9 @@ JSON::Dict PlayerMarket::addPlayer(const JSON::Dict &json){
 	if(getSale(INT(json.get(net::MSG::PLAYER_ID))) != NULL){
 		response.set("data",net::MSG::PLAYER_ALREADY_ON_MARKET);
 	}
+	else if(_server->getUserByName(STR(json.get(net::MSG::USERNAME)).value())->getTeam().getPlayers().size() <= gameconfig::MIN_PLAYERS){
+		response.set("data",net::MSG::NOT_ENOUGH_PLAYERS);
+	}
 	else{
 		createSale(json);
 		response.set("data", net::MSG::PLAYER_ADDED_ON_MARKET);
@@ -146,9 +166,17 @@ JSON::Dict PlayerMarket::bid(const JSON::Dict &json){
 	int bid_value = INT(json.get(net::MSG::BID_VALUE));
 	deletingLock();		//Sale checker cannot delete any sale while the validity of the bid is checked
 	Sale * sale = getSale(player_id);
-	if(sale != NULL and !(sale->isOver())){
+	if(sale == NULL or sale->isOver())
+		response.set("data", net::MSG::BID_ENDED);
+	else if(_server->getUserByName(username)->getTeam().getPlayers().size() >= gameconfig::MAX_PLAYERS)
+		response.set("data", net::MSG::TOO_MANY_PLAYERS);
+	else if(_server->getUserByName(username)->getTeam().getFunds() < bid_value){
+		response.set("data",net::MSG::INSUFFICIENT_FUNDS);
+	}
+	else{
 		try{
 			sale->placeBid(username, bid_value);
+			response.set("data", net::MSG::BID_PLACED);
 		}
 		catch(bidValueNotUpdatedException e){
 			response.set("data", net::MSG::BID_VALUE_NOT_UPDATED);
@@ -163,29 +191,9 @@ JSON::Dict PlayerMarket::bid(const JSON::Dict &json){
 			response.set("data", net::MSG::LAST_BIDDER);
 		}
 	}
-	else{
-		response.set("data", net::MSG::BID_ENDED);
-	}
 	deletingUnlock();
 	return response;
 }
-
-// Player PlayerMarket::loadPlayerInfos(std::string username, int id){
-// 	Player toFind;
-// 	JSON::Value* loaded = JSON::load(getPlayersPath(username).c_str());
-// 	if(ISLIST(loaded)){
-// 		JSON::List & playersList = LIST(loaded);
-// 		for(size_t i=0; i<playersList.len();++i){
-// 			if(ISDICT(playersList[i])){
-// 				JSON::Dict & player = DICT(playersList[i]);
-// 				if(INT(player.get(net::MSG::PLAYER_ID)) == id) {
-// 					toFind = DICT(playersList[i]);
-// 				}
-// 			}
-// 		}
-// 	}
-// 	return toFind;
-// }
 
 void PlayerMarket::sendMessageToUser(std::string username, const JSON::Dict & message){
 	_server->sendMarketMessage(username, message);

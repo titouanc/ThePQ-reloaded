@@ -37,10 +37,9 @@ void Sale::resolveEndOfTurn(){
 	unlock();
 }
 
-Sale::Sale() : _turnTeams(), _canBidTeams(), _bidValue(0),_bidRatio(BIDRATIO),
-_turn(1),_currentBidder(""),_owner(""), _marketPath("data/PlayerMarket/"),_playerPath("data/"),
-_timeLeft(FIRST_TURN), _saleID(0), _thread(), 
-_mymutex(PTHREAD_MUTEX_INITIALIZER), _player(Player()), _ended(false) {}
+Sale::Sale() : _turnTeams(), _canBidTeams(), _bidValue(0),_bidRatio(gameconfig::BID_RATIO),
+_turn(1),_currentBidder(""),_owner(""),_timeLeft(gameconfig::SALE_FIRST_TURN_TIME), _saleID(0), 
+_thread(), _mymutex(PTHREAD_MUTEX_INITIALIZER), _player(Player()), _ended(false) {}
 
 Sale::Sale(int bidValue, std::string owner, int id, const Player & player) : Sale()
 {
@@ -79,8 +78,7 @@ Sale::Sale(const JSON::Dict & json, const Player & player): Sale(json) {_player 
 
 Sale::Sale(const Sale & other): _turnTeams(other._turnTeams), _canBidTeams(other._canBidTeams), 
 _bidValue(other._bidValue),_bidRatio(other._bidRatio),_turn(other._turn),_currentBidder(other._currentBidder),
-_owner(other._owner),_marketPath(other._marketPath),_playerPath(other._playerPath),
-_timeLeft(other._timeLeft), _saleID(other._saleID), _thread(), 
+_owner(other._owner),_timeLeft(other._timeLeft), _saleID(other._saleID), _thread(), 
 _mymutex(PTHREAD_MUTEX_INITIALIZER), _player(other._player), _ended(other._ended)
 {}
 
@@ -123,7 +121,7 @@ void Sale::save(){
 }
 
 void Sale::load(){
-	*this = MemoryAccess::load(*this);
+	MemoryAccess::load(*this);
 }
 
 Sale::operator JSON::Dict(){

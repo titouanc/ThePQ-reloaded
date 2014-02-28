@@ -48,20 +48,14 @@ public:
 	virtual bool isChaser () const { return false; }
 	virtual bool isKeeper () const { return false; }
 	virtual bool isSeeker () const { return false; }
-	int getStrength () const 		{ return _strength; }
-	int getConstitution () const 	{ return _constitution; }
-	int getMagic () const 			{ return _magic; }
-	int getSpirit () const 			{ return _spirit; }
-	int getVelocity () const 		{ return _velocity; }
+	int getStrength () const 		{ return _strength + _jersey->getStrengthBonus(); }
+	int getVelocity () const 		{ return _velocity + _broomstick->getVelocityBonus() ;}
 	int getPrecision () const 		{ return _precision; }
 	int getChance () const 			{ return _chance; }
 	void improveStrength (int added) 		{ _strength+=added; }
-	void improveConstitution (int added) 	{ _constitution+=added; }
-	void improveMagic (int added) 			{ _magic+=added; }
-	void improveSpirit (int added) 			{ _spirit+=added; }
 	void improveVelocity (int added) 		{ _velocity+=added; }
 	void improvePrecision (int added) 		{ _precision+=added; }
-	int estimatedValue(){ return (_strength+_constitution+_magic+_spirit+_velocity+_precision+_chance)*1000;} //TODO
+	int estimatedValue(){ return (_strength+_velocity+_precision+_chance)*1000;} //TODO
 	float collisionScore();
 
 	Player &operator=(Player const & player){
@@ -74,9 +68,6 @@ public:
 		_broomstick = new Broomstick(*(player._broomstick));
 		_jersey = new Jersey(*(player._jersey));
 		_strength = player._strength;
-		_constitution = player._constitution;
-		_magic = player._magic;
-		_spirit = player._spirit;
 		_velocity = player._velocity;
 		_precision = player._precision;
 		_chance = player._chance;
@@ -90,9 +81,6 @@ protected:
 	Broomstick * _broomstick;
     Jersey * _jersey;
 	int _strength;
-	int _constitution;
-	int _magic;
-	int _spirit;
 	int _velocity;
 	int _precision;
 	int _chance;
@@ -113,11 +101,10 @@ public:
     		_bat = new Bat(5, 5); /* TODO: Too much magic here !!! */
     }
 	bool isBeater () const { return true; }
-	void equipBat (Bat aBat);
-    void unequipBat ();
-    int collision ();
-    int anticollision ();
-    int shootBludger ();
+	int getStrength() const { return Player::getStrength() + _bat->getStrengthBonus() ; }
+    int getPrecision() const { return Player::getPrecision() + _bat->getPrecisionBonus(); }
+    void equipBat (Bat aBat);
+    float shootBludger ();
 private:
 	Bat * _bat;
 };
@@ -128,11 +115,9 @@ class Chaser : public Player
 public:
 	using Player::Player;
     bool isChaser () const { return true; }
-    int speed ();
-    int collisionner ();
-    int anticollision ();
-    int pass ();
-    int shoot ();
+    float speed ();
+    float pass ();
+    float shoot ();
 };
 
 /*================================CHASER================================*/
@@ -141,8 +126,8 @@ class Keeper : public Player
 public:
     using Player::Player;
 	bool isKeeper () const { return true; }
-    int catchBall ();
-    int pass ();
+    float catchBall ();
+    float pass ();
 };
 
 // SEEKER ----------------------------------------------------------------------
@@ -151,7 +136,7 @@ class Seeker : public Player
 public:
     using Player::Player;
 	bool isSeeker () const { return true; }
-    int catchGS ();
+    float catchGS ();
 
 };
 

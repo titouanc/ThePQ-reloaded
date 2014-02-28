@@ -25,8 +25,6 @@ Server::Server(NetConfig const & config) :
 	_connectionManager(_inbox, _outbox, config.ip.c_str(), config.port, config.maxClients),
 	market(new PlayerMarket(this)),_matches()
 {
-	mkdir(memory::USERS_DIR.c_str(), 0755);
-	mkdir(memory::MARKET_PATH.c_str(), 0755);
 	_connectionManager.start();
 	cout << "Launched server on " << _connectionManager.ip() << ":" << _connectionManager.port() << endl;
 }
@@ -110,19 +108,27 @@ void Server::treatMessage(const Message &message)
 		if (ISSTR(received.get("type"))) {
 			string messageType = STR(received.get("type")).value();
 			if (messageType == MSG::DISCONNECT){
+				/* Disconnect user */
 				map<int, User*>::iterator it = _users.find(message.peer_id);
 				if (it != _users.end()){
 					delete it->second;
 					_users.erase(it);
 				}
 			} else if (ISDICT(received.get("data"))){
-				if (messageType == MSG::LOGIN)
-					logUserIn(DICT(received.get("data")), message.peer_id);
+				if (messageType == MSG::LOGIN){
+					User *loggedIn = logUserIn(DICT(received.get("data")), message.peer_id);
+					/* If someone successfully logged in; send his offline 
+					   messages and reset queue */
+					if (loggedIn){
+						JSON::List const & offlineMsg = loggedIn->getOfflineMsg();
+						for (size_t i=0; i<offlineMsg.len(); i++){
+							_outbox.push(Message(message.peer_id, offlineMsg[i]->clone()));
+						}
+						loggedIn->clearOfflineMsg();
+					}
+				}
 				else if (messageType == MSG::REGISTER) 
 					registerUser(DICT(received.get("data")), message.peer_id);
-				// else if (messageType == MSG::DELETE_PLAYER_OF_MARKET_QUERY){//modif
-				// 	deletePlayerOfMarket(DICT(received.get("data")), message.peer_id);
-				// }
 				else if (messageType == MSG::ADD_PLAYER_ON_MARKET_QUERY){
 					addPlayerOnMarket(DICT(received.get("data")), message.peer_id);
 				}
@@ -166,11 +172,8 @@ void Server::registerUser(const JSON::Dict &credentials, int peer_id)
 	if (ISSTR(credentials.get(MSG::USERNAME)) && ISSTR(credentials.get(MSG::PASSWORD))){
 		std::string const & username = STR(credentials.get(MSG::USERNAME));
 		std::string const & password = STR(credentials.get(MSG::PASSWORD));
-
 		JSON::Dict response = JSON::Dict();
-		
 		response.set("type", MSG::STATUS);
-
 		User* newUser = User::load(username);
 		if (newUser != NULL){
 			response.set("data", MSG::USER_EXISTS);
@@ -191,8 +194,9 @@ void Server::registerUser(const JSON::Dict &credentials, int peer_id)
 	}
 }
 
-void Server::logUserIn(const JSON::Dict &credentials, int peer_id)
+User *Server::logUserIn(const JSON::Dict &credentials, int peer_id)
 {
+	User *res = NULL;
 	if (ISSTR(credentials.get(MSG::USERNAME)) && ISSTR(credentials.get(MSG::PASSWORD))){
 		std::string const & username = STR(credentials.get(MSG::USERNAME));
 		std::string const & password = STR(credentials.get(MSG::PASSWORD));
@@ -206,9 +210,12 @@ void Server::logUserIn(const JSON::Dict &credentials, int peer_id)
 			if (user != NULL){
 				if (user->getPassword() == password){
 					// correct password
+					// load the user's team info into Team (installations, players, funds, etc.)
+					user->loadTeam();
 					// mapping user to its peer_id to keep a list of connected users.
 					_users.insert(std::pair<int, User*>(peer_id, user));
 					response.set("data", MSG::USER_LOGIN);
+					res = user;
 				} else {
 					// wrong password
 					delete user;
@@ -221,6 +228,7 @@ void Server::logUserIn(const JSON::Dict &credentials, int peer_id)
 		}
 		_outbox.push(Message(peer_id, response.clone()));
 	}
+	return res;
 }
 
 void Server::checkIfUserExists(string username, int peer_id)
@@ -242,25 +250,24 @@ void Server::checkIfUserExists(string username, int peer_id)
 	delete user;
 }
 
-void Server::sendInstallationsList(int peer_id)//should use getInstallations instead of accessing memory
+void Server::sendInstallationsList(int peer_id)
 {
-	std::string username = _users[peer_id]->getUsername();
-	std::vector<Installation>* toLoad = new std::vector<Installation>;
-	MemoryAccess::load(toLoad,username);
-	JSON::List installationsList;
-	for(size_t i = 0; i<toLoad->size();++i){
-		installationsList.append(JSON::Dict((*toLoad)[i]));
+	JSON::List jsonInst;
+	std::vector<Installation> & insts = _users[peer_id]->getTeam().getInstallations();
+	for(size_t i = 0;i<insts.size();++i){
+		jsonInst.append(JSON::Dict(insts[i]));
 	}
 	JSON::Dict msg;
 	msg.set("type", net::MSG::INSTALLATIONS_LIST);
-	msg.set("data", installationsList);
+	msg.set("data", jsonInst);
 	_outbox.push(Message(peer_id, msg.clone()));
 }
 
 void Server::upgradeInstallation(int peer_id, size_t i)
 {
-	_users[peer_id]->getInstallations()[i].upgrade();
-	_users[peer_id]->saveInstallations();
+	Installation & inst = _users[peer_id]->getTeam().getInstallations()[i];
+	inst.upgrade();
+	MemoryAccess::save(inst);
 	JSON::Dict msg;
 	msg.set("type", net::MSG::INSTALLATION_UPGRADE);
 	msg.set("data", JSON::Bool(true));
@@ -269,8 +276,9 @@ void Server::upgradeInstallation(int peer_id, size_t i)
 
 void Server::downgradeInstallation(int peer_id, size_t i)
 {
-	_users[peer_id]->getInstallations()[i].downgrade();	
-	_users[peer_id]->saveInstallations();
+	Installation & inst = _users[peer_id]->getTeam().getInstallations()[i];
+	inst.downgrade();
+	MemoryAccess::save(inst);
 	JSON::Dict msg;
 	msg.set("type", net::MSG::INSTALLATION_DOWNGRADE);
 	msg.set("data", JSON::Bool(true));
@@ -369,19 +377,17 @@ void Server::placeBidOnPlayer(const JSON::Dict &bid, int peer_id){
 	_outbox.push(status);
 }
 
-void Server::sendPlayersList(const JSON::Dict &data, int peer_id){//TODO : Should not access memory
-	std::vector<Player> *players = new std::vector<Player>;
-	MemoryAccess::load(players, STR(data.get(net::MSG::USERNAME)).value());
+void Server::sendPlayersList(const JSON::Dict &data, int peer_id){
+	std::vector<Player> & players = _users[peer_id]->getTeam().getPlayers();
 	JSON::List jsonPlayers;
-	for(size_t i = 0; i<players->size();++i){
-		jsonPlayers.append(JSON::Dict((*players)[i]));
+	for(size_t i = 0; i<players.size();++i){
+		jsonPlayers.append(JSON::Dict(players[i]));
 	}
 	JSON::Dict toSend;
 	toSend.set("type",net::MSG::PLAYERS_LIST);
 	toSend.set("data", jsonPlayers);
 	Message status(peer_id, toSend.clone());
 	_outbox.push(status);
-	delete players;
 }
 
 int Server::getPeerID(std::string const &username){
@@ -390,16 +396,26 @@ int Server::getPeerID(std::string const &username){
 			return it->first;
 		}
 	}
-	return 0;
+	return -1;
 }
 
 void Server::sendMarketMessage(std::string const &username, const JSON::Dict &message){
-	int to_peer = getPeerID(username);
 	JSON::Dict toSend;
 	toSend.set("type",net::MSG::MARKET_MESSAGE);
 	toSend.set("data",message);
-	Message status(to_peer, toSend.clone());
-	_outbox.push(status); 
+
+	int to_peer = getPeerID(username);
+	if (to_peer >= 0){
+		/* User currently connected to server */
+		Message status(to_peer, toSend.clone());
+		_outbox.push(status); 
+	} else {
+		User *user = User::load(username);
+		if (user != NULL){
+			user->sendOfflineMsg(toSend);
+			delete user;
+		}
+	}
 }
 
 User *Server::getUserByName(std::string username)

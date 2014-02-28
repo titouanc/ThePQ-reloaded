@@ -61,6 +61,9 @@ namespace net
 		static const std::string RAPPORT_SALE_STATUS = "PM_R_SS";
 		static const std::string PLAYER_NOT_SOLD = "PM_P_N_S";
 		static const std::string PLAYER_SOLD = "PM_P_S";
+		static const std::string TOO_MANY_PLAYERS = "T_M_P";
+		static const std::string NOT_ENOUGH_PLAYERS = "N_E_P";
+		static const std::string INSUFFICIENT_FUNDS = "I_$";
 		// data queries
 		static const std::string INSTALLATIONS_LIST = "DQ_I_L";
 		static const std::string CONNECTED_USERS_LIST = "DQ_CU_L";
@@ -90,20 +93,42 @@ namespace net
 	}
 }
 
+namespace gameconfig
+{
+	static const std::string UNNAMED_TEAM = "NO_NAME";
+	static const int MAX_COACHES = 5;
+	static const int MAX_PLAYERS = 15;
+	static const int MIN_PLAYERS = 7;
+	static const int STARTING_FUNDS = 10000;
+	static const int SALE_FIRST_TURN_TIME = 30;
+	static const int SALE_TURN_TIME = 30;
+	static const float BID_RATIO = 0.05;
+}
+
 namespace memory
 {
 	static const std::string USERS_DIR = "data/users/";
 	static const std::string USER_FILE = "user";
 	static const std::string PLAYERS_DIR = "Players/";
 	static const std::string INSTALLATIONS_DIR = "Installations/";
+	static const std::string TEAM_INFOS_FILE = "teamInfos";
+	static const std::string FUNDS = "funds";
+	static const std::string TEAM_NAME = "teamname";
 	static const std::string FILE_FORMAT = ".json";
 	static const std::string MARKET_PATH = "data/PlayerMarket/";
 	static const std::string SALE_FILE = "_sale";
 	static const std::string INST_TYPE = "name";
+	static const std::string LEVEL = "level";
+	static const std::string BASE_VALUE = "baseValue";
+	static const std::string REFUND_RATIO = "refundratio";
 	static const std::string FANSHOP = "Fan Shop";
 	static const std::string MEDIC_CENTER = "Medical Center";
 	static const std::string FOOD_STAND = "Food Stand";
 	static const std::string TRIBUNE = "Tribune";
+	static const std::string SKEL_DIR = "data/skel/";
+	static const std::string BROOM_FILE = "broomstick";
+	static const std::string JERSEY_FILE = "jersey";
+	static const std::string INSTS_SKEL_FILE = "installations";
 
 }
 

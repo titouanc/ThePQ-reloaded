@@ -8,49 +8,41 @@
 #include "RandomNameGenerator.hpp"
 #include <model/Installation.hpp>
 #include <model/Player.hpp>
+#include <model/Team.hpp>
 #include <iostream>
 #include <fstream>
 #include <iterator>
 #include <istream>
-//#include "../Skeleton/Player.hpp"
-
-using namespace std;
+/* TODO : user.delete() */
 
 class User{
 private:
-	string _username;
-	string _password;
-	int _funds;
-	vector<Installation> _installations;
+	std::string _username;
+	std::string _password;
+	Team _team;
 public:
-	#define USER_PATH "data/users/"
-	
-	User(const string& username, const string& password);
+	User(const std::string& username ="", const std::string& password="");
 	User(const JSON::Dict*);
-	
 	operator JSON::Dict();
 
-	/* Getters / Setters */
-	string getUsername() { return _username; }
-	void setUsername(const string& username){ _username = username; };
-	string getPassword() { return _password; }
-	void setPassword(const string& password) { _password = password; }
-	int getFunds() const {return _funds;}
-	void setFunds(int funds) {_funds=funds;}
-	int buyStuff(int price);
-	void getPayed(int price) {_funds+=price;}
-	/* Serializable */
+	std::string getUsername() {return _username;}
+	void setUsername(const std::string& username){ _username = username;};
+	std::string getPassword() { return _password; }
+	void setPassword(const std::string& password) { _password = password; }
+	Team& getTeam(){return _team;}
+
 	void save();
-
-	static User* load(string username);
+	static User* load(std::string username);
+	void loadTeam();
 	
-	/* Installations */
-	vector<Installation>& getInstallations();
-	void saveInstallations();
-
 	void createUser();
-
-	void generateBaseSquad(JSON::List &toFill);
+	
+	/* Enqueue a message to send when user gets back online */
+	void sendOfflineMsg(JSON::Value const & message) const;
+	/* Get all enqueued messages for this user */
+	JSON::List getOfflineMsg(void) const;
+	/* Erase all enqueued messages for this user */
+	bool clearOfflineMsg(void) const;
 };
 
 #endif
