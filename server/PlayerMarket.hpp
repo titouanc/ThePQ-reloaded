@@ -13,21 +13,21 @@
 class Server;
 class Sale;
 class PlayerMarket{
-	friend void * saleChecker(void *); 		//Thread deleting the ended sales
+	friend void * saleManager(void *); 		//Thread deleting the ended sales
 	friend void * saleGenerator(void *); 	//Thread generating players
 private:
 	Server *_server;
 	std::vector<Sale*> _sales;
-	pthread_t _checker;
+	pthread_t _manager;
 	pthread_t _generator;
-	bool _runChecker;
+	bool _runManager;
 	bool _runGenerator;
-	pthread_mutex_t _deleting;
+	pthread_mutex_t _locker;
 
-	void startChecker();
+	void startManager();
 	void startGenerator();
-	void deletingLock(){pthread_mutex_lock(&_deleting);}
-	void deletingUnlock(){pthread_mutex_unlock(&_deleting);}
+	void lockMarket(){pthread_mutex_lock(&_locker);}
+	void unlockMarket(){pthread_mutex_unlock(&_locker);}
 	void transfert(std::string,std::string,int,int,Sale* =NULL);
 	void createSale(int, int, Player&, std::string);
 	void resolveEndOfSale(Sale * sale);

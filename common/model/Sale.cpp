@@ -2,44 +2,19 @@
 #include <Constants.hpp>
 #include <Exception.hpp>
 #include <model/MemoryAccess.hpp>
-
-//Thread
-
-void * Sale::staticSaleStart(void * p){
-	((Sale *) p)->saleStart();
-	return NULL;
-}
-
-void Sale::start(){
-	if(pthread_create(&_thread, NULL, Sale::staticSaleStart, this) != 0){
-		throw "Error occured when creating sale thread";
-	}
-}
-
-void Sale::saleStart(){
-	while( _canBidTeams.size()>1 or _turn == 1 ){
-		for(int i=0; i<getTotalTime(); ++i){
-			sleep(1);
-			--_timeLeft;
-		}
-		resolveEndOfTurn();
-	}
-	_ended = true;
-}
 	
 void Sale::resolveEndOfTurn(){
-	lock();
 	++_turn;
 	_canBidTeams = _turnTeams;
 	_turnTeams.clear();
 	_timeLeft = getTotalTime();
+	if(_canBidTeams.size() <= 1){_ended=true;}
 	save();
-	unlock();
 }
 
 Sale::Sale() : _turnTeams(), _canBidTeams(), _bidValue(0),_bidRatio(gameconfig::BID_RATIO),
 _turn(1),_currentBidder(""),_owner(""),_timeLeft(gameconfig::SALE_FIRST_TURN_TIME), _saleID(0), 
-_thread(), _mymutex(PTHREAD_MUTEX_INITIALIZER), _player(Player()), _ended(false) {}
+_player(Player()), _ended(false) {}
 
 Sale::Sale(int bidValue, std::string owner, int id, const Player & player) : Sale()
 {
@@ -58,6 +33,7 @@ Sale::Sale(JSON::Dict const & json): Sale()
 	if(json.hasKey(net::MSG::TURN_NUMBER)) 		{_turn = INT(json.get(net::MSG::TURN_NUMBER));}
 	if(json.hasKey(net::MSG::BID_TIMER)) 		{_timeLeft = INT(json.get(net::MSG::BID_TIMER));}
 	if(json.hasKey(net::MSG::BID_VALUE)) 		{_bidValue = INT(json.get(net::MSG::BID_VALUE));}
+	if(json.hasKey(net::MSG::SALE_STATUS))		{_ended = BOOL(json.get(net::MSG::SALE_STATUS));}
 	if(json.hasKey(net::MSG::TEAMS_BIDDING)) {
 		JSON::List & bidding = LIST(json.get(net::MSG::TEAMS_BIDDING));
 		for(size_t i =0;i<bidding.len();++i){
@@ -77,9 +53,9 @@ Sale::Sale(JSON::Dict const & json): Sale()
 Sale::Sale(const JSON::Dict & json, const Player & player): Sale(json) {_player = player;}
 
 Sale::Sale(const Sale & other): _turnTeams(other._turnTeams), _canBidTeams(other._canBidTeams), 
-_bidValue(other._bidValue),_bidRatio(other._bidRatio),_turn(other._turn),_currentBidder(other._currentBidder),
-_owner(other._owner),_timeLeft(other._timeLeft), _saleID(other._saleID), _thread(), 
-_mymutex(PTHREAD_MUTEX_INITIALIZER), _player(other._player), _ended(other._ended)
+_bidValue(other._bidValue),_bidRatio(other._bidRatio),_turn(other._turn),
+_currentBidder(other._currentBidder),_owner(other._owner),_timeLeft(other._timeLeft),
+ _saleID(other._saleID),_player(other._player),_ended(other._ended)
 {}
 
 
@@ -101,7 +77,6 @@ bool Sale::allowedToBidForThisTurn(std::string username) const{
 
 //Services
 void Sale::placeBid(std::string username, int bid_value){
-	lock();
 	if(isSaler(username)) 
 		throw bidOnYourPlayerException();
 	else if(!(allowedToBidForThisTurn(username)))
@@ -113,7 +88,6 @@ void Sale::placeBid(std::string username, int bid_value){
 	_currentBidder = username;
 	_turnTeams.push_back(username);
 	_bidValue = bid_value;
-	unlock();
 }
 
 void Sale::save(){
@@ -142,6 +116,7 @@ Sale::operator JSON::Dict(){
 	ret.set(net::MSG::USERNAME,_owner);
 	ret.set(net::MSG::PLAYER_ID,_saleID);
 	ret.set(net::MSG::PLAYER,JSON::Dict(_player)); 
+	ret.set(net::MSG::SALE_STATUS, _ended);
 	return ret;
 }
 

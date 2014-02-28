@@ -10,38 +10,40 @@
 
 
 PlayerMarket::PlayerMarket(Server *server): _server(server), _sales(),
-_checker(), _generator(), _runChecker(true), _runGenerator(true), _deleting(PTHREAD_MUTEX_INITIALIZER) {
+_manager(), _generator(), _runManager(true), _runGenerator(true), _locker(PTHREAD_MUTEX_INITIALIZER) {
 	mkdir(memory::MARKET_PATH.c_str(), 0755);
 	MemoryAccess::load(_sales);
-	for(size_t i=0;i<_sales.size();++i){
-		_sales[i]->start();
-	}
-	startChecker();
+	startManager();
 	startGenerator();
 }
 
 PlayerMarket::~PlayerMarket(){
-	_runChecker = false;
+	_runManager = false;
 	_runGenerator = false;
 	for(size_t i=0;i<_sales.size();++i){
 		delete _sales[i];
 	}
 }
 
-void * saleChecker(void * p){
+void * saleManager(void * p){
 	PlayerMarket *market = static_cast<PlayerMarket*>(p);
-	while(market->_runChecker){
-		sleep(5); //Checks every 5 seconds
+	while(market->_runManager){
+		sleep(1); //One iteration = --timeLeft for each sale
+		market->lockMarket();
 		for(size_t i = 0; i<market->_sales.size();++i){
-			if(market->_sales[i]->isOver()){
-				market->deletingLock();
-				market->resolveEndOfSale(market->_sales[i]);
-				MemoryAccess::removeObject(*(market->_sales[i]));
-				delete market->_sales[i];
-				market->_sales.erase(market->_sales.begin()+i);
-				market->deletingUnlock();
+			Sale & sale = *(market->_sales[i]);
+			sale.decTime();
+			if(sale.getTimeLeft()==0){
+				sale.resolveEndOfTurn();
+				if(sale.isOver()){
+					market->resolveEndOfSale(&sale);
+					MemoryAccess::removeObject(sale);
+					delete market->_sales[i];
+					market->_sales.erase(market->_sales.begin()+i);
+				}
 			}
 		}
+		market->unlockMarket();
 	}
 	return NULL;
 }
@@ -64,9 +66,9 @@ void * saleGenerator(void * p){
 	}
 }
 
-void PlayerMarket::startChecker(){
-	if(pthread_create(&_checker, NULL, saleChecker, this) != 0){
-		throw "Error occured when creating checker thread";
+void PlayerMarket::startManager(){
+	if(pthread_create(&_manager, NULL, saleManager, this) != 0){
+		throw "Error occured when creating manager thread";
 	}
 }
 
@@ -77,10 +79,11 @@ void PlayerMarket::startGenerator(){
 }
 
 void PlayerMarket::createSale(int player_id, int value, Player& player, std::string username){
+	lockMarket();
 	_sales.push_back(new Sale(value, username, player_id, player));
 	Sale *added = getSale(player_id);
 	added->save();
-	added->start();
+	unlockMarket();
 }
 
 void PlayerMarket::transfert(std::string fromName, std::string toName, int id, int bidValue, Sale* sale){
@@ -159,15 +162,15 @@ Sale * PlayerMarket::getSale(int id){
 }
 
 JSON::Dict PlayerMarket::allSales() {
-	deletingLock();
 	JSON::Dict response;
 	response.set("type", net::MSG::PLAYERS_ON_MARKET_LIST);
 	JSON::List sales;
+	lockMarket();
 	for(size_t i=0;i<_sales.size();++i){
 		sales.append(JSON::Dict(*(_sales[i])));
 	}
 	response.set("data", sales);
-	deletingUnlock();
+	unlockMarket();
 	return response;
 }
 
@@ -198,19 +201,22 @@ JSON::Dict PlayerMarket::bid(const JSON::Dict &json){
 	std::string username = STR(json.get(net::MSG::USERNAME)).value();
 	int player_id = INT(json.get(net::MSG::PLAYER_ID));
 	int bid_value = INT(json.get(net::MSG::BID_VALUE));
-	deletingLock();		//Sale checker cannot delete any sale while the validity of the bid is checked
-	Sale * sale = getSale(player_id);
-	if(sale == NULL or sale->isOver())
-		response.set("data", net::MSG::BID_ENDED);
-	else if(_server->getUserByName(username)->getTeam().getPlayers().size() >= gameconfig::MAX_PLAYERS)
+ 	if(_server->getUserByName(username)->getTeam().getPlayers().size() >= gameconfig::MAX_PLAYERS)
 		response.set("data", net::MSG::TOO_MANY_PLAYERS);
 	else if(_server->getUserByName(username)->getTeam().getFunds() < bid_value){
 		response.set("data",net::MSG::INSUFFICIENT_FUNDS);
 	}
 	else{
 		try{
+			lockMarket();
+			Sale * sale = getSale(player_id);
+			if(sale == NULL or sale->isOver())
+				throw bidEndedException();
 			sale->placeBid(username, bid_value);
 			response.set("data", net::MSG::BID_PLACED);
+		}
+		catch(bidEndedException e){
+			response.set("data", net::MSG::BID_ENDED);
 		}
 		catch(bidValueNotUpdatedException e){
 			response.set("data", net::MSG::BID_VALUE_NOT_UPDATED);
@@ -224,8 +230,8 @@ JSON::Dict PlayerMarket::bid(const JSON::Dict &json){
 		catch(lastBidderException e){
 			response.set("data", net::MSG::LAST_BIDDER);
 		}
+		unlockMarket();
 	}
-	deletingUnlock();
 	return response;
 }
 

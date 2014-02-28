@@ -135,8 +135,8 @@ void Server::treatMessage(const Message &message)
 				else if (messageType == MSG::BID_ON_PLAYER_QUERY){
 					placeBidOnPlayer(DICT(received.get("data")), message.peer_id);
 				}
-				else if(messageType == MSG::PLAYERS_LIST) {//modif
-					sendPlayersList(DICT(received.get("data")), message.peer_id);
+				else if(messageType == MSG::PLAYERS_LIST) {
+					sendPlayersList(message.peer_id);
 				}
 				else if(messageType == MSG::FRIENDLY_GAME_INVITATION_RESPONSE) {
 						sendInvitationResponseToPlayer(DICT(received.get("data")), message.peer_id);
@@ -377,7 +377,7 @@ void Server::placeBidOnPlayer(const JSON::Dict &bid, int peer_id){
 	_outbox.push(status);
 }
 
-void Server::sendPlayersList(const JSON::Dict &data, int peer_id){
+void Server::sendPlayersList(int peer_id){
 	std::vector<Player> & players = _users[peer_id]->getTeam().getPlayers();
 	JSON::List jsonPlayers;
 	for(size_t i = 0; i<players.size();++i){
