@@ -21,17 +21,8 @@ private:
 	std::string _owner;
 	int _timeLeft;
 	int _saleID;
-	pthread_t _thread;
-	pthread_mutex_t _mymutex;
 	Player _player;
 	bool _ended;
-
-	static void * staticSaleStart(void * p);
-	void saleStart();
-	
-	void resolveEndOfTurn();
-	void lock(){pthread_mutex_lock(&_mymutex);}
-	void unlock(){pthread_mutex_unlock(&_mymutex);}
 public:
 	Sale();
 	Sale(int bidValue, std::string owner, int id, const Player & player);
@@ -39,11 +30,16 @@ public:
 	Sale(const JSON::Dict & json, const Player & player);
 	Sale(const Sale & other);
 	operator JSON::Dict();
-	void start();
-	std::string getCurrentBidder(){return _currentBidder;}
-	int getID(){return _saleID;}
+	void resolveEndOfTurn();
+	std::string getCurrentBidder() const {return _currentBidder;}
+	int getID() const {return _saleID;}
 	std::string getOwner() const {return _owner;}
 	int getNextBidValue() const {return (_bidValue + (int)_bidValue*_bidRatio);}
+	int getTimeLeft() const {return _timeLeft;}
+	void decTime(){
+		if(_timeLeft > 0)
+			--_timeLeft;
+	}
 	int getTotalTime() const {
 		if(_turn==1){return gameconfig::SALE_FIRST_TURN_TIME;}
 		else{return gameconfig::SALE_TURN_TIME;}

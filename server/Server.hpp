@@ -58,7 +58,7 @@ public:
     string getRandomName();
     void collectFinishedMatches(void);
     void startMatch(int client_idA, int client_idB);
-    void sendPlayersList(const JSON::Dict &data,int peer_id);
+    void sendPlayersList(int peer_id);
     void sendMarketMessage(const std::string&, const JSON::Dict&);
     int getPeerID(const std::string&);
         /* Return a pointer to the user object with given username,

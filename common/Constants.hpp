@@ -42,6 +42,7 @@ namespace net
 		static const std::string TURN_NUMBER = "T_N";
 		static const std::string CURRENT_BIDDER = "C_B";
 		static const std::string SALE_OWNER = "S_OWN";
+		static const std::string SALE_STATUS = "S_ST";
 
 		//Market
 		static const std::string PLAYER_ALREADY_ON_MARKET = "PM_P_A_OM";	
