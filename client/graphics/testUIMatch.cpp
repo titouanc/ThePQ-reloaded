@@ -2,6 +2,7 @@
 #include <SFML/Graphics.hpp>
 #include <model/Player.hpp>
 #include <model/Displacement.hpp>
+#include <toolbox.hpp>
 
 using namespace std;
 
@@ -16,8 +17,6 @@ void handleClick(sf::RenderWindow & win, UIMatch & ui, Position const & pitchPos
     Moveable *atPos = ui.pitch().getAt(pitchPos);
     if (atPos){
         if (atPos->isPlayer()){
-            Player const & player = (Player const &) *atPos;
-
             Displacement res;
             Position currentPos = pitchPos;
             size_t steps = 5;//player.getSpeed();
@@ -26,13 +25,18 @@ void handleClick(sf::RenderWindow & win, UIMatch & ui, Position const & pitchPos
             ui.hilightAccessibles(currentPos, steps);
             win.draw(ui);
             win.display();
+
             /* While player can still move */
             while (! stopped && steps > 0){
                 sf::Event ev;
                 win.waitEvent(ev);
+
+                /* Interrupt move with escape key */
                 if (isEscape(ev)){
                     stopped = true;
-                } else if (ev.type == sf::Event::MouseButtonPressed){
+                } 
+
+                else if (ev.type == sf::Event::MouseButtonPressed){
                     const Position click(ev.mouseButton.x, ev.mouseButton.y);
                     Position const & pos = ui.GUI2pitch(click);
                     Position const & delta = pos - currentPos;
@@ -40,13 +44,11 @@ void handleClick(sf::RenderWindow & win, UIMatch & ui, Position const & pitchPos
                         res.addMove(delta);
                         currentPos = pos;
                         steps -= delta.length();
-                        if (steps > 0){
-                            ui.clear();
-                            ui.hilightAccessibles(currentPos, steps);
-                            ui.hilightDisplacement(pitchPos, res);
-                            win.draw(ui);
-                            win.display();
-                        }
+                        ui.clear();
+                        ui.hilightAccessibles(currentPos, steps);
+                        ui.hilightDisplacement(pitchPos, res);
+                        win.draw(ui);
+                        win.display();
                     }
                 }
             }
@@ -79,6 +81,7 @@ int main(int argc, const char **argv)
             if (match.isInBounds(click)){
                 Position const & pos = match.GUI2pitch(click);
                 handleClick(window, match, pos);
+                minisleep(0.5);
                 match.clear();
                 window.draw(match);
                 window.display();
