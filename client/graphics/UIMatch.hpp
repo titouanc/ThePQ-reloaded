@@ -3,6 +3,7 @@
 
 #include <model/Pitch.hpp>
 #include <model/PosMatrix.hpp>
+#include <model/Displacement.hpp>
 #include <SFML/Graphics.hpp>
 
 class UIMatch : public sf::Drawable {
@@ -42,6 +43,8 @@ class UIMatch : public sf::Drawable {
         /* Return graphical pitch width, in pixels */
         unsigned int height(void) const;
 
+        Pitch & pitch(void) const;
+
         void setPosition(int left, int top);
 
         /* return pos (given in pitch coordinates) in GUI coordinate system */
@@ -57,6 +60,10 @@ class UIMatch : public sf::Drawable {
         void draw(sf::RenderTarget &target, sf::RenderStates states=sf::RenderStates()) const;
 
         void hilight(Position const & pos, const sf::Color *color=&hilightYellow);
+        void hilightAccessibles(Position const & from, int len);
+        void hilightDisplacement(Position const & from, Displacement const & move);
+
+        void clear(void);
 };
 
 #endif

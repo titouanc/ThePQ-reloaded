@@ -56,6 +56,11 @@ unsigned int UIMatch::height(void) const
     return _pitch.height()*vAlign();
 }
 
+Pitch & UIMatch::pitch(void) const
+{
+    return _pitch;
+}
+
 void UIMatch::setPosition(int left, int top)
 {
     _left = left;
@@ -190,4 +195,25 @@ void UIMatch::draw(sf::RenderTarget &dest, sf::RenderStates states) const
 void UIMatch::hilight(Position const & pos, const sf::Color *color)
 {
     _hilights.setAt(pos, color);
+}
+
+void UIMatch::clear(void)
+{
+    _hilights.clear();
+}
+
+void UIMatch::hilightAccessibles(Position const & from, int len)
+{
+    for (int i=0; i<6; i++)
+        for (int j=1; j<=len; j++)
+            hilight(from + Pitch::directions[i]*j, &hilightYellow);
+}
+
+void UIMatch::hilightDisplacement(Position const & from, Displacement const & move)
+{
+    for (size_t i=0; i<=move.length(); i++){
+        double t = ((double) i)/move.length();
+        Position const & atTime = from + move.position(t);
+        hilight(atTime, &hilightRed);
+    }
 }
