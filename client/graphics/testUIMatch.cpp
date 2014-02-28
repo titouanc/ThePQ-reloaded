@@ -7,14 +7,13 @@ using namespace std;
 int main(int argc, const char **argv)
 {
 	Pitch myPitch;
+	Seeker harry;
+	myPitch.setAt(13, -3, &harry);
+
 	UIMatch match(myPitch);
 	sf::RenderWindow window(sf::VideoMode(1280, 720), "This is a test !");
 
-	Seeker harry;
-	myPitch.setAt(-12, 2, &harry);
-	match.drawMoveables();
-
-	window.clear(sf::Color::Yellow);
+	window.clear(sf::Color::White);
 	window.draw(match);
 	window.display();
 
@@ -29,7 +28,6 @@ int main(int argc, const char **argv)
 
 			if (match.isInBounds(click)){
 				Position const & pos = match.GUI2pitch(click);
-				match.drawMoveables();
 				match.hilight(pos);
 				window.draw(match);
 				window.display();

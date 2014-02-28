@@ -2,6 +2,7 @@
 #define DEFINE_UIMATCH_HEADER
 
 #include <model/Pitch.hpp>
+#include <model/PosMatrix.hpp>
 #include <SFML/Graphics.hpp>
 
 class UIMatch : public sf::Drawable {
@@ -9,10 +10,14 @@ class UIMatch : public sf::Drawable {
         Pitch & _pitch;             /* Represented pitch */
         unsigned int _size;         /* Width of an hexagon */
         sf::CircleShape _hexagon;   /* hilight shape */
-        sf::RenderTexture _bkg;     /* Constant background */
-        sf::RenderTexture _overlay; /* Variable foreground */
-        int _left, _top;            /* Alignment offset */
+        /* Upperleft corner position */
+        int _left, _top;
+        /* graphical elements */
+        sf::Texture _grass_texture, _sand_texture, _goal_texture;
+        /* Hilights matrix */
+        PosMatrix<const sf::Color> _hilights;
 
+        /* HELPERS */
         /* Return the radius of a circle enclosing an hexagon of _size */
         double circleSize(void) const;
 
@@ -21,7 +26,8 @@ class UIMatch : public sf::Drawable {
 
         /* Create background once; it will result in a 1-op surface blit
            gracefully handled by GPU */
-        void createBackground(void);
+        void drawMoveables(sf::RenderTarget & target) const;
+        void drawHighlights(sf::RenderTarget & target) const;
 
         std::string texturePath(std::string const & name) const;
     public:
@@ -43,20 +49,14 @@ class UIMatch : public sf::Drawable {
         /* return pos (given in GUI coordinates) in pitch coordinate system */
         Position GUI2pitch(Position const & pos) const;
 
+        /* Is x,y (in pixels left-top to right-bottom) in pitch ? */
         bool isInBounds(int x, int y) const;
         bool isInBounds(Position const & pos) const;
 
         /* Conform to Drawable interface */
         void draw(sf::RenderTarget &target, sf::RenderStates states=sf::RenderStates()) const;
 
-        /* Draw moveables on top layer */
-        void drawMoveables(void);
-
-        /* Draw a colored hexagon at given pitch position */
-        void hilight(Position const & pos, sf::Color const & color=hilightRed);
-
-        /* Return true if it should be redrawn */
-        bool hasChanged(void) const;
+        void hilight(Position const & pos, const sf::Color *color=&hilightYellow);
 };
 
 #endif
