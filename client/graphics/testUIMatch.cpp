@@ -53,6 +53,8 @@ void handleClick(sf::RenderWindow & win, UIMatch & ui, Position const & pitchPos
                 }
             }
             cout << "Displacement: " << res.toJson() << endl;
+            ui.pitch().setAt(pitchPos, NULL);
+            ui.pitch().setAt(pitchPos + res.position(), atPos);
         }
     }
 }
