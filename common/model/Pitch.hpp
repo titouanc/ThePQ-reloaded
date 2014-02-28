@@ -9,6 +9,8 @@ class Pitch : public PosMatrix<Moveable> {
 		/* Pitch dimensions */
 		size_t _width, _height;
 	public:
+		typedef typename PosMatrix<Moveable>::iterator iterator;
+		typedef typename PosMatrix<Moveable>::const_iterator const_iterator;
 		static const Position West;
 		static const Position East;
 		static const Position NorthWest;
