@@ -55,11 +55,23 @@ class lastBidderException : public std::runtime_error{
 public:
 	lastBidderException():runtime_error("Last bidder"){};
 };
+class tooManyPlayersException : public std::runtime_error{
+public:
+	tooManyPlayersException():runtime_error("Too many players"){};
+};
+class insufficientFundsException : public std::runtime_error{
+public:
+	insufficientFundsException():runtime_error("Too many players"){};
+};
 
 //Adding a player on market
 class playerAlreadyOnMarketException : public std::runtime_error{
 public:
 	playerAlreadyOnMarketException():runtime_error("Player already on market"){};
+};
+class notEnoughPlayersException : public std::runtime_error{
+public:
+	notEnoughPlayersException():runtime_error("Not enough players"){};
 };
 
 //-------------Team--------------

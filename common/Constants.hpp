@@ -61,6 +61,9 @@ namespace net
 		static const std::string RAPPORT_SALE_STATUS = "PM_R_SS";
 		static const std::string PLAYER_NOT_SOLD = "PM_P_N_S";
 		static const std::string PLAYER_SOLD = "PM_P_S";
+		static const std::string TOO_MANY_PLAYERS = "T_M_P";
+		static const std::string NOT_ENOUGH_PLAYERS = "N_E_P";
+		static const std::string INSUFFICIENT_FUNDS = "I_$";
 		// data queries
 		static const std::string INSTALLATIONS_LIST = "DQ_I_L";
 		static const std::string CONNECTED_USERS_LIST = "DQ_CU_L";

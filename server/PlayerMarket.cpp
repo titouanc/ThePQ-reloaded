@@ -148,6 +148,9 @@ JSON::Dict PlayerMarket::addPlayer(const JSON::Dict &json){
 	if(getSale(INT(json.get(net::MSG::PLAYER_ID))) != NULL){
 		response.set("data",net::MSG::PLAYER_ALREADY_ON_MARKET);
 	}
+	else if(_server->getUserByName(STR(json.get(net::MSG::USERNAME)).value())->getTeam().getPlayers().size() <= gameconfig::MIN_PLAYERS){
+		response.set("data",net::MSG::NOT_ENOUGH_PLAYERS);
+	}
 	else{
 		createSale(json);
 		response.set("data", net::MSG::PLAYER_ADDED_ON_MARKET);
@@ -163,7 +166,14 @@ JSON::Dict PlayerMarket::bid(const JSON::Dict &json){
 	int bid_value = INT(json.get(net::MSG::BID_VALUE));
 	deletingLock();		//Sale checker cannot delete any sale while the validity of the bid is checked
 	Sale * sale = getSale(player_id);
-	if(sale != NULL and !(sale->isOver())){
+	if(sale == NULL or sale->isOver())
+		response.set("data", net::MSG::BID_ENDED);
+	else if(_server->getUserByName(username)->getTeam().getPlayers().size() >= gameconfig::MAX_PLAYERS)
+		response.set("data", net::MSG::TOO_MANY_PLAYERS);
+	else if(_server->getUserByName(username)->getTeam().getFunds() < bid_value){
+		response.set("data",net::MSG::INSUFFICIENT_FUNDS);
+	}
+	else{
 		try{
 			sale->placeBid(username, bid_value);
 			response.set("data", net::MSG::BID_PLACED);
@@ -180,10 +190,6 @@ JSON::Dict PlayerMarket::bid(const JSON::Dict &json){
 		catch(lastBidderException e){
 			response.set("data", net::MSG::LAST_BIDDER);
 		}
-
-	}
-	else{
-		response.set("data", net::MSG::BID_ENDED);
 	}
 	deletingUnlock();
 	return response;

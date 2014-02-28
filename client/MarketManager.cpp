@@ -52,11 +52,14 @@ void MarketManager::salePlayer(){
 			cin >> bidValue;
 		}
 		try{
-		addPlayerOnMarket(player_id, _user.username, bidValue);
-		cout << "Your player was successfully added on market." << endl;
+			addPlayerOnMarket(player_id, _user.username, bidValue);
+			cout << "Your player was successfully added on market." << endl;
 		}
 		catch(playerAlreadyOnMarketException e){
 			cout << "Error : you are already saling this player." << endl;
+		}
+		catch(notEnoughPlayersException e){
+			cout<<"Error : you do not have enough players to put a player on sale. You need at least " << gameconfig::MIN_PLAYERS + 1<<" players to do so."<<std::endl;
 		}
 	}
 	else{
@@ -134,6 +137,12 @@ void MarketManager::placeBid(){
 		catch(lastBidderException e){
 			cout << "Error : you are currently winning this sale. Cannot bid on your own bid."<<endl;
 		}
+		catch(tooManyPlayersException e){
+			cout << "Error : you have too many players to be able to place a bid. You cannot have more than "<<gameconfig::MAX_PLAYERS<<" players."<<endl;
+		}
+		catch(insufficientFundsException e){
+			cout << "Error : not enough money (GET MORE $$$$$)."<<endl;
+		}
 	}
 	else {
 		cout << "Error : this player is not in the list." << endl;
@@ -180,6 +189,10 @@ void MarketManager::bidOnPlayer(int player_id,std::string username, int value){/
 			throw bidOnYourPlayerException();
 		else if(res == net::MSG::LAST_BIDDER)
 			throw lastBidderException();
+		else if(res == net::MSG::TOO_MANY_PLAYERS)
+			throw tooManyPlayersException();
+		else if(res == net::MSG::INSUFFICIENT_FUNDS)
+			throw insufficientFundsException();
 	}
 }
 
@@ -197,6 +210,8 @@ void MarketManager::addPlayerOnMarket(int player_id,std::string username, int va
 			std::string res = STR((received.get("data"))).value();
 			if(res == net::MSG::PLAYER_ALREADY_ON_MARKET)
 				throw playerAlreadyOnMarketException();
+			else if(res == net::MSG::NOT_ENOUGH_PLAYERS)
+				throw notEnoughPlayersException();
 		}
 }
 
