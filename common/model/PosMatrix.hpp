@@ -31,39 +31,29 @@ namespace std {
     in a Position.
 */
 template <typename T>
-class PosMatrix {
-    private:
-        typedef typename std::unordered_map<Position, T*> map;
-        map _content;
+class PosMatrix : public std::unordered_map<Position, T*> {
     public:
-        typedef typename map::iterator iterator;
-        typedef typename map::const_iterator const_iterator;
+        typedef typename std::unordered_map<Position, T*>::iterator iterator;
+        typedef typename std::unordered_map<Position, T*>::const_iterator const_iterator;
 
-        PosMatrix() : _content(){}
-
-        ~PosMatrix(){}
+        using std::unordered_map<Position, T*>::unordered_map;
 
         T *getAt(Position const & pos) const {
-            const_iterator it = _content.find(pos);
-            return (it != _content.end()) ? it->second : NULL;
+            const_iterator it = this->find(pos);
+            return (it != this->end()) ? it->second : NULL;
         }
 
         void setAt(Position const & pos, T *value) {
-            iterator it = _content.find(pos);
-            if (it != _content.end()){
+            iterator it = this->find(pos);
+            if (it != this->end()){
                 if (value != NULL)
                     it->second = value;
                 else
-                    _content.erase(it);
+                    this->erase(it);
             } else if (value != NULL) {
-                _content.emplace(pos, value);
+                this->emplace(pos, value);
             }
         }
-
-        iterator begin(void) {return _content.begin();}
-        iterator   end(void) {return _content.end();}
-        const_iterator begin(void) const {return _content.begin();}
-        const_iterator   end(void) const {return _content.end();}
 };
 
 #endif
