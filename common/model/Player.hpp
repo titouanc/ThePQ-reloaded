@@ -56,7 +56,7 @@ public:
 	void improveVelocity (int added) 		{ _velocity+=added; }
 	void improvePrecision (int added) 		{ _precision+=added; }
 	int estimatedValue(){ return (_strength+_velocity+_precision+_chance)*1000;} //TODO
-	float collisionScore();
+	float collisionScore() const;
 
 	Player &operator=(Player const & player){
 		Moveable::operator=(player);

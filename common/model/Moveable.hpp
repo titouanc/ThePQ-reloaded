@@ -21,7 +21,7 @@ public:
 
 	virtual bool isBall() const {return false;}
 	bool isPlayer() const {return not isBall();}
-	virtual string getName() { return ""; }
+	virtual string getName() const { return ""; }
 
 	Position getPosition() const { return _position; }
 	void setPosition(Position const & position) { _position = position; }
@@ -32,7 +32,7 @@ public:
 	unsigned int getID() const { return _uniqueID; }
 	void setID(unsigned int newID) { _uniqueID = newID; }
 
-	virtual float collisionScore() { return 0; }
+	virtual float collisionScore() const { return 0; }
 
 	operator JSON::Dict() const {
 		JSON::Dict res;
