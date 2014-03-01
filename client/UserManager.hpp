@@ -15,14 +15,14 @@ public:
 	
 	bool showMenu();
 	
-private:
+protected:
 	void doLoginMenu();
 	void doRegisterMenu();
 	
 	void doLoginUser(std::string username, std::string password);
 	void doRegisterUser(std::string username, std::string password);
 	void doesUserExist(std::string username);
-	
+
 	net::ClientConnectionManager& _connection;
 	UserData& _user;
 	
