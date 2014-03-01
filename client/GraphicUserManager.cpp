@@ -6,7 +6,7 @@ using namespace GUI;
 #define USERNAME_TEXTBOX_ID "username"
 #define PASSWORD_TEXTBOX_ID "password"
 
-GraphicUserManager::GraphicUserManager(net::ClientConnectionManager& connection, UserData& user, GUI::MainController controller) 
+GraphicUserManager::GraphicUserManager(net::ClientConnectionManager& connection, UserData& user, GUI::MainController &controller) 
 			: UserManager(connection, user), GraphicManager(controller){
 	_usernameTextbox = _canvas.addTextbox(USERNAME_TEXTBOX_ID);
 	_passwordTextbox = _canvas.addTextbox(PASSWORD_TEXTBOX_ID);
