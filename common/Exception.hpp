@@ -80,4 +80,10 @@ public:
 	PlayerNotFoundException():runtime_error("Player not found"){};
 };
 
+// -----------Match-------------
+class UserDeniedException : public std::runtime_error{
+public:
+	UserDeniedException():runtime_error("Player denied your invitation"){};
+};
+
 #endif // __EXCEPTION_HPP
