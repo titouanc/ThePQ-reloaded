@@ -53,7 +53,7 @@ namespace GUI {
 			_backgroundRect.setFillColor(color);
 		}
 
-		void setText(std::string text) { _text.setString(text); }
+		void setText(std::string text) { _text.setString(text); } // TODO update width
 	private:
 		sf::Text _text;
 		sf::Font _font;
