@@ -13,7 +13,7 @@ class UserManager
 public:
 	UserManager(net::ClientConnectionManager& connection, UserData& user);
 	
-	bool displayMenu();
+	bool showMenu();
 	
 private:
 	void doLoginMenu();

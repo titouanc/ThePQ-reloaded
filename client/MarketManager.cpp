@@ -4,7 +4,7 @@ MarketManager::MarketManager(net::ClientConnectionManager& connection, UserData&
 	_connection(connection), _user(user), _prompt('>'), _sales()
 {}
 
-void MarketManager::displayMenu(){
+void MarketManager::showMenu(){
 	Menu _menu;
 	_menu.addToDisplay("   - put a player on sale\n");
 	_menu.addToDisplay("   - see the players on sale\n");

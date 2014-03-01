@@ -5,7 +5,7 @@ TeamManager::TeamManager(net::ClientConnectionManager &connection, UserData& use
 {}
 
 
-void TeamManager::displayMenu()
+void TeamManager::showMenu()
 {
 	Menu _menu;
 	_menu.addToDisplay("	- Show list of players");

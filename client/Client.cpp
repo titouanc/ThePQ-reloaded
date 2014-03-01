@@ -38,7 +38,7 @@ void Client::run()
 		}
 		else
 		{
-			_isRunning = _userManager.displayMenu();
+			_isRunning = _userManager.showMenu();
 		}
 	}
 	cout << goodBye();
@@ -64,7 +64,7 @@ void Client::mainMenu()
 				managementMenu();
 				break;
 			case 2:
-				_marketManager.displayMenu();
+				_marketManager.showMenu();
 				break;
 			case 3:
 				friendlyMatchMenu();
@@ -94,10 +94,10 @@ void Client::managementMenu()
 		switch(option)
 		{
 			case 1:
-				_stadiumManager.displayMenu();
+				_stadiumManager.showMenu();
 				break;
 			case 2:
-				_teamManager.displayMenu();
+				_teamManager.showMenu();
 				break;
 			default:
 				break;

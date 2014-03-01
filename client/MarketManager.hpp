@@ -12,7 +12,7 @@ class MarketManager
 {
 public:
 	MarketManager(net::ClientConnectionManager& connection, UserData& user);
-	void displayMenu();
+	void showMenu();
 
 private:
 	void updateSales();

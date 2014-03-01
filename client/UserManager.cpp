@@ -6,7 +6,7 @@ UserManager::UserManager(net::ClientConnectionManager& connection, UserData& use
 }
 
 
-bool UserManager::displayMenu()
+bool UserManager::showMenu()
 {
 	/* user menu */
 	Menu _menu;
