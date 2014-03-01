@@ -19,7 +19,8 @@ Client::Client(NetConfig const &config) : 	_user(),
 												_matchManager(_connection, _user),
 												_teamManager(_connection, _user),
 												_marketManager(_connection, _user),
-												_isRunning(true)
+												_isRunning(true),
+												_prompt(">")
 {
 }
 
@@ -63,7 +64,7 @@ void Client::mainMenu()
 				managementMenu();
 				break;
 			case 2:
-				_marketManager.showMenu();
+				showMarketMenu();
 				break;
 			case 3:
 				friendlyMatchMenu();
@@ -478,3 +479,132 @@ void Client::printPlayers(){
 	}
 	cout << "==============================================" << endl;
 }
+
+// Market
+void Client::showMarketMenu(){
+	Menu _menu;
+	_menu.addToDisplay("   - put a player on sale\n");
+	_menu.addToDisplay("   - see the players on sale\n");
+	_menu.addToDisplay("   - quit to main menu\n");
+	int option;
+	do
+	{
+		option = _menu.run();
+		switch(option)
+		{
+			case 1:
+				salePlayer();
+				break;
+			case 2:
+				printPlayersOnSale();
+				break;
+			default:
+				break;
+		}
+	}
+	while(option != 3);
+}
+
+void Client::salePlayer(){
+	printPlayers();			//this function updates _players
+	int player_id, bidValue;
+	bool found = false;
+	Player * player;
+	cout << "Choose a player to sale by entering his ID :" <<endl;
+	cout << _prompt;
+	cin >> player_id;
+	for(size_t i = 0; i<_user.players.size(); ++i){
+		if(_user.players[i].getMemberID() == player_id)
+			player = &(_user.players[i]);
+			found = true;
+	}
+	if(found){
+		pair<int, int> range = _marketManager.getBidValueRange(player);
+		cout << "Enter the starting bid value (must be between " << range.first << " and " << range.second << ") :" << endl;
+		cout << _prompt;
+		cin >> bidValue;
+		while(bidValue<range.first or bidValue>range.second){
+			cout << bidValue << " is not between " << range.first << " and " << range.second << " !\nTry again :" << endl;//modif
+			cout << _prompt;
+			cin >> bidValue;
+		}
+		try{
+			_marketManager.addPlayerOnMarket(player_id, bidValue);
+			cout << "Your player was successfully added on market." << endl;
+		}
+		catch(playerAlreadyOnMarketException e){
+			cout << "Error : you are already saling this player." << endl;
+		}
+		catch(notEnoughPlayersException e){
+			cout<<"Error : you do not have enough players to put a player on sale. You need at least " << gameconfig::MIN_PLAYERS + 1<<" players to do so."<<std::endl;
+		}
+	}
+	else{
+		cout << "Wrong ID." << endl;
+	}
+}
+void Client::printPlayersOnSale(){
+	_marketManager.updateSales();
+	cout << "================ PLAYERS ON SALE ================" << endl;
+	for(size_t i=0;i<_marketManager.getSales().size();++i){
+		std::cout<<_marketManager.getSales()[i]<<std::endl;
+	}
+	cout << "=================================================" << endl;
+	Menu _menu;
+	_menu.addToDisplay("   - place a bid on a player\n");
+	_menu.addToDisplay("   - quit to market menu\n");
+	int option;
+	do
+	{
+		option = _menu.run();
+		switch(option)
+		{
+			case 1:
+				placeBid();
+				break;
+			default:
+				break;
+		}
+	}
+	while (option != 2);
+}
+
+void Client::placeBid(){
+	int player_id;
+	string response;
+	cout << "Enter the ID of the player you wish to bid on : " << endl;
+	cout << _prompt;
+	cin >> player_id;
+	try{
+		_marketManager.bidOnPlayer(player_id);
+		
+		cout << "Bid successfully placed ! Hurra !" << endl;
+		cout << "Updated list :" << endl;
+		printPlayersOnSale();
+	}
+	catch(PlayerNotFoundException& e) {
+		cout << "Error : the player id you entered is not correct" << endl;
+	}
+	catch(bidValueNotUpdatedException e){
+		cout << "Error : bid value not correct (update your market list)."<<endl;
+	}
+	catch(turnException e){
+		cout << "Error : you did not bid last turn."<<endl;
+	}
+	catch(bidEndedException e){
+		cout << "Error : player not on market any more (update your market list)."<<endl;
+	}
+	catch(bidOnYourPlayerException e){
+		cout << "Error : cannot bid on your player."<<endl;
+	}
+	catch(lastBidderException e){
+		cout << "Error : you are currently winning this sale. Cannot bid on your own bid."<<endl;
+	}
+	catch(tooManyPlayersException e){
+		cout << "Error : you have too many players to be able to place a bid. You cannot have more than "<<gameconfig::MAX_PLAYERS<<" players."<<endl;
+	}
+	catch(insufficientFundsException e){
+		cout << "Error : not enough money (GET MORE $$$$$)."<<endl;
+	}
+}
+

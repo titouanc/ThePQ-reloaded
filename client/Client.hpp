@@ -62,6 +62,7 @@ private:
 	
 	// CLI
 	bool _isRunning;
+	std::string _prompt;
 	std::string splashScreen();
 	std::string goodBye();
 	
@@ -73,6 +74,12 @@ private:
 	// Team
 	void showTeamMenu();
 	void printPlayers();
+	
+	// Market
+	void showMarketMenu();
+	void placeBid();
+	void printPlayersOnSale();
+	void salePlayer();
 	
 	// Menus
 	void mainMenu();
