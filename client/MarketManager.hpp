@@ -19,6 +19,7 @@ private:
 	void updateSales();
 	void bidOnPlayer(int player_id, std::string username, int value);
 	void addPlayerOnMarket(int player_id, std::string username, int value);
+	void seePlayersOnSale();
 	void printPlayersOnSale();
 	void salePlayer();
 	vector<int> getBidValueRange(Player *player);

@@ -316,7 +316,7 @@ void Client::startMatch(){
 /*Market notifications*/
 
 void Client::handleEndOfSaleNotification(JSON::Dict & json){
-	cout << "<<MESSAGE : SALE ENDED>>" << endl;
+	cout << "\n<<MESSAGE : SALE ENDED>>" << endl;
 	if(STR(json.get("type")).value()==net::MSG::END_OF_OWNED_SALE_RAPPORT){
 		if(STR(json.get(net::MSG::RAPPORT_SALE_STATUS)).value() == net::MSG::PLAYER_NOT_SOLD){
 			cout << "Your player " << INT(json.get(net::MSG::PLAYER_ID)) << " was not sold. :(" << endl; 
@@ -327,9 +327,14 @@ void Client::handleEndOfSaleNotification(JSON::Dict & json){
 		}
 	}
 	else if(STR(json.get("type")).value()==net::MSG::WON_SALE_RAPPORT){
+		std::string owner = STR(json.get(net::MSG::SALE_OWNER)).value();
 		cout << "You bought player " << INT(json.get(net::MSG::PLAYER_ID)) << " for " << INT(json.get(net::MSG::BID_VALUE)) << "." <<endl;
-		cout << "This player comes from " << STR(json.get(net::MSG::SALE_OWNER)).value() << "'s team." << endl;
+		if(owner==net::MSG::GENERATED_BY_MARKET)
+			cout << "This player did not belong to any team. He was free. Like the wind."<<endl;
+		else
+			cout << "This player comes from " << owner << "'s team." << endl;
 	}
+	cout<<endl;
 }
 
 

@@ -19,7 +19,7 @@ void MarketManager::showMenu(){
 				salePlayer();
 				break;
 			case 2:
-				printPlayersOnSale();
+				seePlayersOnSale();
 				break;
 			default:
 				break;
@@ -37,9 +37,10 @@ void MarketManager::salePlayer(){
 	cout << _prompt;
 	cin >> player_id;
 	for(size_t i = 0; i<_user.players.size(); ++i){
-		if(_user.players[i].getMemberID() == player_id)
+		if(_user.players[i].getMemberID() == player_id){
 			player = &(_user.players[i]);
 			found = true;
+		}
 	}
 	if(found){
 		vector<int> range = getBidValueRange(player);
@@ -68,7 +69,7 @@ void MarketManager::salePlayer(){
 }
 
 vector<int> MarketManager::getBidValueRange(Player *player){
-	int allowedRangeFromEstimatedValue = 10000; //TODO : in Constants.hpp (should do that for many others variables !)
+	int allowedRangeFromEstimatedValue = 10000; //TODO : in Constants.hpp
 	vector<int> range;
 	range.push_back(player->estimatedValue() - (int) allowedRangeFromEstimatedValue/2);
 	range.push_back(player->estimatedValue() + (int) allowedRangeFromEstimatedValue/2);
@@ -82,8 +83,13 @@ void MarketManager::printPlayersOnSale(){
 		std::cout<<_sales[i]<<std::endl;
 	}
 	cout << "=================================================" << endl;
+}
+
+void MarketManager::seePlayersOnSale(){
+	printPlayersOnSale();
 	Menu _menu;
 	_menu.addToDisplay("   - place a bid on a player\n");
+	_menu.addToDisplay("   - update list\n");
 	_menu.addToDisplay("   - quit to market menu\n");
 	int option;
 	do
@@ -94,11 +100,14 @@ void MarketManager::printPlayersOnSale(){
 			case 1:
 				placeBid();
 				break;
+			case 2:
+				printPlayersOnSale();
+				break;
 			default:
 				break;
 		}
 	}
-	while (option != 2);
+	while (option != 3);
 }
 
 void MarketManager::placeBid(){
@@ -119,8 +128,6 @@ void MarketManager::placeBid(){
 			bidOnPlayer(player_id, _user.username, value);
 			
 			cout << "Bid successfully placed ! Hurra !" << endl;
-			cout << "Updated list :" << endl;
-			printPlayersOnSale();
 		}
 		catch(bidValueNotUpdatedException e){
 			cout << "Error : bid value not correct (update your market list)."<<endl;
@@ -141,7 +148,7 @@ void MarketManager::placeBid(){
 			cout << "Error : you have too many players to be able to place a bid. You cannot have more than "<<gameconfig::MAX_PLAYERS<<" players."<<endl;
 		}
 		catch(insufficientFundsException e){
-			cout << "Error : not enough money (GET MORE $$$$$)."<<endl;
+			cout << "Error : not enough money (get more cash plz)."<<endl;
 		}
 	}
 	else {
