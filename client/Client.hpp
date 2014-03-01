@@ -65,6 +65,11 @@ private:
 	std::string splashScreen();
 	std::string goodBye();
 	
+	// Users
+	bool showUserMenu();
+	void showLoginMenu();
+	void showRegisterMenu();
+	
 	// Menus
 	void mainMenu();
 	void managementMenu();
