@@ -70,6 +70,7 @@ void Client::mainMenu()
 				break;
 			case 4:
 				notificationsMenu();
+				break;
 			case 5:
 				_user.logout();
 			default:

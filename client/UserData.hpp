@@ -12,6 +12,7 @@ struct UserData
 	// Login
 	void login(std::string name) { username = name; }
 	void logout() {
+		std::cout<<"LOGGING OUT"<<std::endl;
 		installations.clear();
 		players.clear();
 		username = ""; 

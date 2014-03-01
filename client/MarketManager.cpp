@@ -157,7 +157,6 @@ void MarketManager::updateSales(){
 	JSON::Value *serverResponse = _connection.waitForMsg(net::MSG::PLAYERS_ON_MARKET_LIST);
 	JSON::Dict const & received = DICT(serverResponse);
 	
-	
 	_sales.clear();
 	if (ISLIST(received.get("data"))){
 		JSON::List & sales = LIST(received.get("data"));
