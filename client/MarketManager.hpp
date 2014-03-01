@@ -12,7 +12,7 @@
 class MarketManager
 {
 public:
-	MarketManager(net::ClientConnectionManager& connection, UserData& user, TeamManager& teamManager);
+	MarketManager(net::ClientConnectionManager& connection, UserData& user);
 	void showMenu();
 
 private:
@@ -27,7 +27,6 @@ private:
 	
 	net::ClientConnectionManager& _connection;
 	UserData& _user;
-	TeamManager& _teamManager;
 	char _prompt;
 	std::vector<Sale> _sales;
 };

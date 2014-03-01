@@ -1,7 +1,7 @@
 #include "MarketManager.hpp"
 
-MarketManager::MarketManager(net::ClientConnectionManager& connection, UserData& user, TeamManager& teamManager) :
-	_connection(connection), _user(user), _teamManager(teamManager), _prompt('>'), _sales()
+MarketManager::MarketManager(net::ClientConnectionManager& connection, UserData& user) :
+	_connection(connection), _user(user), _prompt('>'), _sales()
 {}
 
 void MarketManager::showMenu(){
@@ -29,7 +29,7 @@ void MarketManager::showMenu(){
 }
 
 void MarketManager::salePlayer(){
-	_teamManager.printPlayers();			//this function updates _players
+	//~ _teamManager.printPlayers();			//this function updates _players TODO
 	int player_id, bidValue;
 	bool found = false;
 	Player * player;

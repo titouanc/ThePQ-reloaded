@@ -70,6 +70,10 @@ private:
 	void showLoginMenu();
 	void showRegisterMenu();
 	
+	// Team
+	void showTeamMenu();
+	void printPlayers();
+	
 	// Menus
 	void mainMenu();
 	void managementMenu();

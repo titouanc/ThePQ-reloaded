@@ -18,7 +18,7 @@ Client::Client(NetConfig const &config) : 	_user(),
 												_stadiumManager(_connection, _user),
 												_matchManager(_connection, _user),
 												_teamManager(_connection, _user),
-												_marketManager(_connection, _user, _teamManager),
+												_marketManager(_connection, _user),
 												_isRunning(true)
 {
 }
@@ -96,7 +96,7 @@ void Client::managementMenu()
 				_stadiumManager.showMenu();
 				break;
 			case 2:
-				_teamManager.showMenu();
+				showTeamMenu();
 				break;
 			default:
 				break;
@@ -446,4 +446,35 @@ void Client::showRegisterMenu()
 			cout << "Username already exists. Try again with a different username." << endl;		
 		}
 	}
+}
+
+// Team
+void Client::showTeamMenu()
+{
+	Menu _menu;
+	_menu.addToDisplay("	- Show list of players");
+	_menu.addToDisplay("    - quit to management menu\n");
+	int option;
+	do
+	{
+		option = _menu.run();
+		switch(option)
+		{
+			case 1:
+				printPlayers();
+				break;
+			default:
+				break;
+		}
+	}
+	while (option != 1);
+}
+
+void Client::printPlayers(){
+	_teamManager.loadPlayers();
+	cout << "================ YOUR PLAYERS ================" << endl;
+	for(size_t i =0; i<_user.players.size();++i){
+		cout << _user.players[i] << endl; //modif
+	}
+	cout << "==============================================" << endl;
 }
