@@ -13,9 +13,9 @@ public:
 	
 	void displayMenu();
 	void printPlayers();
+	void loadPlayers();
 	
 private:
-	void loadPlayers();
 	net::ClientConnectionManager& _connection;
 	UserData& _user;
 };

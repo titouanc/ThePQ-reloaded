@@ -47,6 +47,7 @@ void Client::run()
 /* main menu */
 void Client::mainMenu()
 {
+	_teamManager.loadPlayers();
 	Menu _menu;
 	_menu.addToDisplay("   - manage your team and stadium\n");
 	_menu.addToDisplay("   - access market\n");
