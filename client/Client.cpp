@@ -18,7 +18,7 @@ Client::Client(NetConfig const &config) : 	_user(),
 												_stadiumManager(_connection, _user),
 												_matchManager(_connection, _user),
 												_teamManager(_connection, _user),
-												_marketManager(_connection, _user),
+												_marketManager(_connection, _user, _teamManager),
 												_isRunning(true)
 {
 }
@@ -47,7 +47,6 @@ void Client::run()
 /* main menu */
 void Client::mainMenu()
 {
-	_teamManager.loadPlayers();
 	Menu _menu;
 	_menu.addToDisplay("   - manage your team and stadium\n");
 	_menu.addToDisplay("   - access market\n");

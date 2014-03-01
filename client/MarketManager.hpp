@@ -7,11 +7,12 @@
 #include "Menu.hpp"
 #include "Exception.hpp"
 #include <model/Sale.hpp>
+#include "TeamManager.hpp"
 
 class MarketManager
 {
 public:
-	MarketManager(net::ClientConnectionManager& connection, UserData& user);
+	MarketManager(net::ClientConnectionManager& connection, UserData& user, TeamManager& teamManager);
 	void showMenu();
 
 private:
@@ -23,10 +24,10 @@ private:
 	vector<int> getBidValueRange(Player *player);
 	void placeBid();
 	void handleEndOfSaleNotification(JSON::Dict&);
-	void printPlayers();
 	
 	net::ClientConnectionManager& _connection;
 	UserData& _user;
+	TeamManager& _teamManager;
 	char _prompt;
 	std::vector<Sale> _sales;
 };

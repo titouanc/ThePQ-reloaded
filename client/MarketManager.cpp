@@ -1,7 +1,7 @@
 #include "MarketManager.hpp"
 
-MarketManager::MarketManager(net::ClientConnectionManager& connection, UserData& user) :
-	_connection(connection), _user(user), _prompt('>'), _sales()
+MarketManager::MarketManager(net::ClientConnectionManager& connection, UserData& user, TeamManager& teamManager) :
+	_connection(connection), _user(user), _teamManager(teamManager), _prompt('>'), _sales()
 {}
 
 void MarketManager::showMenu(){
@@ -29,7 +29,7 @@ void MarketManager::showMenu(){
 }
 
 void MarketManager::salePlayer(){
-	printPlayers();			//this function updates _players
+	_teamManager.printPlayers();			//this function updates _players
 	int player_id, bidValue;
 	bool found = false;
 	Player * player;
@@ -213,13 +213,4 @@ void MarketManager::addPlayerOnMarket(int player_id,std::string username, int va
 			else if(res == net::MSG::NOT_ENOUGH_PLAYERS)
 				throw notEnoughPlayersException();
 		}
-}
-
-void MarketManager::printPlayers()
-{
-	cout << "================ YOUR PLAYERS ================" << endl;
-	for(size_t i =0; i<_user.players.size();++i){
-		cout << _user.players[i] << endl;
-	}
-	cout << "==============================================" << endl;
 }
