@@ -10,7 +10,10 @@ else
 	CPPFLAGS += $(shell ${PKGCONFIG} --cflags sfml-all)
 endif
 
-all: playground.app testbox.app
+all: playground.app testbox.app libgraphics.a
+
+libgraphics.a: ${OBJS}
+	ar r $@ $^
 
 include ../../Makefile.includes
 

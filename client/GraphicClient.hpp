@@ -1,6 +1,7 @@
 #include "GraphicUserManager.hpp"
 #include "UserData.hpp"
 #include <network/ClientConnectionManager.hpp>
+#include <Config.hpp>
 
 struct NetConfig : public Config {
     std::string host;
