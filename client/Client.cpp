@@ -309,7 +309,7 @@ void Client::startMatch(){
 	JSON::Dict const &receivedSquads = DICT(serverSquads);
 	_matchManager.initSquads(receivedSquads);
 	//_connection.waitForMsg(net::MSG::MATCH_START);
-	_matchManager.startMatch();
+	_matchManager.turnMenu();
 }
 
 

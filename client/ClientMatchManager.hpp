@@ -19,7 +19,6 @@ public:
 
 	void initBalls(const JSON::Dict& msg);
 	void initSquads(const JSON::Dict& msg);
-	void startMatch();
 	void turnMenu();
 	void displayAvailablePlayers();
 	void selectPlayer();
@@ -29,8 +28,8 @@ public:
 	char playerLetter(Player const & player);
 	std::string colorPlayerLetter(Player const & player);
 	void displayPitch();
-	void updatePitchWithDeltas(JSON::Dict& deltas);
-	void updatePitch();
+	void updatePitchWithDeltas();
+	void sendStroke(int player, Displacement& currentDisplacement);
 private:
 	net::ClientConnectionManager & _connection;
 	UserData &_user;

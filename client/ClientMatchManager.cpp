@@ -42,45 +42,27 @@ void ClientMatchManager::initSquads(const JSON::Dict& msg){
 	}
 }
 
-void ClientMatchManager::startMatch(){
-	cout << "Match Started! Have fuuuuuuuuuunnnnnn :D" << endl;
-	turnMenu();
-}
-
-
 void ClientMatchManager::turnMenu(){
 	
 	Menu turnMenu;
 	turnMenu.addToDisplay("\t- select player");
-	turnMenu.addToDisplay("\t- update pitch");
 	int option;
 	do {
-		JSON::Value* deltas = _connection.hasMessageTypeInNotifications(MSG::MATCH_DELTA);
-		if (ISDICT(deltas))
-			updatePitchWithDeltas(DICT(deltas));
+		updatePitchWithDeltas();
 		displayPitch();
 		displayAvailablePlayers();
 		option = turnMenu.run();
 		switch(option){
 			case 1:
 				selectPlayer();
-			case 2:
-				updatePitch();
+				break;
 			default:
 				break;
 		}
+		_connection.updateNotifications();
+		updatePitchWithDeltas();
+		displayPitch();
 	} while (!_isMatchFinished);
-}
-
-void ClientMatchManager::updatePitch(){
-	_connection.updateNotifications();
-	cout << "75" << endl;
-	JSON::Value* deltas = _connection.hasMessageTypeInNotifications(net::MSG::MATCH_DELTA);
-	if (ISDICT(deltas)){
-		cout << "78" << endl;
-		updatePitchWithDeltas(DICT(deltas));
-	}
-	displayPitch();
 }
 
 void ClientMatchManager::selectPlayer(){
@@ -136,6 +118,11 @@ void ClientMatchManager::selectDirectionForPlayer(int player){
 				break;
 		}
 	}
+	sendStroke(player, currentDisplacement);
+}
+
+void ClientMatchManager::sendStroke(int player, Displacement& currentDisplacement)
+{
 	JSON::Dict toSend;
 	toSend.set("type", MSG::MATCH_STROKE);
 	JSON::Dict data;
@@ -143,30 +130,32 @@ void ClientMatchManager::selectDirectionForPlayer(int player){
 	data.set("move", currentDisplacement.toJson());
 	toSend.set("data", data);
 	_connection.send(toSend);
-
-	updatePitch();
 }
 
-void ClientMatchManager::updatePitchWithDeltas(JSON::Dict& deltas){
-	cout << "148" << endl;
-	if (ISLIST(deltas.get("data"))){
-		JSON::List const & toMove = LIST(deltas.get("data"));
-		for(size_t i = 0; i<toMove.len(); ++i){
-			if (ISDICT(toMove[i])){
-				cout << "153" << endl;
-				JSON::Dict const & movement = DICT(toMove[i]);
-				if(ISLIST(movement.get("from")) && ISLIST(movement.get("to"))){
-					Position fromPos(LIST(movement.get("from")));
-					Position toPos(LIST(movement.get("to")));
-					Moveable *atPos = _pitch.getAt(fromPos);
-					if (atPos != NULL){
-						_pitch.setAt(toPos, atPos);
-						_pitch.setAt(fromPos, NULL);
+void ClientMatchManager::updatePitchWithDeltas(){
+	JSON::Value* msg = _connection.hasMessageTypeInNotifications(MSG::MATCH_DELTA);
+	if (ISDICT(msg))
+	{
+		JSON::Dict const & deltas = DICT(msg);
+		if (ISLIST(deltas.get("data"))){
+			JSON::List const & toMove = LIST(deltas.get("data"));
+			for(size_t i = 0; i<toMove.len(); ++i){
+				if (ISDICT(toMove[i])){
+					JSON::Dict const & movement = DICT(toMove[i]);
+					if(ISLIST(movement.get("from")) && ISLIST(movement.get("to"))){
+						Position fromPos(LIST(movement.get("from")));
+						Position toPos(LIST(movement.get("to")));
+						Moveable *atPos = _pitch.getAt(fromPos);
+						if (atPos != NULL){
+							_pitch.setAt(toPos, atPos);
+							_pitch.setAt(fromPos, NULL);
+						}
+						//~ cout << "Moving " << fromPos.toJson() << " -> " << toPos.toJson() << endl; // TODO WHAT ?
 					}
-					cout << "Moving " << fromPos.toJson() << " -> " << toPos.toJson() << endl;
 				}
 			}
 		}
+		delete msg;
 	}
 }
 
