@@ -62,8 +62,25 @@ private:
 	
 	// CLI
 	bool _isRunning;
+	std::string _prompt;
 	std::string splashScreen();
 	std::string goodBye();
+	
+	// Users
+	bool showUserMenu();
+	void showLoginMenu();
+	void showRegisterMenu();
+	
+	// Team
+	void showTeamMenu();
+	void printPlayers();
+	
+	// Market
+	void showMarketMenu();
+	void placeBid();
+	void seePlayersOnSale();
+	void printPlayersOnSale();
+	void salePlayer();
 	
 	// Menus
 	void mainMenu();
@@ -77,12 +94,16 @@ private:
 	void handleFriendlyGameInvitation(JSON::Dict &message);
 	
 	// Match
-	void acceptInvitationFromUser(string username);
-	void denyInvitationFromUser(string username);
-	std::vector<std::string> getConnectedUsersList();
 	void printConnectedUsersList();
-	void chooseUser();
-	void startMatch();
+	void chooseUserMenu();
+	void turnMenu();
+	void displayAvailablePlayers();
+	void selectPlayer();
+	void selectDirectionForPlayer(int player);
+	Position parseDirection(string userInput);
+	char playerLetter(Player const & player);
+	std::string colorPlayerLetter(Player const & player);
+	void displayPitch();
 };
 
 #endif // __CLIENT_HPP

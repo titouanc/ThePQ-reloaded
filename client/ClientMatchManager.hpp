@@ -12,6 +12,7 @@
 #include <string>
 #include <network/ClientConnectionManager.hpp>
 #include "UserData.hpp"
+#include <Exception.hpp>
 
 class ClientMatchManager {
 public:
@@ -19,18 +20,19 @@ public:
 
 	void initBalls(const JSON::Dict& msg);
 	void initSquads(const JSON::Dict& msg);
-	void startMatch();
-	void turnMenu();
-	void displayAvailablePlayers();
-	void selectPlayer();
-	void selectDirectionForPlayer(int player);
-	Position parseDirection(string userInput);
 	bool isOwnPlayer(Player const & player);
-	char playerLetter(Player const & player);
-	std::string colorPlayerLetter(Player const & player);
-	void displayPitch();
-	void updatePitchWithDeltas(JSON::Dict& deltas);
-	void updatePitch();
+	void updatePitchWithDeltas();
+	void sendStroke(int player, Displacement& currentDisplacement);
+	void acceptInvitationFromUser(string username);
+	void denyInvitationFromUser(string username);
+	std::vector<std::string> getConnectedUsersList();
+	void startMatch();
+	void chooseUser(std::string);
+	void waitForUser();
+	
+	Squad const & getOwnSquad() { return _ownSquad; }
+	Pitch const & getPitch() { return _pitch; }
+	bool isMatchFinished() { return _isMatchFinished; }
 private:
 	net::ClientConnectionManager & _connection;
 	UserData &_user;

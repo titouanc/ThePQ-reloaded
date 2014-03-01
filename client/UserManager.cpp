@@ -5,87 +5,7 @@ UserManager::UserManager(net::ClientConnectionManager& connection, UserData& use
 {
 }
 
-
-bool UserManager::showMenu()
-{
-	/* user menu */
-	Menu _menu;
-	_menu.addToDisplay("   - login\n");
-	_menu.addToDisplay("   - register\n");
-	_menu.addToDisplay("   - quit\n");
-	int option;
-	bool res = true;
-	option = _menu.run();
-	switch(option)
-	{
-		case 1:
-			doLoginMenu();
-			break;
-		case 2:
-			doRegisterMenu();
-			break;
-		default:
-			res = false;
-			break;
-	}
-	return res;
-}
-
-void UserManager::doLoginMenu()
-{	
-	string username = Menu::askForUserData("Username : ");
-	string password = Menu::askForUserData("Password : ");
-	
-	try {
-		cout << "Please wait..." << endl;
-		doLoginUser(username, password);
-		cout << "You have successfully logged in! Welcome! :)\n\n\n" << endl;
-		_user.login(username);
-		//~ mainMenu();
-	}
-	catch (UserNotFoundException & e)
-	{
-		cout << "\nUser not found" << endl;
-	}
-	catch (WrongPasswordException & e)
-	{
-		cout << "\nWrong password" << endl;
-	}
-	catch (AlreadyLoggedInException & e)
-	{
-		cout << "\nYou're already logged in from another location" << endl;
-	}
-}
-
-void UserManager::doRegisterMenu()
-{
-	bool registered = false;
-	for (int i = 0; i < 3 && ! registered; ++i)
-	{
-		string username = Menu::askForUserData("Pick a username : ");
-		try {
-			cout << "Please wait..." << endl;
-			doesUserExist(username);
-			string password = "a";
-			string passwordConfirmation;
-			while (password != passwordConfirmation){
-				password = Menu::askForUserData("Enter a new password : ");
-				passwordConfirmation = Menu::askForUserData("Confirm password : ");
-				if (password != passwordConfirmation)
-					cout << "The two passwords entered were not the same." << endl;
-			}
-			cout << "Please wait..." << endl;
-			doRegisterUser(username, password);
-			registered = true;
-			cout << "You have successfully registered! You can now login." << endl;
-		}
-		catch (UserAlreadyExistsException e) {
-			cout << "Username already exists. Try again with a different username." << endl;		
-		}
-	}
-}
-
-void UserManager::doLoginUser(std::string username, std::string password)
+void UserManager::loginUser(std::string username, std::string password)
 {
 	JSON::Dict toSend, credentials;
 	credentials.set(net::MSG::USERNAME, username);
@@ -117,7 +37,7 @@ void UserManager::doLoginUser(std::string username, std::string password)
 	delete serverMessage;
 }
 
-void UserManager::doRegisterUser(std::string username, std::string password)
+void UserManager::registerUser(std::string username, std::string password)
 {
 	JSON::Dict toSend, received, credentials;
 	credentials.set(net::MSG::USERNAME, username);
