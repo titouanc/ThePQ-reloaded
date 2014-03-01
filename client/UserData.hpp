@@ -11,7 +11,11 @@ struct UserData
 {
 	// Login
 	void login(std::string name) { username = name; }
-	void logout() { username = ""; }
+	void logout() {
+		installations.clear();
+		players.clear();
+		username = ""; 
+	}
 	bool isLogged() { return username != ""; }
 
 	// Cache
