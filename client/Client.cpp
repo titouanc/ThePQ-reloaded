@@ -170,7 +170,7 @@ void Client::friendlyMatchMenu()
 				printConnectedUsersList();
 				break;
 			case 2:
-				chooseUser();
+				chooseUserMenu();
 				break;
 			default:
 				break;
@@ -179,61 +179,35 @@ void Client::friendlyMatchMenu()
 	while(option != 3);
 }
 
-void Client::chooseUser()
+void Client::chooseUserMenu()
 {
-	cout << "Enter a username to send an invitation to another user : ";
-	string userInput;
-	cin >> userInput;
-	JSON::Dict toSend;
-	toSend.set("type", net::MSG::FRIENDLY_GAME_USERNAME);
-	toSend.set("data", userInput);
-	_connection.send(toSend);
-
+	string userInput = Menu::askForUserData("Enter a username to send an invitation to another user : ");
+	_matchManager.chooseUser(userInput);
 	cout << "Please wait for " << userInput << " to answer to your invitation..." << endl;
-	JSON::Value *serverMessage = _connection.waitForMsg(net::MSG::FRIENDLY_GAME_INVITATION_RESPONSE);
-	JSON::Dict const & received = DICT(serverMessage);
-	if (ISDICT(received.get("data")) && ISSTR(DICT(received.get("data")).get("answer"))){
-		string answer = STR(DICT(received.get("data")).get("answer")).value();
-		if (answer == net::MSG::FRIENDLY_GAME_INVITATION_ACCEPT){
-			cout << STR(DICT(received.get("data")).get("username")).value();
-			cout << " accepted your invitation!" << endl;
-			startMatch();
-
-		}
-		else if (answer == net::MSG::USER_NOT_FOUND) {
-			cout << "Username not found" << endl;
-		}
-		else {
-			cout << STR(DICT(received.get("data")).get("username")).value();
-			cout << " denied your invitation. Sorry!" << endl;
-		}
+	try {
+		_matchManager.waitForUser();
+		cout << userInput << " accepted your invitation!" << endl;
+		_matchManager.startMatch();
+		turnMenu();
+	}
+	catch (UserNotFoundException &e)
+	{
+		cout << "Username not found" << endl;
+	}
+	catch (UserDeniedException &e)
+	{
+		cout << userInput << " denied your invitation. Sorry!" << endl;		
 	}
 }
 
 void Client::printConnectedUsersList(){
-	vector<std::string> connectedUsers = getConnectedUsersList();
+	vector<std::string> connectedUsers = _matchManager.getConnectedUsersList();
 	cout << "Here are all the connected users : " << endl;
  	for (size_t i=0; i < connectedUsers.size(); ++i)
  		cout << "  - " << connectedUsers[i] << endl;
 }
 
 
-vector<std::string> Client::getConnectedUsersList(){// TODO
-	vector<std::string> res;
-	JSON::Dict query;
-	query.set("type", net::MSG::CONNECTED_USERS_LIST);
-	query.set("data", "");
-	_connection.send(query);
-
-	JSON::Value *serverResponse = _connection.waitForMsg(net::MSG::CONNECTED_USERS_LIST);
-	JSON::Dict const & received = DICT(serverResponse);
-	if (ISLIST(received.get("data"))) {
-		JSON::List & connectedUsers = LIST(received.get("data"));
-		for (size_t i = 0; i<connectedUsers.len(); ++i)
-			res.push_back(STR(connectedUsers[i]));
-	}
-	return res;
-}
 
 ///////// END NEW
 
@@ -265,12 +239,13 @@ void Client::handleFriendlyGameInvitation(JSON::Dict &message){
 			{
 				case 1:
 					chosen = true;
-					acceptInvitationFromUser(STR(message.get("data")).value());
+					_matchManager.acceptInvitationFromUser(STR(message.get("data")).value());
+					turnMenu();
 					// TODO start to play game
 					break;
 				case 2:
 					chosen = true;
-					denyInvitationFromUser(STR(message.get("data")).value());
+					_matchManager.denyInvitationFromUser(STR(message.get("data")).value());
 					break;
 				default:
 					break;
@@ -279,41 +254,6 @@ void Client::handleFriendlyGameInvitation(JSON::Dict &message){
 		while(!chosen);
 	}
 }
-
-void Client::acceptInvitationFromUser(string username){
-	JSON::Dict toSend;
-	toSend.set("type", net::MSG::FRIENDLY_GAME_INVITATION_RESPONSE);
-	JSON::Dict data;
-	data.set("username", username);
-	data.set("answer", net::MSG::FRIENDLY_GAME_INVITATION_ACCEPT);
-	toSend.set("data", data);
-	_connection.send(toSend);
-	startMatch();
-}
-
-void Client::denyInvitationFromUser(string username){
-	JSON::Dict toSend;
-	toSend.set("type", net::MSG::FRIENDLY_GAME_INVITATION_RESPONSE);
-	JSON::Dict data;
-	data.set("username", username);
-	data.set("answer", net::MSG::FRIENDLY_GAME_INVITATION_DENY);
-	toSend.set("data", data);
-	_connection.send(toSend);
-}
-
-void Client::startMatch(){
-	JSON::Value *serverBalls = _connection.waitForMsg(net::MSG::MATCH_BALLS);
-	JSON::Dict const &receivedBalls = DICT(serverBalls);
-	_matchManager.initBalls(receivedBalls);
-	JSON::Value *serverSquads = _connection.waitForMsg(net::MSG::MATCH_SQUADS);
-	JSON::Dict const &receivedSquads = DICT(serverSquads);
-	_matchManager.initSquads(receivedSquads);
-	//_connection.waitForMsg(net::MSG::MATCH_START);
-	turnMenu();
-}
-
-
-
 
 /*Market notifications*/
 

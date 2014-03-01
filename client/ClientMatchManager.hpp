@@ -12,6 +12,7 @@
 #include <string>
 #include <network/ClientConnectionManager.hpp>
 #include "UserData.hpp"
+#include <Exception.hpp>
 
 class ClientMatchManager {
 public:
@@ -22,6 +23,12 @@ public:
 	bool isOwnPlayer(Player const & player);
 	void updatePitchWithDeltas();
 	void sendStroke(int player, Displacement& currentDisplacement);
+	void acceptInvitationFromUser(string username);
+	void denyInvitationFromUser(string username);
+	std::vector<std::string> getConnectedUsersList();
+	void startMatch();
+	void chooseUser(std::string);
+	void waitForUser();
 	
 	Squad const & getOwnSquad() { return _ownSquad; }
 	Pitch const & getPitch() { return _pitch; }

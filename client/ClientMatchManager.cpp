@@ -88,6 +88,77 @@ bool ClientMatchManager::isOwnPlayer(Player const & player)
 	return false;
 }
 
+vector<std::string> ClientMatchManager::getConnectedUsersList(){// TODO
+	vector<std::string> res;
+	JSON::Dict query;
+	query.set("type", net::MSG::CONNECTED_USERS_LIST);
+	query.set("data", "");
+	_connection.send(query);
+
+	JSON::Value *serverResponse = _connection.waitForMsg(net::MSG::CONNECTED_USERS_LIST);
+	JSON::Dict const & received = DICT(serverResponse);
+	if (ISLIST(received.get("data"))) {
+		JSON::List & connectedUsers = LIST(received.get("data"));
+		for (size_t i = 0; i<connectedUsers.len(); ++i)
+			res.push_back(STR(connectedUsers[i]));
+	}
+	return res;
+}
+
+void ClientMatchManager::acceptInvitationFromUser(string username){
+	JSON::Dict toSend;
+	toSend.set("type", net::MSG::FRIENDLY_GAME_INVITATION_RESPONSE);
+	JSON::Dict data;
+	data.set("username", username);
+	data.set("answer", net::MSG::FRIENDLY_GAME_INVITATION_ACCEPT);
+	toSend.set("data", data);
+	_connection.send(toSend);
+	startMatch();
+}
+
+void ClientMatchManager::denyInvitationFromUser(string username){
+	JSON::Dict toSend;
+	toSend.set("type", net::MSG::FRIENDLY_GAME_INVITATION_RESPONSE);
+	JSON::Dict data;
+	data.set("username", username);
+	data.set("answer", net::MSG::FRIENDLY_GAME_INVITATION_DENY);
+	toSend.set("data", data);
+	_connection.send(toSend);
+}
+
+void ClientMatchManager::startMatch(){
+	JSON::Value *serverBalls = _connection.waitForMsg(net::MSG::MATCH_BALLS);
+	JSON::Dict const &receivedBalls = DICT(serverBalls);
+	initBalls(receivedBalls);
+	JSON::Value *serverSquads = _connection.waitForMsg(net::MSG::MATCH_SQUADS);
+	JSON::Dict const &receivedSquads = DICT(serverSquads);
+	initSquads(receivedSquads);
+	//_connection.waitForMsg(net::MSG::MATCH_START);
+}
 
 
+void ClientMatchManager::chooseUser(std::string userInput)
+{
+	JSON::Dict toSend;
+	toSend.set("type", net::MSG::FRIENDLY_GAME_USERNAME);
+	toSend.set("data", userInput);
+	_connection.send(toSend);
+}
+void ClientMatchManager::waitForUser()
+{
+	JSON::Value *serverMessage = _connection.waitForMsg(net::MSG::FRIENDLY_GAME_INVITATION_RESPONSE);
+	JSON::Dict const & received = DICT(serverMessage);
+	if (ISDICT(received.get("data")) && ISSTR(DICT(received.get("data")).get("answer"))){
+		string answer = STR(DICT(received.get("data")).get("answer")).value();
+		if (answer == net::MSG::FRIENDLY_GAME_INVITATION_ACCEPT){
+			// Accepts
+		}
+		else if (answer == net::MSG::USER_NOT_FOUND) {
+			throw UserNotFoundException();
+		}
+		else {
+			throw UserDeniedException();
+		}
+	}
+}
 

@@ -93,13 +93,8 @@ private:
 	void handleFriendlyGameInvitation(JSON::Dict &message);
 	
 	// Match
-	void acceptInvitationFromUser(string username);
-	void denyInvitationFromUser(string username);
-	std::vector<std::string> getConnectedUsersList();
 	void printConnectedUsersList();
-	void chooseUser();
-	void startMatch();
-	
+	void chooseUserMenu();
 	void turnMenu();
 	void displayAvailablePlayers();
 	void selectPlayer();
