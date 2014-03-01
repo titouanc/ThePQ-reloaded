@@ -47,6 +47,7 @@ void MemoryAccess::save(Installation& install){
 }
 void MemoryAccess::save(User& user){
 	std::string username = user.getUsername();
+	mkdir(memory::USERS_DIR.c_str(), 0755);
 	mkdir(getUserDirectory(username).c_str(), 0755);
     mkdir((getUserDirectory(username)+memory::PLAYERS_DIR).c_str(), 0755);
     mkdir((getUserDirectory(username)+memory::INSTALLATIONS_DIR).c_str(), 0755);
@@ -80,6 +81,7 @@ void MemoryAccess::load(User& user){
 	JSON::Value *loaded = JSON::load(getUserPath(user.getUsername()).c_str());
 	user = &DICT(loaded); //Constructor by pointer in User ... 
 	delete loaded;
+
 }
 
 void MemoryAccess::load(Sale& sale){
