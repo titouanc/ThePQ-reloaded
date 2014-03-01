@@ -19,17 +19,13 @@ public:
 
 	void initBalls(const JSON::Dict& msg);
 	void initSquads(const JSON::Dict& msg);
-	void turnMenu();
-	void displayAvailablePlayers();
-	void selectPlayer();
-	void selectDirectionForPlayer(int player);
-	Position parseDirection(string userInput);
 	bool isOwnPlayer(Player const & player);
-	char playerLetter(Player const & player);
-	std::string colorPlayerLetter(Player const & player);
-	void displayPitch();
 	void updatePitchWithDeltas();
 	void sendStroke(int player, Displacement& currentDisplacement);
+	
+	Squad const & getOwnSquad() { return _ownSquad; }
+	Pitch const & getPitch() { return _pitch; }
+	bool isMatchFinished() { return _isMatchFinished; }
 private:
 	net::ClientConnectionManager & _connection;
 	UserData &_user;

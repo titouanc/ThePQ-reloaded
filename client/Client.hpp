@@ -99,6 +99,15 @@ private:
 	void printConnectedUsersList();
 	void chooseUser();
 	void startMatch();
+	
+	void turnMenu();
+	void displayAvailablePlayers();
+	void selectPlayer();
+	void selectDirectionForPlayer(int player);
+	Position parseDirection(string userInput);
+	char playerLetter(Player const & player);
+	std::string colorPlayerLetter(Player const & player);
+	void displayPitch();
 };
 
 #endif // __CLIENT_HPP
