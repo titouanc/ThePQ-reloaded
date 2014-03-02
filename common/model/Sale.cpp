@@ -76,7 +76,7 @@ bool Sale::allowedToBidForThisTurn(std::string username) const{
 }
 
 //Services
-void Sale::placeBid(std::string username, int bid_value){
+std::pair<std::string, int> Sale::placeBid(std::string username, int bid_value){
 	if(isSaler(username)) 
 		throw bidOnYourPlayerException();
 	else if(!(allowedToBidForThisTurn(username)))
@@ -85,9 +85,13 @@ void Sale::placeBid(std::string username, int bid_value){
 		throw lastBidderException();
 	else if(getNextBidValue() != bid_value)
 		throw bidValueNotUpdatedException();
+	std::pair<std::string,int> res;	//Pair used to restore the money to its previous bidder
+	res.first = _currentBidder;	
+	res.second = _bidValue;
 	_currentBidder = username;
 	_turnTeams.push_back(username);
 	_bidValue = bid_value;
+	return res;
 }
 
 void Sale::save(){

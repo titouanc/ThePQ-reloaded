@@ -8,6 +8,7 @@
 #include <pthread.h>
 #include <json/json.hpp>
 #include <model/Player.hpp>
+#include <utility> //std::pair
 
 class Sale{
 	friend std::ostream& operator<< (std::ostream&, const Sale&);
@@ -49,7 +50,7 @@ public:
 	bool isOver() const {return _ended;}
 	bool isSaler(std::string username) const;
 	bool allowedToBidForThisTurn(std::string username) const;
-	void placeBid(std::string username, int bid_value);
+	std::pair<std::string,int> placeBid(std::string username, int bid_value);
 
 	void save();
 	void load();
