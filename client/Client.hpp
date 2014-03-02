@@ -6,7 +6,7 @@
 #include <string>
 #include <typeinfo>
 #include <cxxabi.h>
-#include "Exception.hpp"
+#include <Exception.hpp>
 #include "Menu.hpp"
 #include <Config.hpp>
 #include <model/Player.hpp>
@@ -20,6 +20,8 @@
 #include "StadiumManager.hpp"
 #include "TeamManager.hpp"
 #include "MarketManager.hpp"
+#include "NotificationManager.hpp"
+#include <Constants.hpp>
 
 
 struct NetConfig : public Config {
@@ -59,6 +61,7 @@ private:
 	ClientMatchManager _matchManager;
 	TeamManager _teamManager;
 	MarketManager _marketManager;
+	NotificationManager _notificationManager;
 	
 	// CLI
 	bool _isRunning;
@@ -90,9 +93,8 @@ private:
 	void notificationsMenu();
 	
 	// Notifications
-	void handleNotification(JSON::Value* notification);
-	void handleEndOfSaleNotification(JSON::Dict&);
-	void handleFriendlyGameInvitation(JSON::Dict &message);
+	void handleEndOfSaleNotification(JSON::Value const *message);
+	void handleFriendlyGameInvitation(JSON::Value const *message);
 	
 	// Match
 	void printConnectedUsersList();
