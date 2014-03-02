@@ -77,7 +77,6 @@ void Client::mainMenu()
 				break;
 			case 5:
 				_userManager.logoutUser();
-				_user.logout();
 			default:
 				break;
 		}
@@ -350,13 +349,11 @@ void Client::showLoginMenu()
 		cout << "Please wait..." << endl;
 		_userManager.loginUser(username, password);
 		cout << "You have successfully logged in! Welcome! :)\n\n\n" << endl;
-		_user.login(username);
 		//~ mainMenu();
 	}
 	catch (NoTeamNameException e)
 	{
 		cout << "You have successfully logged in! Welcome! :)\n\n\n" << endl;
-		_user.login(username);
 		showTeamNameMenu();
 	}
 	catch (UserNotFoundException & e)

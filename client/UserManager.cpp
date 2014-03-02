@@ -35,19 +35,23 @@ void UserManager::loginUser(std::string username, std::string password)
 		}
 		else if (payload == net::MSG::USER_CHOOSE_TEAMNAME)
 		{
+			_user.login(username);
 			delete serverMessage;
 			throw NoTeamNameException();
 		}
 
 	}
 	delete serverMessage;
+	_user.login(username);
 }
 
 void UserManager::logoutUser()
 {
 	JSON::Dict toSend;
 	toSend.set("type", net::MSG::DISCONNECT);
+	toSend.set("data", "");
 	_connection.send(toSend);
+	_user.logout();
 }
 
 void UserManager::chooseTeamName(std::string username, std::string teamname){
