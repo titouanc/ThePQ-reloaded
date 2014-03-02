@@ -19,9 +19,12 @@ Client::Client(NetConfig const &config) : 	_user(),
 												_matchManager(_connection, _user),
 												_teamManager(_connection, _user),
 												_marketManager(_connection, _user),
+												_notificationManager(_connection, _user),
 												_isRunning(true),
 												_prompt(">")
 {
+	_notificationManager.addCallback(pair<string, AbstractCallback*>(net::MSG::FRIENDLY_GAME_INVITATION, new ClassCallback<Client>(this, &Client::handleFriendlyGameInvitation)));
+	_notificationManager.addCallback(pair<string, AbstractCallback*>(net::MSG::MARKET_MESSAGE, new ClassCallback<Client>(this, &Client::handleEndOfSaleNotification)));
 }
 
 Client::~Client()
@@ -123,16 +126,20 @@ void Client::notificationsMenu()
 	{
 		JSON::Value * currentNotification = _connection.notifications.front();
 		JSON::Dict const & notif = DICT(currentNotification);
-		if (STR(notif.get("type")).value() == net::MSG::FRIENDLY_GAME_INVITATION
-			&& ISSTR(notif.get("data")))
+		string messageType = STR(notif.get("type")).value();
+		if (messageType == net::MSG::FRIENDLY_GAME_INVITATION && ISSTR(notif.get("data")))
 		{
 			cout << STR(notif.get("data")).value() << " invited you to a game" << endl;
+		}
+		else if (messageType == net::MSG::MARKET_MESSAGE)
+		{
+			cout << "You won a bid !" << endl;
 		}
 		option = _menu.run();
 		switch(option)
 		{
 			case 1:
-				handleNotification(currentNotification);
+				_notificationManager.handleNotification(currentNotification);
 				_connection.notifications.pop();
 				break;
 			case 2:
@@ -214,20 +221,9 @@ void Client::printConnectedUsersList(){
 
 
 
-void Client::handleNotification(JSON::Value *notification){
-	JSON::Dict message = DICT(notification);
-	string messageType;
-	if (ISSTR(message.get("type")))
-		messageType = STR(message.get("type")).value();
-
-		if (messageType == net::MSG::FRIENDLY_GAME_INVITATION)
-			handleFriendlyGameInvitation(message);
-		if (messageType == net::MSG::MARKET_MESSAGE)
-			handleEndOfSaleNotification(DICT(message.get("data")));
-}
-
-void Client::handleFriendlyGameInvitation(JSON::Dict &message){
-	if (ISSTR(message.get("data"))){
+void Client::handleFriendlyGameInvitation(JSON::Value const *json){
+	if (ISSTR(json)){
+		string user = STR(json).value();
 		Menu _menu;
 		_menu.addToDisplay("   - accept\n");
 		_menu.addToDisplay("   - deny\n");
@@ -240,13 +236,13 @@ void Client::handleFriendlyGameInvitation(JSON::Dict &message){
 			{
 				case 1:
 					chosen = true;
-					_matchManager.acceptInvitationFromUser(STR(message.get("data")).value());
+					_matchManager.acceptInvitationFromUser(user);
 					turnMenu();
 					// TODO start to play game
 					break;
 				case 2:
 					chosen = true;
-					_matchManager.denyInvitationFromUser(STR(message.get("data")).value());
+					_matchManager.denyInvitationFromUser(user);
 					break;
 				default:
 					break;
@@ -258,7 +254,8 @@ void Client::handleFriendlyGameInvitation(JSON::Dict &message){
 
 /*Market notifications*/
 
-void Client::handleEndOfSaleNotification(JSON::Dict & json){
+void Client::handleEndOfSaleNotification(JSON::Value const * message){
+	JSON::Dict const & json = DICT(message);
 	cout << "\n\033[36mMessage : a sale has ended.\033[0m" << endl;
 	if(STR(json.get("type")).value()==net::MSG::END_OF_OWNED_SALE_RAPPORT){
 		if(STR(json.get(net::MSG::RAPPORT_SALE_STATUS)).value() == net::MSG::PLAYER_NOT_SOLD){
