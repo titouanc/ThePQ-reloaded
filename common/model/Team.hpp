@@ -15,8 +15,6 @@ private:
     std::string _name;
     std::string _owner;
     int _funds;
-    std::vector<int> _bids;
-    std::vector<int> _sales;
 	std::vector<Player> _players;
 	std::vector<Installation> _installations;
 public:
@@ -64,6 +62,11 @@ public:
 	void saveInfos(){
 		MemoryAccess::save(*this);
 	}
+
+	void loadInfos(){
+		MemoryAccess::load(*this);
+	}
+
 	std::string getOwner(){return _owner;}
 	void setOwner(std::string owner){_owner=owner;}
 	std::string getName() const {return _name;}

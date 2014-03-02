@@ -103,7 +103,7 @@ namespace gameconfig
 {
 	static const std::string UNNAMED_TEAM = "NO_NAME";
 	static const int MAX_COACHES = 5;
-	static const int MAX_PLAYERS = 15;
+	static const int MAX_PLAYERS = 100;
 	static const int MIN_PLAYERS = 7;
 	static const int STARTING_FUNDS = 100000;
 	static const int SALE_FIRST_TURN_TIME = 30;

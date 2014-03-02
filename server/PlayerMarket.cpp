@@ -7,6 +7,7 @@
 #include <math.h>
 #include <model/Gear.hpp>
 #include <model/RandomNameGenerator.hpp>
+#include <utility>
 
 
 PlayerMarket::PlayerMarket(Server *server): _server(server), _sales(),
@@ -111,17 +112,16 @@ void PlayerMarket::transfert(std::string fromName, std::string toName, int id, i
 	}
 	toTransfert.setOwner(toName);
 	User* to= _server->getUserByName(toName);
+	//N.B. : no need to call buy(), since the team alrdy paid the amount in handleNewBid().
 	if(to == NULL){
 		Team toTeam(toName);
 		toTeam.load();
 		toTeam.addPlayer(toTransfert);
-		toTeam.buy(bidValue);
 		toTeam.save();
 	}
 	else{
 		Team & toTeam = to->getTeam();
 		toTeam.addPlayer(toTransfert);
-		toTeam.buy(bidValue);
 		toTeam.save();
 	}
 
@@ -183,7 +183,7 @@ JSON::Dict PlayerMarket::addPlayer(const JSON::Dict &json){
 	if(getSale(player_id) != NULL){
 		response.set("data",net::MSG::PLAYER_ALREADY_ON_MARKET);
 	}
-	else if(_server->getUserByName(username)->getTeam().getPlayers().size() <= gameconfig::MIN_PLAYERS){
+	else if((_server->getUserByName(username)->getTeam().getPlayers().size() + ownedSales(username))<= gameconfig::MIN_PLAYERS){
 		response.set("data",net::MSG::NOT_ENOUGH_PLAYERS);
 	}
 	else{
@@ -201,7 +201,7 @@ JSON::Dict PlayerMarket::bid(const JSON::Dict &json){
 	std::string username = STR(json.get(net::MSG::USERNAME)).value();
 	int player_id = INT(json.get(net::MSG::PLAYER_ID));
 	int bid_value = INT(json.get(net::MSG::BID_VALUE));
- 	if(_server->getUserByName(username)->getTeam().getPlayers().size() >= gameconfig::MAX_PLAYERS)
+ 	if((_server->getUserByName(username)->getTeam().getPlayers().size() + winningSales(username)) >= gameconfig::MAX_PLAYERS)
 		response.set("data", net::MSG::TOO_MANY_PLAYERS);
 	else if(_server->getUserByName(username)->getTeam().getFunds() < bid_value){
 		response.set("data",net::MSG::INSUFFICIENT_FUNDS);
@@ -212,7 +212,8 @@ JSON::Dict PlayerMarket::bid(const JSON::Dict &json){
 			Sale * sale = getSale(player_id);
 			if(sale == NULL or sale->isOver())
 				throw bidEndedException();
-			sale->placeBid(username, bid_value);
+			std::pair<std::string, int> previous = sale->placeBid(username, bid_value);
+			handleNewBid(previous.first,username,previous.second,bid_value);
 			response.set("data", net::MSG::BID_PLACED);
 		}
 		catch(bidEndedException e){
@@ -235,6 +236,48 @@ JSON::Dict PlayerMarket::bid(const JSON::Dict &json){
 	return response;
 }
 
+void PlayerMarket::handleNewBid(std::string previousBidder, std::string currentBidder, int previousAmount, int currentAmount){
+	Team & currentTeam = _server->getUserByName(currentBidder)->getTeam();
+	currentTeam.buy(currentAmount);
+	currentTeam.saveInfos();
+
+	if(!previousBidder.empty()){
+		User* previousUser = _server->getUserByName(previousBidder);
+		if (previousUser == NULL){ 			//User not connected
+			Team previousTeam(previousBidder);
+			previousTeam.loadInfos(); 		//Do not load players nor installations, since it's not needed
+			previousTeam.getPayed(previousAmount);
+			previousTeam.saveInfos();
+		}
+		else{								//User connected, dynamically saves the change too
+			Team & previousTeam = previousUser->getTeam();
+			previousTeam.getPayed(previousAmount);
+			previousTeam.saveInfos();
+		}
+	}
+}
+
 void PlayerMarket::sendMessageToUser(std::string username, const JSON::Dict & message){
 	_server->sendMarketMessage(username, message);
+}
+
+int PlayerMarket::ownedSales(std::string username){
+	int res=0;
+	for(size_t i=0;i<_sales.size();++i){
+		if(_sales[i]->getOwner() == username){
+			++res;
+		}
+	}
+	return res;
+}
+
+int PlayerMarket::winningSales(std::string username){
+	int res=0;
+
+	for(size_t i=0;i<_sales.size();++i){
+		if(_sales[i]->getCurrentBidder() == username){
+			++res;
+		}
+	}
+	return res;
 }
