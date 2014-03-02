@@ -5,87 +5,7 @@ UserManager::UserManager(net::ClientConnectionManager& connection, UserData& use
 {
 }
 
-
-bool UserManager::displayMenu()
-{
-	/* user menu */
-	Menu _menu;
-	_menu.addToDisplay("   - login\n");
-	_menu.addToDisplay("   - register\n");
-	_menu.addToDisplay("   - quit\n");
-	int option;
-	bool res = true;
-	option = _menu.run();
-	switch(option)
-	{
-		case 1:
-			doLoginMenu();
-			break;
-		case 2:
-			doRegisterMenu();
-			break;
-		default:
-			res = false;
-			break;
-	}
-	return res;
-}
-
-void UserManager::doLoginMenu()
-{	
-	string username = Menu::askForUserData("Username : ");
-	string password = Menu::askForUserData("Password : ");
-	
-	try {
-		cout << "Please wait..." << endl;
-		doLoginUser(username, password);
-		cout << "You have successfully logged in! Welcome! :)\n\n\n" << endl;
-		_user.login(username);
-		//~ mainMenu();
-	}
-	catch (UserNotFoundException & e)
-	{
-		cout << "\nUser not found" << endl;
-	}
-	catch (WrongPasswordException & e)
-	{
-		cout << "\nWrong password" << endl;
-	}
-	catch (AlreadyLoggedInException & e)
-	{
-		cout << "\nYou're already logged in from another location" << endl;
-	}
-}
-
-void UserManager::doRegisterMenu()
-{
-	bool registered = false;
-	for (int i = 0; i < 3 && ! registered; ++i)
-	{
-		string username = Menu::askForUserData("Pick a username : ");
-		try {
-			cout << "Please wait..." << endl;
-			doesUserExist(username);
-			string password = "a";
-			string passwordConfirmation;
-			while (password != passwordConfirmation){
-				password = Menu::askForUserData("Enter a new password : ");
-				passwordConfirmation = Menu::askForUserData("Confirm password : ");
-				if (password != passwordConfirmation)
-					cout << "The two passwords entered were not the same." << endl;
-			}
-			cout << "Please wait..." << endl;
-			doRegisterUser(username, password);
-			registered = true;
-			cout << "You have successfully registered! You can now login." << endl;
-		}
-		catch (UserAlreadyExistsException e) {
-			cout << "Username already exists. Try again with a different username." << endl;		
-		}
-	}
-}
-
-void UserManager::doLoginUser(std::string username, std::string password)
+void UserManager::loginUser(std::string username, std::string password)
 {
 	JSON::Dict toSend, credentials;
 	credentials.set(net::MSG::USERNAME, username);
@@ -113,13 +33,38 @@ void UserManager::doLoginUser(std::string username, std::string password)
 			delete serverMessage;
 			throw AlreadyLoggedInException();
 		}
+		else if (payload == net::MSG::USER_CHOOSE_TEAMNAME)
+		{
+			delete serverMessage;
+			throw NoTeamNameException();
+		}
+
 	}
 	delete serverMessage;
 }
 
-void UserManager::doRegisterUser(std::string username, std::string password)
+void UserManager::chooseTeamName(std::string username, std::string teamname){
+	JSON::Dict toSend, data;
+	data.set(net::MSG::TEAMNAME,teamname);
+	data.set(net::MSG::USERNAME,username);
+	toSend.set("type",net::MSG::USER_CHOOSE_TEAMNAME);
+	toSend.set("data",data);
+	_connection.send(toSend);
+
+	JSON::Value *serverMessage = _connection.waitForMsg(net::MSG::STATUS);
+	JSON::Dict const & received = DICT(serverMessage);
+	if (ISSTR(received.get("data"))){
+		if(STR(received.get("data")).value()==net::MSG::TEAMNAME_ERROR){
+			delete serverMessage;
+			throw TeamNameNotAvailableException();
+		}
+	}
+	delete serverMessage;
+}
+
+void UserManager::registerUser(std::string username, std::string password)
 {
-	JSON::Dict toSend, received, credentials;
+	JSON::Dict toSend, credentials;
 	credentials.set(net::MSG::USERNAME, username);
 	credentials.set(net::MSG::PASSWORD, password);
 	toSend.set("type", net::MSG::REGISTER);
@@ -127,10 +72,12 @@ void UserManager::doRegisterUser(std::string username, std::string password)
 	_connection.send(toSend);
 
 	JSON::Value *serverMessage = _connection.waitForMsg(net::MSG::STATUS);	// receiving server response
-
+	JSON::Dict const & received = DICT(serverMessage);
 	if (ISSTR(received.get("data"))) {
-		if (STR(received.get("data")).value() == net::MSG::USER_EXISTS)
+		if (STR(received.get("data")).value() == net::MSG::USER_EXISTS){
+			delete serverMessage;
 			throw UserAlreadyExistsException();
+		}
 	}
 	delete serverMessage;
 }

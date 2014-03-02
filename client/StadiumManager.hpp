@@ -12,7 +12,7 @@ class StadiumManager
 public:
 	StadiumManager(net::ClientConnectionManager& connection, UserData& user);
 
-	void displayMenu();
+	void showMenu();
 	
 private:
 	net::ClientConnectionManager& _connection;

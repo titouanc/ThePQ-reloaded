@@ -11,11 +11,9 @@ class TeamManager
 public:
 	TeamManager(net::ClientConnectionManager& connection, UserData& user);
 	
-	void displayMenu();
-	void printPlayers();
+	void loadPlayers();
 	
 private:
-	void loadPlayers();
 	net::ClientConnectionManager& _connection;
 	UserData& _user;
 };

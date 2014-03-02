@@ -15,6 +15,8 @@ private:
     std::string _name;
     std::string _owner;
     int _funds;
+    std::vector<int> _bids;
+    std::vector<int> _sales;
 	std::vector<Player> _players;
 	std::vector<Installation> _installations;
 public:
@@ -58,9 +60,14 @@ public:
 			MemoryAccess::save(_installations[i]);
 		}
 	}
+
+	void saveInfos(){
+		MemoryAccess::save(*this);
+	}
 	std::string getOwner(){return _owner;}
 	void setOwner(std::string owner){_owner=owner;}
-	std::string getName(){return _name;}
+	std::string getName() const {return _name;}
+	void setName(std::string name){_name=name;}
 	int getFunds(){return _funds;}
 	void getPayed(int amount){_funds+=amount;}
 	void buy(int amount){_funds-=amount;}

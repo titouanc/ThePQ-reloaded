@@ -127,6 +127,8 @@ void Server::treatMessage(const Message &message)
 						loggedIn->clearOfflineMsg();
 					}
 				}
+				else if(messageType == MSG::USER_CHOOSE_TEAMNAME)
+					checkTeamName(DICT(received.get("data")), message.peer_id);
 				else if (messageType == MSG::REGISTER) 
 					registerUser(DICT(received.get("data")), message.peer_id);
 				else if (messageType == MSG::ADD_PLAYER_ON_MARKET_QUERY){
@@ -214,7 +216,10 @@ User *Server::logUserIn(const JSON::Dict &credentials, int peer_id)
 					user->loadTeam();
 					// mapping user to its peer_id to keep a list of connected users.
 					_users.insert(std::pair<int, User*>(peer_id, user));
-					response.set("data", MSG::USER_LOGIN);
+					if(user->getTeam().getName() == gameconfig::UNNAMED_TEAM)
+						response.set("data",MSG::USER_CHOOSE_TEAMNAME);
+					else
+						response.set("data", MSG::USER_LOGIN);
 					res = user;
 				} else {
 					// wrong password
@@ -229,6 +234,36 @@ User *Server::logUserIn(const JSON::Dict &credentials, int peer_id)
 		_outbox.push(Message(peer_id, response.clone()));
 	}
 	return res;
+}
+
+void Server::checkTeamName(const JSON::Dict &data, int peer_id){
+	std::vector<std::string> teamNames;
+	std::string teamname = STR(data.get(net::MSG::TEAMNAME)).value();
+	bool exists = false;
+	try{
+		MemoryAccess::load(teamNames,memory::ALL_TEAM_NAMES);
+	}
+	catch(JSON::IOError e){}
+	for(size_t i =0;i<teamNames.size();++i){
+		if(teamNames[i]==teamname)
+			exists = true;
+	}
+	JSON::Dict response;
+	response.set("type", MSG::STATUS);
+	if(!exists){
+		teamNames.push_back(teamname);
+		MemoryAccess::save(teamNames,memory::ALL_TEAM_NAMES);
+		Team & team = _users[peer_id]->getTeam();
+		team.setName(teamname);
+		team.saveInfos();
+		response.set("data",MSG::TEAMNAME_REGISTERED);
+	}
+	else{
+		response.set("data",MSG::TEAMNAME_ERROR);
+	}
+	Message status(peer_id, response.clone());
+	_outbox.push(status);
+
 }
 
 void Server::checkIfUserExists(string username, int peer_id)

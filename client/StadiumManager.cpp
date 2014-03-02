@@ -4,7 +4,7 @@ StadiumManager::StadiumManager(net::ClientConnectionManager &connection, UserDat
 	_connection(connection), _user(user)
 {}
 
-void StadiumManager::displayMenu()
+void StadiumManager::showMenu()
 {
 	Menu _menu;
 	_menu.addToDisplay("    - view your installations\n");

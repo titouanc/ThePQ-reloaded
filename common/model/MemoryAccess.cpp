@@ -39,6 +39,9 @@ std::string MemoryAccess::getTeamInfosPath(std::string username){
 std::string MemoryAccess::getSkelPath(std::string file){
 	return memory::SKEL_DIR + file + memory::FILE_FORMAT;
 }
+std::string MemoryAccess::getTeamNamesPath(){
+	return memory::GLOBAL_DATA_DIR + memory::TEAMNAMES_FILE + memory::FILE_FORMAT;
+}
 
 void MemoryAccess::save(Installation& install){
 	std::string path = getInstallationPath(install.getOwner(), install.getName());
@@ -47,6 +50,7 @@ void MemoryAccess::save(Installation& install){
 }
 void MemoryAccess::save(User& user){
 	std::string username = user.getUsername();
+	mkdir(memory::USERS_DIR.c_str(), 0755);
 	mkdir(getUserDirectory(username).c_str(), 0755);
     mkdir((getUserDirectory(username)+memory::PLAYERS_DIR).c_str(), 0755);
     mkdir((getUserDirectory(username)+memory::INSTALLATIONS_DIR).c_str(), 0755);
@@ -69,6 +73,15 @@ void MemoryAccess::save(Team& team){
 	JSON::Dict toSave = team;
 	toSave.save(path.c_str());
 }
+void MemoryAccess::save(std::vector<std::string> &toSave,std::string type){
+	if(type == memory::ALL_TEAM_NAMES){
+		JSON::List jsonToSave;
+		for(size_t i =0;i<toSave.size();++i){
+			jsonToSave.append(toSave[i]);
+		}
+		jsonToSave.save(getTeamNamesPath().c_str());
+	}
+}
 
 void MemoryAccess::load(Player& player){
 	JSON::Value *loaded = JSON::load(getPlayerPath(player.getOwner(),player.getMemberID()).c_str());
@@ -80,6 +93,7 @@ void MemoryAccess::load(User& user){
 	JSON::Value *loaded = JSON::load(getUserPath(user.getUsername()).c_str());
 	user = &DICT(loaded); //Constructor by pointer in User ... 
 	delete loaded;
+
 }
 
 void MemoryAccess::load(Sale& sale){
@@ -139,6 +153,17 @@ void MemoryAccess::load(std::vector<Sale*> &toFill){
 	JSON::List sales = loadFilesInVec(memory::MARKET_PATH);
 	for(size_t i=0;i<sales.len();++i){
 		toFill.push_back(new Sale(DICT(sales[i])));
+	}
+}
+
+void MemoryAccess::load(std::vector<std::string> &toFill, std::string type){
+	if(type == memory::ALL_TEAM_NAMES){
+		JSON::Value *loaded = JSON::load(getTeamNamesPath().c_str());
+		JSON::List & names = LIST(loaded);
+		for(size_t i=0;i<names.len();++i){
+			toFill.push_back(STR(names[i]).value());
+		} 
+		delete loaded;
 	}
 }
 

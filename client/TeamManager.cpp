@@ -4,28 +4,6 @@ TeamManager::TeamManager(net::ClientConnectionManager &connection, UserData& use
 	_connection(connection), _user(user)
 {}
 
-
-void TeamManager::displayMenu()
-{
-	Menu _menu;
-	_menu.addToDisplay("	- Show list of players");
-	_menu.addToDisplay("    - quit to management menu\n");
-	int option;
-	do
-	{
-		option = _menu.run();
-		switch(option)
-		{
-			case 1:
-				printPlayers();
-				break;
-			default:
-				break;
-		}
-	}
-	while (option != 1);
-}
-
 void TeamManager::loadPlayers(){
 	_user.players.clear();
 	JSON::Dict query, data;
@@ -46,13 +24,4 @@ void TeamManager::loadPlayers(){
 		_user.players.push_back(player);
 	}
 	delete serverResponse;
-}
-
-void TeamManager::printPlayers(){
-	loadPlayers();
-	cout << "================ YOUR PLAYERS ================" << endl;
-	for(size_t i =0; i<_user.players.size();++i){
-		cout << _user.players[i] << endl; //modif
-	}
-	cout << "==============================================" << endl;
 }

@@ -7,27 +7,26 @@
 #include "Menu.hpp"
 #include "Exception.hpp"
 #include <model/Sale.hpp>
+#include "TeamManager.hpp"
+#include <map>
 
 class MarketManager
 {
 public:
 	MarketManager(net::ClientConnectionManager& connection, UserData& user);
-	void displayMenu();
-
-private:
+	// TODO replace player_id by const Player*
 	void updateSales();
-	void bidOnPlayer(int player_id, std::string username, int value);
-	void addPlayerOnMarket(int player_id, std::string username, int value);
-	void printPlayersOnSale();
-	void salePlayer();
-	vector<int> getBidValueRange(Player *player);
-	void placeBid();
-	void handleEndOfSaleNotification(JSON::Dict&);
-	void printPlayers();
+	void bidOnPlayer(int player_id);
+	void addPlayerOnMarket(int player_id, int value);
+	pair<int, int> getBidValueRange(Player *player);
+	
+	std::vector<Sale> const & getSales() { return _sales; }
+	
+private:
+	int getNextBidValue(int player_id);
 	
 	net::ClientConnectionManager& _connection;
 	UserData& _user;
-	char _prompt;
 	std::vector<Sale> _sales;
 };
 

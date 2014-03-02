@@ -6,7 +6,7 @@
 #include <string>
 #include <typeinfo>
 #include <cxxabi.h>
-#include "Exception.hpp"
+#include <Exception.hpp>
 #include "Menu.hpp"
 #include <Config.hpp>
 #include <model/Player.hpp>
@@ -20,6 +20,8 @@
 #include "StadiumManager.hpp"
 #include "TeamManager.hpp"
 #include "MarketManager.hpp"
+#include "NotificationManager.hpp"
+#include <Constants.hpp>
 
 
 struct NetConfig : public Config {
@@ -59,11 +61,30 @@ private:
 	ClientMatchManager _matchManager;
 	TeamManager _teamManager;
 	MarketManager _marketManager;
+	NotificationManager _notificationManager;
 	
 	// CLI
 	bool _isRunning;
+	std::string _prompt;
 	std::string splashScreen();
 	std::string goodBye();
+	
+	// Users
+	bool showUserMenu();
+	void showLoginMenu();
+	void showRegisterMenu();
+	void showTeamNameMenu();
+	
+	// Team
+	void showTeamMenu();
+	void printPlayers();
+	
+	// Market
+	void showMarketMenu();
+	void placeBid();
+	void seePlayersOnSale();
+	void printPlayersOnSale();
+	void salePlayer();
 	
 	// Menus
 	void mainMenu();
@@ -72,17 +93,20 @@ private:
 	void notificationsMenu();
 	
 	// Notifications
-	void handleNotification(JSON::Value* notification);
-	void handleEndOfSaleNotification(JSON::Dict&);
-	void handleFriendlyGameInvitation(JSON::Dict &message);
+	void handleEndOfSaleNotification(JSON::Value const *message);
+	void handleFriendlyGameInvitation(JSON::Value const *message);
 	
 	// Match
-	void acceptInvitationFromUser(string username);
-	void denyInvitationFromUser(string username);
-	std::vector<std::string> getConnectedUsersList();
 	void printConnectedUsersList();
-	void chooseUser();
-	void startMatch();
+	void chooseUserMenu();
+	void turnMenu();
+	void displayAvailablePlayers();
+	void selectPlayer();
+	void selectDirectionForPlayer(int player);
+	Position parseDirection(string userInput);
+	char playerLetter(Player const & player);
+	std::string colorPlayerLetter(Player const & player);
+	void displayPitch();
 };
 
 #endif // __CLIENT_HPP

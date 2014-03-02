@@ -24,8 +24,12 @@ namespace net
 		// connection + register
 		static const std::string USERNAME = "D_U";
 		static const std::string PASSWORD = "D_P";
+		static const std::string TEAMNAME = "teamname";
 		static const std::string FUNDS = "D_F";
 		static const std::string USER_LOGIN = "U_L";
+		static const std::string USER_CHOOSE_TEAMNAME = "U_CTN";
+		static const std::string TEAMNAME_REGISTERED = "U_TNR";
+		static const std::string TEAMNAME_ERROR = "U_TNE";
 		static const std::string PASSWORD_ERROR = "U_P";
 		static const std::string USER_NOT_FOUND = "U_NF";
 		static const std::string USER_REGISTERED = "U_R";
@@ -64,7 +68,7 @@ namespace net
 		static const std::string PLAYER_SOLD = "PM_P_S";
 		static const std::string TOO_MANY_PLAYERS = "T_M_P";
 		static const std::string NOT_ENOUGH_PLAYERS = "N_E_P";
-		static const std::string INSUFFICIENT_FUNDS = "I_$";
+		static const std::string INSUFFICIENT_FUNDS = "I_CASH";
 		static const std::string GENERATED_BY_MARKET = "GEN_B_M";
 		// data queries
 		static const std::string INSTALLATIONS_LIST = "DQ_I_L";
@@ -101,7 +105,7 @@ namespace gameconfig
 	static const int MAX_COACHES = 5;
 	static const int MAX_PLAYERS = 15;
 	static const int MIN_PLAYERS = 7;
-	static const int STARTING_FUNDS = 10000;
+	static const int STARTING_FUNDS = 100000;
 	static const int SALE_FIRST_TURN_TIME = 30;
 	static const int SALE_TURN_TIME = 30;
 	static const float BID_RATIO = 0.05;
@@ -131,6 +135,9 @@ namespace memory
 	static const std::string BROOM_FILE = "broomstick";
 	static const std::string JERSEY_FILE = "jersey";
 	static const std::string INSTS_SKEL_FILE = "installations";
+	static const std::string GLOBAL_DATA_DIR = "data/global/";
+	static const std::string TEAMNAMES_FILE = "teamNames";
+	static const std::string ALL_TEAM_NAMES = "A_T_N";
 
 }
 

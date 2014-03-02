@@ -23,12 +23,14 @@ namespace MemoryAccess
 	std::string getSalePath(int);
 	std::string getTeamInfosPath(std::string);
 	std::string getSkelPath(std::string);
+	std::string getTeamNamesPath();
 
 	void save(Installation&);
 	void save(User&);
 	void save(Player&);
 	void save(Sale&);
 	void save(Team&);
+	void save(std::vector<std::string>&,std::string);
 
 	void load(Player&);
 	void load(User&);
@@ -40,6 +42,7 @@ namespace MemoryAccess
 	void load(std::vector<Installation>&,std::string);
 	void load(std::vector<Player>&,std::string);
 	void load(std::vector<Sale*>&);
+	void load(std::vector<std::string>&, std::string);
 
 	void loadSkel(Broomstick&);
 	void loadSkel(Jersey&);
