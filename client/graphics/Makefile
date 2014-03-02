@@ -1,4 +1,4 @@
-PKGCONFIG = PKG_CONFIG_PATH=/usr/local/lib/pkgconfig/ pkg-config
+PKGCONFIG=PKG_CONFIG_PATH=/usr/local/lib/pkgconfig/ pkg-config
 
 OBJS = Layer.o MainController.o GraphicManager.o UIMatch.o
 CPPFLAGS = -I../../common
@@ -10,7 +10,10 @@ else
 	CPPFLAGS += $(shell ${PKGCONFIG} --cflags sfml-all)
 endif
 
-all: playground.app testbox.app
+all: playground.ok testbox.ok libgraphics.a
+
+libgraphics.a: ${OBJS}
+	ar r $@ $^
 
 include ../../Makefile.includes
 
