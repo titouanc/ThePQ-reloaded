@@ -47,7 +47,7 @@ void ClientMatchManager::sendStroke(int player, Displacement& currentDisplacemen
 	toSend.set("type", MSG::MATCH_STROKE);
 	JSON::Dict data;
 	data.set("mid", _ownSquad.players[player-1]->getID());
-	data.set("move", currentDisplacement.toJson());
+	data.set("move", (JSON::List)currentDisplacement);
 	toSend.set("data", data);
 	_connection.send(toSend);
 }

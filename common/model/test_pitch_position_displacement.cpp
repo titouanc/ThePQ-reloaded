@@ -89,7 +89,7 @@ TEST(displacement_to_json)
     Displacement d;
     d.addMove(West);
     d.addMove(NorthWest);
-    ASSERT(d.toJson().dumps() == "[[-2, 0], [-1, 1]]");
+    ASSERT(((JSON::List)d).dumps() == "[[-2, 0], [-1, 1]]");
 ENDTEST()
 
 TEST(displacement_from_json)
@@ -97,7 +97,7 @@ TEST(displacement_from_json)
     initial.addMove(West);
     initial.addMove(NorthWest);
 
-    JSON::Value *parsed = JSON::parse(initial.toJson().dumps().c_str());
+    JSON::Value *parsed = JSON::parse(((JSON::List)initial).dumps().c_str());
     ASSERT(ISLIST(parsed));
     Displacement d(LIST(parsed));
     delete parsed;

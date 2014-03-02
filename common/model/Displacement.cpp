@@ -68,7 +68,7 @@ size_t Displacement::count(void) const
     return _moves.size();
 }
 
-JSON::List Displacement::toJson(void) const 
+Displacement::operator JSON::List(void) const 
 {
     /*Method for serializing Displacement to a JSON list*/
     JSON::List res;

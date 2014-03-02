@@ -23,7 +23,7 @@ class Displacement {
         Position position(double t, Moveable const & moveable) const;
         void addMove(Position const & move);
         size_t count(void) const;
-        JSON::List toJson(void) const;
+        operator JSON::List(void) const;
         unsigned int length(void) const;
 };
 
