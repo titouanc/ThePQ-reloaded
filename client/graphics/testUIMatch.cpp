@@ -43,7 +43,11 @@ void handleClick(sf::RenderWindow & win, UIMatch & ui, Position const & pitchPos
 
                     if (delta == Position(0, 0)){
                         stopped = true;
-                    } else if (delta.length() <= steps && delta.isDirection()){
+                    } else if (
+                        delta.length() <= steps &&
+                        delta.isDirection() &&
+                        ui.pitch().inEllipsis(pos)
+                    ){
                         res.addMove(delta);
                         currentPos = pos;
                         steps -= delta.length();
