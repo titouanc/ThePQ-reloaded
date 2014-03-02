@@ -76,6 +76,7 @@ void Client::mainMenu()
 				notificationsMenu();
 				break;
 			case 5:
+				_userManager.logoutUser();
 				_user.logout();
 			default:
 				break;

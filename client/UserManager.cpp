@@ -43,6 +43,13 @@ void UserManager::loginUser(std::string username, std::string password)
 	delete serverMessage;
 }
 
+void UserManager::logoutUser()
+{
+	JSON::Dict toSend;
+	toSend.set("type", net::MSG::DISCONNECT);
+	_connection.send(toSend);
+}
+
 void UserManager::chooseTeamName(std::string username, std::string teamname){
 	JSON::Dict toSend, data;
 	data.set(net::MSG::TEAMNAME,teamname);
