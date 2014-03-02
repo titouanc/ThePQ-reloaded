@@ -58,7 +58,7 @@ void Displacement::addMove(Position const & move)
 {
     /*Method for adding a move to the move queue*/
     if (! move.isDirection())
-        throw NotADirection(move.toJson().dumps());
+        throw NotADirection(((JSON::List)move).dumps());
     _moves.push_back(move);
 }
 
@@ -73,7 +73,7 @@ JSON::List Displacement::toJson(void) const
     /*Method for serializing Displacement to a JSON list*/
     JSON::List res;
     for (size_t i=0; i<count(); i++)
-        res.append(_moves[i].toJson());
+        res.append((JSON::List)_moves[i]);
     return res;
 }
 

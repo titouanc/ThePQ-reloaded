@@ -29,7 +29,7 @@ class Position {
         Position const & operator+=(Position const & other);
         
         /* Transformations */
-        JSON::List toJson(void) const;
+        operator JSON::List (void) const;
 };
 
 template <typename T>

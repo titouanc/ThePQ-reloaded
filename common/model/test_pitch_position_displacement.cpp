@@ -20,12 +20,12 @@ ENDTEST()
 
 TEST(position_to_json)
     Position p(2, 7);
-    ASSERT(p.toJson().dumps() == "[2, 7]");
+    ASSERT(((JSON::List)p).dumps() == "[2, 7]");
 ENDTEST()
 
 TEST(position_from_json)
     Position initial(4, -2);
-    JSON::Value *list = JSON::parse(initial.toJson().dumps().c_str());
+    JSON::Value *list = JSON::parse(((JSON::List)initial).dumps().c_str());
     Position p(LIST(list));
     delete list;
 
