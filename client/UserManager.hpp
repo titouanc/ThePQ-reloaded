@@ -14,6 +14,7 @@ public:
 	UserManager(net::ClientConnectionManager& connection, UserData& user);
 	
 	void loginUser(std::string username, std::string password);
+	void logoutUser();
 	void registerUser(std::string username, std::string password);
 	void doesUserExist(std::string username);
 	void chooseTeamName(std::string username, std::string teamname);
