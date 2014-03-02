@@ -102,7 +102,7 @@ void PlayerMarket::transfert(std::string fromName, std::string toName, int id, i
 			toTransfert = sale->getPlayer();
 		}
 	}
-	else{				//User connected : use ref.
+	else{				//User connected : use ref, no need to load.
 		Team & fromTeam = from->getTeam();
 		toTransfert = fromTeam.getPlayer(id);
 		fromTeam.removePlayer(id);

@@ -355,6 +355,12 @@ void Client::showLoginMenu()
 		_user.login(username);
 		//~ mainMenu();
 	}
+	catch (NoTeamNameException e)
+	{
+		cout << "You have successfully logged in! Welcome! :)\n\n\n" << endl;
+		_user.login(username);
+		showTeamNameMenu();
+	}
 	catch (UserNotFoundException & e)
 	{
 		cout << "\nUser not found" << endl;
@@ -367,6 +373,22 @@ void Client::showLoginMenu()
 	{
 		cout << "\nYou're already logged in from another location" << endl;
 	}
+}
+
+void Client::showTeamNameMenu(){
+	bool found = false;
+	cout << "Hey, it's the first time you log in ! Please, pick up a name for your team." << endl;
+	do{
+		string teamname = Menu::askForUserData("Teamname : ");
+		try{
+			_userManager.chooseTeamName(_user.username,teamname);
+			cout << "You have successfully picked up a name for your team !\nYou are now the manager of \033[35m"<<teamname<<"\033[0m"<< " !"<<endl;
+			found = true;
+		}
+		catch(TeamNameNotAvailableException e){
+			cout << "That teamname is \033[31mnot\033[0m available, pick up another one." << endl;
+		}
+	}while(!found);
 }
 
 void Client::showRegisterMenu()
@@ -416,7 +438,7 @@ void Client::showTeamMenu()
 				break;
 		}
 	}
-	while (option != 1);
+	while (option != 2);
 }
 
 void Client::printPlayers(){

@@ -20,7 +20,14 @@ class AlreadyLoggedInException : public std::runtime_error {
 public:
 	AlreadyLoggedInException():runtime_error("Already logged in"){};
 };
-
+class TeamNameNotAvailableException : public std::runtime_error {
+public:
+	TeamNameNotAvailableException():runtime_error("Teamname not available"){};
+};
+class NoTeamNameException : public std::runtime_error {
+public:
+	NoTeamNameException():runtime_error("Team name missing"){};
+};
 
 //------Register------
 class UserAlreadyExistsException : public std::runtime_error{

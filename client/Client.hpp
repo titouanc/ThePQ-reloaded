@@ -70,6 +70,7 @@ private:
 	bool showUserMenu();
 	void showLoginMenu();
 	void showRegisterMenu();
+	void showTeamNameMenu();
 	
 	// Team
 	void showTeamMenu();

@@ -33,13 +33,38 @@ void UserManager::loginUser(std::string username, std::string password)
 			delete serverMessage;
 			throw AlreadyLoggedInException();
 		}
+		else if (payload == net::MSG::USER_CHOOSE_TEAMNAME)
+		{
+			delete serverMessage;
+			throw NoTeamNameException();
+		}
+
+	}
+	delete serverMessage;
+}
+
+void UserManager::chooseTeamName(std::string username, std::string teamname){
+	JSON::Dict toSend, data;
+	data.set(net::MSG::TEAMNAME,teamname);
+	data.set(net::MSG::USERNAME,username);
+	toSend.set("type",net::MSG::USER_CHOOSE_TEAMNAME);
+	toSend.set("data",data);
+	_connection.send(toSend);
+
+	JSON::Value *serverMessage = _connection.waitForMsg(net::MSG::STATUS);
+	JSON::Dict const & received = DICT(serverMessage);
+	if (ISSTR(received.get("data"))){
+		if(STR(received.get("data")).value()==net::MSG::TEAMNAME_ERROR){
+			delete serverMessage;
+			throw TeamNameNotAvailableException();
+		}
 	}
 	delete serverMessage;
 }
 
 void UserManager::registerUser(std::string username, std::string password)
 {
-	JSON::Dict toSend, received, credentials;
+	JSON::Dict toSend, credentials;
 	credentials.set(net::MSG::USERNAME, username);
 	credentials.set(net::MSG::PASSWORD, password);
 	toSend.set("type", net::MSG::REGISTER);
@@ -47,10 +72,12 @@ void UserManager::registerUser(std::string username, std::string password)
 	_connection.send(toSend);
 
 	JSON::Value *serverMessage = _connection.waitForMsg(net::MSG::STATUS);	// receiving server response
-
+	JSON::Dict const & received = DICT(serverMessage);
 	if (ISSTR(received.get("data"))) {
-		if (STR(received.get("data")).value() == net::MSG::USER_EXISTS)
+		if (STR(received.get("data")).value() == net::MSG::USER_EXISTS){
+			delete serverMessage;
 			throw UserAlreadyExistsException();
+		}
 	}
 	delete serverMessage;
 }
