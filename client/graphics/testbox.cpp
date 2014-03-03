@@ -23,8 +23,8 @@ public:
 	}
 
 	void printWowTextBox(){
-		cout << "directly accessed : " << myTextbox->getText() << endl;
-		cout << "searched from id  : " << _canvas.textboxWithID("wow")->getText() << endl;
+		cout << "directly accessed : \"" << myTextbox->getText() << "\"" << endl;
+		cout << "searched from id  : \"" << _canvas.textboxWithID("wow")->getText() << "\"" << endl;
 	}
 
 private:
