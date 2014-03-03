@@ -1,8 +1,11 @@
+#ifndef GRAPHIC_USER_MANAGER_HPP
+#define GRAPHIC_USER_MANAGER_HPP 
+
 #include <network/ClientConnectionManager.hpp>
 #include "graphics/GraphicManager.hpp"
 #include "UserManager.hpp"
-#include "Exception.hpp"
-#include "UserData.hpp"
+#include "Exception.hpp" // TODO delete if not needed
+#include "UserData.hpp" // TODO delete if not needed
 
 class GraphicUserManager : public UserManager, public GUI::GraphicManager 
 {
@@ -15,3 +18,5 @@ private:
 	GUI::Textbox *_usernameTextbox;
 	GUI::Textbox *_passwordTextbox;
 };
+
+#endif
