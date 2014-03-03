@@ -17,6 +17,7 @@ void handleClick(sf::RenderWindow & win, UIMatch & ui, Position const & pitchPos
     Moveable *atPos = ui.pitch().getAt(pitchPos);
     if (atPos){
         if (atPos->isPlayer()){
+            Player const & player = (Player const &) *atPos;
             Displacement res;
             Position currentPos = pitchPos;
             size_t steps = 5;//player.getSpeed();
@@ -44,9 +45,10 @@ void handleClick(sf::RenderWindow & win, UIMatch & ui, Position const & pitchPos
                     if (delta == Position(0, 0)){
                         stopped = true;
                     } else if (
-                        delta.length() <= steps &&
-                        delta.isDirection() &&
-                        ui.pitch().inEllipsis(pos)
+                        delta.length() <= steps && /* Position accessible with player's speed */
+                        delta.isDirection() && /* Movement is a valid direction */
+                        ui.pitch().inEllipsis(pos) && /* Destination is in ellipsis */
+                        ! ui.pitch().getAt(pos) /* No moveable at this position */
                     ){
                         res.addMove(delta);
                         currentPos = pos;
@@ -60,7 +62,11 @@ void handleClick(sf::RenderWindow & win, UIMatch & ui, Position const & pitchPos
                 }
             }
             if (res.count() > 0){
-                cout << "Displacement: " << res.toJson() << endl;
+                JSON::Dict toSend = {
+                    {"mid", JSON::Integer(player.getID())},
+                    {"move", JSON::List(res)}
+                };
+                cout << toSend << endl;
                 ui.pitch().setAt(pitchPos, NULL);
                 ui.pitch().setAt(pitchPos + res.position(), atPos);
             }
