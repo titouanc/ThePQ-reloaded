@@ -29,7 +29,7 @@ void Value::save(const char *filename) const
 	if (fd < 0)
 	{
 		std::string error = strerror(errno);
-		error += "in : ";
+		error += " in ";
 		error += filename;
 		throw IOError(error.c_str());
 	}
@@ -40,7 +40,7 @@ void Value::save(const char *filename) const
 		if (r < 0)
 		{
 			std::string error = strerror(errno);
-			error += "in : ";
+			error += " in ";
 			error += filename;
 			throw IOError(error.c_str());
 		}
