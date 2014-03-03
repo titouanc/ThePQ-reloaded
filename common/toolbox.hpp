@@ -23,7 +23,7 @@ static inline void minisleep(double secs)
 static inline char *lstrip(char *str, const char *junk=STRIP_JUNK)
 {
 	assert(str != NULL);
-	while (*str && strchr(STRIP_JUNK, *str))
+	while (*str && strchr(junk, *str))
 		str++;
 	return str;
 }
@@ -32,7 +32,7 @@ static inline char *rstrip(char *str, const char *junk=STRIP_JUNK)
 {
 	assert(str != NULL);
 	char *endptr = str + strlen(str) - 1;
-	while (endptr >= str && strchr(STRIP_JUNK, *endptr)){
+	while (endptr >= str && strchr(junk, *endptr)){
 		*endptr = '\0';
 		endptr --;
 	}
@@ -41,7 +41,7 @@ static inline char *rstrip(char *str, const char *junk=STRIP_JUNK)
 
 static inline char *strip(char *str, const char *junk=STRIP_JUNK)
 {
-	return rstrip(lstrip(str));
+	return rstrip(lstrip(str, junk), junk);
 }
 
 #endif
