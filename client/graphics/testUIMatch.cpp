@@ -77,8 +77,24 @@ void handleClick(sf::RenderWindow & win, UIMatch & ui, Position const & pitchPos
 int main(int argc, const char **argv)
 {
     Pitch myPitch;
-    Seeker harry(42, "Harry");
+
+    /* ========================== */
+    Seeker harry(11, "Harry");
     myPitch.setAt(13, -3, &harry);
+    
+    Chaser ron(12, "Ron");
+    myPitch.setAt(14, -4, &ron);
+
+    Keeper lucius(13, "Lucius");
+    myPitch.setAt(38, 0, &lucius);
+
+    JSON::Dict geany_json = {
+        {"ID", JSON::Integer(14)},
+        {"name", JSON::String("Geany")}
+    };
+    Beater geany(geany_json);
+    myPitch.setAt(15, -3, &geany);
+    /* ========================== */
 
     UIMatch match(myPitch);
     sf::RenderWindow window(sf::VideoMode(1280, 720), "This is a test !");
