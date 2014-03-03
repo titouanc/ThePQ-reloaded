@@ -17,6 +17,7 @@ void handleClick(sf::RenderWindow & win, UIMatch & ui, Position const & pitchPos
     Moveable *atPos = ui.pitch().getAt(pitchPos);
     if (atPos){
         if (atPos->isPlayer()){
+            Player const & player = (Player const &) *atPos;
             Displacement res;
             Position currentPos = pitchPos;
             size_t steps = 5;//player.getSpeed();
@@ -40,7 +41,15 @@ void handleClick(sf::RenderWindow & win, UIMatch & ui, Position const & pitchPos
                     const Position click(ev.mouseButton.x, ev.mouseButton.y);
                     Position const & pos = ui.GUI2pitch(click);
                     Position const & delta = pos - currentPos;
-                    if (delta.length() <= steps && delta.isDirection()){
+
+                    if (delta == Position(0, 0)){
+                        stopped = true;
+                    } else if (
+                        delta.length() <= steps && /* Position accessible with player's speed */
+                        delta.isDirection() && /* Movement is a valid direction */
+                        ui.pitch().inEllipsis(pos) && /* Destination is in ellipsis */
+                        ! ui.pitch().getAt(pos) /* No moveable at this position */
+                    ){
                         res.addMove(delta);
                         currentPos = pos;
                         steps -= delta.length();
@@ -52,7 +61,15 @@ void handleClick(sf::RenderWindow & win, UIMatch & ui, Position const & pitchPos
                     }
                 }
             }
-            cout << "Displacement: " << res.toJson() << endl;
+            if (res.count() > 0){
+                JSON::Dict toSend = {
+                    {"mid", JSON::Integer(player.getID())},
+                    {"move", JSON::List(res)}
+                };
+                cout << toSend << endl;
+                ui.pitch().setAt(pitchPos, NULL);
+                ui.pitch().setAt(pitchPos + res.position(), atPos);
+            }
         }
     }
 }
@@ -60,8 +77,24 @@ void handleClick(sf::RenderWindow & win, UIMatch & ui, Position const & pitchPos
 int main(int argc, const char **argv)
 {
     Pitch myPitch;
-    Seeker harry(42, "Harry");
+
+    /* ========================== */
+    Seeker harry(11, "Harry");
     myPitch.setAt(13, -3, &harry);
+    
+    Chaser ron(12, "Ron");
+    myPitch.setAt(14, -4, &ron);
+
+    Keeper lucius(13, "Lucius");
+    myPitch.setAt(38, 0, &lucius);
+
+    JSON::Dict geany_json = {
+        {"ID", JSON::Integer(14)},
+        {"name", JSON::String("Geany")}
+    };
+    Beater geany(geany_json);
+    myPitch.setAt(15, -3, &geany);
+    /* ========================== */
 
     UIMatch match(myPitch);
     sf::RenderWindow window(sf::VideoMode(1280, 720), "This is a test !");
