@@ -6,6 +6,11 @@ int Installation::getMaintenanceCost() const {
 	return getValueAtLevel(getLevel())/10; 
 }
 
+int Installation::getIncome() const {
+	/*Method returning integer representing the income of the installation */
+	return getValueAtLevel(getLevel())/8;
+}
+
 int Installation::getValueAtLevel(int level) const {
 	/*Method returning an integer representing the value of the 
 	*installation at the next level

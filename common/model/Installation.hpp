@@ -53,6 +53,7 @@ public:
 	float getRefundRatio() const { return _refundRatio; }	
 	std::string getName() const { return _name; }
 	int getMaintenanceCost() const ;
+	int getIncome() const;
 	int getValueAtLevel(int level) const ;
 	int getUpgradeCost() const ;	// returns a positive value that represents the cost 
 							// of an upgrade to the next level.
