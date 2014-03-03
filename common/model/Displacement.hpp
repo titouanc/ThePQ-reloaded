@@ -36,6 +36,8 @@ class Displacement {
         size_t count(void) const;
         JSON::List toJson(void) const;
 
+        operator JSON::List() const {return toJson();}
+
         /* Total length of this displacement */
         unsigned int length(void) const;
 };
