@@ -70,8 +70,9 @@ private:
 	SharedQueue<net::Message> _inbox, _outbox;
 	map<int, User*> _users;
 	net::ConnectionManager _connectionManager;
-    PlayerMarket *market;
+    PlayerMarket *_market;
     std::deque<MatchManager*> _matches;
+    AdminManager *_adminManager;
 
 
 };

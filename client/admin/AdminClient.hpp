@@ -33,10 +33,12 @@ private:
 	UserData _user;
 	UserManager _userManager;
 
-
-
 public:
 	void run();
+	void showAdminMenu();
+	void showBaseMenu();
+	void showIdentifyMenu();
+	void showCreateChampionshipMenu();
 };
 
 
@@ -53,11 +55,27 @@ void AdminClient::run(){
 			_isRunning = showBaseMenu();
 		}
 	}
-	std::cout<<"a+"<<std::endl;
+	std::cout<<"Quitting the admin client."<<std::endl;
 }
 
 void AdminClient::showAdminMenu(){
-	
+	Menu _menu;
+	_menu.addToDisplay("   - create a championship\n");
+	_menu.addToDisplay("   - quit\n");
+	int option;
+	option = _menu.run();
+	do{
+		switch(option){
+			case 1:
+				showCreateChampionshipMenu();
+				break
+			case 2:
+				_userManager.logoutUser();
+			default:
+				break
+		}
+	}
+	while(option!=2);
 }
 
 void AdminClient::showBaseMenu(){
@@ -94,5 +112,9 @@ void AdminClient::showIdentifyMenu(){
 	catch (const BaseLogInException& e){
 		std::cout << "\033[31mError :\033[0m wrong combination." << std::endl;
 	}
+}
+
+void AdminClient::showCreateChampionshipMenu(){
+	
 }
 

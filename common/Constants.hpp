@@ -138,7 +138,6 @@ namespace memory
 	static const std::string GLOBAL_DATA_DIR = "data/global/";
 	static const std::string TEAMNAMES_FILE = "teamNames";
 	static const std::string ALL_TEAM_NAMES = "A_T_N";
-
 }
 
 #endif

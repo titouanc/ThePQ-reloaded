@@ -17,14 +17,15 @@ std::string humanExcName(const char *name)
 	char *str = abi::__cxa_demangle(name, 0, 0, &status);
 	std::string res(str);
 	free(str);
-	return res;
+	return res;	
 }
 
 Server::Server(NetConfig const & config) : 
 	_inbox(), _outbox(), _users(),
 	_connectionManager(_inbox, _outbox, config.ip.c_str(), config.port, config.maxClients),
-	market(new PlayerMarket(this)),_matches()
+	_market(new PlayerMarket(this)),_matches(),_adminManager(NULL)
 {
+	_adminManager::makeDefaultAdmin();
 	_connectionManager.start();
 	cout << "Launched server on " << _connectionManager.ip() << ":" << _connectionManager.port() << endl;
 }
@@ -36,7 +37,9 @@ Server::~Server()
 		(*it)->stop();
 		delete *it;
 	}
-	delete market;
+	delete _market;
+	if(_adminManager != NULL)
+		delete _adminManager;
 	_matches.clear();
 }
 
@@ -127,6 +130,9 @@ void Server::treatMessage(const Message &message)
 						loggedIn->clearOfflineMsg();
 					}
 				}
+				else if(messageType == MSG::ADMIN_LOGIN){
+					logAdminIn(DICT(received.get("data")),message.peer_id);
+				}
 				else if(messageType == MSG::USER_CHOOSE_TEAMNAME)
 					checkTeamName(DICT(received.get("data")), message.peer_id);
 				else if (messageType == MSG::REGISTER) 
@@ -165,6 +171,43 @@ void Server::treatMessage(const Message &message)
 					downgradeInstallation(message.peer_id, data);
 				}
 			}
+		}
+	}
+}
+
+void Server::logAdminIn(const JSON::Dict& data, int peer_id){
+	checkAdminManagerValidity();
+	if (ISSTR(data.get(net::MSG::USERNAME)) && ISSTR(data.get(net::MSG::PASSWORD))){
+		std::string const & username = STR(data.get(MSG::USERNAME));
+		std::string const & password = STR(data.get(MSG::PASSWORD));
+		JSON::Dict response = JSON::Dict();
+		response.set("type", MSG::STATUS);
+		if (_adminManager == NULL){
+			User* admin = AdminManager::load(username);
+			if(admin != NULL){
+				if(admin->getPassword() == password){
+					response.set("data",net::MSG::USER_LOGIN);
+					_adminManager = new AdminManager(_connection, peer_id);
+				}
+				else
+					response.set("data",net::MSG::PASSWORD_ERROR);
+			}
+			else
+				response.set("data",net::MSG::USER_NOT_FOUND);
+			delete admin;
+		}
+		else
+			response.set("data",net::MSG::ALREADY_LOGGED_IN);
+		Message status(peer_id, response.clone());
+		_outbox.push(status);
+	}
+}
+
+void Server::checkAdminManagerValidity(){
+	if(_adminManager != NULL){
+		if(!(_adminManager->adminIsLogged())){
+			delete _adminManager;
+			_adminManager = NULL;
 		}
 	}
 }
@@ -398,17 +441,17 @@ void Server::sendInvitationResponseToPlayer(const JSON::Dict &response, int peer
 }
 
 void Server::addPlayerOnMarket(const JSON::Dict &sale, int peer_id){
-	Message status(peer_id, market->addPlayer(sale).clone());
+	Message status(peer_id, _market->addPlayer(sale).clone());
 	_outbox.push(status);
 }
 
 void Server::sendPlayersOnMarketList(int peer_id){
-	Message status(peer_id, market->allSales().clone());
+	Message status(peer_id, _market->allSales().clone());
 	_outbox.push(status);
 }
 
 void Server::placeBidOnPlayer(const JSON::Dict &bid, int peer_id){
-	Message status(peer_id, market->bid(bid).clone());
+	Message status(peer_id, _market->bid(bid).clone());
 	_outbox.push(status);
 }
 

@@ -6,20 +6,29 @@
 //==========Exceptions===========
 
 //-----Login------
-class WrongPasswordException : public std::runtime_error{
+
+class BaseLoginException : public std::runtime_error{
+	BaseLogInException(): runtime_error("Failed to log in"){};
+};
+
+class WrongPasswordException : public BaseLoginException{
 public:
 	WrongPasswordException():runtime_error("Wrong password"){};
 };
 
-class UserNotFoundException : public std::runtime_error{
+class UserNotFoundException : public BaseLoginException{
 public:
 	UserNotFoundException():runtime_error("User not found"){};
 };
 
-class AlreadyLoggedInException : public std::runtime_error {
+class AlreadyLoggedInException : public BaseLoginException {
 public:
 	AlreadyLoggedInException():runtime_error("Already logged in"){};
 };
+
+
+
+//-----Team name--------
 class TeamNameNotAvailableException : public std::runtime_error {
 public:
 	TeamNameNotAvailableException():runtime_error("Teamname not available"){};
