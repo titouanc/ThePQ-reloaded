@@ -1,4 +1,5 @@
 #include "GraphicUserManager.hpp"
+#include "GraphicStadiumManager.hpp"
 
 using namespace std;
 using namespace GUI;
@@ -22,6 +23,7 @@ GraphicUserManager::GraphicUserManager(net::ClientConnectionManager& connection,
 void GraphicUserManager::submitLoginForm(){
 	try{
 		doLoginUser(_usernameTextbox->getText(), _passwordTextbox->getText());
+		GraphicStadiumManager gsm(_connection, _user, _controller);
 	}
 	catch (UserNotFoundException & e)
 	{

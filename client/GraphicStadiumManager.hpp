@@ -5,14 +5,14 @@
 #include "graphics/GraphicManager.hpp"
 #include "StadiumManager.hpp"
 
-class GraphicHomeManager : public StadiumManager, public GUI::GraphicManager 
+class GraphicStadiumManager : public StadiumManager, public GUI::GraphicManager 
 {
 public:
 	GraphicStadiumManager(net::ClientConnectionManager& connection, UserData& user, GUI::MainController &controller);
 	~GraphicStadiumManager(){}
 private:
-	void submitLoginForm();
-	GUI::Button<GraphicStadiumManager> *_startMatchButton;;
+	void startMatch();
+	GUI::Button<GraphicStadiumManager> *_startMatchButton;
 };
 
 

@@ -1,3 +1,6 @@
+#ifndef GRAPHIC_MANAGER_HPP
+#define GRAPHIC_MANAGER_HPP
+
 #include "MainController.hpp"
 #include "Layer.hpp"
 #include "Button.hpp"
@@ -16,3 +19,5 @@ namespace GUI {
 		bool _isRunning;
 	};
 }
+
+#endif
