@@ -31,7 +31,8 @@ namespace GUI {
 			_backgroundRect.setPosition(_x, _y);
 			dest.draw(_backgroundRect);
 			_text.setPosition(_x+TEXTBOX_SIDE_PADDING, _y+TEXTBOX_TOP_PADDING);
-			dest.draw(_text);
+			sf::Text toDraw = getClippedText();
+			dest.draw(toDraw);
 			_selecter.setPosition(_x, _y);
 			_selecter.renderTo(dest);
 		}
@@ -56,6 +57,21 @@ namespace GUI {
 			else {
 				_text.setString(_text.getString() + event.text.unicode);
 			}
+		}
+
+		sf::Text getClippedText(){
+			// returns biggest string at the end of _text that is not bigger
+			// than the textbox size.
+			sf::Text res = _text;
+			sf::String toPrint = res.getString();
+			float maxWidth = _w-2*TEXTBOX_SIDE_PADDING;
+			if (res.getLocalBounds().width > maxWidth){
+				while(res.getLocalBounds().width > maxWidth && toPrint.getSize() > 0){
+					toPrint.erase(0, 1);
+					res.setString(toPrint);
+				}
+			}
+			return res;
 		}
 
 		void focus(){
