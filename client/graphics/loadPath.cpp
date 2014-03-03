@@ -27,14 +27,10 @@ static std::string basePath(void)
 
 std::string fontPath(std::string name)
 {
-	std::string res = basePath() + "/fonts/" + name;
-	cout << res << endl;
-	return res;
+	return basePath() + "/fonts/" + name;
 }
 
 std::string texturePath(std::string name)
 {
-	std::string res = basePath() + "/textures/" + name;
-	cout << res << endl;
-	return res;
+	return basePath() + "/textures/" + name;
 }
