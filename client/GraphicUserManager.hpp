@@ -4,6 +4,7 @@
 #include <network/ClientConnectionManager.hpp>
 #include "graphics/GraphicManager.hpp"
 #include "UserManager.hpp"
+#include <Exception.hpp>
 
 class GraphicUserManager : public UserManager, public GUI::GraphicManager 
 {
