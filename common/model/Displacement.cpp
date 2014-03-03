@@ -17,7 +17,6 @@ Position Displacement::position(double t, size_t speed) const
 {
     /*Method returning the calculated position*/
     assert(0 <= t && t <= 1);
-    assert(speed <= length());
 
     Position res;
     double begin=0, end=0;
@@ -27,10 +26,15 @@ Position Displacement::position(double t, size_t speed) const
     t -= _tbeg;
 
     if (speed==0)
-        speed = length();
+        speed = length(); /* If no speed given, take start->t=0; end->t=1*/
+    assert(speed >= length());
+
     t *= speed;
+
     for (size_t i=0; i<count(); i++){
+        /* Time interval for this direction */
         end = begin + _moves[i].length();
+
         if (end <= t){
             begin = end;
             res += _moves[i];
