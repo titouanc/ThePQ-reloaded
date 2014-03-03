@@ -115,16 +115,16 @@ void Client::managementMenu()
 void Client::notificationsMenu()
 {
 	_connection.updateNotifications();
-	cout << "You have " << _connection.notifications.size() << " notifications." << endl;
+	cout << "You have " << _connection.getNotifications().size() << " notifications." << endl;
 	Menu _menu;
 	_menu.addToDisplay("   - handle this notification\n");
 	_menu.addToDisplay("   - see next notification\n");
 	_menu.addToDisplay("   - quit\n");
 	int option;
 	bool quit = false;
-	while (_connection.notifications.available() && ! quit)
+	while (_connection.getNotifications().available() && ! quit)
 	{
-		JSON::Value * currentNotification = _connection.notifications.front();
+		JSON::Value * currentNotification = _connection.getNotifications().front();
 		JSON::Dict const & notif = DICT(currentNotification);
 		string messageType = STR(notif.get("type")).value();
 		if (messageType == net::MSG::FRIENDLY_GAME_INVITATION && ISSTR(notif.get("data")))
@@ -140,11 +140,11 @@ void Client::notificationsMenu()
 		{
 			case 1:
 				_notificationManager.handleNotification(currentNotification);
-				_connection.notifications.pop();
+				_connection.getNotifications().pop();
 				break;
 			case 2:
-				_connection.notifications.push(_connection.notifications.front());
-				_connection.notifications.pop();
+				_connection.getNotifications().push(_connection.getNotifications().front());
+				_connection.getNotifications().pop();
 				break;
 			case 3:
 				quit = true;

@@ -38,11 +38,13 @@ namespace net
 		void start();
 		
 		JSON::Value* waitForMsg(std::string typeToWait);
-		JSON::Value* hasMessageTypeInNotifications(std::string messageType);
+		JSON::Value* getNotification(std::string messageType);
+		JSON::Value* popMessage();
+		SharedQueue<JSON::Value*>& getNotifications();
 		void updateNotifications();
-		SharedQueue<JSON::Value*> notifications;
 		
 	protected:
+		SharedQueue<JSON::Value*> _notifications;
 		SharedQueue<JSON::Value*> _messages;
 		
 		pthread_t _thread;

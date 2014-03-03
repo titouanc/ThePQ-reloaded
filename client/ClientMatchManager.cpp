@@ -53,7 +53,7 @@ void ClientMatchManager::sendStroke(int player, Displacement& currentDisplacemen
 }
 
 void ClientMatchManager::updatePitchWithDeltas(){
-	JSON::Value* msg = _connection.hasMessageTypeInNotifications(MSG::MATCH_DELTA);
+	JSON::Value* msg = _connection.getNotification(MSG::MATCH_DELTA);
 	if (ISDICT(msg))
 	{
 		JSON::Dict const & deltas = DICT(msg);
