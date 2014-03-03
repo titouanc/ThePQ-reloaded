@@ -12,8 +12,8 @@ namespace GUI{
 	static const int WINDOW_HEIGHT = 720;
 
 	// Fonts
-	static const std::string HEADER_FONT_PATH = "fonts/akashi.ttf";
-	static const std::string BODY_FONT_PATH = "fonts/helvetica-neue-light.ttf";
+	static const std::string HEADER_FONT_PATH = "akashi.ttf";
+	static const std::string BODY_FONT_PATH = "helvetica-neue-light.ttf";
 
 	// Buttons
 	static const int BUTTON_HEIGHT = 40;

@@ -7,6 +7,7 @@
 #include "Clickable.hpp"
 #include <iostream>
 #include "GUIConstants.hpp"
+#include "loadPath.hpp"
 
 namespace GUI {
 	template <typename T> class Button : public Clickable<T> {
@@ -16,7 +17,7 @@ namespace GUI {
 									Clickable<T>(callback, target),
 									_x(x), _y(y), _w(w), _h(h) {
 
-			if (!_font.loadFromFile(BODY_FONT_PATH))
+			if (!_font.loadFromFile(fontPath(BODY_FONT_PATH)))
 				throw "Could not load font!";
 			_text.setFont(_font);
 			_text.setString(text);

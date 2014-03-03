@@ -15,7 +15,7 @@ namespace GUI {
 					_x(x), _y(y), _w(w), _h(h), _isFocused(false), 
 					_selecter(Button<Textbox>(&Textbox::focus, this, "")){
 
-			if (!_font.loadFromFile(BODY_FONT_PATH))
+			if (!_font.loadFromFile(fontPath(BODY_FONT_PATH)))
 				throw "Could not load font!";
 			_text.setFont(_font);
 			_text.setString(id);
