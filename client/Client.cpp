@@ -115,16 +115,16 @@ void Client::managementMenu()
 void Client::notificationsMenu()
 {
 	_connection.updateNotifications();
-	cout << "You have " << _connection.notifications.size() << " notifications." << endl;
+	cout << "You have " << _connection.getNotifications().size() << " notifications." << endl;
 	Menu _menu;
 	_menu.addToDisplay("   - handle this notification\n");
 	_menu.addToDisplay("   - see next notification\n");
 	_menu.addToDisplay("   - quit\n");
 	int option;
 	bool quit = false;
-	while (_connection.notifications.available() && ! quit)
+	while (_connection.getNotifications().available() && ! quit)
 	{
-		JSON::Value * currentNotification = _connection.notifications.front();
+		JSON::Value * currentNotification = _connection.getNotifications().front();
 		JSON::Dict const & notif = DICT(currentNotification);
 		string messageType = STR(notif.get("type")).value();
 		if (messageType == net::MSG::FRIENDLY_GAME_INVITATION && ISSTR(notif.get("data")))
@@ -140,11 +140,11 @@ void Client::notificationsMenu()
 		{
 			case 1:
 				_notificationManager.handleNotification(currentNotification);
-				_connection.notifications.pop();
+				_connection.getNotifications().pop();
 				break;
 			case 2:
-				_connection.notifications.push(_connection.notifications.front());
-				_connection.notifications.pop();
+				_connection.getNotifications().push(_connection.getNotifications().front());
+				_connection.getNotifications().pop();
 				break;
 			case 3:
 				quit = true;
@@ -499,10 +499,10 @@ void Client::salePlayer(){
 			cout << "Your player was successfully added on market." << endl;
 		}
 		catch(playerAlreadyOnMarketException e){
-			cout << "Error : you are already saling this player." << endl;
+			cout << "\033[1;31mError\033[0m : you are already selling this player." << endl;
 		}
 		catch(notEnoughPlayersException e){
-			cout<<"Error : you do not have enough players to put a player on sale. You need at least " << gameconfig::MIN_PLAYERS + 1<<" players to do so."<<std::endl;
+			cout<< "\033[1;31mError\033[0m : you do not have enough players to put a player on sale. You need at least " << gameconfig::MIN_PLAYERS + 1<<" players to do so."<<std::endl;
 		}
 	}
 	else{
@@ -555,28 +555,28 @@ void Client::placeBid(){
 		cout << "Bid successfully placed ! Hurra !" << endl;
 	}
 	catch(PlayerNotFoundException& e) {
-		cout << "Error : the player id you entered is not correct" << endl;
+		cout << "\033[1;31mError\033[0m : the player id you entered is not correct" << endl;
 	}
 	catch(bidValueNotUpdatedException e){
-		cout << "Error : bid value not correct (update your market list)."<<endl;
+		cout << "\033[1;31mError\033[0m : bid value not correct (update your market list)."<<endl;
 	}
 	catch(turnException e){
-		cout << "Error : you did not bid last turn."<<endl;
+		cout << "\033[1;31mError\033[0m : you did not bid last turn."<<endl;
 	}
 	catch(bidEndedException e){
-		cout << "Error : player not on market any more (update your market list)."<<endl;
+		cout << "\033[1;31mError\033[0m : player not on market any more (update your market list)."<<endl;
 	}
 	catch(bidOnYourPlayerException e){
-		cout << "Error : cannot bid on your player."<<endl;
+		cout << "\033[1;31mError\033[0m : cannot bid on your player."<<endl;
 	}
 	catch(lastBidderException e){
-		cout << "Error : you are currently winning this sale. Cannot bid on your own bid."<<endl;
+		cout << "\033[1;31mError\033[0m : you are currently winning this sale. Cannot bid on your own bid."<<endl;
 	}
 	catch(tooManyPlayersException e){
-		cout << "Error : you have too many players to be able to place a bid. You cannot have more than "<<gameconfig::MAX_PLAYERS<<" players."<<endl;
+		cout << "\033[1;31mError\033[0m : you have too many players to be able to place a bid. You cannot have more than "<<gameconfig::MAX_PLAYERS<<" players."<<endl;
 	}
 	catch(insufficientFundsException e){
-		cout << "Error : not enough money (GET MORE $$$$$)."<<endl;
+		cout << "\033[1;31mError\033[0m : not enough money (GET MORE $$$$$)."<<endl;
 	}
 }
 

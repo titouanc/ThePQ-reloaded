@@ -45,10 +45,13 @@ std::string MemoryAccess::getTeamNamesPath(){
 std::string MemoryAccess::getAdminPath(std::string adminname){
 	return memory::ADMIN_DIR + adminname + "/" + memory::ADMIN_FILE + memory::FILE_FORMAT;
 }
+std::string MemoryAccess::getUserNamesPath(){
+	return memory::GLOBAL_DATA_DIR + memory::USERNAMES_FILE + memory::FILE_FORMAT;
+}
 
-void MemoryAccess::save(Installation& install){
-	std::string path = getInstallationPath(install.getOwner(), install.getName());
-	JSON::Dict toSave = install;
+void MemoryAccess::save(Installation* install){
+	std::string path = getInstallationPath(install->getOwner(), install->getName());
+	JSON::Dict toSave = *install;
 	toSave.save(path.c_str());
 }
 void MemoryAccess::save(User& user){
@@ -77,13 +80,18 @@ void MemoryAccess::save(Team& team){
 	toSave.save(path.c_str());
 }
 void MemoryAccess::save(std::vector<std::string> &toSave,std::string type){
+	std::string path = "";
 	if(type == memory::ALL_TEAM_NAMES){
-		JSON::List jsonToSave;
-		for(size_t i =0;i<toSave.size();++i){
-			jsonToSave.append(toSave[i]);
-		}
-		jsonToSave.save(getTeamNamesPath().c_str());
+		path = getTeamNamesPath();
 	}
+	else if (type== memory::ALL_USER_NAMES){
+		path = getUserNamesPath();
+	}
+	JSON::List jsonToSave;
+	for(size_t i =0;i<toSave.size();++i){
+		jsonToSave.append(toSave[i]);
+	}
+	jsonToSave.save(path.c_str());
 }
 
 void MemoryAccess::load(Player& player){
@@ -104,9 +112,10 @@ void MemoryAccess::load(Sale& sale){
 	sale = DICT(loaded);
 	delete loaded;
 }
-void MemoryAccess::load(Installation& install){
-	JSON::Value *loaded = JSON::load(getInstallationPath(install.getOwner(),install.getName()).c_str());
-	install = DICT(loaded);
+void MemoryAccess::load(Installation* install){
+	JSON::Value *loaded = JSON::load(getInstallationPath(install->getOwner(),install->getName()).c_str());
+	JSON::Dict const & tmp = DICT(loaded);
+	install = Installation::CAST(tmp);
 	delete loaded;
 }
 void MemoryAccess::load(Team& team){
@@ -120,7 +129,7 @@ JSON::List MemoryAccess::loadFilesInVec(std::string directory){/*Check for memle
 	DIR* dir = NULL;
 	struct dirent* file = NULL;
 	dir = opendir(directory.c_str());
-	if(dir!=NULL){		
+	if(dir!=NULL){
 		while((file = readdir(dir)) != NULL){
 			std::string str1 = file->d_name;
 			std::string str2 = memory::FILE_FORMAT;
@@ -138,10 +147,22 @@ JSON::List MemoryAccess::loadFilesInVec(std::string directory){/*Check for memle
 	return ret;
 }
 
-void MemoryAccess::load(std::vector<Installation> &toFill,std::string username){
+void MemoryAccess::load(std::vector<User> &toFill)
+{
+	vector<string> users;
+	MemoryAccess::load(users, memory::ALL_USER_NAMES);
+	for (size_t i = 0; i < users.size(); ++i)
+	{
+		User user(users[i]);
+		MemoryAccess::load(user);
+		toFill.push_back(user);
+	}
+}
+
+void MemoryAccess::load(std::vector<Installation*> &toFill,std::string username){
 	JSON::List installs = loadFilesInVec(getInstallationsDirectory(username));
 	for(size_t i=0;i<installs.len();++i){
-		toFill.push_back(DICT(installs[i]));
+		toFill.push_back(Installation::CAST(DICT(installs[i])));
 	}
 }
 
@@ -160,14 +181,23 @@ void MemoryAccess::load(std::vector<Sale*> &toFill){
 }
 
 void MemoryAccess::load(std::vector<std::string> &toFill, std::string type){
+	std::string path = "";
 	if(type == memory::ALL_TEAM_NAMES){
-		JSON::Value *loaded = JSON::load(getTeamNamesPath().c_str());
+		path = getTeamNamesPath();
+	}
+	else if (type == memory::ALL_USER_NAMES){
+		path = getUserNamesPath();	
+	}
+	try {
+		JSON::Value *loaded = JSON::load(path.c_str());
 		JSON::List & names = LIST(loaded);
 		for(size_t i=0;i<names.len();++i){
 			toFill.push_back(STR(names[i]).value());
 		} 
 		delete loaded;
 	}
+	catch(JSON::IOError &e)
+	{}
 }
 
 void MemoryAccess::loadSkel(Broomstick& broom){
@@ -182,11 +212,11 @@ void MemoryAccess::loadSkel(Jersey& jersey){
 	delete loaded;
 }
 
-void MemoryAccess::loadSkel(std::vector<Installation> &vec){
+void MemoryAccess::loadSkel(std::vector<Installation*> &vec){
 	JSON::Value *loaded = JSON::load(getSkelPath(memory::INSTS_SKEL_FILE).c_str());
 	JSON::List & insts = LIST(loaded);
 	for(size_t i = 0;i<insts.len();++i){
-		vec.push_back(DICT(insts[i]));
+		vec.push_back(Installation::CAST(DICT(insts[i])));
 	}
 	delete loaded;
 }
@@ -217,6 +247,6 @@ void MemoryAccess::removeObject(User &user){
 	remove(getUserPath(user.getUsername()).c_str());
 }
 
-void MemoryAccess::removeObject(Installation &install){
-	remove(getInstallationPath(install.getOwner(),install.getName()).c_str());
+void MemoryAccess::removeObject(Installation* install){
+	remove(getInstallationPath(install->getOwner(),install->getName()).c_str());
 }

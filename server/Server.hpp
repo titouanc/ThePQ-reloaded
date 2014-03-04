@@ -64,6 +64,9 @@ public:
     void sendPlayersList(int peer_id);
     void sendMarketMessage(const std::string&, const JSON::Dict&);
     int getPeerID(const std::string&);
+    void timeLoop();
+    void timeUpdateStadium();
+    void timeUpdateChampionship();
         /* Return a pointer to the user object with given username,
        or NULL if not connected */
     User *getUserByName(std::string username);
@@ -76,7 +79,7 @@ private:
     std::deque<MatchManager*> _matches;
     AdminManager *_adminManager;
 
-
+	pthread_t _timeThread;
 };
 
 #endif

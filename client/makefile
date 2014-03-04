@@ -26,7 +26,6 @@ graphics/libgraphics.a:
 	+make -C graphics/
  
 include ../Makefile.includes
- 
 ifeq ($(shell uname -s),Darwin)
 	LDFLAGS += -framework sfml-system -framework sfml-graphics -framework sfml-window
 else

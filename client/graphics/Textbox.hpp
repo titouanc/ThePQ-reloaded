@@ -7,15 +7,16 @@
 #include <iostream>
 #include "Button.hpp"
 #include "GUIConstants.hpp"
+#include "Widget.hpp"
 
 namespace GUI {
-	class Textbox {
+	class Textbox : public Widget {
 	public:
 		Textbox(std::string id, int x=MARGIN, int y=MARGIN, int w=250, int h=BUTTON_HEIGHT):
-					_x(x), _y(y), _w(w), _h(h), _isFocused(false), 
+					Widget(x, y, w, h, false), _isFocused(false), 
 					_selecter(Button<Textbox>(&Textbox::focus, this, "")){
 
-			if (!_font.loadFromFile(BODY_FONT_PATH))
+			if (!_font.loadFromFile(fontPath(BODY_FONT_PATH)))
 				throw "Could not load font!";
 			_text.setFont(_font);
 			_text.setString(id);
@@ -31,7 +32,8 @@ namespace GUI {
 			_backgroundRect.setPosition(_x, _y);
 			dest.draw(_backgroundRect);
 			_text.setPosition(_x+TEXTBOX_SIDE_PADDING, _y+TEXTBOX_TOP_PADDING);
-			dest.draw(_text);
+			sf::Text toDraw = getClippedText();
+			dest.draw(toDraw);
 			_selecter.setPosition(_x, _y);
 			_selecter.renderTo(dest);
 		}
@@ -40,24 +42,35 @@ namespace GUI {
 			return ((x >=_x) && (x <= _x+_w) && (y >=_y) && (y <= _y+_h));
 		}
 
-		void setPosition(int x, int y){
-			_x = x; 
-			_y = y;
-		}
-
 		void updateText(sf::Event event){
-			if (event.text.unicode == '\b' && _text.getString().getSize() != 0){
-				sf::String oldText = _text.getString();
-				oldText.erase(oldText.getSize()-1, 1);
-				_text.setString(oldText);
+			if (event.text.unicode == '\b') {
+				if (_text.getString().getSize() != 0){
+					sf::String oldText = _text.getString();
+					oldText.erase(oldText.getSize()-1, 1);
+					_text.setString(oldText);
+				}
 			}
 			else {
 				_text.setString(_text.getString() + event.text.unicode);
 			}
 		}
 
+		sf::Text getClippedText(){
+			// returns biggest string at the end of _text that is not bigger
+			// than the textbox size.
+			sf::Text res = _text;
+			sf::String toPrint = res.getString();
+			float maxWidth = _w-2*TEXTBOX_SIDE_PADDING;
+			if (res.getLocalBounds().width > maxWidth){
+				while(res.getLocalBounds().width > maxWidth && toPrint.getSize() > 0){
+					toPrint.erase(0, 1);
+					res.setString(toPrint);
+				}
+			}
+			return res;
+		}
+
 		void focus(){
-			std::cout << "focused!"<< std::endl;
 			_isFocused = true;
 		}
 		void unfocus(){
@@ -69,10 +82,6 @@ namespace GUI {
 	private:
 		sf::Text _text;
 		sf::Font _font;
-		int _x;
-		int _y;
-		int _w;
-		int _h;
 		sf::RectangleShape _backgroundRect;
 		bool _isFocused;
 		Button<Textbox> _selecter;

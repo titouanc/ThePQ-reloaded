@@ -1,3 +1,6 @@
+#ifndef GRAPHIC_MANAGER_HPP
+#define GRAPHIC_MANAGER_HPP
+
 #include "MainController.hpp"
 #include "Layer.hpp"
 #include "Button.hpp"
@@ -10,9 +13,12 @@ namespace GUI {
 		void run();
 		void deleteCanvas();
 		void displayCanvas();
+		void redrawCanvas();
 	protected:
 		MainController &_controller;
 		Layer _canvas;
 		bool _isRunning;
 	};
 }
+
+#endif

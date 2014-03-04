@@ -43,30 +43,40 @@ JSON::Value* net::ClientConnectionManager::waitForMsg(std::string typeToWait)
 		}
 		else
 		{
-			notifications.push(msg);
+			_notifications.push(msg);
 		}
 	}
 	_isWaitingForMessage = false;
 	return res;
 }
 
-JSON::Value* net::ClientConnectionManager::hasMessageTypeInNotifications(std::string messageType){
+JSON::Value* net::ClientConnectionManager::getNotification(std::string messageType){
 	JSON::Value* res = NULL;
-	for (size_t i = 0; i<notifications.size(); ++i){
-		JSON::Dict notif = DICT(notifications.front());
+	for (size_t i = 0; i<_notifications.size(); ++i){
+		JSON::Dict notif = DICT(_notifications.front());
 		if (ISSTR(notif.get("type"))&& STR(notif.get("type")).value() == messageType){
-			res =  notifications.front();
-			notifications.pop();
+			res =  _notifications.front();
+			_notifications.pop();
 		}
-		notifications.push(notifications.front());
-		notifications.pop();
+		_notifications.push(_notifications.front());
+		_notifications.pop();
 	}
 	return res;
 }
 
+JSON::Value* net::ClientConnectionManager::popMessage()
+{
+	return _messages.pop();
+}
+
+SharedQueue<JSON::Value*>& net::ClientConnectionManager::getNotifications()
+{
+	return _notifications;
+}
+
 void net::ClientConnectionManager::updateNotifications(){
 	while (!_isWaitingForMessage && _messages.available()){
-		notifications.push(_messages.pop());
+		_notifications.push(_messages.pop());
 	}
 }
 

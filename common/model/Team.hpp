@@ -16,7 +16,7 @@ private:
     std::string _owner;
     int _funds;
 	std::vector<Player> _players;
-	std::vector<Installation> _installations;
+	std::vector<Installation*> _installations;
 public:
 	Team(): _name(gameconfig::UNNAMED_TEAM), _owner(), _funds(gameconfig::STARTING_FUNDS), 
 	_players(), _installations(){}
@@ -32,6 +32,14 @@ public:
 		if(json.hasKey(net::MSG::USERNAME)) 		{_owner = STR(json.get(net::MSG::USERNAME)).value();}
 		if(json.hasKey(memory::FUNDS)) 				{_funds = INT(json.get(memory::FUNDS));}
 		if(json.hasKey(memory::TEAM_NAME)) 			{_name = STR(json.get(memory::TEAM_NAME)).value();}
+	}
+	
+	~Team()
+	{
+		for (size_t i = 0; i < _installations.size(); ++i)
+		{
+			delete _installations[i];
+		}
 	}
 
 	operator JSON::Dict(){
@@ -75,7 +83,7 @@ public:
 	void getPayed(int amount){_funds+=amount;}
 	void buy(int amount){_funds-=amount;}
 	std::vector<Player>& getPlayers(){return _players;}
-	std::vector<Installation>& getInstallations(){return _installations;}
+	std::vector<Installation*>& getInstallations(){return _installations;}
 
 	bool removePlayer(int id){
 		for(size_t i=0;i<_players.size();++i){
@@ -124,7 +132,7 @@ public:
 	void generateBaseInstallations(){
 		MemoryAccess::loadSkel(_installations);
 		for(size_t i = 0;i<_installations.size();++i){
-			_installations[i].setOwner(getOwner());
+			_installations[i]->setOwner(getOwner());
 		}
 	}
 

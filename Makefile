@@ -3,13 +3,13 @@ all: server client
 .PHONY: common server client mrproper clean all
 
 common:
-	make -C common
+	+make -C common
 
 server: common
-	make -C server
+	+make -C server
 
 client: common
-	make -C client
+	+make -C client
 
 clean:
 	rm -f *.ok

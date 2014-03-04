@@ -19,7 +19,7 @@ public:
 	void doesUserExist(std::string username);
 	void chooseTeamName(std::string username, std::string teamname);
 
-private:
+protected:
 	net::ClientConnectionManager& _connection;
 	UserData& _user;
 	

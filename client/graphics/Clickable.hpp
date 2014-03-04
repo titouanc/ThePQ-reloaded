@@ -4,9 +4,10 @@
 #include <functional>
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
+#include "Widget.hpp"
 
 namespace GUI{
-	class ClickableInterface {
+	class ClickableInterface : public Widget{
 	public:
 		virtual void triggerAction() = 0;
 		virtual bool isInBounds(int x, int y) const = 0;

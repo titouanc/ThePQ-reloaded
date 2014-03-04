@@ -1,8 +1,8 @@
-Tous les exemples ici sont dans `common/json/demo`. Il faut inclure `json.hpp`.
+Tous les exemples ici sont dans `common/json/demo`. Il faut `#include <json/json.hpp>`
 
 #Typage
 ## Types de données
-* `JSON::Integer, JSON::Float, JSON::String`: Rien de surprenant. Utiliser la méthode `.value()` pour obtenir la donnée dans un type C++.
+* `JSON::Integer, JSON::Float, JSON::String, JSON::Bool`: Rien de surprenant. **Utiliser la méthode `.value()` pour obtenir la valeur dans un type C++**.
 * `JSON::List`: une conteneur ordonné. Utiliser `.append()` pour ajouter un élément, `operator[]` pour accéder au contenu.
 * `JSON::Dict`: un conteneur où chaque valeur est associée à une clef (une `std::string`). Utiliser `.set()` pour ajouter un élément, `.get()` pour y accéder.
 
@@ -11,9 +11,20 @@ Tous ces types ont pour ancêtre commun la classe abstraite `JSON::Value`
 ## Macros
 Vu que JSON permet de sérialiser plusieurs types de données, on ne peut savoir à l'avance à quel type on a affaire.
 
-Pour savoir si un pointeur sur une valeur JSON est d'un type donné: `ISINT(valPtr)`, `ISFLOAT(valPtr)`, `ISSTR(valPtr)`, `ISLIST(valPtr)`, `ISDICT(valPtr)`.
+Pour savoir si un pointeur sur une valeur JSON est d'un type donné: `ISINT(valPtr)`, `ISFLOAT(valPtr)`, `ISSTR(valPtr)`, `ISBOOL(valPtr)`, `ISLIST(valPtr)`, `ISDICT(valPtr)`.
 
-Pour obtenir une référence du bon type à partir d'un pointeur sur une valeur JSON: `INT(valPtr)`, `FLOAT(valPtr)`, `STR(valPtr)`, `LIST(valPtr)`, `DICT(valPtr)`
+Pour obtenir une référence du bon type à partir d'un pointeur sur une valeur JSON: `INT(valPtr)`, `FLOAT(valPtr)`, `STR(valPtr)`, `BOOL(valPtr)`, `LIST(valPtr)`, `DICT(valPtr)`
+
+## Shortcuts
+### `Dict::stealMerge(const & other)`
+Vide le contenu de other et l'ajoute à self
+### `Dict = {{"key", JSON::Value const &val}, ...}`
+Crée un dictionnaire alloué statiquement avec les paires données. Il faut impérativement un objet JSON pour les valeurs (pas de cast implicite). Exemple: 
+
+	JSON::Dict res = {
+		{"vOffset", JSON::Float(vOffset())},
+		{"theAnswer", JSON::Integer(42)}
+	};
 
 #Gestion de la mémoire
 ## Parser
@@ -30,7 +41,7 @@ Il est aussi possible de *voler* un objet à un conteneur (l'appelant devient al
 ## Créer un objet JSON
 
 	#include <iostream>
-	#include <json.hpp>
+	#include <json.h>
 
 	using namespace std;
 
@@ -57,7 +68,7 @@ Il est aussi possible de *voler* un objet à un conteneur (l'appelant devient al
 ## Lire un objet JSON à partir d'une chaîne
 
 	#include <iostream>
-	#include <json.hpp>
+	#include <json.h>
 
 	using namespace std;
 

@@ -142,7 +142,7 @@ void UIMatch::drawMoveables(sf::RenderTarget & dest) const
                 else if (player.isChaser())
                     shape.setFillColor(sf::Color(0x33, 0, 0xff, 0xff));
                 else if (player.isKeeper())
-                    shape.setFillColor(sf::Color(0, 0x33, 0xff, 0xff));
+                    shape.setFillColor(sf::Color(0, 0xff, 0x33, 0xff));
             }
             dest.draw(shape);
         }
@@ -204,9 +204,13 @@ void UIMatch::clear(void)
 
 void UIMatch::hilightAccessibles(Position const & from, int len)
 {
-    for (int i=0; i<6; i++)
-        for (int j=1; j<=len; j++)
-            hilight(from + Pitch::directions[i]*j, &hilightYellow);
+    for (int i=0; i<6; i++){
+        for (int j=1; j<=len; j++){
+            Position const & toDraw = from + Pitch::directions[i]*j;
+            if (_pitch.inEllipsis(toDraw))
+                hilight(toDraw, &hilightYellow);
+        }
+    }
 }
 
 void UIMatch::hilightDisplacement(Position const & from, Displacement const & move)

@@ -1,6 +1,5 @@
-PKGCONFIG=PKG_CONFIG_PATH=/usr/local/lib/pkgconfig/ pkg-config
-
-OBJS = Layer.o MainController.o GraphicManager.o UIMatch.o
+PKGCONFIG = pkg-config
+OBJS = Layer.o MainController.o GraphicManager.o UIMatch.o loadPath.o
 CPPFLAGS = -I../../common
 
 LIBS = ../../common/model/libmodel.a ../../common/json/libjson.a
@@ -10,7 +9,7 @@ else
 	CPPFLAGS += $(shell ${PKGCONFIG} --cflags sfml-all)
 endif
 
-all: playground.ok testbox.ok libgraphics.a
+all: playground.app testbox.app libgraphics.a
 
 libgraphics.a: ${OBJS}
 	ar r $@ $^
