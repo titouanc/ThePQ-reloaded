@@ -7,9 +7,10 @@
 #include <iostream>
 #include "Button.hpp"
 #include "GUIConstants.hpp"
+#include "Widget.hpp"
 
 namespace GUI {
-	class Textbox {
+	class Textbox : public Widget {
 	public:
 		Textbox(std::string id, int x=MARGIN, int y=MARGIN, int w=250, int h=BUTTON_HEIGHT):
 					_x(x), _y(y), _w(w), _h(h), _isFocused(false), 
@@ -39,11 +40,6 @@ namespace GUI {
 
 		bool isInBounds (int x, int y) const {
 			return ((x >=_x) && (x <= _x+_w) && (y >=_y) && (y <= _y+_h));
-		}
-
-		void setPosition(int x, int y){
-			_x = x; 
-			_y = y;
 		}
 
 		void updateText(sf::Event event){

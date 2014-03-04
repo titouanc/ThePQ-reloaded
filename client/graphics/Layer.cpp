@@ -12,10 +12,12 @@ GUI::Layer::~Layer(){
 void GUI::Layer::renderTo(sf::RenderTarget & dest){
 	dest.clear(_backgroundColor);
 	for(unsigned int i=0; i<_clickables.size(); ++i)
-		_clickables[i]->renderTo(dest);
+		if (!_clickables[i]->isHidden())
+			_clickables[i]->renderTo(dest);
 	map<string, Textbox*>::iterator it = _textboxes.begin();
 	for(; it != _textboxes.end(); it++)
-		it->second->renderTo(dest);
+		if (!it->second->isHidden())
+			it->second->renderTo(dest);
 }
 
 void GUI::Layer::handleClick(int x, int y){

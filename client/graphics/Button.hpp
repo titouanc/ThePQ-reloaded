@@ -15,7 +15,7 @@ namespace GUI {
 		Button(	const typename Clickable<T>::Callback& callback, T* target, std::string text="Button", 
 				int x=MARGIN, int y=MARGIN, int w=100, int h=BUTTON_HEIGHT):
 									Clickable<T>(callback, target),
-									_x(x), _y(y), _w(w), _h(h) {
+									_x(x), _y(y), _w(w), _h(h), _hidden(false) {
 
 			if (!_font.loadFromFile(fontPath(BODY_FONT_PATH)))
 				throw "Could not load font!";
@@ -37,10 +37,6 @@ namespace GUI {
 			dest.draw(_text);
 		}
 
-		void setPosition(int x, int y){
-			_x = x; 
-			_y = y;
-		}
 		void setWidth(int w){ 
 			_w = w; 
 			_backgroundRect.setSize(sf::Vector2f(_w, _h));
@@ -62,6 +58,7 @@ namespace GUI {
 		int _y;
 		int _w;
 		int _h;
+		bool _hidden;
 		sf::RectangleShape _backgroundRect;
 	};
 }
