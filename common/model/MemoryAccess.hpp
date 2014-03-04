@@ -24,6 +24,7 @@ namespace MemoryAccess
 	std::string getTeamInfosPath(std::string);
 	std::string getSkelPath(std::string);
 	std::string getTeamNamesPath();
+	std::string getUserNamesPath();
 
 	void save(Installation&);
 	void save(User&);

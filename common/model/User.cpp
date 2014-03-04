@@ -42,10 +42,19 @@ void User::loadTeam(){
 
 void User::createUser(){
 	MemoryAccess::save(*this);
+	vector<string> users;
+	try {
+		MemoryAccess::load(users, memory::ALL_USER_NAMES);
+	}
+	catch (JSON::IOError &e)
+	{}
+	users.push_back(_username);
+	MemoryAccess::save(users, memory::ALL_USER_NAMES);
 	_team.setOwner(_username);
 	_team.generateStartingTeam();
 	_team.save();
 }
+
 #define OFFLINE_MSG_FILENAME "offline_messages.json"
 void User::sendOfflineMsg(JSON::Value const & message) const
 {
