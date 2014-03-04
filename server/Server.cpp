@@ -511,7 +511,7 @@ void Server::timeUpdateStadium()
 		cout << "old team funds : " << team.getFunds() << endl;
 		for (size_t j = 0; j < installations.size(); ++j)
 		{
-			cout << installations[j]->getName() << endl;
+			//~ cout << installations[j]->getName() << endl;
 			team.buy(installations[j]->getMaintenanceCost());
 			team.getPayed(installations[j]->getIncome());
 		}

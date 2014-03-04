@@ -112,11 +112,7 @@ void MemoryAccess::load(Sale& sale){
 void MemoryAccess::load(Installation* install){
 	JSON::Value *loaded = JSON::load(getInstallationPath(install->getOwner(),install->getName()).c_str());
 	JSON::Dict const & tmp = DICT(loaded);
-	std::string name = STR(tmp.get("name")).value();
-	if (name == "Fan Shop")
-	{
-		install = new FanShop(tmp);
-	}
+	install = Installation::CAST(tmp);
 	delete loaded;
 }
 void MemoryAccess::load(Team& team){
@@ -163,7 +159,7 @@ void MemoryAccess::load(std::vector<User> &toFill)
 void MemoryAccess::load(std::vector<Installation*> &toFill,std::string username){
 	JSON::List installs = loadFilesInVec(getInstallationsDirectory(username));
 	for(size_t i=0;i<installs.len();++i){
-		toFill.push_back(new FanShop(DICT(installs[i])));
+		toFill.push_back(Installation::CAST(DICT(installs[i])));
 	}
 }
 
@@ -213,7 +209,7 @@ void MemoryAccess::loadSkel(std::vector<Installation*> &vec){
 	JSON::Value *loaded = JSON::load(getSkelPath(memory::INSTS_SKEL_FILE).c_str());
 	JSON::List & insts = LIST(loaded);
 	for(size_t i = 0;i<insts.len();++i){
-		vec.push_back(new FanShop(DICT(insts[i])));
+		vec.push_back(Installation::CAST(DICT(insts[i])));
 	}
 	delete loaded;
 }

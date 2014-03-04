@@ -43,6 +43,7 @@ public:
 	
 	virtual ~Installation() {}
 	
+	static Installation* CAST(JSON::Dict const & json);
 	
 	/*=========Getters==========*/
 	std::string getOwner() const {return _owner;}
@@ -77,6 +78,34 @@ class FanShop : public Installation
 {
 public:
 	FanShop(std::string owner = "");
+	using Installation::Installation;
+	
+	virtual int getMaxLevel() { return 10; }
+
+};
+
+class FoodStand : public Installation
+{
+public:
+	FoodStand(std::string owner = "");
+	using Installation::Installation;
+	
+	virtual int getMaxLevel() { return 10; }
+
+};
+class Tribune : public Installation
+{
+public:
+	Tribune(std::string owner = "");
+	using Installation::Installation;
+	
+	virtual int getMaxLevel() { return 10; }
+
+};
+class MedicalCenter : public Installation
+{
+public:
+	MedicalCenter(std::string owner = "");
 	using Installation::Installation;
 	
 	virtual int getMaxLevel() { return 10; }

@@ -1,5 +1,16 @@
 #include "Installation.hpp"
 #include <cmath>
+#include <iostream>
+
+Installation* Installation::CAST(JSON::Dict const & json)
+{
+	std::string name = STR(json.get("name")).value();
+	std::cout << name << std::endl;
+	if (name == "Fan Shop") return new FanShop(json);
+	else if (name == "Food Stand") return new FoodStand(json);
+	else if (name == "Tribune") return new Tribune(json);
+	else if (name == "Medical Center") return new MedicalCenter(json);
+}
 
 int Installation::getMaintenanceCost() const {
 	/*Method returning integer representing the maintenance cost of the installation*/
@@ -52,6 +63,6 @@ void Installation::downgrade(){
 	}
 }
 
-FanShop::FanShop(std::string owner) : Installation(owner, "FanShop", 1000, 0)
+FanShop::FanShop(std::string owner) : Installation(owner, "Fan Shop", 1000, 0)
 {}
 

@@ -102,7 +102,7 @@ void StadiumManager::loadInstallations(){
 		toFill = LIST(response.get("data"));
 		for (size_t i = 0; i < toFill.len(); ++i)
 		{
-			_user.installations.push_back(new FanShop(DICT(toFill[i])));
+			_user.installations.push_back(Installation::CAST(DICT(toFill[i])));
 		}
 	}
 	delete serverResponse;
