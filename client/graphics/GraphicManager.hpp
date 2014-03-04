@@ -13,6 +13,7 @@ namespace GUI {
 		void run();
 		void deleteCanvas();
 		void displayCanvas();
+		void redrawCanvas();
 	protected:
 		MainController &_controller;
 		Layer _canvas;

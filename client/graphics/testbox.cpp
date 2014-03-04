@@ -18,6 +18,8 @@ public:
 		Button<TestBoxManager> *myButton = _canvas.addButton<TestBoxManager>(&TestBoxManager::printWowTextBox, this, "Cout Wow Box");
 		myButton->setPosition(270, 60);
 
+		hideButton = _canvas.addButton<TestBoxManager>(&TestBoxManager::hideTextbox, this, "Hide Textbox");
+		hideButton->setPosition(10, 110);
 		displayCanvas();
 		run();
 	}
@@ -27,8 +29,21 @@ public:
 		cout << "searched from id  : \"" << _canvas.textboxWithID("wow")->getText() << "\"" << endl;
 	}
 
+	void hideTextbox(){
+		if (myTextbox->isHidden()){
+			myTextbox->unhide();
+			hideButton->setText("Hide Textbox");
+		}
+		else {
+			myTextbox->hide();
+			hideButton->setText("Unhide Textbox");
+		}
+		redrawCanvas();
+	}
+
 private:
 	Textbox *myTextbox;
+	Button<TestBoxManager> *hideButton;
 	
 };
 
