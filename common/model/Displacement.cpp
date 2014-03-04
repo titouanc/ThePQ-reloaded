@@ -1,7 +1,8 @@
 #include "Displacement.hpp"
 #include <cassert>
 
-Displacement::Displacement(double tbegin) : _tbeg(tbegin), _moves()
+Displacement::Displacement(double tbegin) :
+ _tbeg(tbegin), _moves(), _totalLength(0)
 {}
 
 Displacement::Displacement(JSON::List const & list) : Displacement() 
@@ -16,7 +17,6 @@ Position Displacement::position(double t, size_t speed) const
 {
     /*Method returning the calculated position*/
     assert(0 <= t && t <= 1);
-    assert(speed <= length());
 
     Position res;
     double begin=0, end=0;
@@ -26,10 +26,15 @@ Position Displacement::position(double t, size_t speed) const
     t -= _tbeg;
 
     if (speed==0)
-        speed = length();
+        speed = length(); /* If no speed given, take start->t=0; end->t=1*/
+    assert(speed >= length());
+
     t *= speed;
+
     for (size_t i=0; i<count(); i++){
+        /* Time interval for this direction */
         end = begin + _moves[i].length();
+
         if (end <= t){
             begin = end;
             res += _moves[i];
@@ -58,8 +63,9 @@ void Displacement::addMove(Position const & move)
 {
     /*Method for adding a move to the move queue*/
     if (! move.isDirection())
-        throw NotADirection(move.toJson().dumps());
+        throw NotADirection(((JSON::List)move).dumps());
     _moves.push_back(move);
+    _totalLength += move.length();
 }
 
 size_t Displacement::count(void) const 
@@ -68,21 +74,17 @@ size_t Displacement::count(void) const
     return _moves.size();
 }
 
-JSON::List Displacement::toJson(void) const 
+Displacement::operator JSON::List(void) const 
 {
     /*Method for serializing Displacement to a JSON list*/
     JSON::List res;
     for (size_t i=0; i<count(); i++)
-        res.append(_moves[i].toJson());
+        res.append((JSON::List)_moves[i]);
     return res;
 }
 
 unsigned int Displacement::length(void) const 
 {
     /*Method for calculating the total distance of the moves*/
-    unsigned int res = 0;
-    for (size_t i=0; i<count(); i++){
-        res += _moves[i].length();
-    }
-    return res;
+    return _totalLength;
 }

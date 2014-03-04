@@ -34,6 +34,7 @@ private:
 	Sale * getSale(int id);
 	/* Used to send notifications (when a sale ends) */
 	void sendMessageToUser(std::string, const JSON::Dict&);
+	void handleNewBid(std::string,std::string,int,int);
 public:
 	PlayerMarket(Server*);
 	~PlayerMarket();
@@ -41,6 +42,8 @@ public:
 	JSON::Dict allSales();
 	JSON::Dict addPlayer(const JSON::Dict &json);
 	JSON::Dict bid(const JSON::Dict &json);
+	int winningSales(std::string username);
+	int ownedSales(std::string username);
 	
 };
 

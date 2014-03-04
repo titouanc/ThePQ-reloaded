@@ -244,8 +244,8 @@ void MatchManager::addDelta(Moveable const & moveable, Position const & dest)
 {
 	JSON::Dict res;
 	res.set("mid", moveable.getID());
-	res.set("from", moveable.getPosition().toJson());
-	res.set("to", dest.toJson());
+	res.set("from", (JSON::List)moveable.getPosition());
+	res.set("to", (JSON::List)dest);
 	_turnDeltas.append(res);
 }
 
@@ -378,8 +378,8 @@ void MatchManager::throwBall(
 		(*stoppedStroke).active = false;
 		JSON::Dict delta;
 		delta.set("mid", ball.getID());
-		delta.set("from", ball.getPosition().toJson());
-		delta.set("to", fromPos.toJson());
+		delta.set("from", (JSON::List)ball.getPosition());
+		delta.set("to", (JSON::List)fromPos);
 		_turnDeltas.append(delta);
 		ball.setPosition(fromPos);
 		_pitch.setAt(fromPos, &ball);

@@ -37,7 +37,7 @@ public:
 	operator JSON::Dict() const {
 		JSON::Dict res;
 		res.set("speed", _speed);
-		res.set("position", _position.toJson());
+		res.set("position", (JSON::List)_position);
 		res.set("ID", _uniqueID);
 		return res;
 	}

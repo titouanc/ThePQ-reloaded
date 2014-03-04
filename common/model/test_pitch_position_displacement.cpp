@@ -20,12 +20,12 @@ ENDTEST()
 
 TEST(position_to_json)
     Position p(2, 7);
-    ASSERT(p.toJson().dumps() == "[2, 7]");
+    ASSERT(((JSON::List)p).dumps() == "[2, 7]");
 ENDTEST()
 
 TEST(position_from_json)
     Position initial(4, -2);
-    JSON::Value *list = JSON::parse(initial.toJson().dumps().c_str());
+    JSON::Value *list = JSON::parse(((JSON::List)initial).dumps().c_str());
     Position p(LIST(list));
     delete list;
 
@@ -89,7 +89,7 @@ TEST(displacement_to_json)
     Displacement d;
     d.addMove(West);
     d.addMove(NorthWest);
-    ASSERT(d.toJson().dumps() == "[[-2, 0], [-1, 1]]");
+    ASSERT(((JSON::List)d).dumps() == "[[-2, 0], [-1, 1]]");
 ENDTEST()
 
 TEST(displacement_from_json)
@@ -97,13 +97,42 @@ TEST(displacement_from_json)
     initial.addMove(West);
     initial.addMove(NorthWest);
 
-    JSON::Value *parsed = JSON::parse(initial.toJson().dumps().c_str());
+    JSON::Value *parsed = JSON::parse(((JSON::List)initial).dumps().c_str());
     ASSERT(ISLIST(parsed));
     Displacement d(LIST(parsed));
     delete parsed;
 
     ASSERT(d.length() == initial.length());
     ASSERT(d.count() == initial.count());
+ENDTEST()
+
+TEST(displacement_with_higher_speed)
+    Displacement d;
+    d.addMove(3*Pitch::West);
+    ASSERT(d.length() == 3);
+    ASSERT(d.position() == 3*Pitch::West);
+    ASSERT(d.position(0.5, 6) == 3*Pitch::West);
+    ASSERT(d.position(0.75, 6) == 3*Pitch::West);
+ENDTEST()
+
+TEST(composite_displacement_with_higher_speed)
+    Displacement d;
+    d.addMove(3*Pitch::West);
+    d.addMove(2*Pitch::SouthWest);
+    ASSERT(d.length() == 5);
+    
+    ASSERT(d.position(0.2) == Pitch::West);
+    ASSERT(d.position(0.4) == 2*Pitch::West);
+    ASSERT(d.position(0.6) == 3*Pitch::West);
+    ASSERT(d.position(0.8) == 3*Pitch::West + Pitch::SouthWest);
+    ASSERT(d.position() == 3*Pitch::West + 2*Pitch::SouthWest);
+
+    ASSERT(d.position(0.1, 10) == Pitch::West);
+    ASSERT(d.position(0.2, 10) == 2*Pitch::West);
+    ASSERT(d.position(0.3, 10) == 3*Pitch::West);
+    ASSERT(d.position(0.4, 10) == 3*Pitch::West + Pitch::SouthWest);
+    ASSERT(d.position(0.5, 10) == 3*Pitch::West + 2*Pitch::SouthWest);
+    ASSERT(d.position(1.0, 10) == 3*Pitch::West + 2*Pitch::SouthWest);
 ENDTEST()
 
 TEST(composite_displacement)
@@ -167,7 +196,6 @@ TEST(pitch_repr)
     pos = Position(2, 2);
     Moveable n(0, 0, pos);
     p.insert(&n);
-    cout << p;
 ENDTEST()
 
 TEST(free_position)
@@ -205,6 +233,8 @@ int main(int argc, const char **argv)
         ADDTEST(displacement_not_a_direction),
         ADDTEST(displacement_to_json),
         ADDTEST(displacement_from_json),
+        ADDTEST(displacement_with_higher_speed),
+        ADDTEST(composite_displacement_with_higher_speed),
         ADDTEST(composite_displacement),
         ADDTEST(composite_invalid_displacement),
         ADDTEST(pitch),

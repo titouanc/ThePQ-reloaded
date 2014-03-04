@@ -1,6 +1,7 @@
 #ifndef DEFINE_UTILS_HEADER
 #define DEFINE_UTILS_HEADER
 
+#include <cstring>
 #include <cassert>
 #include <unistd.h>
 #include <sys/select.h>
@@ -15,6 +16,32 @@ static inline void minisleep(double secs)
 
 	struct timeval interval = {seconds, micros};
 	select(1, NULL, NULL, NULL, &interval);
+}
+
+
+#define STRIP_JUNK "\b\r\n\t "
+static inline char *lstrip(char *str, const char *junk=STRIP_JUNK)
+{
+	assert(str != NULL);
+	while (*str && strchr(junk, *str))
+		str++;
+	return str;
+}
+
+static inline char *rstrip(char *str, const char *junk=STRIP_JUNK)
+{
+	assert(str != NULL);
+	char *endptr = str + strlen(str) - 1;
+	while (endptr >= str && strchr(junk, *endptr)){
+		*endptr = '\0';
+		endptr --;
+	}
+	return str;
+}
+
+static inline char *strip(char *str, const char *junk=STRIP_JUNK)
+{
+	return rstrip(lstrip(str, junk), junk);
 }
 
 #endif

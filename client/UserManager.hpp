@@ -13,16 +13,13 @@ class UserManager
 public:
 	UserManager(net::ClientConnectionManager& connection, UserData& user);
 	
-	bool showMenu();
-	
-protected:
-	void doLoginMenu();
-	void doRegisterMenu();
-	
-	void doLoginUser(std::string username, std::string password);
-	void doRegisterUser(std::string username, std::string password);
+	void loginUser(std::string username, std::string password);
+	void logoutUser();
+	void registerUser(std::string username, std::string password);
 	void doesUserExist(std::string username);
+	void chooseTeamName(std::string username, std::string teamname);
 
+private:
 	net::ClientConnectionManager& _connection;
 	UserData& _user;
 	

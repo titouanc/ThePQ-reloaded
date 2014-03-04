@@ -66,7 +66,7 @@ Position & Position::operator=(Position const & other)
     return *this;
 }
 
-JSON::List Position::toJson(void) const 
+Position::operator JSON::List(void) const 
 {
     JSON::List res;
     res.append(JSON::Integer(_x));
