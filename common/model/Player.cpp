@@ -50,7 +50,7 @@ Player::Player(const Player & player) : Member(player._memberID,player._name,pla
         _jersey = new Jersey(*(player._jersey));
 }//modif
 
-Player::operator JSON::Dict(){
+Player::operator JSON::Dict() const {
     JSON::Dict res = Member::operator JSON::Dict();
     JSON::Dict subres = Moveable::operator JSON::Dict();
     res.stealMerge(subres);

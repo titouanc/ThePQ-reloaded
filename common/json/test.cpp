@@ -1,4 +1,5 @@
 #include "json.hpp"
+#include "Document.hpp"
 #include <lighttest.hpp>
 #include <cstring>
 extern "C" {
@@ -526,6 +527,23 @@ TEST(dict_shortcut)
 	ASSERT(d.len() == 4);
 ENDTEST()
 
+TEST(ioerror)
+	JSON::Value *res = JSON::load("/dev/null");
+	ASSERT(res == NULL);
+
+	ASSERT_THROWS(JSON::IOError, JSON::load("/fichierinexistant"));
+
+	JSON::Dict d = {{"key", JSON::String("val")}};
+	ASSERT_THROWS(JSON::IOError, d.save("/dossierinexistant/ici/inexistant"));
+ENDTEST()
+
+TEST(document)
+	JSON::Document<JSON::Dict> doc;
+	doc.with("fixtures/a.json", [](JSON::Dict & d){
+		cout << d << endl;
+	});
+ENDTEST()
+
 int main(int argc, const char **argv)
 {
 	TestFunc testSuite[] = {
@@ -572,7 +590,9 @@ int main(int argc, const char **argv)
 		ADDTEST(dict_assign),
 		ADDTEST(dict_with_bool),
 		ADDTEST(stealmerge),
-		ADDTEST(dict_shortcut)
+		ADDTEST(dict_shortcut),
+		ADDTEST(ioerror),
+		ADDTEST(document)
 	};
 
 	return RUN(testSuite);

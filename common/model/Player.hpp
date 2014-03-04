@@ -30,7 +30,7 @@ public:
     	if (_broomstick != NULL) delete _broomstick; 
     	if (_jersey != NULL) delete _jersey; 
     }
-    operator JSON::Dict();
+    operator JSON::Dict() const;
     //void save();
     //Player* load(int id, std::string username = "");
 
