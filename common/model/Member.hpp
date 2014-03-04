@@ -24,15 +24,15 @@ public:
     	if (ISSTR(json.get(net::MSG::USERNAME))) _owner =  STR(json.get(net::MSG::USERNAME)).value();
     }
 
-	operator JSON::Dict(){
-	JSON::Dict res;
-	res.set("memberID", _memberID);
-    res.set("name", _name);
-    res.set("salary", _salary);
-    res.set("price", _price);
-    res.set(net::MSG::USERNAME, _owner);
-    return res;
-}
+	operator JSON::Dict() const {
+		JSON::Dict res;
+		res.set("memberID", _memberID);
+	    res.set("name", _name);
+	    res.set("salary", _salary);
+	    res.set("price", _price);
+	    res.set(net::MSG::USERNAME, _owner);
+	    return res;
+	}
     /*========Getters===================*/
     string getName () const	{ return _name; }
 	int getSalary () const	{ return _salary; }
