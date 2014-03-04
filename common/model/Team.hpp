@@ -19,13 +19,8 @@ private:
 	std::vector<Player> _players;
 	std::vector<Installation*> _installations;
 public:
-	Team(): _name(gameconfig::UNNAMED_TEAM), _owner(), _funds(gameconfig::STARTING_FUNDS), 
-	_fame(gameconfig::STARTING_FAME), _players(), _installations(){}
+	Team(std::string owner = "", std::string teamname=gameconfig::UNNAMED_TEAM): _name(teamname), _owner(owner), _funds(gameconfig::STARTING_FUNDS), _fame(gameconfig::STARTING_FAME), _players(), _installations(){}
 
-	Team(std::string owner, std::string teamname=""): Team(){
-		_owner = owner;
-		_name = teamname;
-	}
 	Team(const Team& other) : _name(other._name), _owner(other._owner), _funds(other._funds),
 	_fame(other._fame), _players(other._players), _installations(other._installations) {}
 
@@ -52,30 +47,31 @@ public:
 		ret.set(memory::TEAM_NAME,_name);
 		return ret;
 	}
-	void load(){
-		/* _owner has to be initialized to an username else throws a JSON::IOError */
-		MemoryAccess::load(*this); //Only loads funds, owner, name (TODO : fame, wins, games, etc.).
-		MemoryAccess::load(_installations,_owner);
-		MemoryAccess::load(_players,_owner);
-	}
-
-	void save(){
-		/* saves infos such as owner, funds, etc. and data vectors<> */
-		MemoryAccess::save(*this); //Same as loads : only funds, owner, etc.
-		for(size_t i = 0; i<_players.size();++i){
-			MemoryAccess::save(_players[i]);
-		}
-		for(size_t i = 0;i<_installations.size();++i){
-			MemoryAccess::save(_installations[i]);
-		}
-	}
-
+	
 	void saveInfos(){
 		MemoryAccess::save(*this);
 	}
 
 	void loadInfos(){
 		MemoryAccess::load(*this);
+	}
+	
+	void load(){
+		/* _owner has to be initialized to an username else throws a JSON::IOError */
+		loadInfos(); //Only loads funds, owner, name (TODO : fame, wins, games, etc.).
+		MemoryAccess::load(_installations,_owner);
+		MemoryAccess::load(_players,_owner);
+	}
+
+	void save(){
+		/* saves infos such as owner, funds, etc. and data vectors<> */
+		saveInfos(); //Same as loads : only funds, owner, etc.
+		for(size_t i = 0; i<_players.size();++i){
+			MemoryAccess::save(_players[i]);
+		}
+		for(size_t i = 0;i<_installations.size();++i){
+			MemoryAccess::save(_installations[i]);
+		}
 	}
 
 	std::string getOwner(){return _owner;}

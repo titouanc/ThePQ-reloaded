@@ -5,10 +5,10 @@
 Installation* Installation::CAST(JSON::Dict const & json)
 {
 	std::string name = STR(json.get("name")).value();
-	if (name == "Fan Shop") return new FanShop(json);
-	else if (name == "Food Stand") return new FoodStand(json);
-	else if (name == "Tribune") return new Tribune(json);
-	else if (name == "Medical Center") return new MedicalCenter(json);
+	if (name == memory::FANSHOP) return new FanShop(json);
+	else if (name == memory::FOOD_STAND) return new FoodStand(json);
+	else if (name == memory::TRIBUNE) return new Tribune(json);
+	else if (name == memory::MEDIC_CENTER) return new MedicalCenter(json);
 	// WHAT TODO ?
 }
 
@@ -83,7 +83,7 @@ void Installation::downgrade(){
 	}
 }
 
-FanShop::FanShop(std::string owner) : Installation(owner, "Fan Shop", 1000, 0)
+FanShop::FanShop(std::string owner) : Installation(owner, memory::FANSHOP, 1000)
 {}
 
 int FanShop::getMaintenanceCost() const
@@ -98,7 +98,7 @@ int FanShop::getIncome() const
 	return getCurrentValue()/500;
 }
 	
-FoodStand::FoodStand(std::string owner) : Installation(owner, "Food Stand", 500, 0)
+FoodStand::FoodStand(std::string owner) : Installation(owner, memory::FOOD_STAND, 500)
 {}
 
 int FoodStand::getMaintenanceCost() const
@@ -112,7 +112,7 @@ int FoodStand::getIncome() const
 	return 0;
 }
 
-Tribune::Tribune(std::string owner) : Installation(owner, "Tribune", 2500, 1)
+Tribune::Tribune(std::string owner) : Installation(owner, memory::TRIBUNE, 2500, 1)
 {}
 
 
@@ -127,7 +127,7 @@ int Tribune::getIncome() const
 	return 0;
 }
 
-MedicalCenter::MedicalCenter(std::string owner) : Installation(owner, "Medical Center", 5000, 0)
+MedicalCenter::MedicalCenter(std::string owner) : Installation(owner, memory::MEDIC_CENTER, 5000)
 {}
 
 int MedicalCenter::getMaintenanceCost() const
