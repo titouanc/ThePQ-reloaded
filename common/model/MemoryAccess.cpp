@@ -185,12 +185,16 @@ void MemoryAccess::load(std::vector<std::string> &toFill, std::string type){
 	else if (type == memory::ALL_USER_NAMES){
 		path = getUserNamesPath();	
 	}
-	JSON::Value *loaded = JSON::load(path.c_str());
-	JSON::List & names = LIST(loaded);
-	for(size_t i=0;i<names.len();++i){
-		toFill.push_back(STR(names[i]).value());
-	} 
-	delete loaded;
+	try {
+		JSON::Value *loaded = JSON::load(path.c_str());
+		JSON::List & names = LIST(loaded);
+		for(size_t i=0;i<names.len();++i){
+			toFill.push_back(STR(names[i]).value());
+		} 
+		delete loaded;
+	}
+	catch(JSON::IOError &e)
+	{}
 }
 
 void MemoryAccess::loadSkel(Broomstick& broom){
