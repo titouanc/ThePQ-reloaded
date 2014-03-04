@@ -1,9 +1,9 @@
 #include <string>
-#include "Menu.hpp"
+#include "../Menu.hpp"
 #include <iostream>
 #include <network/ClientConnectionManager.hpp>
 #include <Exception.hpp>
-#include "UserData.hpp"
+#include "../UserData.hpp"
 
 
 struct NetConfig : public Config {

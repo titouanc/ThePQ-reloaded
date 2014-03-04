@@ -1,3 +1,4 @@
+all: adminClient.app
 OBJS = AdminClient.o Menu.o UserData.o
 LIBS = ../../common/json/libjson.a ../../common/network/libnetwork.a ../../common/model/libmodel.a
 CPPFLAGS = -I../common
