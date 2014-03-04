@@ -53,7 +53,11 @@ namespace GUI {
 			_backgroundRect.setFillColor(color);
 		}
 
-		void setText(std::string text) { _text.setString(text); } // TODO update width
+		void setText(std::string text) { 
+			_text.setString(text); 
+			this->_w = (int)_text.getLocalBounds().width + 2*BUTTON_SIDE_PADDING;
+			_backgroundRect.setSize(sf::Vector2f(this->_w, this->_h));
+		} 
 	private:
 		sf::Text _text;
 		sf::Font _font;
