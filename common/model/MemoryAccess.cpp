@@ -46,9 +46,9 @@ std::string MemoryAccess::getUserNamesPath(){
 	return memory::GLOBAL_DATA_DIR + memory::USERNAMES_FILE + memory::FILE_FORMAT;
 }
 
-void MemoryAccess::save(Installation& install){
-	std::string path = getInstallationPath(install.getOwner(), install.getName());
-	JSON::Dict toSave = install;
+void MemoryAccess::save(Installation* install){
+	std::string path = getInstallationPath(install->getOwner(), install->getName());
+	JSON::Dict toSave = *install;
 	toSave.save(path.c_str());
 }
 void MemoryAccess::save(User& user){
@@ -109,9 +109,14 @@ void MemoryAccess::load(Sale& sale){
 	sale = DICT(loaded);
 	delete loaded;
 }
-void MemoryAccess::load(Installation& install){
-	JSON::Value *loaded = JSON::load(getInstallationPath(install.getOwner(),install.getName()).c_str());
-	install = DICT(loaded);
+void MemoryAccess::load(Installation* install){
+	JSON::Value *loaded = JSON::load(getInstallationPath(install->getOwner(),install->getName()).c_str());
+	JSON::Dict const & tmp = DICT(loaded);
+	std::string name = STR(tmp.get("name")).value();
+	if (name == "Fan Shop")
+	{
+		install = new FanShop(tmp);
+	}
 	delete loaded;
 }
 void MemoryAccess::load(Team& team){
@@ -155,10 +160,10 @@ void MemoryAccess::load(std::vector<User> &toFill)
 	}
 }
 
-void MemoryAccess::load(std::vector<Installation> &toFill,std::string username){
+void MemoryAccess::load(std::vector<Installation*> &toFill,std::string username){
 	JSON::List installs = loadFilesInVec(getInstallationsDirectory(username));
 	for(size_t i=0;i<installs.len();++i){
-		toFill.push_back(DICT(installs[i]));
+		toFill.push_back(new FanShop(DICT(installs[i])));
 	}
 }
 
@@ -204,11 +209,11 @@ void MemoryAccess::loadSkel(Jersey& jersey){
 	delete loaded;
 }
 
-void MemoryAccess::loadSkel(std::vector<Installation> &vec){
+void MemoryAccess::loadSkel(std::vector<Installation*> &vec){
 	JSON::Value *loaded = JSON::load(getSkelPath(memory::INSTS_SKEL_FILE).c_str());
 	JSON::List & insts = LIST(loaded);
 	for(size_t i = 0;i<insts.len();++i){
-		vec.push_back(DICT(insts[i]));
+		vec.push_back(new FanShop(DICT(insts[i])));
 	}
 	delete loaded;
 }
@@ -226,6 +231,6 @@ void MemoryAccess::removeObject(User &user){
 	remove(getUserPath(user.getUsername()).c_str());
 }
 
-void MemoryAccess::removeObject(Installation &install){
-	remove(getInstallationPath(install.getOwner(),install.getName()).c_str());
+void MemoryAccess::removeObject(Installation* install){
+	remove(getInstallationPath(install->getOwner(),install->getName()).c_str());
 }

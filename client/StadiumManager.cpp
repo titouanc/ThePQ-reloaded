@@ -41,12 +41,12 @@ void StadiumManager::printInstallationsList(){
 	// TODO implement printInstallationsList
 	cout << "Here are all the installations you own :" << endl;
 	for (size_t i = 0; i < _user.installations.size(); ++i){
-		cout << i << " - " << _user.installations[i].getName() << endl;
-		cout << "      Level : 				" << _user.installations[i].getLevel() << endl;
-		cout << "      Current Value : 		" << _user.installations[i].getCurrentValue() << endl;
-		cout << "      Upgrade Cost : 		" << _user.installations[i].getUpgradeCost() << endl;
-		cout << "      Refund Ratio :       " << _user.installations[i].getRefundRatio() << endl;
-		cout << "      Downgrade Refunds : 	" << _user.installations[i].getDowngradeRefunds() << endl;
+		cout << i << " - " << _user.installations[i]->getName() << endl;
+		cout << "      Level : 				" << _user.installations[i]->getLevel() << endl;
+		cout << "      Current Value : 		" << _user.installations[i]->getCurrentValue() << endl;
+		cout << "      Upgrade Cost : 		" << _user.installations[i]->getUpgradeCost() << endl;
+		cout << "      Refund Ratio :       " << _user.installations[i]->getRefundRatio() << endl;
+		cout << "      Downgrade Refunds : 	" << _user.installations[i]->getDowngradeRefunds() << endl;
 	}
 }
 
@@ -59,7 +59,7 @@ void StadiumManager::upgradeInstallation()
 	{
 		if (upgradeInstallation(choice))
 		{
-			_user.installations[choice].upgrade();
+			_user.installations[choice]->upgrade();
 		}
 	}
 	else
@@ -77,7 +77,7 @@ void StadiumManager::downgradeInstallation()
 	{
 		if (downgradeInstallation(choice))
 		{
-			_user.installations[choice].downgrade();
+			_user.installations[choice]->downgrade();
 		}
 	}
 	else
@@ -102,7 +102,7 @@ void StadiumManager::loadInstallations(){
 		toFill = LIST(response.get("data"));
 		for (size_t i = 0; i < toFill.len(); ++i)
 		{
-			_user.installations.push_back(DICT(toFill[i]));
+			_user.installations.push_back(new FanShop(DICT(toFill[i])));
 		}
 	}
 	delete serverResponse;

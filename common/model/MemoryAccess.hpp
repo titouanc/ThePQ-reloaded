@@ -26,7 +26,7 @@ namespace MemoryAccess
 	std::string getTeamNamesPath();
 	std::string getUserNamesPath();
 
-	void save(Installation&);
+	void save(Installation*);
 	void save(User&);
 	void save(Player&);
 	void save(Sale&);
@@ -36,23 +36,23 @@ namespace MemoryAccess
 	void load(Player&);
 	void load(User&);
 	void load(Sale&);
-	void load(Installation&);
+	void load(Installation*);
 	void load(Team&);//Loads _funds, etc.
 
 	JSON::List loadFilesInVec(std::string);
 	void load(std::vector<User>&);
-	void load(std::vector<Installation>&,std::string);
+	void load(std::vector<Installation*>&,std::string);
 	void load(std::vector<Player>&,std::string);
 	void load(std::vector<Sale*>&);
 	void load(std::vector<std::string>&, std::string);
 
 	void loadSkel(Broomstick&);
 	void loadSkel(Jersey&);
-	void loadSkel(std::vector<Installation>&);
+	void loadSkel(std::vector<Installation*>&);
 
 	void removeObject(Player&);
 	void removeObject(Sale&);
 	void removeObject(User&);
-	void removeObject(Installation&);
+	void removeObject(Installation*);
 }
 #endif

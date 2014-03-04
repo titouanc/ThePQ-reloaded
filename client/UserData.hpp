@@ -18,8 +18,16 @@ struct UserData
 	}
 	bool isLogged() { return username != ""; }
 
+	~UserData()
+	{
+		for (size_t i = 0; i < installations.size(); ++i)
+		{
+			delete installations[i];
+		}
+	}
+
 	// Cache
-	std::vector<Installation> installations;
+	std::vector<Installation*> installations;
 	std::vector<Player> players;
 	std::string username;
 };

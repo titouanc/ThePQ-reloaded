@@ -296,9 +296,9 @@ void Server::checkIfUserExists(string username, int peer_id)
 void Server::sendInstallationsList(int peer_id)
 {
 	JSON::List jsonInst;
-	std::vector<Installation> & insts = _users[peer_id]->getTeam().getInstallations();
+	std::vector<Installation*> & insts = _users[peer_id]->getTeam().getInstallations();
 	for(size_t i = 0;i<insts.size();++i){
-		jsonInst.append(JSON::Dict(insts[i]));
+		jsonInst.append(JSON::Dict(*insts[i]));
 	}
 	JSON::Dict msg;
 	msg.set("type", net::MSG::INSTALLATIONS_LIST);
@@ -308,8 +308,8 @@ void Server::sendInstallationsList(int peer_id)
 
 void Server::upgradeInstallation(int peer_id, size_t i)
 {
-	Installation & inst = _users[peer_id]->getTeam().getInstallations()[i];
-	inst.upgrade();
+	Installation* inst = _users[peer_id]->getTeam().getInstallations()[i];
+	inst->upgrade();
 	MemoryAccess::save(inst);
 	JSON::Dict msg;
 	msg.set("type", net::MSG::INSTALLATION_UPGRADE);
@@ -319,8 +319,8 @@ void Server::upgradeInstallation(int peer_id, size_t i)
 
 void Server::downgradeInstallation(int peer_id, size_t i)
 {
-	Installation & inst = _users[peer_id]->getTeam().getInstallations()[i];
-	inst.downgrade();
+	Installation* inst = _users[peer_id]->getTeam().getInstallations()[i];
+	inst->downgrade();
 	MemoryAccess::save(inst);
 	JSON::Dict msg;
 	msg.set("type", net::MSG::INSTALLATION_DOWNGRADE);
@@ -506,14 +506,14 @@ void Server::timeUpdateStadium()
 	{
 		users[i].loadTeam();
 		Team & team = users[i].getTeam();
-		vector<Installation>& installations = team.getInstallations();
+		vector<Installation*>& installations = team.getInstallations();
 		cout << "-----------team : " << team.getName() << endl;
 		cout << "old team funds : " << team.getFunds() << endl;
 		for (size_t j = 0; j < installations.size(); ++j)
 		{
-			cout << installations[j].getName() << endl;
-			team.buy(installations[j].getMaintenanceCost());
-			team.getPayed(installations[j].getIncome());
+			cout << installations[j]->getName() << endl;
+			team.buy(installations[j]->getMaintenanceCost());
+			team.getPayed(installations[j]->getIncome());
 		}
 		cout << "new team funds : " << team.getFunds() << endl;;
 		team.saveInfos();

@@ -21,7 +21,7 @@ public:
 	Installation(std::string owner = "", std::string name = "", int baseValue = 100, int level = 0, float refundRatio=0.5) :
 			_name(name), _level(level), _baseValue(baseValue), _refundRatio(refundRatio), _owner(owner){}
 
-	Installation(JSON::Dict &json): Installation(){
+	Installation(JSON::Dict const &json): Installation(){
 		if(json.hasKey(memory::INST_TYPE)) 		{_name = STR(json.get(memory::INST_TYPE)).value();}
 		if(json.hasKey(memory::LEVEL))			{_level = INT(json.get(memory::LEVEL));}
 		if(json.hasKey(memory::BASE_VALUE)) 	{_baseValue = INT(json.get(memory::BASE_VALUE));}
@@ -40,6 +40,8 @@ public:
 		json.set(net::MSG::USERNAME, _owner);
 		return json;
 	}
+	
+	virtual ~Installation() {}
 	
 	
 	/*=========Getters==========*/
@@ -68,7 +70,7 @@ public:
 								// funds that will be refunded when downgraded 1 level.
 
 	// TODO this has to be pure virtual. 10 is just a value for tests.
-	virtual int getMaxLevel() { return 10; } 
+	virtual int getMaxLevel() = 0;
 };
 
 class FanShop : public Installation
