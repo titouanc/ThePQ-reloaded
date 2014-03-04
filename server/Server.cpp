@@ -479,7 +479,6 @@ void Server::timeLoop()
 	}
 	else
 	{
-		cout << "testing..." << endl;
 		time_t timePrev = timeStart, timeNow;
 		while (_connectionManager.isRunning() == true)
 		{
@@ -495,7 +494,6 @@ void Server::timeLoop()
 			timeUpdateChampionship();
 		}
 	}
-	cout << "exiting..." << endl;
 }
 
 void Server::timeUpdateStadium()
