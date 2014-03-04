@@ -41,14 +41,17 @@ int Installation::getDowngradeRefunds() const {
 void Installation::upgrade(){
 	/*Method upgrading the installation (level and currentValue)*/
 	if (getLevel() < getMaxLevel()){
-		setLevel( getLevel() + 1 );
+		_level++;
 	}
 }
 
 void Installation::downgrade(){
 	/*Method downgrading the installation (level and currentValue)*/
 	if (getLevel() > 0){
-		setLevel( getLevel() - 1 );
+		_level--;
 	}
 }
+
+FanShop::FanShop(std::string owner) : Installation(owner, "FanShop", 1000, 0)
+{}
 
