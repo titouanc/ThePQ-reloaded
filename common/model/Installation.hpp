@@ -18,32 +18,12 @@ protected:
 	float _refundRatio;
 	std::string _owner;
 public:
-	Installation(std::string owner = "", std::string name = "", int baseValue = 100, int level = 0, float refundRatio=0.5) :
-			_name(name), _level(level), _baseValue(baseValue), _refundRatio(refundRatio), _owner(owner){}
-
-	Installation(JSON::Dict const &json): Installation(){
-		if(json.hasKey(memory::INST_TYPE)) 		{_name = STR(json.get(memory::INST_TYPE)).value();}
-		if(json.hasKey(memory::LEVEL))			{_level = INT(json.get(memory::LEVEL));}
-		if(json.hasKey(memory::BASE_VALUE)) 	{_baseValue = INT(json.get(memory::BASE_VALUE));}
-		if(json.hasKey(memory::REFUND_RATIO))	{_refundRatio = FLOAT(json.get(memory::REFUND_RATIO));}
-		if(json.hasKey(net::MSG::USERNAME))		{_owner = STR(json.get(net::MSG::USERNAME)).value();}
-	}
-
-	
-	operator JSON::Dict()
-	{
-		JSON::Dict json;
-		json.set(memory::INST_TYPE, _name);
-		json.set(memory::LEVEL, _level);
-		json.set(memory::BASE_VALUE, _baseValue);
-		json.set(memory::REFUND_RATIO, _refundRatio);
-		json.set(net::MSG::USERNAME, _owner);
-		return json;
-	}
-	
-	virtual ~Installation() {}
-	
 	static Installation* CAST(JSON::Dict const & json);
+	Installation(std::string owner = "", std::string name = "", int baseValue = 100, 
+					int level = 0, float refundRatio=0.5);
+	Installation(JSON::Dict const &json);
+	operator JSON::Dict();
+	virtual ~Installation();
 	
 	/*=========Getters==========*/
 	std::string getOwner() const {return _owner;}
@@ -54,8 +34,6 @@ public:
 	
 	/*=========Setters===========*/
 	void setOwner(std::string username) {_owner = username;}
-	void setRefundRatio(float refundRatio) { _refundRatio = refundRatio; } 
-	void setName(std::string name) { _name = name; }
 
 	/*****************************/
 	void upgrade();

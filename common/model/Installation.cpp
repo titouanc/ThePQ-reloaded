@@ -10,7 +10,34 @@ Installation* Installation::CAST(JSON::Dict const & json)
 	else if (name == "Food Stand") return new FoodStand(json);
 	else if (name == "Tribune") return new Tribune(json);
 	else if (name == "Medical Center") return new MedicalCenter(json);
+	// WHAT TODO ?
 }
+
+Installation::Installation(std::string owner, std::string name, int baseValue, int level, float refundRatio) :
+_name(name), _level(level), _baseValue(baseValue), _refundRatio(refundRatio), _owner(owner){}
+
+Installation::Installation(JSON::Dict const &json): Installation()
+{
+	if(ISSTR(json.get(memory::INST_TYPE)))		{_name = STR(json.get(memory::INST_TYPE)).value();}
+	if(ISINT(json.get(memory::LEVEL)))			{_level = INT(json.get(memory::LEVEL));}
+	if(ISINT(json.get(memory::BASE_VALUE))) 	{_baseValue = INT(json.get(memory::BASE_VALUE));}
+	if(ISFLOAT(json.get(memory::REFUND_RATIO))){_refundRatio = FLOAT(json.get(memory::REFUND_RATIO));}
+	if(ISSTR(json.get(net::MSG::USERNAME)))	{_owner = STR(json.get(net::MSG::USERNAME)).value();}
+}
+
+Installation::operator JSON::Dict()
+{
+	JSON::Dict json;
+	json.set(memory::INST_TYPE, _name);
+	json.set(memory::LEVEL, _level);
+	json.set(memory::BASE_VALUE, _baseValue);
+	json.set(memory::REFUND_RATIO, _refundRatio);
+	json.set(net::MSG::USERNAME, _owner);
+	return json;
+}
+
+Installation::~Installation()
+{}
 
 int Installation::getMaintenanceCost() const {
 	/*Method returning integer representing the maintenance cost of the installation*/

@@ -3,13 +3,13 @@ all: json model network
 .PHONY: all clean mrproper json model network
 
 json:
-	make -C json
+	+make -C json
 
 model: json
-	make -C model
+	+make -C model
 
 network: json
-	make -C network
+	+make -C network
 
 clean:
 	rm -f *.ok

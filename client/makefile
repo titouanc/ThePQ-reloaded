@@ -20,7 +20,7 @@ graphicClient.app: GraphicMain.o ${OBJS} ${LIBS}
 	${CXX} ${LDFLAGS} -o $@ $^
 
 graphics/libgraphics.a:
-	make -C graphics/
+	+make -C graphics/
 
 include ../Makefile.includes
 
