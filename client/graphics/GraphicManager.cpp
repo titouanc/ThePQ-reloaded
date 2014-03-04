@@ -29,3 +29,8 @@ void GUI::GraphicManager::deleteCanvas() {
 void GUI::GraphicManager::displayCanvas() {
 	_controller.addLayer(_canvas);
 }
+
+void GUI::GraphicManager::redrawCanvas(){
+	_canvas.renderTo(_controller.window);
+	_controller.window.display();
+}

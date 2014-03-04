@@ -4,6 +4,8 @@
 namespace GUI{
 	class Widget {
 	public:
+		Widget(): _x(0), _y(0), _w(0), _h(0), _hidden(false){}
+		Widget(int x, int y, int w, int h, bool hidden): _x(x), _y(y), _w(w), _h(h), _hidden(hidden){}
 		virtual void setPosition(int x, int y){
 			_x = x; 
 			_y = y;
