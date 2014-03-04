@@ -4,6 +4,7 @@
 #include "Player.hpp"
 #include "PosMatrix.hpp"
 #include <cmath>
+#include <json/Document.hpp>
 
 TEST(player_instanciation)
 	JSON::Value *json = JSON::load("fixtures/chaser.json");
@@ -53,13 +54,26 @@ TEST(posmatrix)
 	ASSERT(it == matrix.end());
 ENDTEST()
 
+TEST(chaser_document)
+	JSON::Document<Chaser> doc;
+	doc.with("fixtures/chaser.json", [&](Chaser & chaser){
+		ASSERT(chaser.getName() == "Chaser1");
+		chaser.setName("Coucougnette");
+	});
+
+	doc.with("fixtures/chaser.json", [&](Chaser & chaser){
+		ASSERT(chaser.getName() == "Coucougnette");
+		chaser.setName("Chaser1");
+	});
+ENDTEST()
 
 int main(){
 	TestFunc tests[] = {
 		ADDTEST(player_instanciation),
 		ADDTEST(beaters_instanciation),
 		ADDTEST(collision_score),
-		ADDTEST(posmatrix)
+		ADDTEST(posmatrix),
+		ADDTEST(chaser_document)
 	};
 	return RUN(tests);
 }
