@@ -24,6 +24,7 @@ namespace MemoryAccess
 	std::string getTeamInfosPath(std::string);
 	std::string getSkelPath(std::string);
 	std::string getTeamNamesPath();
+	std::string getUserNamesPath();
 
 	void save(Installation&);
 	void save(User&);
@@ -39,6 +40,7 @@ namespace MemoryAccess
 	void load(Team&);//Loads _funds, etc.
 
 	JSON::List loadFilesInVec(std::string);
+	void load(std::vector<User>&);
 	void load(std::vector<Installation>&,std::string);
 	void load(std::vector<Player>&,std::string);
 	void load(std::vector<Sale*>&);

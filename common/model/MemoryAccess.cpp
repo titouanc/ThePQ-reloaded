@@ -42,6 +42,9 @@ std::string MemoryAccess::getSkelPath(std::string file){
 std::string MemoryAccess::getTeamNamesPath(){
 	return memory::GLOBAL_DATA_DIR + memory::TEAMNAMES_FILE + memory::FILE_FORMAT;
 }
+std::string MemoryAccess::getUserNamesPath(){
+	return memory::GLOBAL_DATA_DIR + memory::USERNAMES_FILE + memory::FILE_FORMAT;
+}
 
 void MemoryAccess::save(Installation& install){
 	std::string path = getInstallationPath(install.getOwner(), install.getName());
@@ -74,13 +77,18 @@ void MemoryAccess::save(Team& team){
 	toSave.save(path.c_str());
 }
 void MemoryAccess::save(std::vector<std::string> &toSave,std::string type){
+	std::string path = "";
 	if(type == memory::ALL_TEAM_NAMES){
-		JSON::List jsonToSave;
-		for(size_t i =0;i<toSave.size();++i){
-			jsonToSave.append(toSave[i]);
-		}
-		jsonToSave.save(getTeamNamesPath().c_str());
+		path = getTeamNamesPath();
 	}
+	else if (type== memory::ALL_USER_NAMES){
+		path = getUserNamesPath();
+	}
+	JSON::List jsonToSave;
+	for(size_t i =0;i<toSave.size();++i){
+		jsonToSave.append(toSave[i]);
+	}
+	jsonToSave.save(path.c_str());
 }
 
 void MemoryAccess::load(Player& player){
@@ -117,7 +125,7 @@ JSON::List MemoryAccess::loadFilesInVec(std::string directory){/*Check for memle
 	DIR* dir = NULL;
 	struct dirent* file = NULL;
 	dir = opendir(directory.c_str());
-	if(dir!=NULL){		
+	if(dir!=NULL){
 		while((file = readdir(dir)) != NULL){
 			std::string str1 = file->d_name;
 			std::string str2 = memory::FILE_FORMAT;
@@ -133,6 +141,18 @@ JSON::List MemoryAccess::loadFilesInVec(std::string directory){/*Check for memle
 	}
 	closedir(dir);
 	return ret;
+}
+
+void MemoryAccess::load(std::vector<User> &toFill)
+{
+	vector<string> users;
+	MemoryAccess::load(users, memory::ALL_USER_NAMES);
+	for (size_t i = 0; i < users.size(); ++i)
+	{
+		User user(users[i]);
+		MemoryAccess::load(user);
+		toFill.push_back(user);
+	}
 }
 
 void MemoryAccess::load(std::vector<Installation> &toFill,std::string username){
@@ -157,14 +177,19 @@ void MemoryAccess::load(std::vector<Sale*> &toFill){
 }
 
 void MemoryAccess::load(std::vector<std::string> &toFill, std::string type){
+	std::string path = "";
 	if(type == memory::ALL_TEAM_NAMES){
-		JSON::Value *loaded = JSON::load(getTeamNamesPath().c_str());
-		JSON::List & names = LIST(loaded);
-		for(size_t i=0;i<names.len();++i){
-			toFill.push_back(STR(names[i]).value());
-		} 
-		delete loaded;
+		path = getTeamNamesPath();
 	}
+	else if (type == memory::ALL_USER_NAMES){
+		path = getUserNamesPath();	
+	}
+	JSON::Value *loaded = JSON::load(path.c_str());
+	JSON::List & names = LIST(loaded);
+	for(size_t i=0;i<names.len();++i){
+		toFill.push_back(STR(names[i]).value());
+	} 
+	delete loaded;
 }
 
 void MemoryAccess::loadSkel(Broomstick& broom){

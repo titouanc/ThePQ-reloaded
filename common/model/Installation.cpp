@@ -3,7 +3,12 @@
 
 int Installation::getMaintenanceCost() const {
 	/*Method returning integer representing the maintenance cost of the installation*/
-	return getValueAtLevel(getLevel())/10; 
+	return getValueAtLevel(getLevel())/100; 
+}
+
+int Installation::getIncome() const {
+	/*Method returning integer representing the income of the installation */
+	return getValueAtLevel(getLevel())/50;
 }
 
 int Installation::getValueAtLevel(int level) const {

@@ -20,6 +20,13 @@ std::string humanExcName(const char *name)
 	return res;
 }
 
+static void* runTimeLoop(void* args)
+{
+	Server* server = (Server*) args;
+	server->timeLoop();
+	pthread_exit(NULL);
+}
+
 Server::Server(NetConfig const & config) : 
 	_inbox(), _outbox(), _users(),
 	_connectionManager(_inbox, _outbox, config.ip.c_str(), config.port, config.maxClients),
@@ -43,6 +50,7 @@ Server::~Server()
 void Server::run()
 {
 	srand(time(NULL));	// rand() is used throughout some modules
+	pthread_create(&_timeThread, NULL, runTimeLoop, this);
 	while (_connectionManager.isRunning() || _inbox.available()){
 		Message const & msg = _inbox.pop();
 		try {treatMessage(msg);}
@@ -460,4 +468,59 @@ User *Server::getUserByName(std::string username)
 		if (username == iter->second->getUsername())
 			return iter->second;
 	return NULL;
+}
+
+void Server::timeLoop()
+{
+	time_t timeStart = time(NULL);
+	if (timeStart == -1)
+	{
+		cout << "error time" << endl;
+	}
+	else
+	{
+		cout << "testing..." << endl;
+		time_t timePrev = timeStart, timeNow;
+		while (_connectionManager.isRunning() == true)
+		{
+			do
+			{
+				sleep(5);
+				timeNow = time(NULL);
+			}
+			while (timeNow - timePrev < 10);
+			cout << "tick : " << time(NULL) << endl;
+			timePrev = timeNow;
+			timeUpdateStadium();
+			timeUpdateChampionship();
+		}
+	}
+	cout << "exiting..." << endl;
+}
+
+void Server::timeUpdateStadium()
+{
+	vector<User> users;
+	MemoryAccess::load(users);
+	for (size_t i = 0; i < users.size(); ++i)
+	{
+		users[i].loadTeam();
+		Team & team = users[i].getTeam();
+		vector<Installation>& installations = team.getInstallations();
+		cout << "-----------team : " << team.getName() << endl;
+		cout << "old team funds : " << team.getFunds() << endl;
+		for (size_t j = 0; j < installations.size(); ++j)
+		{
+			cout << installations[j].getName() << endl;
+			team.buy(installations[j].getMaintenanceCost());
+			team.getPayed(installations[j].getIncome());
+		}
+		cout << "new team funds : " << team.getFunds() << endl;;
+		team.saveInfos();
+	}
+}
+
+void Server::timeUpdateChampionship()
+{
+
 }
