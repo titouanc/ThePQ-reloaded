@@ -33,6 +33,7 @@ Server::Server(NetConfig const & config) :
 	_market(new PlayerMarket(this)),_matches(),_adminManager(new AdminManager(_connectionManager))
 {
 	_connectionManager.start();
+	_adminManager->start();
 	cout << "Launched server on " << _connectionManager.ip() << ":" << _connectionManager.port() << endl;
 }
 
@@ -124,9 +125,11 @@ void Server::treatMessage(const Message &message)
 					delete it->second;
 					_users.erase(it);
 				}
-			} else if (ISDICT(received.get("data"))){
-				if(messageType == net::MSG::CHAMPIONSHIP_CREATION)
-					std::cout<<"LOL"<<std::endl;
+			}
+			else if(messageType == MSG::ADMIN_CLIENT){
+				_adminManager->acquireClient(message.peer_id);
+			}
+			else if (ISDICT(received.get("data"))){
 				if (messageType == MSG::LOGIN){
 					User *loggedIn = logUserIn(DICT(received.get("data")), message.peer_id);
 					/* If someone successfully logged in; send his offline 
@@ -138,9 +141,6 @@ void Server::treatMessage(const Message &message)
 						}
 						loggedIn->clearOfflineMsg();
 					}
-				}
-				else if(messageType == MSG::ADMIN_LOGIN){
-					logAdminIn(DICT(received.get("data")),message.peer_id);
 				}
 				else if(messageType == MSG::USER_CHOOSE_TEAMNAME)
 					checkTeamName(DICT(received.get("data")), message.peer_id);
@@ -181,14 +181,6 @@ void Server::treatMessage(const Message &message)
 				}
 			}
 		}
-	}
-}
-
-void Server::logAdminIn(const JSON::Dict& data, int peer_id){
-	JSON::Dict response = _adminManager->loginAdmin(data,peer_id);
-	if(STR(response.get("data")).value()!=net::MSG::USER_LOGIN){
-		Message status(peer_id, response.clone());
-		_outbox.push(status);
 	}
 }
 

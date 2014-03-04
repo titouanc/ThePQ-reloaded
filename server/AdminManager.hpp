@@ -12,12 +12,11 @@ class AdminManager : public SubConnectionManager{
 private:
 	SharedQueue<Message> _inbox, _outbox;
 	User* _admin;
-	pthread_t _admin_thread;
 	int _admin_peer_id;
 
 public:
 	AdminManager(BaseConnectionManager&);
-	JSON::Dict loginAdmin(const JSON::Dict&, int);
+	void loginAdmin(const JSON::Dict&, int);
 	void logoutAdmin();
 	bool adminIsLogged();
 	void run();
@@ -25,7 +24,7 @@ public:
 	void createChampionship(const JSON::Dict&, int);
 	User* load(std::string);
 	void makeDefaultAdmin();
-	void main_loop();
+	void _mainloop_out();
 };
 
 

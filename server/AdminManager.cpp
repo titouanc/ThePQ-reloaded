@@ -1,7 +1,7 @@
 #include "AdminManager.hpp"
 
 AdminManager::AdminManager(BaseConnectionManager & connections) : 
-	SubConnectionManager(_inbox, _outbox, connections), _admin(NULL), _admin_thread(), _admin_peer_id()
+	SubConnectionManager(_inbox, _outbox, connections), _admin(NULL), _admin_peer_id()
 {
 	makeDefaultAdmin();
 }
@@ -13,7 +13,7 @@ void AdminManager::makeDefaultAdmin(){
 }
 
 /* Login handlers */
-JSON::Dict AdminManager::loginAdmin(const JSON::Dict& data, int peer_id){
+void AdminManager::loginAdmin(const JSON::Dict& data, int peer_id){
 	JSON::Dict response;
 	if (ISSTR(data.get(net::MSG::USERNAME)) && ISSTR(data.get(net::MSG::PASSWORD))){
 		std::string const & username = STR(data.get(MSG::USERNAME));
@@ -24,12 +24,8 @@ JSON::Dict AdminManager::loginAdmin(const JSON::Dict& data, int peer_id){
 			if(_admin != NULL){
 				if(_admin->getPassword() == password){
 					response.set("data",net::MSG::USER_LOGIN);
-					acquireClient(peer_id);
 					_admin_peer_id = peer_id;
 					std::cout << "[" << this << "] \033[1m" << peer_id << "\033[32m  admin connected\033[0m" << std::endl; 
-					run();
-					Message status(peer_id, response.clone());
-					_outbox.push(status);
 				}
 				else{
 					response.set("data",net::MSG::PASSWORD_ERROR);
@@ -43,14 +39,13 @@ JSON::Dict AdminManager::loginAdmin(const JSON::Dict& data, int peer_id){
 		else
 			response.set("data",net::MSG::ALREADY_LOGGED_IN);
 	}
-	return response;
+	_doWrite(peer_id,&response);
 }
 
 void AdminManager::logoutAdmin(){
 	delete _admin;
 	_admin = NULL;
-	stop();
-	releaseClient(_admin_peer_id);	
+	stop();	
 }
 
 bool AdminManager::adminIsLogged(){
@@ -66,22 +61,9 @@ User* AdminManager::load(std::string username){
 	catch(const JSON::IOError& e){
 		return NULL;
 	}
-}	
-
-/* Main thread creation + starting in and out queues */
-static void* runAdminThread(void* p){
-	AdminManager *manager = static_cast<AdminManager*>(p);
-	manager->main_loop();
-	pthread_exit(NULL);
 }
 
-void AdminManager::run(){
-	start();
-	if(pthread_create(&_admin_thread, NULL, runAdminThread, this) != 0)
-		throw "Error occured when starting main admin thread";
-}
-
-void AdminManager::main_loop(){
+void AdminManager::_mainloop_out(){
 	while (isRunning() || _inbox.available()){
 		Message const & msg = _inbox.pop();
 		treatAdminMessage(msg);
@@ -100,7 +82,10 @@ void AdminManager::treatAdminMessage(const Message &message){
 				logoutAdmin();
 			}
 			if(ISDICT(received.get("data"))){
-				if(messageType == net::MSG::CHAMPIONSHIP_CREATION){
+				if(messageType == net::MSG::ADMIN_LOGIN){
+					loginAdmin(DICT(received.get("data")),message.peer_id);
+				}
+				else if(messageType == net::MSG::CHAMPIONSHIP_CREATION){
 					createChampionship(DICT(received.get("data")),message.peer_id);
 				}
 			}
@@ -111,4 +96,7 @@ void AdminManager::treatAdminMessage(const Message &message){
 /* Requests */
 void AdminManager::createChampionship(const JSON::Dict& data, int peer_id){
 	std::cout<<"\033[32mCREATING CHAMPIONSHIP\033[0m"<<std::endl;
+	if(peer_id != _admin_peer_id){
+		//TODO
+	}
 }

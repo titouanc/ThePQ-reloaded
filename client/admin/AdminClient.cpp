@@ -1,7 +1,13 @@
 #include "AdminClient.hpp"
 
 AdminClient::AdminClient(NetConfig const &config) : _connection(config.host, config.port), _isRunning(true),
-_admin(){}
+_admin()
+{
+	JSON::Dict identify;
+	identify.set("type",net::MSG::ADMIN_CLIENT);
+	identify.set("data","");
+	_connection.send(identify);
+}
 
 void AdminClient::run(){
 	std::cout<<"Welcome. This is the admin client for The Pro Quidditch Manager 2014."<<std::endl;

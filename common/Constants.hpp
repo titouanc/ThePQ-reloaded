@@ -98,6 +98,7 @@ namespace net
 		static const std::string MATCH_STATUS  = "MSTATUS";
 
 		//Admin------------------
+		static const std::string ADMIN_CLIENT = "ADMIN";
 		static const std::string ADMIN_LOGIN = "ALI";
 		static const std::string CHAMPIONSHIP_CREATION = "ACSHIPC";
 	}
