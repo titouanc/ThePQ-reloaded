@@ -14,11 +14,14 @@ private:
 	void displayChoice();	// choice between login and register
 	void displayLoginForm();
 	void displayRegisterForm();
+	void displayTeamNameForm();
+
 	void submitLoginForm();
 	void submitRegisterForm();
+	void submitTeamNameForm();
 
-	GUI::Button<GraphicUserManager> *_doLoginButton;
-	GUI::Button<GraphicUserManager> *_doRegisterButton;
+	GUI::Button<GraphicUserManager> *_loginChoiceButton;
+	GUI::Button<GraphicUserManager> *_registerChoiceButton;
 
 	// Login
 	GUI::Button<GraphicUserManager> *_submitLoginButton;
@@ -26,9 +29,11 @@ private:
 	GUI::Textbox *_passwordTextbox;
 	// Register
 	GUI::Button<GraphicUserManager> *_submitRegisterButton;
-	GUI::Textbox *_newUsernameTextbox;
-	GUI::Textbox *_newPasswordTextbox;
 	GUI::Textbox *_passwordConfirmationTextbox;
+
+	// Team name
+	GUI::Button<GraphicUserManager> *_submitTeamNameButton;
+	GUI::Textbox *_teamNameTextbox;
 };
 
 #endif

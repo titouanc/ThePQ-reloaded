@@ -9,14 +9,15 @@ using namespace GUI;
 #define NEW_USERNAME_TEXTBOX_ID "New Username"
 #define NEW_PASSWORD_TEXTBOX_ID "New Password"
 #define NEW_PASSWORD_CONFIRMATION_TEXTBOX_ID "Confirm Password"
+#define TEAM_NAME_TEXTBOX_ID "Team Name"
 
 GraphicUserManager::GraphicUserManager(net::ClientConnectionManager& connection, UserData& user, GUI::MainController &controller) 
 			: UserManager(connection, user), GraphicManager(controller){
 	
-	_doLoginButton = _canvas.addButton<GraphicUserManager>(&GraphicUserManager::displayLoginForm, this, "Login");
-	_doRegisterButton = _canvas.addButton<GraphicUserManager>(&GraphicUserManager::displayRegisterForm, this, "Register");
-	_doLoginButton->setPosition(900, 350);
-	_doRegisterButton->setPosition(900, 410);
+	_loginChoiceButton = _canvas.addButton<GraphicUserManager>(&GraphicUserManager::displayLoginForm, this, "Login");
+	_registerChoiceButton = _canvas.addButton<GraphicUserManager>(&GraphicUserManager::displayRegisterForm, this, "Register");
+	_loginChoiceButton->setPosition(900, 350);
+	_registerChoiceButton->setPosition(900, 410);
 
 	// Login form
 	_usernameTextbox = _canvas.addTextbox(USERNAME_TEXTBOX_ID);
@@ -46,16 +47,16 @@ void GraphicUserManager::displayChoice(){
 	_submitRegisterButton->hide();
 	_submitLoginButton->hide();
 
-	_doLoginButton->unhide();
-	_doRegisterButton->unhide();
+	_loginChoiceButton->unhide();
+	_registerChoiceButton->unhide();
 	redrawCanvas();
 }
 
 void GraphicUserManager::displayLoginForm(){
 	_passwordConfirmationTextbox->hide();
 	_submitRegisterButton->hide();
-	_doLoginButton->hide();
-	_doRegisterButton->hide();
+	_loginChoiceButton->hide();
+	_registerChoiceButton->hide();
 
 	_usernameTextbox->unhide();
 	_passwordTextbox->unhide();
@@ -64,14 +65,28 @@ void GraphicUserManager::displayLoginForm(){
 }
 
 void GraphicUserManager::displayRegisterForm(){
-	_doLoginButton->hide();
-	_doRegisterButton->hide();
+	_loginChoiceButton->hide();
+	_registerChoiceButton->hide();
 	_submitLoginButton->hide();
 
 	_usernameTextbox->unhide();
 	_passwordTextbox->unhide();
 	_passwordConfirmationTextbox->unhide();
 	_submitRegisterButton->unhide();
+	redrawCanvas();
+}
+
+void GraphicUserManager::displayTeamNameForm(){
+	_submitTeamNameButton = _canvas.addButton<GraphicUserManager>(&GraphicUserManager::submitTeamNameForm, this, "Let's gooooo!");
+	_teamNameTextbox = _canvas.addTextbox(TEAM_NAME_TEXTBOX_ID);
+	
+	int center = _controller.window.getSize().x/2;
+	_teamNameTextbox->setPosition(center-_teamNameTextbox->getWidth()/2, 300);
+	_submitTeamNameButton->setPosition(center-_submitTeamNameButton->getWidth()/2, 360);
+
+	_usernameTextbox->hide();
+	_passwordTextbox->hide();
+	_submitLoginButton->hide();
 	redrawCanvas();
 }
 
@@ -92,6 +107,10 @@ void GraphicUserManager::submitLoginForm(){
 	{
 		cout << "\nYou're already logged in from another location" << endl;
 	}
+	catch (NoTeamNameException & e)
+	{
+		displayTeamNameForm();
+	}
 }
 
 void GraphicUserManager::submitRegisterForm(){
@@ -107,6 +126,16 @@ void GraphicUserManager::submitRegisterForm(){
 	catch (UserAlreadyExistsException & e)
 	{
 		cout << "\nUser already exists!" << endl;
+	}
+}
+
+void GraphicUserManager::submitTeamNameForm(){
+	try{
+		chooseTeamName(_user.username,_teamNameTextbox->getText());
+		GraphicStadiumManager gsm(_connection, _user, _controller);
+	}
+	catch(TeamNameNotAvailableException e){
+		cout << "Team name is not available" << endl;
 	}
 }
 
