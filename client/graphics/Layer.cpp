@@ -22,14 +22,14 @@ void GUI::Layer::renderTo(sf::RenderTarget & dest){
 
 void GUI::Layer::handleClick(int x, int y){
 	for (unsigned int i=0; i<_clickables.size(); ++i){
-		if (_clickables[i]->isInBounds(x, y))
+		if (_clickables[i]->isInBounds(x, y) && !_clickables[i]->isHidden())
 			_clickables[i]->triggerAction();
 	}
 	// checking for textboxes
 	bool hasTextboxBeenSelected = false;
 	map<string, Textbox*>::iterator it = _textboxes.begin();
 	for(; it != _textboxes.end(); it++){
-		if (it->second->isInBounds(x, y)){
+		if (it->second->isInBounds(x, y) && !it->second->isHidden()){
 			hasTextboxBeenSelected = true;
 			_focusedTextbox = it->second;
 			it->second->focus();
