@@ -15,15 +15,18 @@ private:
 	int _admin_peer_id;
 
 public:
-	AdminManager(BaseConnectionManager&, int, User*);
+	AdminManager(BaseConnectionManager&);
+	void loginAdmin(User*, int);
+	void logoutAdmin();
+	bool adminIsLogged();
 	void run();
 	void treatAdminMessage();
 	void createChampionship(const JSON::Dict&, int);
-	static void load(std::string);
+	void load(std::string);
 	static void makeDefaultAdmin();
 	void main_loop();
-	void logAdminOut();
-	bool adminIsLogged();
+	
+	
 };
 
 

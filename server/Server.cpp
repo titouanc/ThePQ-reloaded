@@ -23,7 +23,7 @@ std::string humanExcName(const char *name)
 Server::Server(NetConfig const & config) : 
 	_inbox(), _outbox(), _users(),
 	_connectionManager(_inbox, _outbox, config.ip.c_str(), config.port, config.maxClients),
-	_market(new PlayerMarket(this)),_matches(),_adminManager(NULL)
+	_market(new PlayerMarket(this)),_matches(),_adminManager(new AdminManager(_connectionManager))
 {
 	_adminManager::makeDefaultAdmin();
 	_connectionManager.start();
@@ -176,42 +176,8 @@ void Server::treatMessage(const Message &message)
 }
 
 void Server::logAdminIn(const JSON::Dict& data, int peer_id){
-	checkAdminManagerValidity();
-	if (ISSTR(data.get(net::MSG::USERNAME)) && ISSTR(data.get(net::MSG::PASSWORD))){
-		std::string const & username = STR(data.get(MSG::USERNAME));
-		std::string const & password = STR(data.get(MSG::PASSWORD));
-		JSON::Dict response = JSON::Dict();
-		response.set("type", MSG::STATUS);
-		if (_adminManager == NULL){
-			User* admin = AdminManager::load(username);
-			if(admin != NULL){
-				if(admin->getPassword() == password){
-					response.set("data",net::MSG::USER_LOGIN);
-					_adminManager = new AdminManager(_connection, peer_id, admin);
-					_adminManager->run();
-				}
-				else{
-					response.set("data",net::MSG::PASSWORD_ERROR);
-					delete admin;
-				}
-			}
-			else
-				response.set("data",net::MSG::USER_NOT_FOUND);
-		}
-		else
-			response.set("data",net::MSG::ALREADY_LOGGED_IN);
-		Message status(peer_id, response.clone());
-		_outbox.push(status);
-	}
-}
-
-void Server::checkAdminManagerValidity(){
-	if(_adminManager != NULL){
-		if(!(_adminManager->adminIsLogged())){
-			delete _adminManager;
-			_adminManager = NULL;
-		}
-	}
+	Message status(peer_id, _adminManager->loginAdmin(data,peer_id).clone());
+	_outbox.push(status);
 }
 
 void Server::registerUser(const JSON::Dict &credentials, int peer_id)

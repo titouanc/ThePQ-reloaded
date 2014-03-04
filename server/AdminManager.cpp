@@ -1,17 +1,56 @@
 #include "AdminManager.hpp"
 
 AdminManager::AdminManager(BaseConnectionManager & connections, int peer_id, User* admin) : 
-	SubConnectionManager(_inbox, _outbox, connections), _admin(admin), _admin_thread(), 
-	_admin_peer_id(peer_id)
-{
-	acquireClient(peer_id);
-	std::cout << peer_id << "\033[32m Admin connected.\033[0m" << std::endl; 
-}
+	SubConnectionManager(_inbox, _outbox, connections), _admin(admin), _admin_thread()
+{}
 
 /* Creates an admin account */
 void AdminManager::makeDefaultAdmin(){
 	User admin(ADMIN_USERNAME,ADMIN_PASSWORD);
 	MemoryAccess::saveAdmin(admin);
+}
+
+/* Login handlers */
+JSON::Dict AdminManager::loginAdmin(const JSON::Dict& data, int peer_id){
+	if (ISSTR(data.get(net::MSG::USERNAME)) && ISSTR(data.get(net::MSG::PASSWORD))){
+		std::string const & username = STR(data.get(MSG::USERNAME));
+		std::string const & password = STR(data.get(MSG::PASSWORD));
+		JSON::Dict response;
+		response.set("type", MSG::STATUS);
+		if (! adminIsLogged()){
+			_admin = load(username);
+			if(_admin != NULL){
+				if(_admin->getPassword() == password){
+					response.set("data",net::MSG::USER_LOGIN);
+					acquireClient(peer_id);
+					_admin_peer_id = peer_id;
+					std::cout << peer_id << "\033[32m Admin connected.\033[0m" << std::endl; 
+					run();
+				}
+				else{
+					response.set("data",net::MSG::PASSWORD_ERROR);
+					delete _admin;
+					_admin = NULL;
+				}
+			}
+			else
+				response.set("data",net::MSG::USER_NOT_FOUND);
+		}
+		else
+			response.set("data",net::MSG::ALREADY_LOGGED_IN);
+	}
+	return response;
+}
+
+void AdminManager::logoutAdmin(){
+	delete admin;
+	admin = NULL;
+	stop();
+	releaseClient(_admin_peer_id);	
+}
+
+void AdminManager::adminIsLogged(){
+	return admin != NULL;
 }
 
 void AdminManager::load(std::string username){
@@ -46,6 +85,7 @@ void AdminManager::main_loop(){
 	}
 }
 
+/* Admin messages handler */
 void AdminManager::treatAdminMessage{
 	if (ISDICT(message.data)){
 		JSON::Dict const &received = DICT(message.data);
@@ -60,17 +100,7 @@ void AdminManager::treatAdminMessage{
 	}
 }
 
+/* Requests */
 void AdminManager::createChampionship(const JSON::Dict& data, int peer_id){
 	std::cout<<"\033[32mCREATING CHAMPIONSHIP\033[0m"<<std::endl;
-}
-
-void AdminManager::logAdminOut(){
-	delete admin;
-	admin = NULL;
-	releaseClient();
-	stop();
-}
-
-void AdminManager::adminIsLogged(){
-	return admin != NULL;
 }
