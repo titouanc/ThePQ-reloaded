@@ -56,15 +56,19 @@ ENDTEST()
 
 TEST(chaser_document)
 	JSON::Document<Chaser> doc;
+	
+	std::string name;
 	doc.with("fixtures/chaser.json", [&](Chaser & chaser){
-		ASSERT(chaser.getName() == "Chaser1");
+		name = chaser.getName();
 		chaser.setName("Coucougnette");
 	});
+	ASSERT(name == "Chaser1");
 
 	doc.with("fixtures/chaser.json", [&](Chaser & chaser){
-		ASSERT(chaser.getName() == "Coucougnette");
+		name = chaser.getName();
 		chaser.setName("Chaser1");
 	});
+	ASSERT(name == "Coucougnette");
 ENDTEST()
 
 int main(){
