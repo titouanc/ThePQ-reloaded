@@ -96,7 +96,7 @@ int FanShop::getMaintenanceCost() const
 int FanShop::getIncome() const
 {
 	// EXAMPLE ==> TODO
-	return getCurrentValue()/500;
+	return getCurrentValue()/50;
 }
 	
 FoodStand::FoodStand(std::string owner) : Installation(owner, memory::FOOD_STAND, 500)

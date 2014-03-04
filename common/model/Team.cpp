@@ -101,7 +101,7 @@ void Team::timeUpdate()
 		cout << _installations[j]->getName() << endl;
 		cout << _installations[j]->getMaintenanceCost() << endl;
 		_funds -= _installations[j]->getMaintenanceCost();
-		_funds += _installations[j]->getIncome();
+		_funds += _fame*_installations[j]->getIncome(); // fame dependant income
 	}
 	cout << "new team funds : " << getFunds() << endl;;
 	saveInfos();
