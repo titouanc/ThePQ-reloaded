@@ -11,9 +11,23 @@
 #include <cstring>
 
 namespace JSON {
+	/*
+	 * An object of this class provide a thread-safe method to modify existing
+	 * files, and map them to C++ objects transparently. Any object that define
+	 * at least the following methods:
+	 *   - operator JSON::Type()
+	 *   - contructor(JSON::Type)       (Where Type is any of Value subclasses)
+	 * can be loaded, accessed, modified and saved easily like this:
+	 *
+	 * JSON::Document<Class, JSON::Type> objDocument;
+	 * objDocument.with("filename", [](Class & obj){
+	 *	 //modify obj
+	 * });
+	 */
 	template <typename T, typename JSON_T=JSON::Dict>
 	class Document {
 		private:
+			/* Open and lock filename with given flags */
 			int _open(std::string const & filename, int flags=O_RDWR){
 	        	int fd = open(filename.c_str(), flags, 0644);
 				if (fd < 0){
@@ -35,6 +49,7 @@ namespace JSON {
 				return fd;
 			}
 
+			/* Read JSON from file, and map to C++ obj */
 			T _readVal(int fd){
 				JSON_T referenceObj;
 				JSON::Value *parsed = readFD(fd);
@@ -46,6 +61,7 @@ namespace JSON {
 				return T(res);
 			}
 
+			/* Map C++ obj to JSON obj and write to file */
 			void _writeVal(int fd, T const & val){
 				JSON_T res(val);
 				/* Erase file before writing */
@@ -56,11 +72,13 @@ namespace JSON {
 				writeFD(fd, res);
 			}
 
+			/* Unlock and close file */
 			void _close(int fd){
 				flock(fd, LOCK_UN);
 				close(fd);
 			}
 		public:
+			/* Showtime here ! */
 			void with(std::string const & filename, std::function<void(T&)> lambda){
 				int fd = -1;
 				try {
