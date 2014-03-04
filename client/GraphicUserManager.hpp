@@ -11,10 +11,24 @@ public:
 	GraphicUserManager(net::ClientConnectionManager& connection, UserData& user, GUI::MainController &controller);
 	~GraphicUserManager(){}
 private:
+	void displayChoice();	// choice between login and register
+	void displayLoginForm();
+	void displayRegisterForm();
 	void submitLoginForm();
-	GUI::Button<GraphicUserManager> *_submitButton;
+	void submitRegisterForm();
+
+	GUI::Button<GraphicUserManager> *_doLoginButton;
+	GUI::Button<GraphicUserManager> *_doRegisterButton;
+
+	// Login
+	GUI::Button<GraphicUserManager> *_submitLoginButton;
 	GUI::Textbox *_usernameTextbox;
 	GUI::Textbox *_passwordTextbox;
+	// Register
+	GUI::Button<GraphicUserManager> *_submitRegisterButton;
+	GUI::Textbox *_newUsernameTextbox;
+	GUI::Textbox *_newPasswordTextbox;
+	GUI::Textbox *_passwordConfirmationTextbox;
 };
 
 #endif
