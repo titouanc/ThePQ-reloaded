@@ -10,6 +10,7 @@ Installation* Installation::CAST(JSON::Dict const & json)
 	else if (name == memory::TRIBUNE) return new Tribune(json);
 	else if (name == memory::MEDIC_CENTER) return new MedicalCenter(json);
 	// WHAT TODO ?
+	return NULL;
 }
 
 Installation::Installation(std::string owner, std::string name, int baseValue, int level, float refundRatio) :
