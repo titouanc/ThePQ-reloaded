@@ -9,7 +9,7 @@ else
         CPPFLAGS += $(shell ${PKGCONFIG} --cflags sfml-all)
 endif
  
-.PHONY: graphics/libgraphics.a
+.PHONY: graphics/libgraphics.a admin
  
 all: client.app graphicClient.app admin
  

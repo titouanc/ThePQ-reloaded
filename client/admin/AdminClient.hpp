@@ -1,9 +1,10 @@
 #include <string>
 #include "../Menu.hpp"
+#include "../UserData.hpp"
+#include <Config.hpp>
 #include <iostream>
 #include <network/ClientConnectionManager.hpp>
 #include <Exception.hpp>
-#include "../UserData.hpp"
 
 
 struct NetConfig : public Config {
@@ -26,7 +27,7 @@ struct NetConfig : public Config {
 };
 
 
-class AdminClient{
+class AdminClient {
 private:
 	net::ClientConnectionManager _connection;
 	bool _isRunning;
