@@ -22,7 +22,7 @@ GraphicUserManager::GraphicUserManager(net::ClientConnectionManager& connection,
 
 void GraphicUserManager::submitLoginForm(){
 	try{
-		doLoginUser(_usernameTextbox->getText(), _passwordTextbox->getText());
+		loginUser(_usernameTextbox->getText(), _passwordTextbox->getText());
 		GraphicStadiumManager gsm(_connection, _user, _controller);
 	}
 	catch (UserNotFoundException & e)
