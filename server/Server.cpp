@@ -125,6 +125,8 @@ void Server::treatMessage(const Message &message)
 					_users.erase(it);
 				}
 			} else if (ISDICT(received.get("data"))){
+				if(messageType == net::MSG::CHAMPIONSHIP_CREATION)
+					std::cout<<"LOL"<<std::endl;
 				if (messageType == MSG::LOGIN){
 					User *loggedIn = logUserIn(DICT(received.get("data")), message.peer_id);
 					/* If someone successfully logged in; send his offline 
@@ -183,8 +185,11 @@ void Server::treatMessage(const Message &message)
 }
 
 void Server::logAdminIn(const JSON::Dict& data, int peer_id){
-	Message status(peer_id, _adminManager->loginAdmin(data,peer_id).clone());
-	_outbox.push(status);
+	JSON::Dict response = _adminManager->loginAdmin(data,peer_id);
+	if(STR(response.get("data")).value()!=net::MSG::USER_LOGIN){
+		Message status(peer_id, response.clone());
+		_outbox.push(status);
+	}
 }
 
 void Server::registerUser(const JSON::Dict &credentials, int peer_id)

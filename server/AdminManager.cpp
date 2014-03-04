@@ -26,8 +26,10 @@ JSON::Dict AdminManager::loginAdmin(const JSON::Dict& data, int peer_id){
 					response.set("data",net::MSG::USER_LOGIN);
 					acquireClient(peer_id);
 					_admin_peer_id = peer_id;
-					std::cout << peer_id << "\033[32m Admin connected.\033[0m" << std::endl; 
+					std::cout << "[" << this << "] \033[1m" << peer_id << "\033[32m  admin connected\033[0m" << std::endl; 
 					run();
+					Message status(peer_id, response.clone());
+					_outbox.push(status);
 				}
 				else{
 					response.set("data",net::MSG::PASSWORD_ERROR);
@@ -89,6 +91,7 @@ void AdminManager::main_loop(){
 
 /* Admin messages handler */
 void AdminManager::treatAdminMessage(const Message &message){
+	std::cout<<"TREATING ADMIN MESSAGE"<<std::endl;
 	if (ISDICT(message.data)){
 		JSON::Dict const &received = DICT(message.data);
 		if (ISSTR(received.get("type"))) {

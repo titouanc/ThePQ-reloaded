@@ -34,13 +34,14 @@ private:
 	UserData _admin;
 
 public:
+	AdminClient(const NetConfig&);
 	void run();
 	void showAdminMenu();
-	void showBaseMenu();
+	bool showBaseMenu();
 	void showIdentifyMenu();
 	void showCreateChampionshipMenu();
 
-	void loginAdmin(); 
+	void loginAdmin(std::string,std::string); 
 	void logoutAdmin();
 };
 

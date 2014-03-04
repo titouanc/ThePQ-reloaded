@@ -1,12 +1,12 @@
 #include "AdminClient.hpp"
 
 AdminClient::AdminClient(NetConfig const &config) : _connection(config.host, config.port), _isRunning(true),
-_user(), _admin(){}
+_admin(){}
 
 void AdminClient::run(){
 	std::cout<<"Welcome. This is the admin client for The Pro Quidditch Manager 2014."<<std::endl;
 	while(_isRunning){
-		if(_user.isLogged()){
+		if(_admin.isLogged()){
 			showAdminMenu();
 		}
 		else{
@@ -26,17 +26,17 @@ void AdminClient::showAdminMenu(){
 		switch(option){
 			case 1:
 				showCreateChampionshipMenu();
-				break
+				break;
 			case 2:
 				logoutAdmin();
 			default:
-				break
+				break;
 		}
 	}
 	while(option!=2);
 }
 
-void AdminClient::showBaseMenu(){
+bool AdminClient::showBaseMenu(){
 	Menu _menu;
 	_menu.addToDisplay("   - identify\n");
 	_menu.addToDisplay("   - quit\n");
@@ -105,15 +105,16 @@ void AdminClient::loginAdmin(std::string username, std::string password)
 		}
 
 	}
-	_user.login(username);
+	_admin.login(username);
 	delete serverMessage;
 }
 
 void AdminClient::logoutAdmin(){
-	_user.logout();
+	_admin.logout();
 	JSON::Dict toSend;
 	toSend.set("type",net::MSG::DISCONNECT);
 	toSend.set("data","");
+	std::cout<<toSend<<std::endl;
 	_connection.send(toSend);
 }
 
