@@ -24,7 +24,7 @@ std::string Value::dumps(void) const
 void Value::save(const char *filename) const
 {
 	/*Method for saving to <<filename>>*/
-	int fd, r=0;
+	int fd;
 
 	fd = open(filename, O_WRONLY|O_CREAT|O_TRUNC, 0644);
 	if (fd < 0){
