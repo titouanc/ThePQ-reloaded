@@ -1,5 +1,4 @@
-PKGCONFIG = PKG_CONFIG_PATH=/usr/local/lib/pkgconfig/ pkg-config
-
+PKGCONFIG = pkg-config
 OBJS = Layer.o MainController.o GraphicManager.o UIMatch.o loadPath.o
 CPPFLAGS = -I../../common
 
