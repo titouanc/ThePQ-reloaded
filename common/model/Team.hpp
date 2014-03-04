@@ -15,30 +15,33 @@ private:
     std::string _name;
     std::string _owner;
     int _funds;
+    int _fame;
 	std::vector<Player> _players;
 	std::vector<Installation*> _installations;
 public:
 	Team(): _name(gameconfig::UNNAMED_TEAM), _owner(), _funds(gameconfig::STARTING_FUNDS), 
-	_players(), _installations(){}
+	_fame(gameconfig::STARTING_FAME), _players(), _installations(){}
 
 	Team(std::string owner, std::string teamname=""): Team(){
 		_owner = owner;
 		_name = teamname;
 	}
-	Team(const Team& other) : _name(other._name), _owner(other._owner), _funds(other._funds), 
-	_players(other._players), _installations(other._installations) {}
+	Team(const Team& other) : _name(other._name), _owner(other._owner), _funds(other._funds),
+	_fame(other._fame), _players(other._players), _installations(other._installations) {}
 
 	Team(const JSON::Dict &json): Team() {
-		if(json.hasKey(net::MSG::USERNAME)) 		{_owner = STR(json.get(net::MSG::USERNAME)).value();}
-		if(json.hasKey(memory::FUNDS)) 				{_funds = INT(json.get(memory::FUNDS));}
-		if(json.hasKey(memory::TEAM_NAME)) 			{_name = STR(json.get(memory::TEAM_NAME)).value();}
+		if(ISSTR(json.get(net::MSG::USERNAME)))		{_owner = STR(json.get(net::MSG::USERNAME)).value();}
+		if(ISINT(json.get(memory::FUNDS))) 			{_funds = INT(json.get(memory::FUNDS));}
+		if(ISSTR(json.get(memory::TEAM_NAME)))			{_name = STR(json.get(memory::TEAM_NAME)).value();}
+		if(ISINT(json.get(memory::FAME)))				{_fame = INT(json.get(memory::FAME));}
 	}
 	
 	~Team()
 	{
 		for (size_t i = 0; i < _installations.size(); ++i)
 		{
-			delete _installations[i];
+			if (_installations[i])
+				delete _installations[i];
 		}
 	}
 
