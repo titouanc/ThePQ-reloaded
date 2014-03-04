@@ -10,6 +10,7 @@
 #include <Config.hpp>
 #include "MatchManager.hpp"
 #include "PlayerMarket.hpp"
+#include "AdminManager.hpp"
 
 
 using namespace std;
@@ -45,6 +46,7 @@ public:
 
 	void registerUser(const JSON::Dict &credentials, int peer_id);
 	User *logUserIn(const JSON::Dict &credentials, int peer_id);
+    void logAdminIn(const JSON::Dict&,int);
     void checkTeamName(const JSON::Dict &data, int peer_id);
 	void checkIfUserExists(string username, int peer_id);
 	void sendInstallationsList(int peer_id);

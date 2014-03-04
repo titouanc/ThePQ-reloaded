@@ -194,14 +194,14 @@ void MemoryAccess::loadSkel(std::vector<Installation> &vec){
 void MemoryAccess::saveAdmin(User& admin){
 	std::string path = getAdminPath(admin.getUsername());
 	mkdir(memory::ADMIN_DIR.c_str(), 0755);
-	mkdir(memory::ADMIN_DIR+admin.getUsername().c_str(), 0755);
+	mkdir((memory::ADMIN_DIR+admin.getUsername()).c_str(), 0755);
 	JSON::Dict toSave = admin;
 	toSave.save(path.c_str());
 }
 
 void MemoryAccess::loadAdmin(User& admin){
-	JSON::Value *loaded = JSON::load(getAdminPath(user.getUsername()).c_str());
-	user = &DICT(loaded); //Constructor by pointer in User ... 
+	JSON::Value *loaded = JSON::load(getAdminPath(admin.getUsername()).c_str());
+	admin = &DICT(loaded); //Constructor by pointer in User ... 
 	delete loaded;
 }
 

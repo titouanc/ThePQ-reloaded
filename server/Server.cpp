@@ -25,7 +25,6 @@ Server::Server(NetConfig const & config) :
 	_connectionManager(_inbox, _outbox, config.ip.c_str(), config.port, config.maxClients),
 	_market(new PlayerMarket(this)),_matches(),_adminManager(new AdminManager(_connectionManager))
 {
-	_adminManager::makeDefaultAdmin();
 	_connectionManager.start();
 	cout << "Launched server on " << _connectionManager.ip() << ":" << _connectionManager.port() << endl;
 }

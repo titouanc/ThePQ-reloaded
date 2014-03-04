@@ -2,8 +2,9 @@
 #include <network/SubConnectionManager.hpp>
 #include <model/User.hpp>
 #include <json/json.hpp>
-#include <pthead>
+#include <pthread.h>
 
+using namespace net;
 #define ADMIN_USERNAME "admin"
 #define ADMIN_PASSWORD "admin"
 
@@ -16,17 +17,15 @@ private:
 
 public:
 	AdminManager(BaseConnectionManager&);
-	void loginAdmin(User*, int);
+	JSON::Dict loginAdmin(const JSON::Dict&, int);
 	void logoutAdmin();
 	bool adminIsLogged();
 	void run();
-	void treatAdminMessage();
+	void treatAdminMessage(const Message&);
 	void createChampionship(const JSON::Dict&, int);
-	void load(std::string);
-	static void makeDefaultAdmin();
+	User* load(std::string);
+	void makeDefaultAdmin();
 	void main_loop();
-	
-	
 };
 
 

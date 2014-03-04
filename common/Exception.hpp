@@ -6,22 +6,17 @@
 //==========Exceptions===========
 
 //-----Login------
-
-class BaseLoginException : public std::runtime_error{
-	BaseLogInException(): runtime_error("Failed to log in"){};
-};
-
-class WrongPasswordException : public BaseLoginException{
+class WrongPasswordException : public std::runtime_error{
 public:
 	WrongPasswordException():runtime_error("Wrong password"){};
 };
 
-class UserNotFoundException : public BaseLoginException{
+class UserNotFoundException : public std::runtime_error{
 public:
 	UserNotFoundException():runtime_error("User not found"){};
 };
 
-class AlreadyLoggedInException : public BaseLoginException {
+class AlreadyLoggedInException : public std::runtime_error {
 public:
 	AlreadyLoggedInException():runtime_error("Already logged in"){};
 };

@@ -1,9 +1,9 @@
 #include <string>
-#include "../Menu.hpp"
-#include "../UserManager.hpp"
+#include "Menu.hpp"
 #include <iostream>
 #include <network/ClientConnectionManager.hpp>
 #include <Exception.hpp>
+#include "UserData.hpp"
 
 
 struct NetConfig : public Config {
@@ -30,8 +30,7 @@ class AdminClient{
 private:
 	net::ClientConnectionManager _connection;
 	bool _isRunning;
-	UserData _user;
-	UserManager _userManager;
+	UserData _admin;
 
 public:
 	void run();
@@ -39,82 +38,8 @@ public:
 	void showBaseMenu();
 	void showIdentifyMenu();
 	void showCreateChampionshipMenu();
+
+	void loginAdmin(); 
+	void logoutAdmin();
 };
-
-
-AdminClient::AdminClient(NetConfig const &config) : _connection(config.host, config.port), _isRunning(true),
-_user(), _userManager(_connection,_user){}
-
-void AdminClient::run(){
-	std::cout<<"Welcome. This is the admin client for The Pro Quidditch Manager 2014."<<std::endl;
-	while(_isRunning){
-		if(_user.isLogged()){
-			showAdminMenu();
-		}
-		else{
-			_isRunning = showBaseMenu();
-		}
-	}
-	std::cout<<"Quitting the admin client."<<std::endl;
-}
-
-void AdminClient::showAdminMenu(){
-	Menu _menu;
-	_menu.addToDisplay("   - create a championship\n");
-	_menu.addToDisplay("   - quit\n");
-	int option;
-	option = _menu.run();
-	do{
-		switch(option){
-			case 1:
-				showCreateChampionshipMenu();
-				break
-			case 2:
-				_userManager.logoutUser();
-			default:
-				break
-		}
-	}
-	while(option!=2);
-}
-
-void AdminClient::showBaseMenu(){
-	Menu _menu;
-	_menu.addToDisplay("   - identify\n");
-	_menu.addToDisplay("   - quit\n");
-	int option;
-	bool res = true;
-	option = _menu.run();
-	switch(option)
-	{
-		case 1:
-			showIdentifyMenu();
-			break;
-		default:
-			res = false;
-			break;
-	}
-	return res;
-}
-
-void AdminClient::showIdentifyMenu(){	
-	std::string username = Menu::askForUserData("Username : ");
-	std::string password = Menu::askForUserData("Password : ");
-	
-	try {
-		std::cout << "Please wait..." << std::endl;
-		_userManager.loginUser(username, password);
-		std::cout << "You have successfully logged in as administrator." << std::endl;
-	}
-	catch (const AlreadyLoggedInException& e){
-		std::cout << "\033[31mError :\033[0m the admin client is already being used." <<std::endl;
-	}
-	catch (const BaseLogInException& e){
-		std::cout << "\033[31mError :\033[0m wrong combination." << std::endl;
-	}
-}
-
-void AdminClient::showCreateChampionshipMenu(){
-	
-}
 

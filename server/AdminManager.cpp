@@ -1,8 +1,10 @@
 #include "AdminManager.hpp"
 
-AdminManager::AdminManager(BaseConnectionManager & connections, int peer_id, User* admin) : 
-	SubConnectionManager(_inbox, _outbox, connections), _admin(admin), _admin_thread()
-{}
+AdminManager::AdminManager(BaseConnectionManager & connections) : 
+	SubConnectionManager(_inbox, _outbox, connections), _admin(NULL), _admin_thread(), _admin_peer_id()
+{
+	makeDefaultAdmin();
+}
 
 /* Creates an admin account */
 void AdminManager::makeDefaultAdmin(){
@@ -12,10 +14,10 @@ void AdminManager::makeDefaultAdmin(){
 
 /* Login handlers */
 JSON::Dict AdminManager::loginAdmin(const JSON::Dict& data, int peer_id){
+	JSON::Dict response;
 	if (ISSTR(data.get(net::MSG::USERNAME)) && ISSTR(data.get(net::MSG::PASSWORD))){
 		std::string const & username = STR(data.get(MSG::USERNAME));
 		std::string const & password = STR(data.get(MSG::PASSWORD));
-		JSON::Dict response;
 		response.set("type", MSG::STATUS);
 		if (! adminIsLogged()){
 			_admin = load(username);
@@ -43,17 +45,17 @@ JSON::Dict AdminManager::loginAdmin(const JSON::Dict& data, int peer_id){
 }
 
 void AdminManager::logoutAdmin(){
-	delete admin;
-	admin = NULL;
+	delete _admin;
+	_admin = NULL;
 	stop();
 	releaseClient(_admin_peer_id);	
 }
 
-void AdminManager::adminIsLogged(){
-	return admin != NULL;
+bool AdminManager::adminIsLogged(){
+	return _admin != NULL;
 }
 
-void AdminManager::load(std::string username){
+User* AdminManager::load(std::string username){
 	User* admin = new User(username);
 	try{
 		MemoryAccess::loadAdmin(*admin);
@@ -65,20 +67,20 @@ void AdminManager::load(std::string username){
 }	
 
 /* Main thread creation + starting in and out queues */
+static void* runAdminThread(void* p){
+	AdminManager *manager = static_cast<AdminManager*>(p);
+	manager->main_loop();
+	pthread_exit(NULL);
+}
+
 void AdminManager::run(){
 	start();
 	if(pthread_create(&_admin_thread, NULL, runAdminThread, this) != 0)
 		throw "Error occured when starting main admin thread";
 }
 
-static void* runAdminThread(void* p){
-	AdminManager *manager = static_cast<AdminManager*>(p);
-	manager->main_loop();
-	phtread_exit(NULL);
-}
-
 void AdminManager::main_loop(){
-	while (_parent.isRunning() || _inbox.available()){
+	while (isRunning() || _inbox.available()){
 		Message const & msg = _inbox.pop();
 		treatAdminMessage(msg);
 		delete msg.data;
@@ -86,12 +88,15 @@ void AdminManager::main_loop(){
 }
 
 /* Admin messages handler */
-void AdminManager::treatAdminMessage{
+void AdminManager::treatAdminMessage(const Message &message){
 	if (ISDICT(message.data)){
 		JSON::Dict const &received = DICT(message.data);
 		if (ISSTR(received.get("type"))) {
 			string messageType = STR(received.get("type")).value();
-			if(ISDICT(message.get("data"))){
+			if(messageType == net::MSG::DISCONNECT){
+				logoutAdmin();
+			}
+			if(ISDICT(received.get("data"))){
 				if(messageType == net::MSG::CHAMPIONSHIP_CREATION){
 					createChampionship(DICT(received.get("data")),message.peer_id);
 				}
