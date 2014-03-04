@@ -140,6 +140,21 @@ public:
 		generateBaseSquad();
 		generateBaseInstallations();
 	}
+	
+	void timeUpdate()
+	{
+		cout << "-----------team : " << getName() << endl;
+		cout << "old team funds : " << getFunds() << endl;
+		for (size_t j = 0; j < _installations.size(); ++j)
+		{
+			cout << _installations[j]->getName() << endl;
+			cout << _installations[j]->getMaintenanceCost() << endl;
+			_funds -= _installations[j]->getMaintenanceCost();
+			_funds += _installations[j]->getIncome();
+		}
+		cout << "new team funds : " << getFunds() << endl;;
+		saveInfos();
+	}
 
 };
 

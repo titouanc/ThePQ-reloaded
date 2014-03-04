@@ -218,7 +218,7 @@ TEST(free_position)
     ASSERT(free[3].y() == -1);
 ENDTEST()
 
-int main(int argc, const char **argv)
+int main()
 {
     TestFunc testSuite[] = {
     	ADDTEST(position),
