@@ -5,7 +5,6 @@
 Installation* Installation::CAST(JSON::Dict const & json)
 {
 	std::string name = STR(json.get("name")).value();
-	std::cout << name << std::endl;
 	if (name == "Fan Shop") return new FanShop(json);
 	else if (name == "Food Stand") return new FoodStand(json);
 	else if (name == "Tribune") return new Tribune(json);
@@ -39,14 +38,8 @@ Installation::operator JSON::Dict()
 Installation::~Installation()
 {}
 
-int Installation::getMaintenanceCost() const {
-	/*Method returning integer representing the maintenance cost of the installation*/
-	return getValueAtLevel(getLevel())/100; 
-}
-
-int Installation::getIncome() const {
-	/*Method returning integer representing the income of the installation */
-	return getValueAtLevel(getLevel())/50;
+int Installation::getCurrentValue() const { 
+	return getValueAtLevel(getLevel()); 
 }
 
 int Installation::getValueAtLevel(int level) const {
@@ -93,3 +86,54 @@ void Installation::downgrade(){
 FanShop::FanShop(std::string owner) : Installation(owner, "Fan Shop", 1000, 0)
 {}
 
+int FanShop::getMaintenanceCost() const
+{
+	// EXAMPLE ==> TODO
+	return getValueAtLevel(getLevel())/10;
+}
+
+int FanShop::getIncome() const
+{
+	// EXAMPLE ==> TODO
+	return getValueAtLevel(getLevel())/5;
+}
+	
+FoodStand::FoodStand(std::string owner) : Installation(owner, "Food Stand", 500, 0)
+{}
+
+int FoodStand::getMaintenanceCost() const
+{
+	
+}
+
+int FoodStand::getIncome() const
+{
+	
+}
+
+Tribune::Tribune(std::string owner) : Installation(owner, "Tribune", 2500, 1)
+{}
+
+
+int Tribune::getMaintenanceCost() const
+{
+	
+}
+
+int Tribune::getIncome() const
+{
+	
+}
+
+MedicalCenter::MedicalCenter(std::string owner) : Installation(owner, "Medical Center", 5000, 0)
+{}
+
+int MedicalCenter::getMaintenanceCost() const
+{
+	
+}
+
+int MedicalCenter::getIncome() const
+{
+	
+}
