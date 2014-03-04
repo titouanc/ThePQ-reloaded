@@ -96,6 +96,10 @@ namespace net
 		static const std::string MATCH_DELTA   = "MDELTA";
 		static const std::string MATCH_SCORES  = "MSCORES";
 		static const std::string MATCH_STATUS  = "MSTATUS";
+
+		//Admin------------------
+		static const std::string ADMIN_LOGIN = "ALI";
+		static const std::string CHAMPIONSHIP_CREATION = "ACSHIPC";
 	}
 }
 
@@ -138,6 +142,9 @@ namespace memory
 	static const std::string GLOBAL_DATA_DIR = "data/global/";
 	static const std::string TEAMNAMES_FILE = "teamNames";
 	static const std::string ALL_TEAM_NAMES = "A_T_N";
+
+	static const std::string ADMIN_DIR = "data/admins/";
+	static const std::string ADMIN_FILE = "admin";
 }
 
 #endif

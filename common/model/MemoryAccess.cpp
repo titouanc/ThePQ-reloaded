@@ -42,6 +42,9 @@ std::string MemoryAccess::getSkelPath(std::string file){
 std::string MemoryAccess::getTeamNamesPath(){
 	return memory::GLOBAL_DATA_DIR + memory::TEAMNAMES_FILE + memory::FILE_FORMAT;
 }
+std::string MemoryAccess::getAdminPath(std::string adminname){
+	return memory::ADMIN_DIR + adminname + "/" + memory::ADMIN_FILE + memory::FILE_FORMAT;
+}
 
 void MemoryAccess::save(Installation& install){
 	std::string path = getInstallationPath(install.getOwner(), install.getName());
@@ -54,7 +57,7 @@ void MemoryAccess::save(User& user){
 	mkdir(getUserDirectory(username).c_str(), 0755);
     mkdir((getUserDirectory(username)+memory::PLAYERS_DIR).c_str(), 0755);
     mkdir((getUserDirectory(username)+memory::INSTALLATIONS_DIR).c_str(), 0755);
-	std::string path = getUserPath(user.getUsername());
+	std::string path = getUserPath(username);
 	JSON::Dict toSave = user;
 	toSave.save(path.c_str());
 }
@@ -188,6 +191,19 @@ void MemoryAccess::loadSkel(std::vector<Installation> &vec){
 	delete loaded;
 }
 
+void MemoryAccess::saveAdmin(User& admin){
+	std::string path = getAdminPath(admin.getUsername());
+	mkdir(memory::ADMIN_DIR.c_str(), 0755);
+	mkdir(memory::ADMIN_DIR+admin.getUsername().c_str(), 0755);
+	JSON::Dict toSave = admin;
+	toSave.save(path.c_str());
+}
+
+void MemoryAccess::loadAdmin(User& admin){
+	JSON::Value *loaded = JSON::load(getAdminPath(user.getUsername()).c_str());
+	user = &DICT(loaded); //Constructor by pointer in User ... 
+	delete loaded;
+}
 
 void MemoryAccess::removeObject(Player &player){
 	remove(getPlayerPath(player.getOwner(), player.getMemberID()).c_str());

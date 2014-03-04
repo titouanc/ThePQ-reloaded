@@ -187,14 +187,16 @@ void Server::logAdminIn(const JSON::Dict& data, int peer_id){
 			if(admin != NULL){
 				if(admin->getPassword() == password){
 					response.set("data",net::MSG::USER_LOGIN);
-					_adminManager = new AdminManager(_connection, peer_id);
+					_adminManager = new AdminManager(_connection, peer_id, admin);
+					_adminManager->run();
 				}
-				else
+				else{
 					response.set("data",net::MSG::PASSWORD_ERROR);
+					delete admin;
+				}
 			}
 			else
 				response.set("data",net::MSG::USER_NOT_FOUND);
-			delete admin;
 		}
 		else
 			response.set("data",net::MSG::ALREADY_LOGGED_IN);

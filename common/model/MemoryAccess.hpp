@@ -24,6 +24,7 @@ namespace MemoryAccess
 	std::string getTeamInfosPath(std::string);
 	std::string getSkelPath(std::string);
 	std::string getTeamNamesPath();
+	std::string getAdminPath(std::string);
 
 	void save(Installation&);
 	void save(User&);
@@ -47,6 +48,9 @@ namespace MemoryAccess
 	void loadSkel(Broomstick&);
 	void loadSkel(Jersey&);
 	void loadSkel(std::vector<Installation>&);
+
+	void loadAdmin(User&);
+	void saveAdmin(User&);
 
 	void removeObject(Player&);
 	void removeObject(Sale&);

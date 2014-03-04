@@ -1,7 +1,8 @@
 #include <network/ConnectionManager.hpp>
 #include <network/SubConnectionManager.hpp>
-#include <map>
 #include <model/User.hpp>
+#include <json/json.hpp>
+#include <pthead>
 
 #define ADMIN_USERNAME "admin"
 #define ADMIN_PASSWORD "admin"
@@ -9,34 +10,36 @@
 class AdminManager : public SubConnectionManager{
 private:
 	SharedQueue<Message> _inbox, _outbox;
-	std::map<int, User> _admins;
-
+	User* _admin;
+	pthread_t _admin_thread;
+	int _admin_peer_id;
 
 public:
+	AdminManager(BaseConnectionManager&, int, User*);
+	void run();
+	void treatAdminMessage();
+	void createChampionship(const JSON::Dict&, int);
 	static void load(std::string);
 	static void makeDefaultAdmin();
+	void main_loop();
+	void logAdminOut();
+	bool adminIsLogged();
 };
 
-AdminManager::AdminManager(BaseConnectionManager & connections, int peer_id) : 
-	SubConnectionManager(_inbox, _outbox, connections)
-{
-	acquireClient(peer_id);
-	std::cout << peer_id << "\033[32m Admin connected.\033[0m" << std::endl; 
-}
 
 
-void AdminManager::makeDefaultAdmin(){
-	User admin(ADMIN_USERNAME,ADMIN_PASSWORD);
-	MemoryAccess::saveAdmin(admin);
-}
 
-void AdminManager::load(std::string username){
-	User* admin = new User(username);
-	try{
-		MemoryAccess::loadAdmin(*admin);
-		return admin;
-	}
-	catch(const JSON::IOError& e){
-		return NULL;
-	}
-}	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
