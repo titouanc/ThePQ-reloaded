@@ -500,18 +500,23 @@ void Server::timeLoop()
 
 void Server::timeUpdateStadium()
 {
-	for (size_t i = 0; i < _users.size(); ++i)
+	vector<User> users;
+	MemoryAccess::load(users);
+	for (size_t i = 0; i < users.size(); ++i)
 	{
-		Team & team = _users[i]->getTeam();
+		users[i].loadTeam();
+		Team & team = users[i].getTeam();
+		vector<Installation>& installations = team.getInstallations();
 		cout << "-----------team : " << team.getName() << endl;
 		cout << "old team funds : " << team.getFunds() << endl;
-		vector<Installation> & installations = team.getInstallations();
 		for (size_t j = 0; j < installations.size(); ++j)
 		{
-			team.buy(installations[i].getMaintenanceCost());
-			team.getPayed(installations[i].getIncome());
+			cout << installations[j].getName() << endl;
+			team.buy(installations[j].getMaintenanceCost());
+			team.getPayed(installations[j].getIncome());
 		}
 		cout << "new team funds : " << team.getFunds() << endl;;
+		team.saveInfos();
 	}
 }
 

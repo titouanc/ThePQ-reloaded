@@ -125,7 +125,7 @@ JSON::List MemoryAccess::loadFilesInVec(std::string directory){/*Check for memle
 	DIR* dir = NULL;
 	struct dirent* file = NULL;
 	dir = opendir(directory.c_str());
-	if(dir!=NULL){		
+	if(dir!=NULL){
 		while((file = readdir(dir)) != NULL){
 			std::string str1 = file->d_name;
 			std::string str2 = memory::FILE_FORMAT;
@@ -141,6 +141,18 @@ JSON::List MemoryAccess::loadFilesInVec(std::string directory){/*Check for memle
 	}
 	closedir(dir);
 	return ret;
+}
+
+void MemoryAccess::load(std::vector<User> &toFill)
+{
+	vector<string> users;
+	MemoryAccess::load(users, memory::ALL_USER_NAMES);
+	for (size_t i = 0; i < users.size(); ++i)
+	{
+		User user(users[i]);
+		MemoryAccess::load(user);
+		toFill.push_back(user);
+	}
 }
 
 void MemoryAccess::load(std::vector<Installation> &toFill,std::string username){
