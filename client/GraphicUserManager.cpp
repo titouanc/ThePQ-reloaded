@@ -93,6 +93,7 @@ void GraphicUserManager::submitLoginForm(){
 	try{
 		loginUser(_usernameTextbox->getText(), _passwordTextbox->getText());
 		GraphicStadiumManager gsm(connection(), user(), _controller);
+		gsm.run();
 	}
 	catch (UserNotFoundException & e)
 	{
@@ -132,6 +133,7 @@ void GraphicUserManager::submitTeamNameForm(){
 	try{
 		chooseTeamName(user().username,_teamNameTextbox->getText());
 		GraphicStadiumManager gsm(connection(), user(), _controller);
+		gsm.run();
 	}
 	catch(TeamNameNotAvailableException e){
 		cout << "Team name is not available" << endl;
