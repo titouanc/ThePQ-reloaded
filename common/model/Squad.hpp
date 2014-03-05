@@ -1,8 +1,10 @@
 #ifndef DEFINE_SQUAD_HEADER
 #define DEFINE_SQUAD_HEADER
 
+#include <cstdlib>
 #include "Player.hpp"
 #include <json/json.hpp>
+#include "MemoryAccess.hpp"
 
 struct Squad {
 	int squad_id;
@@ -22,6 +24,48 @@ struct Squad {
 		players[5] = &seeker;
 		players[6] = &keeper;
 	}
+    
+    Squad(string name, int listID [7]){
+        std::vector<Player> toLoad;
+        MemoryAccess::load(toLoad, name);
+        bool found;
+        size_t i(0);
+        for (i ; i < 3 ; ++i){
+            found = false ;
+            for (std::vector<Player>::iterator it(toLoad.begin()); ( found || toLoad.end()) ; ++it){
+                if (it->getMemberID == listID[i]){
+                    players[i] = new Chaser(it);
+                    found = true ;
+                }
+            }
+        }
+        for (i ; i < 5 ; ++i){
+            found = false ;
+            for (std::vector<Player>::iterator it(toLoad.begin()); ( found || toLoad.end()) ; ++it){
+                if (it->getMemberID == listID[i]){
+                    players[i] = new Beater(it);
+                    found = true ;
+                }
+            }
+        }
+        found = false ;
+        for (std::vector<Player>::iterator it(toLoad.begin()); ( found || toLoad.end()) ; ++it){
+            if (it->getMemberID == listID[i]){
+                players[i] = new Seeker(it);
+                found = true ;
+            }
+        }
+        ++i;
+        for (std::vector<Player>::iterator it(toLoad.begin()); ( found || toLoad.end()) ; ++it){
+            if (it->getMemberID == listID[i]){
+                players[i] = new Keeper(it);
+                found = true ;
+            }
+        }
+        delete [] toLoad;
+
+    }
+
 	Squad(JSON::Dict const & json) :  Squad() {
 		if (ISINT(json.get("squad_id")))
 			squad_id = INT(json.get("squad_id"));
