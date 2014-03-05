@@ -17,7 +17,7 @@ public:
 		if (ISFLOAT(json.get("speed"))) _speed = FLOAT(json.get("speed")).value();
 		else if (ISINT(json.get("speed"))) _speed = INT(json.get("speed")).value();
 	}
-	~Moveable(){}
+	virtual ~Moveable(){}
 
 	virtual bool isBall() const {return false;}
 	bool isPlayer() const {return not isBall();}
