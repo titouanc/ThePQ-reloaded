@@ -33,7 +33,7 @@ struct Squad {
         for (i ; i < 3 ; ++i){
             found = false ;
             for (std::vector<Player>::iterator it(toLoad.begin()); ( found || it != toLoad.end()) ; ++it){
-                if (it->getMemberID == listID[i]){
+                if (it->getMemberID() == listID[i]){
                     players[i] = new Chaser(it);
                     found = true ;
                 }
@@ -42,7 +42,7 @@ struct Squad {
         for (i ; i < 5 ; ++i){
             found = false ;
             for (std::vector<Player>::iterator it(toLoad.begin()); ( found || it != toLoad.end()) ; ++it){
-                if (it->getMemberID == listID[i]){
+                if (it->getMemberID() == listID[i]){
                     players[i] = new Beater(it);
                     found = true ;
                 }
@@ -50,14 +50,14 @@ struct Squad {
         }
         found = false ;
         for (std::vector<Player>::iterator it(toLoad.begin()); ( found || it != toLoad.end()) ; ++it){
-            if (it->getMemberID == listID[i]){
+            if (it->getMemberID() == listID[i]){
                 players[i] = new Seeker(it);
                 found = true ;
             }
         }
         ++i;
         for (std::vector<Player>::iterator it(toLoad.begin()); ( found || it != toLoad.end()) ; ++it){
-            if (it->getMemberID == listID[i]){
+            if (it->getMemberID() == listID[i]){
                 players[i] = new Keeper(it);
                 found = true ;
             }
