@@ -7,6 +7,7 @@
 #include <string>
 #include "Button.hpp"
 #include "Textbox.hpp"
+#include "Label.hpp"
 #include "GUIConstants.hpp"
 
 namespace GUI {
@@ -27,6 +28,7 @@ namespace GUI {
 		GUI::Button<T>* addButton(	const typename GUI::Clickable<T>::Callback& callback, 
 								T* target, std::string text="Button");
 		GUI::Textbox* addTextbox(std::string id);
+		GUI::Label* addLabel(std::string text, sf::Color color=BODY_TEXT_COLOR);
 
 		GUI::Textbox* textboxWithID(std::string id);
 		void unfocusAllTextboxes();
@@ -36,6 +38,7 @@ namespace GUI {
 		sf::Color _backgroundColor;
 		std::vector<GUI::ClickableInterface*> _clickables;
 		std::map<std::string, GUI::Textbox*> _textboxes;
+		std::vector<GUI::Label*> _labels;
 		GUI::Textbox* _focusedTextbox;
 	};
 }
