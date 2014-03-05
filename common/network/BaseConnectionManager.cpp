@@ -31,6 +31,7 @@ BaseConnectionManager::BaseConnectionManager(
 {
     pthread_mutex_init(&_mutex, NULL);
     pthread_mutex_init(&_fdset_mutex, NULL);
+    pthread_cond_init(&_fdset_cond, NULL);
 }
 
 BaseConnectionManager::~BaseConnectionManager()
@@ -46,6 +47,7 @@ BaseConnectionManager::~BaseConnectionManager()
     }
     pthread_mutex_destroy(&_mutex);
     pthread_mutex_destroy(&_fdset_mutex);
+    pthread_cond_destroy(&_fdset_cond);
 }
 
 bool BaseConnectionManager::_doWrite(int fd, const JSON::Value *obj)
@@ -149,11 +151,8 @@ int BaseConnectionManager::_doSelect(int fdmax, fd_set *readable)
      * of the client
      */
     pthread_mutex_lock(&_fdset_mutex);
-    while (fdmax == 0 && _clients.empty()){
-        pthread_mutex_unlock(&_fdset_mutex); /* TODO : pthread_cond */
-        minisleep(0.1);
-        pthread_mutex_lock(&_fdset_mutex);
-    }
+    while (fdmax == 0 && _clients.empty())
+        pthread_cond_wait(&_fdset_cond, &_fdset_mutex);
     std::set<int>::iterator it;
     for (it=_clients.begin(); it!=_clients.end(); it++){
         FD_SET(*it, readable);
@@ -162,7 +161,8 @@ int BaseConnectionManager::_doSelect(int fdmax, fd_set *readable)
     }
     pthread_mutex_unlock(&_fdset_mutex);
 
-    int res = select(fdmax+1, readable, NULL, NULL, NULL);
+    struct timeval timeout = {0, 100000};
+    int res = select(fdmax+1, readable, NULL, NULL, &timeout);
 
     if (res > 0){
         pthread_mutex_lock(&_fdset_mutex);
@@ -217,6 +217,7 @@ void BaseConnectionManager::addClient(int fd)
     pthread_mutex_lock(&_fdset_mutex);
     _clients.insert(fd);
     pthread_mutex_unlock(&_fdset_mutex);
+    pthread_cond_signal(&_fdset_cond);
 }
 
 bool BaseConnectionManager::removeClient(int fd)

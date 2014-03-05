@@ -25,6 +25,8 @@ namespace net {
 			pthread_t   _in_thread, _out_thread;
 			/* isRunning() mutex , fd set manipulation mutex */
 			pthread_mutex_t _mutex, _fdset_mutex;
+			/* fd_set condtionnal wait */
+			pthread_cond_t _fdset_cond;
 			/* Is IO thread running ? */
 			bool _running;
 			/* Currently connected clients */
