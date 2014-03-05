@@ -66,6 +66,35 @@ Player Team::getPlayer(int id){
 	}
 	throw PlayerNotFoundException();
 }
+
+bool Team::upgradeInstallation(size_t i)
+{
+	bool res = false;
+	if (i < _installations.size() && _installations[i]->getUpgradeCost() <= _funds)
+	{
+		_funds -= _installations[i]->getUpgradeCost();
+		_installations[i]->upgrade();
+		res = true;
+		MemoryAccess::save(_installations[i]);
+		saveInfos();
+	}
+	return res;
+}
+
+bool Team::downgradeInstallation(size_t i)
+{
+	bool res = false;
+	if (i < _installations.size() && _installations[i]->getLevel() > 0)
+	{
+		_funds += _installations[i]->getDowngradeRefunds();
+		_installations[i]->downgrade();
+		res = true;
+		MemoryAccess::save(_installations[i]);
+		saveInfos();
+	}
+	return res;
+}
+
 void Team::generateBaseSquad(){
 	RandomNameGenerator gen;
 	for (int i=0; i<gameconfig::MIN_PLAYERS; ++i){

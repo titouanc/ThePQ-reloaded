@@ -55,7 +55,7 @@ int Installation::getUpgradeCost() const{
 	 *the next level. 
 	 */
 	int res = _baseValue;	// buy the installation
-	if (_level != 0) 
+	if (_level > 0) 
 		res = getValueAtLevel(_level+1) - getCurrentValue();
 	return res;
 }

@@ -308,23 +308,19 @@ void Server::sendInstallationsList(int peer_id)
 
 void Server::upgradeInstallation(int peer_id, size_t i)
 {
-	Installation* inst = _users[peer_id]->getTeam().getInstallations()[i];
-	inst->upgrade();
-	MemoryAccess::save(inst);
+	bool res = _users[peer_id]->getTeam().upgradeInstallation(i);
 	JSON::Dict msg;
 	msg.set("type", net::MSG::INSTALLATION_UPGRADE);
-	msg.set("data", JSON::Bool(true));
+	msg.set("data", JSON::Bool(res));
 	_outbox.push(Message(peer_id, msg.clone()));
 }
 
 void Server::downgradeInstallation(int peer_id, size_t i)
 {
-	Installation* inst = _users[peer_id]->getTeam().getInstallations()[i];
-	inst->downgrade();
-	MemoryAccess::save(inst);
+	bool res = _users[peer_id]->getTeam().downgradeInstallation(i);
 	JSON::Dict msg;
 	msg.set("type", net::MSG::INSTALLATION_DOWNGRADE);
-	msg.set("data", JSON::Bool(true));
+	msg.set("data", JSON::Bool(res));
 	_outbox.push(Message(peer_id, msg.clone()));
 }
 

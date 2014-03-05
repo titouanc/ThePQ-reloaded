@@ -11,19 +11,14 @@ class StadiumManager
 {
 public:
 	StadiumManager(net::ClientConnectionManager& connection, UserData& user);
-
-	void showMenu();
+	
+	bool upgradeInstallation(size_t i);
+	bool downgradeInstallation(size_t i);
+	void loadInstallations();
 	
 private:
 	net::ClientConnectionManager& _connection;
 	UserData& _user;
-	
-	bool upgradeInstallation(size_t i);
-	bool downgradeInstallation(size_t i);
-	void printInstallationsList();
-	void upgradeInstallation();
-	void downgradeInstallation();
-	void loadInstallations();
 };
 
 #endif // __STADIUM_MANAGER_HPP

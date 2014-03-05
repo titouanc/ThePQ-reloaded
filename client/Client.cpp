@@ -98,7 +98,7 @@ void Client::managementMenu()
 		switch(option)
 		{
 			case 1:
-				_stadiumManager.showMenu();
+				showStadiumMenu();
 				break;
 			case 2:
 				showTeamMenu();
@@ -760,4 +760,95 @@ void Client::selectDirectionForPlayer(int player){
 		}
 	}
 	_matchManager.sendStroke(player, currentDisplacement);
+}
+
+
+void Client::showStadiumMenu()
+{
+	Menu _menu;
+	_menu.addToDisplay("    - view your installations\n");
+	_menu.addToDisplay("    - upgrade an installation\n");
+	_menu.addToDisplay("    - downgrade an installation\n");
+	_menu.addToDisplay("    - quit to management menu\n");
+	int option;
+	do
+	{
+		option = _menu.run();
+		switch(option)
+		{
+			case 1:
+				printInstallationsList();
+				break;
+			case 2:
+				upgradeInstallation();
+				break;
+			case 3:
+				downgradeInstallation();
+				break;
+			default:
+				break;
+		}
+	}
+	while (option != 4);
+}
+
+void Client::printInstallationsList(){
+	if (_user.installations.empty())
+	{
+		_stadiumManager.loadInstallations();
+	}
+	// TODO implement printInstallationsList
+	cout << "Here are all the installations you own :" << endl;
+	for (size_t i = 0; i < _user.installations.size(); ++i){
+		cout << i << " - " << _user.installations[i]->getName() << endl;
+		cout << "      Level : 				" << _user.installations[i]->getLevel() << endl;
+		cout << "      Current Value : 		" << _user.installations[i]->getCurrentValue() << endl;
+		cout << "      Upgrade Cost : 		" << _user.installations[i]->getUpgradeCost() << endl;
+		cout << "      Refund Ratio :       " << _user.installations[i]->getRefundRatio() << endl;
+		cout << "      Downgrade Refunds : 	" << _user.installations[i]->getDowngradeRefunds() << endl;
+	}
+}
+
+void Client::upgradeInstallation()
+{
+	size_t choice;
+	cout << "Enter the number of the installation you want to upgrade" << endl << ">";
+	cin >> choice;
+	if (choice < _user.installations.size())
+	{
+		if (_stadiumManager.upgradeInstallation(choice))
+		{
+			_user.installations[choice]->upgrade();
+		}
+		else
+		{
+			cout << "You have insufficient funds" << endl;
+		}
+	}
+	else
+	{
+		cout << "The number you entered is wrong" << endl;
+	}
+}
+
+void Client::downgradeInstallation()
+{
+	size_t choice;
+	cout << "Enter the number of the installation you want to downgrade" << endl << ">";
+	cin >> choice;
+	if (choice < _user.installations.size())
+	{
+		if (_stadiumManager.downgradeInstallation(choice))
+		{
+			_user.installations[choice]->downgrade();
+		}
+		else
+		{
+			cout << "You can not downgrade this installation because it is not build yet !" << endl;
+		}
+	}
+	else
+	{
+		cout << "The number you entered is wrong" << endl;
+	}
 }

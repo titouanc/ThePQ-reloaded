@@ -79,6 +79,12 @@ private:
 	void showTeamMenu();
 	void printPlayers();
 	
+	// Stadium
+	void printInstallationsList();
+	void upgradeInstallation();
+	void downgradeInstallation();
+	void showStadiumMenu();
+	
 	// Market
 	void showMarketMenu();
 	void placeBid();

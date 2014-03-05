@@ -43,6 +43,9 @@ public:
 	void buy(int amount){_funds-=amount;}
 	std::vector<Player>& getPlayers(){return _players;}
 	std::vector<Installation*>& getInstallations(){return _installations;}
+	
+	bool upgradeInstallation(size_t i);
+	bool downgradeInstallation(size_t i);
 
 	bool removePlayer(int id);
 	void addPlayer(Player &player);
