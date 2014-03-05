@@ -1,5 +1,1 @@
-{
-	"entiers": [1, 2, -4],
-	"flottants": [3.12, 14.8, -8.3],
-	"lettres": ["a", "b", "c"]
-}
+{"lettres": ["a", "b", "c"], "flottants": [3.12, 14.8, -8.3], "entiers": [1, 2, -4]}

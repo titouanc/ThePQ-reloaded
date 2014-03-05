@@ -30,6 +30,7 @@ struct UserData
 	std::vector<Installation*> installations;
 	std::vector<Player> players;
 	std::string username;
+	int funds;
 };
 
 #endif // __USER_DATA_HPP

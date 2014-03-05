@@ -68,7 +68,7 @@ public:
 };
 class insufficientFundsException : public std::runtime_error{
 public:
-	insufficientFundsException():runtime_error("Too many players"){};
+	insufficientFundsException():runtime_error("Insufficient funds"){};
 };
 
 //Adding a player on market

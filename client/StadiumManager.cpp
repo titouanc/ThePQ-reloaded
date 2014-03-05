@@ -118,7 +118,7 @@ bool StadiumManager::upgradeInstallation(size_t i)
 	JSON::Dict const & received = DICT(serverResponse);
 	if (ISBOOL(received.get("data")))
 	{
-		ret = received.get("data");
+		ret = BOOL(received.get("data"));
 	}
 	delete serverResponse;
 	return ret;
@@ -137,9 +137,10 @@ bool StadiumManager::downgradeInstallation(size_t i)
 	
 	if (ISBOOL(received.get("data")))
 	{
-		ret = received.get("data");
+		ret = BOOL(received.get("data"));
 	}
 	
 	delete serverResponse;
 	return ret;
 }
+

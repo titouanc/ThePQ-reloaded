@@ -23,8 +23,10 @@ Client::Client(NetConfig const &config) : 	_user(),
 												_isRunning(true),
 												_prompt(">")
 {
+	_connection.run();
 	_notificationManager.addCallback(pair<string, AbstractCallback*>(net::MSG::FRIENDLY_GAME_INVITATION, new ClassCallback<Client>(this, &Client::handleFriendlyGameInvitation)));
 	_notificationManager.addCallback(pair<string, AbstractCallback*>(net::MSG::MARKET_MESSAGE, new ClassCallback<Client>(this, &Client::handleEndOfSaleNotification)));
+	_notificationManager.addCallback(pair<string, AbstractCallback*>(net::MSG::TEAM_INFOS, new ClassCallback<NotificationManager>(&_notificationManager, &NotificationManager::loadTeam)));
 }
 
 Client::~Client()
@@ -38,7 +40,7 @@ void Client::run()
 	{
 		if (_user.isLogged() == true)
 		{
-			mainMenu();
+			showMainMenu();
 		}
 		else
 		{
@@ -49,7 +51,7 @@ void Client::run()
 }	
 
 /* main menu */
-void Client::mainMenu()
+void Client::showMainMenu()
 {
 	Menu _menu;
 	_menu.addToDisplay("   - manage your team and stadium\n");
@@ -64,16 +66,16 @@ void Client::mainMenu()
 		switch(option)
 		{
 			case 1:
-				managementMenu();
+				showManagementMenu();
 				break;
 			case 2:
 				showMarketMenu();
 				break;
 			case 3:
-				friendlyMatchMenu();
+				showFriendlyMatchMenu();
 				break;
 			case 4:
-				notificationsMenu();
+				showNotificationsMenu();
 				break;
 			case 5:
 				_userManager.logoutUser();
@@ -85,7 +87,7 @@ void Client::mainMenu()
 }
 
 /* Management menu */
-void Client::managementMenu()
+void Client::showManagementMenu()
 {
 	Menu _menu;
 	_menu.addToDisplay("   - manage your stadium and installations\n");
@@ -98,7 +100,7 @@ void Client::managementMenu()
 		switch(option)
 		{
 			case 1:
-				_stadiumManager.showMenu();
+				showStadiumMenu();
 				break;
 			case 2:
 				showTeamMenu();
@@ -112,57 +114,15 @@ void Client::managementMenu()
 
 
 /* main menu */
-void Client::notificationsMenu()
+void Client::showNotificationsMenu()
 {
 	_connection.updateNotifications();
 	cout << "You have " << _connection.getNotifications().size() << " notifications." << endl;
-	Menu _menu;
-	_menu.addToDisplay("   - handle this notification\n");
-	_menu.addToDisplay("   - see next notification\n");
-	_menu.addToDisplay("   - quit\n");
-	int option;
-	bool quit = false;
-	while (_connection.getNotifications().available() && ! quit)
-	{
-		JSON::Value * currentNotification = _connection.getNotifications().front();
-		JSON::Dict const & notif = DICT(currentNotification);
-		string messageType = STR(notif.get("type")).value();
-		if (messageType == net::MSG::FRIENDLY_GAME_INVITATION && ISSTR(notif.get("data")))
-		{
-			cout << STR(notif.get("data")).value() << " invited you to a game" << endl;
-		}
-		else if (messageType == net::MSG::MARKET_MESSAGE)
-		{
-			cout << "You won a bid !" << endl;
-		}
-		option = _menu.run();
-		switch(option)
-		{
-			case 1:
-				_notificationManager.handleNotification(currentNotification);
-				_connection.getNotifications().pop();
-				break;
-			case 2:
-				_connection.getNotifications().push(_connection.getNotifications().front());
-				_connection.getNotifications().pop();
-				break;
-			case 3:
-				quit = true;
-				break;
-			default:
-				break;
-		}
-	}
+	_notificationManager.handleAllNotifications();
 }
 
-/* Market menu */
-
-
-//Market notifs
-
-
 /* Friendly match menu */
-void Client::friendlyMatchMenu()
+void Client::showFriendlyMatchMenu()
 {
 	Menu _menu;
 	_menu.addToDisplay("   - list all connected players\n");
@@ -178,7 +138,7 @@ void Client::friendlyMatchMenu()
 				printConnectedUsersList();
 				break;
 			case 2:
-				chooseUserMenu();
+				showChooseUserMenu();
 				break;
 			default:
 				break;
@@ -187,7 +147,7 @@ void Client::friendlyMatchMenu()
 	while(option != 3);
 }
 
-void Client::chooseUserMenu()
+void Client::showChooseUserMenu()
 {
 	string userInput = Menu::askForUserData("Enter a username to send an invitation to another user : ");
 	_matchManager.chooseUser(userInput);
@@ -196,7 +156,7 @@ void Client::chooseUserMenu()
 		_matchManager.waitForUser();
 		cout << userInput << " accepted your invitation!" << endl;
 		_matchManager.startMatch();
-		turnMenu();
+		showTurnMenu();
 	}
 	catch (UserNotFoundException &e)
 	{
@@ -215,40 +175,60 @@ void Client::printConnectedUsersList(){
  		cout << "  - " << connectedUsers[i] << endl;
 }
 
-
-
-///////// END NEW
-
-
+bool Client::askForNotificationHandling()
+{
+	Menu _menu;
+	_menu.addToDisplay("   - handle this notification\n");
+	_menu.addToDisplay("   - see next notification\n");
+	int option;
+	do
+	{
+		option = _menu.run();
+		switch(option)
+		{
+			case 1:
+				return true;
+				break;
+			case 2:
+				return false;
+				break;
+			default:
+				cout << "Wrong option entered" << endl;
+				break;
+		}
+	}
+	while (true);
+}
 
 void Client::handleFriendlyGameInvitation(JSON::Value const *json){
 	if (ISSTR(json)){
 		string user = STR(json).value();
+		cout << user << " invited you to a game" << endl;
+		bool handle = askForNotificationHandling();
 		Menu _menu;
 		_menu.addToDisplay("   - accept\n");
 		_menu.addToDisplay("   - deny\n");
 		int option;
-		bool chosen = false; // user has to accept or deny, he cannot quit.
-		do
+		while(handle)
 		{
 			option = _menu.run();
 			switch(option)
 			{
 				case 1:
-					chosen = true;
+					handle = false;
 					_matchManager.acceptInvitationFromUser(user);
-					turnMenu();
+					showTurnMenu();
 					// TODO start to play game
 					break;
 				case 2:
-					chosen = true;
+					handle = false;
 					_matchManager.denyInvitationFromUser(user);
 					break;
 				default:
+					cout << "Wrong option entered" << endl;
 					break;
 			}
 		}
-		while(!chosen);
 	}
 }
 
@@ -349,7 +329,7 @@ void Client::showLoginMenu()
 		cout << "Please wait..." << endl;
 		_userManager.loginUser(username, password);
 		cout << "You have successfully logged in! Welcome! :)\n\n\n" << endl;
-		//~ mainMenu();
+		//~ showMainMenu();
 	}
 	catch (NoTeamNameException e)
 	{
@@ -427,7 +407,7 @@ void Client::showTeamMenu()
 		switch(option)
 		{
 			case 1:
-				printPlayers();
+				displayPlayers();
 				break;
 			default:
 				break;
@@ -436,7 +416,7 @@ void Client::showTeamMenu()
 	while (option != 2);
 }
 
-void Client::printPlayers(){
+void Client::displayPlayers(){
 	_teamManager.loadPlayers();
 	cout << "================ YOUR PLAYERS ================" << endl;
 	for(size_t i =0; i<_user.players.size();++i){
@@ -458,10 +438,10 @@ void Client::showMarketMenu(){
 		switch(option)
 		{
 			case 1:
-				salePlayer();
+				sellPlayer();
 				break;
 			case 2:
-				seePlayersOnSale();
+				showBidMenu();
 				break;
 			default:
 				break;
@@ -470,8 +450,8 @@ void Client::showMarketMenu(){
 	while(option != 3);
 }
 
-void Client::salePlayer(){
-	printPlayers();			//this function updates _players
+void Client::sellPlayer(){
+	displayPlayers();			//this function updates _players
 	int player_id, bidValue;
 	bool found = false;
 	Player * player;
@@ -509,7 +489,7 @@ void Client::salePlayer(){
 		cout << "Wrong ID." << endl;
 	}
 }
-void Client::printPlayersOnSale(){
+void Client::displayPlayersOnSale(){
 	_marketManager.updateSales();
 	cout << "================ PLAYERS ON SALE ================" << endl;
 	for(size_t i=0;i<_marketManager.getSales().size();++i){
@@ -518,8 +498,8 @@ void Client::printPlayersOnSale(){
 	cout << "=================================================" << endl;
 }
 
-void Client::seePlayersOnSale(){
-	printPlayersOnSale();
+void Client::showBidMenu(){
+	displayPlayersOnSale();
 	Menu _menu;
 	_menu.addToDisplay("   - place a bid on a player\n");
 	_menu.addToDisplay("   - update list\n");
@@ -534,7 +514,7 @@ void Client::seePlayersOnSale(){
 				placeBid();
 				break;
 			case 2:
-				printPlayersOnSale();
+				displayPlayersOnSale();
 				break;
 			default:
 				break;
@@ -683,16 +663,16 @@ void Client::displayPitch()
 }
 
 
-void Client::turnMenu(){
+void Client::showTurnMenu(){
 	
-	Menu turnMenu;
-	turnMenu.addToDisplay("\t- select player");
+	Menu showTurnMenu;
+	showTurnMenu.addToDisplay("\t- select player");
 	int option;
 	do {
 		_matchManager.updatePitchWithDeltas();
 		displayPitch();
 		displayAvailablePlayers();
-		option = turnMenu.run();
+		option = showTurnMenu.run();
 		switch(option){
 			case 1:
 				selectPlayer();
@@ -760,4 +740,98 @@ void Client::selectDirectionForPlayer(int player){
 		}
 	}
 	_matchManager.sendStroke(player, currentDisplacement);
+}
+
+
+void Client::showStadiumMenu()
+{
+	Menu _menu;
+	_menu.addToDisplay("    - view your installations\n");
+	_menu.addToDisplay("    - upgrade an installation\n");
+	_menu.addToDisplay("    - downgrade an installation\n");
+	_menu.addToDisplay("    - quit to management menu\n");
+	int option;
+	do
+	{
+		option = _menu.run();
+		switch(option)
+		{
+			case 1:
+				printInstallationsList();
+				break;
+			case 2:
+				upgradeInstallation();
+				break;
+			case 3:
+				downgradeInstallation();
+				break;
+			default:
+				break;
+		}
+	}
+	while (option != 4);
+}
+
+void Client::printInstallationsList(){
+	if (_user.installations.empty())
+	{
+		_stadiumManager.loadInstallations();
+	}
+	// TODO implement printInstallationsList
+	cout << "You have " << _user.funds << "$$$$" << endl;
+	cout << "Here are all the installations you own :" << endl;
+	for (size_t i = 0; i < _user.installations.size(); ++i){
+		cout << i << " - " << _user.installations[i]->getName() << endl;
+		cout << "      Level : 				" << _user.installations[i]->getLevel() << endl;
+		cout << "      Current Value : 		" << _user.installations[i]->getCurrentValue() << endl;
+		cout << "      Upgrade Cost : 		" << _user.installations[i]->getUpgradeCost() << endl;
+		cout << "      Refund Ratio :       " << _user.installations[i]->getRefundRatio() << endl;
+		cout << "      Downgrade Refunds : 	" << _user.installations[i]->getDowngradeRefunds() << endl;
+	}
+}
+
+void Client::upgradeInstallation()
+{
+	size_t choice;
+	cout << "Enter the number of the installation you want to upgrade" << endl << ">";
+	cin >> choice;
+	if (choice < _user.installations.size())
+	{
+		if (_stadiumManager.upgradeInstallation(choice))
+		{
+			_user.funds -= _user.installations[choice]->getUpgradeCost();
+			_user.installations[choice]->upgrade();
+		}
+		else
+		{
+			cout << "You have insufficient funds" << endl;
+		}
+	}
+	else
+	{
+		cout << "The number you entered is wrong" << endl;
+	}
+}
+
+void Client::downgradeInstallation()
+{
+	size_t choice;
+	cout << "Enter the number of the installation you want to downgrade" << endl << ">";
+	cin >> choice;
+	if (choice < _user.installations.size())
+	{
+		if (_stadiumManager.downgradeInstallation(choice))
+		{
+			_user.funds += _user.installations[choice]->getDowngradeRefunds();
+			_user.installations[choice]->downgrade();
+		}
+		else
+		{
+			cout << "You can not downgrade this installation because it is not build yet !" << endl;
+		}
+	}
+	else
+	{
+		cout << "The number you entered is wrong" << endl;
+	}
 }

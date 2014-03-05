@@ -69,6 +69,10 @@ private:
 	std::string splashScreen();
 	std::string goodBye();
 	
+	// Menus
+	void showMainMenu();
+	void showManagementMenu();
+	
 	// Users
 	bool showUserMenu();
 	void showLoginMenu();
@@ -77,29 +81,32 @@ private:
 	
 	// Team
 	void showTeamMenu();
-	void printPlayers();
+	void displayPlayers();
+	
+	// Stadium
+	void showStadiumMenu();
+	void printInstallationsList();
+	void upgradeInstallation();
+	void downgradeInstallation();
 	
 	// Market
 	void showMarketMenu();
 	void placeBid();
-	void seePlayersOnSale();
-	void printPlayersOnSale();
-	void salePlayer();
-	
-	// Menus
-	void mainMenu();
-	void managementMenu();
-	void friendlyMatchMenu();
-	void notificationsMenu();
+	void showBidMenu();
+	void displayPlayersOnSale();
+	void sellPlayer();
 	
 	// Notifications
+	void showNotificationsMenu();
+	bool askForNotificationHandling();
 	void handleEndOfSaleNotification(JSON::Value const *message);
 	void handleFriendlyGameInvitation(JSON::Value const *message);
 	
 	// Match
+	void showFriendlyMatchMenu();
 	void printConnectedUsersList();
-	void chooseUserMenu();
-	void turnMenu();
+	void showChooseUserMenu();
+	void showTurnMenu();
 	void displayAvailablePlayers();
 	void selectPlayer();
 	void selectDirectionForPlayer(int player);

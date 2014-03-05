@@ -15,6 +15,7 @@ namespace net
 		static const std::string STATUS = "Q_S";
 		static const std::string INSTALLATION_UPGRADE = "AQ_I_U";
 		static const std::string INSTALLATION_DOWNGRADE = "AQ_I_D";
+		static const std::string TEAM_INFOS = "T_I";
 
 		static const std::string ADD_PLAYER_ON_MARKET_QUERY = "Q_A_P_OM";	
 		static const std::string DELETE_PLAYER_OF_MARKET_QUERY = "Q_D_P_OM";
@@ -106,6 +107,7 @@ namespace gameconfig
 	static const int MAX_PLAYERS = 100;
 	static const int MIN_PLAYERS = 7;
 	static const int STARTING_FUNDS = 100000;
+	static const int STARTING_FAME = 1000;
 	static const int SALE_FIRST_TURN_TIME = 30;
 	static const int SALE_TURN_TIME = 30;
 	static const float BID_RATIO = 0.05;
@@ -120,6 +122,7 @@ namespace memory
 	static const std::string TEAM_INFOS_FILE = "teamInfos";
 	static const std::string FUNDS = "funds";
 	static const std::string TEAM_NAME = "teamname";
+	static const std::string FAME = "fame";
 	static const std::string FILE_FORMAT = ".json";
 	static const std::string MARKET_PATH = "data/PlayerMarket/";
 	static const std::string SALE_FILE = "_sale";

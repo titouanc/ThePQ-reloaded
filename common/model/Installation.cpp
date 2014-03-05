@@ -5,11 +5,12 @@
 Installation* Installation::CAST(JSON::Dict const & json)
 {
 	std::string name = STR(json.get("name")).value();
-	if (name == "Fan Shop") return new FanShop(json);
-	else if (name == "Food Stand") return new FoodStand(json);
-	else if (name == "Tribune") return new Tribune(json);
-	else if (name == "Medical Center") return new MedicalCenter(json);
+	if (name == memory::FANSHOP) return new FanShop(json);
+	else if (name == memory::FOOD_STAND) return new FoodStand(json);
+	else if (name == memory::TRIBUNE) return new Tribune(json);
+	else if (name == memory::MEDIC_CENTER) return new MedicalCenter(json);
 	// WHAT TODO ?
+	return NULL;
 }
 
 Installation::Installation(std::string owner, std::string name, int baseValue, int level, float refundRatio) :
@@ -39,23 +40,23 @@ Installation::~Installation()
 {}
 
 int Installation::getCurrentValue() const { 
-	return getValueAtLevel(getLevel()); 
+	return getValueAtLevel(_level);
 }
 
 int Installation::getValueAtLevel(int level) const {
 	/*Method returning an integer representing the value of the 
 	*installation at the next level
 	*/
-	return level ? (getBaseValue() * pow(2, level+1)) : 0;
+	return level ? (_baseValue * pow(2, level+1)) : 0;
 }
 
 int Installation::getUpgradeCost() const{
 	/*Method returning an integer representing the cost of an upgrade to
 	 *the next level. 
 	 */
-	int res = getBaseValue();	// buy the installation
-	if (getLevel() != 0) 
-		res = getValueAtLevel(getLevel()+1) - getCurrentValue();
+	int res = _baseValue;	// buy the installation
+	if (_level > 0) 
+		res = getValueAtLevel(_level+1) - getCurrentValue();
 	return res;
 }
 
@@ -64,76 +65,79 @@ int Installation::getDowngradeRefunds() const {
 	 *funds that will be refunded when downgraded by 1 level. 
 	 */
 	int res = 0;
-	if (getLevel() > 0)
-		res = ((float)(getCurrentValue() - getValueAtLevel(getLevel()-1)))*getRefundRatio();
+	if (_level > 0)
+		res = ((float)(getCurrentValue() - getValueAtLevel(_level-1)))*_refundRatio;
 	return res;
 }
 
 void Installation::upgrade(){
 	/*Method upgrading the installation (level and currentValue)*/
-	if (getLevel() < getMaxLevel()){
+	if (_level < getMaxLevel()){
 		_level++;
 	}
 }
 
 void Installation::downgrade(){
 	/*Method downgrading the installation (level and currentValue)*/
-	if (getLevel() > 0){
+	if (_level > 0){
 		_level--;
 	}
 }
 
-FanShop::FanShop(std::string owner) : Installation(owner, "Fan Shop", 1000, 0)
+FanShop::FanShop(std::string owner) : Installation(owner, memory::FANSHOP, 1000)
 {}
 
 int FanShop::getMaintenanceCost() const
 {
 	// EXAMPLE ==> TODO
-	return getValueAtLevel(getLevel())/10;
+	return getCurrentValue()/1000;
 }
 
 int FanShop::getIncome() const
 {
 	// EXAMPLE ==> TODO
-	return getValueAtLevel(getLevel())/5;
+	return getCurrentValue()/50;
 }
 	
-FoodStand::FoodStand(std::string owner) : Installation(owner, "Food Stand", 500, 0)
+FoodStand::FoodStand(std::string owner) : Installation(owner, memory::FOOD_STAND, 500)
 {}
 
 int FoodStand::getMaintenanceCost() const
 {
-	
+	// EXAMPLE ==> TODO
+	return getCurrentValue()/1000;	
 }
 
 int FoodStand::getIncome() const
 {
-	
+	return 0;
 }
 
-Tribune::Tribune(std::string owner) : Installation(owner, "Tribune", 2500, 1)
+Tribune::Tribune(std::string owner) : Installation(owner, memory::TRIBUNE, 2500, 1)
 {}
 
 
 int Tribune::getMaintenanceCost() const
 {
-	
+	// EXAMPLE ==> TODO
+	return getCurrentValue()/1000;	
 }
 
 int Tribune::getIncome() const
 {
-	
+	return 0;
 }
 
-MedicalCenter::MedicalCenter(std::string owner) : Installation(owner, "Medical Center", 5000, 0)
+MedicalCenter::MedicalCenter(std::string owner) : Installation(owner, memory::MEDIC_CENTER, 5000)
 {}
 
 int MedicalCenter::getMaintenanceCost() const
 {
-	
+	// EXAMPLE ==> TODO
+	return getCurrentValue()/1000;	
 }
 
 int MedicalCenter::getIncome() const
 {
-	
+	return 0;
 }

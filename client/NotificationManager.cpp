@@ -16,3 +16,17 @@ void NotificationManager::handleNotification(JSON::Value *notification){
 		(*(it->second))(message.get("data"));
 	}
 }
+
+void NotificationManager::loadTeam(JSON::Value const * data)
+{
+	JSON::Dict const & dict = DICT(data);
+	user().funds = INT(dict.get("funds"));
+}
+
+void NotificationManager::handleAllNotifications()
+{
+	while (connection().getNotifications().available())
+	{
+		handleNotification(connection().getNotifications().pop());
+	}
+}

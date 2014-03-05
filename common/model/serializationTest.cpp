@@ -73,7 +73,7 @@ TEST(player_serialization)
 ENDTEST()
 
 
-int main(int argc, const char **argv){
+int main(){
 	TestFunc tests[] = {
 		ADDTEST(gear_serialization),
 		ADDTEST(bat_serialization),
