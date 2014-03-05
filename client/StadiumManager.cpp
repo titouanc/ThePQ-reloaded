@@ -64,3 +64,4 @@ bool StadiumManager::downgradeInstallation(size_t i)
 	delete serverResponse;
 	return ret;
 }
+

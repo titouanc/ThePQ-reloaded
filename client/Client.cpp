@@ -25,6 +25,7 @@ Client::Client(NetConfig const &config) : 	_user(),
 {
 	_notificationManager.addCallback(pair<string, AbstractCallback*>(net::MSG::FRIENDLY_GAME_INVITATION, new ClassCallback<Client>(this, &Client::handleFriendlyGameInvitation)));
 	_notificationManager.addCallback(pair<string, AbstractCallback*>(net::MSG::MARKET_MESSAGE, new ClassCallback<Client>(this, &Client::handleEndOfSaleNotification)));
+	_notificationManager.addCallback(pair<string, AbstractCallback*>(net::MSG::TEAM_INFOS, new ClassCallback<NotificationManager>(&_notificationManager, &NotificationManager::loadTeam)));
 }
 
 Client::~Client()
@@ -798,6 +799,7 @@ void Client::printInstallationsList(){
 		_stadiumManager.loadInstallations();
 	}
 	// TODO implement printInstallationsList
+	cout << "You have " << _user.funds << "$$$$" << endl;
 	cout << "Here are all the installations you own :" << endl;
 	for (size_t i = 0; i < _user.installations.size(); ++i){
 		cout << i << " - " << _user.installations[i]->getName() << endl;
@@ -818,6 +820,7 @@ void Client::upgradeInstallation()
 	{
 		if (_stadiumManager.upgradeInstallation(choice))
 		{
+			_user.funds -= _user.installations[choice]->getUpgradeCost();
 			_user.installations[choice]->upgrade();
 		}
 		else
@@ -840,6 +843,7 @@ void Client::downgradeInstallation()
 	{
 		if (_stadiumManager.downgradeInstallation(choice))
 		{
+			_user.funds += _user.installations[choice]->getDowngradeRefunds();
 			_user.installations[choice]->downgrade();
 		}
 		else

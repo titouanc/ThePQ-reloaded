@@ -133,6 +133,8 @@ void Server::treatMessage(const Message &message)
 							_outbox.push(Message(message.peer_id, offlineMsg[i]->clone()));
 						}
 						loggedIn->clearOfflineMsg();
+						loggedIn->loadTeam();
+						sendTeamInfos(loggedIn->getTeam(), message.peer_id);
 					}
 				}
 				else if(messageType == MSG::USER_CHOOSE_TEAMNAME)
@@ -227,7 +229,9 @@ User *Server::logUserIn(const JSON::Dict &credentials, int peer_id)
 					if(user->getTeam().getName() == gameconfig::UNNAMED_TEAM)
 						response.set("data",MSG::USER_CHOOSE_TEAMNAME);
 					else
+					{
 						response.set("data", MSG::USER_LOGIN);
+					}
 					res = user;
 				} else {
 					// wrong password
@@ -242,6 +246,14 @@ User *Server::logUserIn(const JSON::Dict &credentials, int peer_id)
 		_outbox.push(Message(peer_id, response.clone()));
 	}
 	return res;
+}
+
+void Server::sendTeamInfos(const JSON::Dict &data, int peer_id)
+{
+	JSON::Dict response;
+	response.set("type", net::MSG::TEAM_INFOS);
+	response.set("data", data);
+	_outbox.push(Message(peer_id, response.clone()));
 }
 
 void Server::checkTeamName(const JSON::Dict &data, int peer_id){

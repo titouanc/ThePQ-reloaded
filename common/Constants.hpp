@@ -15,6 +15,7 @@ namespace net
 		static const std::string STATUS = "Q_S";
 		static const std::string INSTALLATION_UPGRADE = "AQ_I_U";
 		static const std::string INSTALLATION_DOWNGRADE = "AQ_I_D";
+		static const std::string TEAM_INFOS = "T_I";
 
 		static const std::string ADD_PLAYER_ON_MARKET_QUERY = "Q_A_P_OM";	
 		static const std::string DELETE_PLAYER_OF_MARKET_QUERY = "Q_D_P_OM";

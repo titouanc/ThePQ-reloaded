@@ -22,3 +22,9 @@ void NotificationManager::handleNotification(JSON::Value *notification){
 		(*(it->second))(message.get("data"));
 	}
 }
+
+void NotificationManager::loadTeam(JSON::Value const * data)
+{
+	JSON::Dict const & dict = DICT(data);
+	_user.funds = INT(dict.get("funds"));
+}
