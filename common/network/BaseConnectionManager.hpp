@@ -76,6 +76,11 @@ namespace net {
 			/* Number of connected clients */
 			size_t nClients(void);
 
+			/* Manually feed incoming box */
+			void transmit(Message const & msg);
+
+			bool hasClient(int client_id);
+
 			/* Main in loop: feed incoming queue */
 			virtual void _mainloop_in(void);
 			/* Main out loop: eat outgoing queue */

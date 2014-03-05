@@ -76,7 +76,7 @@ private:
 	net::ConnectionManager _connectionManager;
     PlayerMarket *_market;
     std::deque<MatchManager*> _matches;
-    AdminManager *_adminManager;
+    AdminManager _adminManager;
 
 	pthread_t _timeThread;
 };

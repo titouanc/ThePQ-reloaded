@@ -30,10 +30,10 @@ static void* runTimeLoop(void* args)
 Server::Server(NetConfig const & config) : 
 	_inbox(), _outbox(), _users(),
 	_connectionManager(_inbox, _outbox, config.ip.c_str(), config.port, config.maxClients),
-	_market(new PlayerMarket(this)),_matches(),_adminManager(new AdminManager(_connectionManager))
+	_market(new PlayerMarket(this)),_matches(),_adminManager(_connectionManager)
 {
 	_connectionManager.start();
-	_adminManager->start();
+	_adminManager.start();
 	cout << "Launched server on " << _connectionManager.ip() << ":" << _connectionManager.port() << endl;
 }
 
@@ -44,9 +44,8 @@ Server::~Server()
 		(*it)->stop();
 		delete *it;
 	}
+	_adminManager.stop();
 	delete _market;
-	if(_adminManager != NULL)
-		delete _adminManager;
 	_matches.clear();
 }
 
@@ -126,8 +125,11 @@ void Server::treatMessage(const Message &message)
 					_users.erase(it);
 				}
 			}
-			else if(messageType == MSG::ADMIN_CLIENT){
-				_adminManager->acquireClient(message.peer_id);
+			else if(messageType == MSG::ADMIN_LOGIN){
+				_adminManager.acquireClient(message.peer_id);
+				_adminManager.transmit(Message(
+					message.peer_id, message.data->clone()
+				));
 			}
 			else if (ISDICT(received.get("data"))){
 				if (messageType == MSG::LOGIN){

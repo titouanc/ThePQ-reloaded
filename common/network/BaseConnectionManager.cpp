@@ -5,6 +5,7 @@
 #include <cstring>
 #include <sstream>
 #include <cstdint>
+#include <toolbox.hpp>
 
 extern "C" {
     #include <errno.h>
@@ -148,6 +149,11 @@ int BaseConnectionManager::_doSelect(int fdmax, fd_set *readable)
      * of the client
      */
     pthread_mutex_lock(&_fdset_mutex);
+    while (fdmax == 0 && _clients.empty()){
+        pthread_mutex_unlock(&_fdset_mutex); /* TODO : pthread_cond */
+        minisleep(0.1);
+        pthread_mutex_lock(&_fdset_mutex);
+    }
     std::set<int>::iterator it;
     for (it=_clients.begin(); it!=_clients.end(); it++){
         FD_SET(*it, readable);
@@ -198,6 +204,11 @@ void BaseConnectionManager::_mainloop_out(void)
 size_t BaseConnectionManager::nClients(void)
 {
     return _clients.size();
+}
+
+bool BaseConnectionManager::hasClient(int client_id)
+{
+    return _clients.find(client_id) != _clients.end();
 }
 
 void BaseConnectionManager::addClient(int fd)
@@ -284,4 +295,9 @@ bool BaseConnectionManager::isRunning(void)
         pthread_mutex_unlock(&_mutex);
     }
     return res;
+}
+
+void BaseConnectionManager::transmit(Message const & msg)
+{
+    _incoming.push(msg);
 }
