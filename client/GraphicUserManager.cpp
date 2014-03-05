@@ -37,7 +37,6 @@ GraphicUserManager::GraphicUserManager(net::ClientConnectionManager& connection,
 	// each button will display the corresponding form.
 
 	displayCanvas();
-	run();
 }
 
 void GraphicUserManager::displayChoice(){
