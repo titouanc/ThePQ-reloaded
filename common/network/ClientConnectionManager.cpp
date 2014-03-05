@@ -142,6 +142,11 @@ JSON::Value* net::ClientConnectionManager::popMessage()
 	return _messages.pop();
 }
 
+bool net::ClientConnectionManager::hasMessage()
+{
+	return _messages.available();
+}
+
 SharedQueue<JSON::Value*>& net::ClientConnectionManager::getNotifications()
 {
 	return _notifications;

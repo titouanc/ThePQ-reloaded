@@ -39,7 +39,14 @@ namespace net
 		void send(JSON::Value const& json);
 		JSON::Value* waitForMsg(std::string typeToWait);
 		JSON::Value* getNotification(std::string messageType);
+		
+		/* Remove and return first message from incoming queue. 
+		   If empty, block until a message arrive */
 		JSON::Value* popMessage();
+
+		/* Return true if there is at least 1 message in the incoming queue */
+		bool hasMessage();
+
 		SharedQueue<JSON::Value*>& getNotifications();
 		void updateNotifications();
 		
