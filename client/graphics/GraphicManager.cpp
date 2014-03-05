@@ -16,7 +16,7 @@ void GUI::GraphicManager::run(){
 		else if (event.type == sf::Event::Closed ||
 				(event.type==sf::Event::KeyPressed 
 				&& event.key.code==sf::Keyboard::Escape)){
-			_controller.window.close();
+			window().close();
 		}
 	}
 }
@@ -32,5 +32,5 @@ void GUI::GraphicManager::displayCanvas() {
 
 void GUI::GraphicManager::redrawCanvas(){
 	_canvas.renderTo(_controller.window);
-	_controller.window.display();
+	window().display();
 }

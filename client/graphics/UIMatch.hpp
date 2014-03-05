@@ -25,22 +25,18 @@ class UIMatch : public sf::Drawable {
         /* Return the distance between 2 lines of hexagons, in pixels */
         double vAlign(void) const;
 
-        /* Create background once; it will result in a 1-op surface blit
-           gracefully handled by GPU */
         void drawMoveables(sf::RenderTarget & target) const;
         void drawHighlights(sf::RenderTarget & target) const;
-
-        std::string texturePath(std::string const & name) const;
     public:
         static const sf::Color hilightYellow, hilightRed;
 
         /* Create a new UIMatch bound to pitch, where the distance between
-           two borders of an hexagon is hexagonSize */
+           two borders of an hexagon is hexagonSize pixels */
         UIMatch(Pitch & pitch, int hexagonSize=25);
 
         /* Return graphical pitch width, in pixels */
         unsigned int width(void) const;
-        /* Return graphical pitch width, in pixels */
+        /* Return graphical pitch height, in pixels */
         unsigned int height(void) const;
 
         Pitch & pitch(void) const;

@@ -10,11 +10,12 @@ namespace GUI {
 	class GraphicManager {
 	public:
 		GraphicManager(MainController &uic) : _controller(uic), _isRunning(true){}
-		void run();
+		virtual void run();
 		void deleteCanvas();
 		void displayCanvas();
 		void redrawCanvas();
 	protected:
+		sf::RenderWindow & window(){return _controller.window;}
 		MainController &_controller;
 		Layer _canvas;
 		bool _isRunning;

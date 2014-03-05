@@ -2,22 +2,17 @@
 #define __STADIUM_MANAGER_HPP
 
 #include <vector>
-#include <network/ClientConnectionManager.hpp>
-#include "UserData.hpp"
+#include "ClientManager.hpp"
 #include "Menu.hpp"
 #include <model/Installation.hpp>
 
-class StadiumManager
+class StadiumManager : public ClientManager
 {
 public:
-	StadiumManager(net::ClientConnectionManager& connection, UserData& user);
-
+	using ClientManager::ClientManager;
 	void showMenu();
 	
 private:
-	net::ClientConnectionManager& _connection;
-	UserData& _user;
-	
 	bool upgradeInstallation(size_t i);
 	bool downgradeInstallation(size_t i);
 	void printInstallationsList();

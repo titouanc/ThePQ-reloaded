@@ -1,4 +1,5 @@
 #include "UIMatch.hpp"
+#include "loadPath.hpp"
 #include <stdexcept>
 #include <model/Ball.hpp>
 #include <model/Player.hpp>
@@ -6,12 +7,6 @@
 class TextureNotFound : public std::runtime_error {
     public: using std::runtime_error::runtime_error;
 };
-
-/* === Private === */
-std::string UIMatch::texturePath(std::string const & name) const
-{
-    return std::string("textures/") + name + ".png";
-}
 
 double UIMatch::circleSize(void) const 
 {
@@ -38,11 +33,11 @@ UIMatch::UIMatch(Pitch & pitch, int hexagonSize) :
     _left(0), _top(0)
 {
     
-    if (! _grass_texture.loadFromFile(texturePath("grass1")))
+    if (! _grass_texture.loadFromFile(texturePath("grass1.png")))
         throw TextureNotFound("grass1");
-    if (! _sand_texture.loadFromFile(texturePath("sand1")))
+    if (! _sand_texture.loadFromFile(texturePath("sand1.png")))
         throw TextureNotFound("sand1");
-    if (! _goal_texture.loadFromFile(texturePath("goal2_50")))
+    if (! _goal_texture.loadFromFile(texturePath("goal2_50.png")))
         throw TextureNotFound("goal2_50");
 }
 
