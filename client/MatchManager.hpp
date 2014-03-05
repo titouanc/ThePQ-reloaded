@@ -3,14 +3,33 @@
 
 #include "ClientManager.hpp"
 #include <model/Pitch.hpp>
+#include <model/Squad.hpp>
 
 class MatchManager : public ClientManager {
+	public:
+		typedef enum {CREATED, PROMPT, TIMEOUT, FINISHED} State;		
 	private:
 		Pitch _pitch;
+		Squad _mySquad, _otherSquad;
+		State _state;
+
+		void treatBalls(JSON::List const & balls);
+		void treatSquads(JSON::List const & squads);
+		void treatDeltas(JSON::List const & delta);
 	public:
 		using ClientManager::ClientManager;
-		MatchManager(ClientManager const & other) : ClientManager(other){}
+		MatchManager(ClientManager const & other);
+		virtual ~MatchManager();
 		Pitch & pitch() {return _pitch;}
+		void treatMessage(JSON::Dict const & msg);
+
+		State state() const {return _state;}
+
+		void invite(std::string const & name);
+
+		/* HOOKS */
+		virtual void onPitchChange(){}
+		virtual void onStateChange(){}
 };
 
 #endif
