@@ -12,6 +12,13 @@ class ClientManager {
 	protected:
 		net::ClientConnectionManager & connection() const {return _connection;}
 		UserData & user() const {return _user;}
+		void say(std::string const & type, JSON::Value const & data){
+			JSON::Dict msg = {
+				{"type", JSON::String(type)},
+				{"data", data}
+			};
+			_connection.send(msg);
+		}
 
 	public:
 		ClientManager(net::ClientConnectionManager & conn, UserData & user) : 
