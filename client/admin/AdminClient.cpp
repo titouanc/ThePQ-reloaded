@@ -28,8 +28,8 @@ void AdminClient::showAdminMenu(){
 	_menu.addToDisplay("   - create a championship\n");
 	_menu.addToDisplay("   - quit\n");
 	int option;
-	option = _menu.run();
 	do{
+		option = _menu.run();
 		switch(option){
 			case 1:
 				showCreateChampionshipMenu();
