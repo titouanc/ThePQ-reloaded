@@ -17,13 +17,19 @@ void GraphicMatchManager::run()
 		sf::Event ev;
 		if (window().pollEvent(ev)){
 			if (ev.type == sf::Event::Closed)
-				window().close();
-			if (ev.type == sf::Event::KeyPressed){
+				running = false;
+			else if (ev.type == sf::Event::KeyPressed){
 				switch (ev.key.code){
 					case sf::Keyboard::Escape: running = false; break;
 					case sf::Keyboard::Space: redraw(); break;
 					default: break;
 				}
+			} else if (ev.type == sf::Event::MouseButtonPressed){
+				Position GUI_click = Position(ev.mouseButton.x, ev.mouseButton.y);
+				Position pos(_match.GUI2pitch(GUI_click));
+				_match.clear();
+				_match.hilight(pos, &UIMatch::hilightBlue);
+				redraw();
 			}
 		}
 
