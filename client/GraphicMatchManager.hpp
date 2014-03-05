@@ -16,7 +16,17 @@ public:
 		GUI::MainController & controller
 	) : MatchManager(parent), GUI::GraphicManager(controller), _match(pitch()){}
 	
+	/* Redraw pitch on window */
+	void redraw();
+
+	/* Run mainloop */
 	void run();
+
+	/* Triggered when the pitch changed */
+	void onPitchChange();
+
+	/* Triggered when match state changes */
+	void onStateChange();
 };
 
 #endif
