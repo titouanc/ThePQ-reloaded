@@ -48,6 +48,8 @@ void AdminManager::logoutAdmin(){
 	_admin = NULL;
 	std::cout << "[" << this << "] \033[1m" << _admin_peer_id 
 	          << "\033[36m  admin disconnected\033[0m" << std::endl;
+	releaseClient(_admin_peer_id);
+	stop();
 }
 
 bool AdminManager::adminIsLogged(){
@@ -66,11 +68,17 @@ User* AdminManager::load(std::string username){
 }
 
 void AdminManager::_mainloop_out(){
+	std::cout << "[" << this << "] \033[31m\033[1mAdmin server start\033[0m" << endl;
 	while (isRunning() || _inbox.available()){
+		cout << "nClients: " << nClients() << endl;
+		for (int i=0; i<1000; i++)
+			if (hasClient(i))
+				cout << "Has client " << i << endl;
 		Message const & msg = _inbox.pop();
 		treatAdminMessage(msg);
 		delete msg.data;
 	}
+	std::cout << "[" << this << "] \033[31m\033[1mAdmin server stop\033[0m" << endl;
 }
 
 /* Admin messages handler */

@@ -33,7 +33,6 @@ Server::Server(NetConfig const & config) :
 	_market(new PlayerMarket(this)),_matches(),_adminManager(_connectionManager)
 {
 	_connectionManager.start();
-	_adminManager.start();
 	cout << "Launched server on " << _connectionManager.ip() << ":" << _connectionManager.port() << endl;
 }
 
@@ -126,6 +125,7 @@ void Server::treatMessage(const Message &message)
 				}
 			}
 			else if(messageType == MSG::ADMIN_LOGIN){
+				_adminManager.start();
 				_adminManager.acquireClient(message.peer_id);
 				_adminManager.transmit(Message(
 					message.peer_id, message.data->clone()
