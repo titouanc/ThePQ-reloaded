@@ -79,6 +79,11 @@ namespace GUI {
 
 		void setText(std::string text) { _text.setString(text); }
 		std::string getText() { return std::string(_text.getString()); }
+		void clearText() { 
+			sf::String clearedText = _text.getString();
+			clearedText.erase(0, clearedText.getSize());
+			_text.setString(clearedText); 
+		}
 	private:
 		sf::Text _text;
 		sf::Font _font;

@@ -6,9 +6,11 @@ void GUI::GraphicManager::run(){
 	while(_controller.window.isOpen() && _isRunning){
 		sf::Event event;
 		_controller.window.waitEvent(event);
-		if (event.type == sf::Event::MouseButtonPressed 
-			&& event.mouseButton.button == sf::Mouse::Left){
-			_controller.handleClick(event);
+		if (event.type == sf::Event::MouseButtonPressed ){
+			if (event.mouseButton.button == sf::Mouse::Left)
+				_controller.handleClick(event);
+			else if (event.mouseButton.button == sf::Mouse::Right)
+				_controller.handleRightClick(event);
 		}
 		else if (event.type == sf::Event::TextEntered){
 			_controller.handleTextEntered(event);

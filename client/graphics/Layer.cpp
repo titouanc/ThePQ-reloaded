@@ -47,6 +47,22 @@ void GUI::Layer::handleClick(int x, int y){
 		_focusedTextbox = NULL;
 }
 
+void GUI::Layer::handleRightClick(int x, int y){
+	// delete text in a textbox
+	bool hasTextboxBeenSelected = false;
+	map<string, Textbox*>::iterator it = _textboxes.begin();
+	for(; it != _textboxes.end(); it++){
+		if (it->second->isInBounds(x, y) && !it->second->isHidden()){
+			hasTextboxBeenSelected = true;
+			_focusedTextbox = it->second;
+			it->second->focus();
+			it->second->clearText();
+		}
+	}
+	if (!hasTextboxBeenSelected)
+		_focusedTextbox = NULL;
+}
+
 void GUI::Layer::handleTextEntered(sf::Event event){
 	if (_focusedTextbox != NULL)
 		_focusedTextbox->updateText(event);
