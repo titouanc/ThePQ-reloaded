@@ -26,6 +26,19 @@ Crée un dictionnaire alloué statiquement avec les paires données. Il faut imp
 		{"theAnswer", JSON::Integer(42)}
 	};
 
+### `JSON::Document`
+Cette classe permet d'assurer qu'un thread sera le seul à accéder à un fichier durant l'exécution d'une fonction, et de charger le contenu du fichier directement en un objet C++ *(pour autant que cet objet ait un opérateur de conversion vers JSON et un constructeur depuis JSON)*. 
+** Exemple d'utilisation **
+
+	JSON::Document<Chaser> doc;
+	
+	/* Charge un objet Chaser depuis "chaser.json",
+	   et le passe a la fonction passée en paramètre */
+	doc.with("chaser.json", [&](Chaser & chaser){
+		if (chaser.getName() == "Chaser1");
+			chaser.setName("Coucougnette");
+	});
+
 #Gestion de la mémoire
 ## Parser
 La fonction `JSON::parse` renvoie un pointeur vers un objet nouvellement alloué, il faut le `delete` par après.
@@ -87,22 +100,22 @@ Il est aussi possible de *voler* un objet à un conteneur (l'appelant devient al
 		if (ISDICT(parsed)){
 			JSON::Dict const & manager = DICT(parsed);
 
-			if (manager.hasKey("name") && ISSTR(manager.get("name"))){
+			if (ISSTR(manager.get("name"))){
 				JSON::String & name = STR(manager.get("name"));
 				cout << " name: " << name.value() << endl;
 			}
 
-			if (manager.hasKey("level") && ISINT(manager.get("level"))){
+			if (ISINT(manager.get("level"))){
 				JSON::Integer & level = INT(manager.get("level"));
 				cout << "level: " << level.value() << endl;
 			}
 
-			if (manager.hasKey("fame") && ISFLOAT(manager.get("fame"))){
+			if (ISFLOAT(manager.get("fame"))){
 				JSON::Float & fame = FLOAT(manager.get("level"));
 				cout << " fame: " << fame.value() << endl;
 			}
 
-			if (manager.hasKey("players_id") && ISLIST(manager.get("players_id"))){
+			if (ISLIST(manager.get("players_id"))){
 				JSON::List & players = LIST(manager.get("players_id"));
 				for (size_t i=0; i<players.len(); i++){
 					if (ISINT(players[i])){

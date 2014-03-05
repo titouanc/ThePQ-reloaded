@@ -142,6 +142,8 @@ void Server::treatMessage(const Message &message)
 							_outbox.push(Message(message.peer_id, offlineMsg[i]->clone()));
 						}
 						loggedIn->clearOfflineMsg();
+						loggedIn->loadTeam();
+						sendTeamInfos(loggedIn->getTeam(), message.peer_id);
 					}
 				}
 				else if(messageType == MSG::USER_CHOOSE_TEAMNAME)
@@ -236,7 +238,9 @@ User *Server::logUserIn(const JSON::Dict &credentials, int peer_id)
 					if(user->getTeam().getName() == gameconfig::UNNAMED_TEAM)
 						response.set("data",MSG::USER_CHOOSE_TEAMNAME);
 					else
+					{
 						response.set("data", MSG::USER_LOGIN);
+					}
 					res = user;
 				} else {
 					// wrong password
@@ -251,6 +255,14 @@ User *Server::logUserIn(const JSON::Dict &credentials, int peer_id)
 		_outbox.push(Message(peer_id, response.clone()));
 	}
 	return res;
+}
+
+void Server::sendTeamInfos(const JSON::Dict &data, int peer_id)
+{
+	JSON::Dict response;
+	response.set("type", net::MSG::TEAM_INFOS);
+	response.set("data", data);
+	_outbox.push(Message(peer_id, response.clone()));
 }
 
 void Server::checkTeamName(const JSON::Dict &data, int peer_id){
@@ -317,23 +329,19 @@ void Server::sendInstallationsList(int peer_id)
 
 void Server::upgradeInstallation(int peer_id, size_t i)
 {
-	Installation* inst = _users[peer_id]->getTeam().getInstallations()[i];
-	inst->upgrade();
-	MemoryAccess::save(inst);
+	bool res = _users[peer_id]->getTeam().upgradeInstallation(i);
 	JSON::Dict msg;
 	msg.set("type", net::MSG::INSTALLATION_UPGRADE);
-	msg.set("data", JSON::Bool(true));
+	msg.set("data", JSON::Bool(res));
 	_outbox.push(Message(peer_id, msg.clone()));
 }
 
 void Server::downgradeInstallation(int peer_id, size_t i)
 {
-	Installation* inst = _users[peer_id]->getTeam().getInstallations()[i];
-	inst->downgrade();
-	MemoryAccess::save(inst);
+	bool res = _users[peer_id]->getTeam().downgradeInstallation(i);
 	JSON::Dict msg;
 	msg.set("type", net::MSG::INSTALLATION_DOWNGRADE);
-	msg.set("data", JSON::Bool(true));
+	msg.set("data", JSON::Bool(res));
 	_outbox.push(Message(peer_id, msg.clone()));
 }
 
@@ -488,7 +496,6 @@ void Server::timeLoop()
 	}
 	else
 	{
-		cout << "testing..." << endl;
 		time_t timePrev = timeStart, timeNow;
 		while (_connectionManager.isRunning() == true)
 		{
@@ -504,7 +511,6 @@ void Server::timeLoop()
 			timeUpdateChampionship();
 		}
 	}
-	cout << "exiting..." << endl;
 }
 
 void Server::timeUpdateStadium()
@@ -514,19 +520,7 @@ void Server::timeUpdateStadium()
 	for (size_t i = 0; i < users.size(); ++i)
 	{
 		users[i].loadTeam();
-		Team & team = users[i].getTeam();
-		vector<Installation*>& installations = team.getInstallations();
-		cout << "-----------team : " << team.getName() << endl;
-		cout << "old team funds : " << team.getFunds() << endl;
-		for (size_t j = 0; j < installations.size(); ++j)
-		{
-			cout << installations[j]->getName() << endl;
-			cout << installations[j]->getMaintenanceCost() << endl;
-			team.buy(installations[j]->getMaintenanceCost());
-			team.getPayed(installations[j]->getIncome());
-		}
-		cout << "new team funds : " << team.getFunds() << endl;;
-		team.saveInfos();
+		users[i].getTeam().timeUpdate();
 	}
 }
 

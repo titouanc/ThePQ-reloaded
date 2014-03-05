@@ -45,7 +45,7 @@ TEST(serialize)
 	ASSERT(copy.getID() == titou.getID());
 ENDTEST()
 
-int main(int argc, const char **argv){
+int main(){
 	TestFunc tests[] = {
 		ADDTEST(constructor_without_parameters),
 		ADDTEST(constructor_with_parameters),

@@ -3,6 +3,9 @@
 
 /*=======Abstract class Installation. Methods to be implemented in subclasses : 
  		- int getMaxLevel();
+ 		- int getMaintenanceCost();
+ 		- int getIncome();
+		- int getIncome(Match&);
  		* // TODO balancing etc...
 */
 

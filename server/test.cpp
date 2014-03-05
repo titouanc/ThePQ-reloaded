@@ -63,7 +63,7 @@ TEST(randomname)
 	cout << endl;
 ENDTEST()
 
-int main(int argc, const char **argv)
+int main()
 {
 	TestFunc tests[] = {
 		ADDTEST(user),

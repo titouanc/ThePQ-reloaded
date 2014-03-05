@@ -15,17 +15,41 @@ extern "C" {
 using namespace JSON;
 
 #define BUFSIZE 4096
+Value *JSON::readFD(int fd)
+{
+	char buffer[BUFSIZE];
+	int r = 0;
+	std::stringstream str;
+	while ((r = read(fd, buffer, BUFSIZE)) > 0){
+		buffer[r] = '\0';
+		str << buffer;
+	}
+	if (r < 0){
+		std::string error = strerror(errno);
+		throw IOError(error.c_str());
+	}
+
+	return parse(str.str().c_str());
+}
+
+void JSON::writeFD(int fd, JSON::Value const & json)
+{
+	std::string repr = json.dumps();
+	int r = 0;
+	for (size_t i=0; i<repr.length(); i+=r){
+		r = write(fd, repr.c_str()+i, repr.length()-i);
+		if (r < 0)
+			throw IOError(strerror(errno));
+	}
+}
 
 Value *JSON::load(const char *filename){
-	/*Method used for reading from <<filename>>*/
-	int fd, r;
-	char buffer[BUFSIZE+1];
-	std::stringstream str;
+	int fd;
 
 	fd = open(filename, O_RDONLY);
 	if (fd < 0){
 		std::string error = strerror(errno);
-		error += "in : ";
+		error += " in ";
 		error += filename;
 		throw IOError(error.c_str());
 	}
@@ -39,22 +63,22 @@ Value *JSON::load(const char *filename){
 		throw IOError(error.c_str());
 	}
 
-	while ((r = read(fd, buffer, BUFSIZE)) > 0){
-		buffer[r] = '\0';
-		str << buffer;
-	}
-	if (r < 0){
-		std::string error = strerror(errno);
-		error += "in : ";
-		error += filename;
+	Value *res = NULL;
+	try{
+		res = readFD(fd);
+	} catch (IOError & err){
 		flock(fd, LOCK_UN);
 		close(fd);
-		throw IOError(error.c_str());
+		throw IOError(std::string(err.what())+filename);
+	} catch (Error & err){
+		flock(fd, LOCK_UN);
+		close(fd);
+		throw err;
 	}
-
+	
 	flock(fd, LOCK_UN);
 	close(fd);
-	return parse(str.str().c_str());
+	return res;
 }
 
 Value *JSON::load(std::string filename){

@@ -24,7 +24,7 @@ std::string Value::dumps(void) const
 void Value::save(const char *filename) const
 {
 	/*Method for saving to <<filename>>*/
-	int fd, r=0;
+	int fd;
 
 	fd = open(filename, O_WRONLY|O_CREAT|O_TRUNC, 0644);
 	if (fd < 0){
@@ -43,17 +43,16 @@ void Value::save(const char *filename) const
 		throw IOError(error.c_str());
 	}
 
-	std::string repr = this->dumps();
-	for (size_t i=0; i<repr.length(); i+=r){
-		r = write(fd, repr.c_str()+i, repr.length()-i);
-		if (r < 0){
-			std::string error = strerror(errno);
-			error += " in ";
-			error += filename;
-			flock(fd, LOCK_UN);
-			close(fd);
-			throw IOError(error.c_str());
-		}
+	try {
+		writeFD(fd, *this);
+	} catch (IOError & err){
+		flock(fd, LOCK_UN);
+		close(fd);
+		throw IOError(std::string(err.what())+filename);
+	} catch (Error & err){
+		flock(fd, LOCK_UN);
+		close(fd);
+		throw err;
 	}
 
 	flock(fd, LOCK_UN);

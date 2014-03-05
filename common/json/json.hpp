@@ -174,6 +174,9 @@ namespace JSON {
 
     Value *load(const char *filename);
     Value *load(std::string filename);
+
+    Value *readFD(int fd);
+    void writeFD(int fd, JSON::Value const & json);
 }
 
 #endif
