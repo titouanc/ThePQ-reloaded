@@ -1,8 +1,7 @@
 #ifndef __NOTIFICATION_MANAGER_HPP
 #define __NOTIFICATION_MANAGER_HPP
 
-#include <network/ClientConnectionManager.hpp>
-#include "UserData.hpp"
+#include "ClientManager.hpp"
 #include <json/json.hpp>
 #include <map>
 
@@ -24,18 +23,16 @@ public:
   }
 };
 
-class NotificationManager
+class NotificationManager : public ClientManager
 {
 public:
-	NotificationManager(net::ClientConnectionManager& connection, UserData& user);
+	using ClientManager::ClientManager;
 	void addCallback(pair<string, AbstractCallback*>);
 	void handleNotification(JSON::Value *notification);
 	void handleAllNotifications();
 	void loadTeam(JSON::Value const * funds);
 
 private:
-	net::ClientConnectionManager& _connection;
-	UserData& _user;
 	std::map<std::string, AbstractCallback*> _callbacks;
 };
 

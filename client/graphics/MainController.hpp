@@ -13,6 +13,7 @@ namespace GUI {
 		void addLayer(Layer& layer);
 		void deleteTopLayer();
 		void handleClick(sf::Event e);
+		void handleRightClick(sf::Event e);
 		void handleTextEntered(sf::Event e);
 		sf::RenderWindow window;
 	private:

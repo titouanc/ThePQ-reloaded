@@ -22,6 +22,7 @@ namespace GUI {
 		void deactivate() 	{ _active = false; }
 
 		void handleClick(int x, int y);
+		void handleRightClick(int x, int y);
 		void renderTo(sf::RenderTarget & dest);
 
 		template <typename T> 
