@@ -62,7 +62,6 @@ struct Squad {
                 found = true ;
             }
         }
-        delete [] toLoad;
 
     }
 
