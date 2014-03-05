@@ -98,6 +98,7 @@ private:
 	
 	// Notifications
 	void showNotificationsMenu();
+	bool askForNotificationHandling();
 	void handleEndOfSaleNotification(JSON::Value const *message);
 	void handleFriendlyGameInvitation(JSON::Value const *message);
 	

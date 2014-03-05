@@ -28,3 +28,11 @@ void NotificationManager::loadTeam(JSON::Value const * data)
 	JSON::Dict const & dict = DICT(data);
 	_user.funds = INT(dict.get("funds"));
 }
+
+void NotificationManager::handleAllNotifications()
+{
+	while (_connection.getNotifications().available())
+	{
+		handleNotification(_connection.getNotifications().pop());
+	}
+}

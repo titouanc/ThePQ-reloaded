@@ -118,50 +118,8 @@ void Client::showNotificationsMenu()
 {
 	_connection.updateNotifications();
 	cout << "You have " << _connection.getNotifications().size() << " notifications." << endl;
-	Menu _menu;
-	_menu.addToDisplay("   - handle this notification\n");
-	_menu.addToDisplay("   - see next notification\n");
-	_menu.addToDisplay("   - quit\n");
-	int option;
-	bool quit = false;
-	while (_connection.getNotifications().available() && ! quit)
-	{
-		JSON::Value * currentNotification = _connection.getNotifications().front();
-		JSON::Dict const & notif = DICT(currentNotification);
-		string messageType = STR(notif.get("type")).value();
-		if (messageType == net::MSG::FRIENDLY_GAME_INVITATION && ISSTR(notif.get("data")))
-		{
-			cout << STR(notif.get("data")).value() << " invited you to a game" << endl;
-		}
-		else if (messageType == net::MSG::MARKET_MESSAGE)
-		{
-			cout << "You won a bid !" << endl;
-		}
-		option = _menu.run();
-		switch(option)
-		{
-			case 1:
-				_notificationManager.handleNotification(currentNotification);
-				_connection.getNotifications().pop();
-				break;
-			case 2:
-				_connection.getNotifications().push(_connection.getNotifications().front());
-				_connection.getNotifications().pop();
-				break;
-			case 3:
-				quit = true;
-				break;
-			default:
-				break;
-		}
-	}
+	_notificationManager.handleAllNotifications();
 }
-
-/* Market menu */
-
-
-//Market notifs
-
 
 /* Friendly match menu */
 void Client::showFriendlyMatchMenu()
@@ -217,40 +175,60 @@ void Client::printConnectedUsersList(){
  		cout << "  - " << connectedUsers[i] << endl;
 }
 
-
-
-///////// END NEW
-
-
+bool Client::askForNotificationHandling()
+{
+	Menu _menu;
+	_menu.addToDisplay("   - handle this notification\n");
+	_menu.addToDisplay("   - see next notification\n");
+	int option;
+	do
+	{
+		option = _menu.run();
+		switch(option)
+		{
+			case 1:
+				return true;
+				break;
+			case 2:
+				return false;
+				break;
+			default:
+				cout << "Wrong option entered" << endl;
+				break;
+		}
+	}
+	while (true);
+}
 
 void Client::handleFriendlyGameInvitation(JSON::Value const *json){
 	if (ISSTR(json)){
 		string user = STR(json).value();
+		cout << user << " invited you to a game" << endl;
+		bool handle = askForNotificationHandling();
 		Menu _menu;
 		_menu.addToDisplay("   - accept\n");
 		_menu.addToDisplay("   - deny\n");
 		int option;
-		bool chosen = false; // user has to accept or deny, he cannot quit.
-		do
+		while(handle)
 		{
 			option = _menu.run();
 			switch(option)
 			{
 				case 1:
-					chosen = true;
+					handle = false;
 					_matchManager.acceptInvitationFromUser(user);
 					showTurnMenu();
 					// TODO start to play game
 					break;
 				case 2:
-					chosen = true;
+					handle = false;
 					_matchManager.denyInvitationFromUser(user);
 					break;
 				default:
+					cout << "Wrong option entered" << endl;
 					break;
 			}
 		}
-		while(!chosen);
 	}
 }
 

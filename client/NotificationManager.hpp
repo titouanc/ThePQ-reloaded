@@ -30,6 +30,7 @@ public:
 	NotificationManager(net::ClientConnectionManager& connection, UserData& user);
 	void addCallback(pair<string, AbstractCallback*>);
 	void handleNotification(JSON::Value *notification);
+	void handleAllNotifications();
 	void loadTeam(JSON::Value const * funds);
 
 private:
