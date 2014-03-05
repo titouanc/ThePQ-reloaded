@@ -33,10 +33,10 @@ namespace net
 		virtual ~ClientConnectionManager();
 		ClientConnectionManager(std::string host, int portno);
 	
-		void send(JSON::Value const& json);
-		
 		void start();
+		void run();
 		
+		void send(JSON::Value const& json);
 		JSON::Value* waitForMsg(std::string typeToWait);
 		JSON::Value* getNotification(std::string messageType);
 		JSON::Value* popMessage();
@@ -46,15 +46,15 @@ namespace net
 	protected:
 		SharedQueue<JSON::Value*> _notifications;
 		SharedQueue<JSON::Value*> _messages;
-		
 		pthread_t _thread;
-
-		void loop();
 		bool _isRunning;
-		bool _isWaitingForMessage;
 		int _sockfd;
+		std::string _hostName;
+		int _port;
 		struct sockaddr_in _servAddr;
 		struct sockaddr_in _cliAddr;
+		
+		void loop();
 	};
 }
 
