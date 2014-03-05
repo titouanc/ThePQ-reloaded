@@ -26,7 +26,7 @@ class GraphicClient {
 public:
     GraphicClient(NetConfig const &config) :
     _user(), _connection(config.host, config.port), _controller(), _gUserManager(_connection, _user, _controller){
-
+        _connection.run();
     }
 
 private:
