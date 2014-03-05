@@ -11,7 +11,7 @@ public:
 	GraphicStadiumManager(net::ClientConnectionManager& connection, UserData& user, GUI::MainController &controller);
 	~GraphicStadiumManager(){}
 private:
-	void startMatch();
+	void startMatch() const;
 	GUI::Button<GraphicStadiumManager> *_startMatchButton;
 };
 

@@ -1,4 +1,5 @@
 #include "GraphicStadiumManager.hpp"
+#include "GraphicMatchManager.hpp"
 
 using namespace std;
 using namespace GUI;
@@ -11,7 +12,9 @@ GraphicStadiumManager::GraphicStadiumManager(net::ClientConnectionManager& conne
 	run();
 }
 
-void GraphicStadiumManager::startMatch(){
+void GraphicStadiumManager::startMatch() const {
 	// TODO Titou : hook GraphicMatchManager right here.
+	GraphicMatchManager match((ClientManager const &)*this, _controller);
+	match.run();
 }
 
