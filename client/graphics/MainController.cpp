@@ -37,6 +37,7 @@ void GUI::MainController::handleRightClick(sf::Event e){
 		_layers.top()->handleRightClick(e.mouseButton.x, e.mouseButton.y);
 		_layers.top()->renderTo(window);
 	}
+	window.display();
 }
 
 void GUI::MainController::handleTextEntered(sf::Event e){
