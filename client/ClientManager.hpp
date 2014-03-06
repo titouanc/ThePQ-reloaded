@@ -20,6 +20,21 @@ class ClientManager {
 			_connection.send(msg);
 		}
 
+		virtual void treatMessage(JSON::Dict const & dict)
+		{
+			std::string messageType = STR(dict.get("type"));
+		}
+
+		void readMessages() {
+	        while (_connection.hasMessage()){
+	        	JSON::Value * msg = _connection.popMessage();
+	            JSON::Dict const & dict = DICT(msg);
+	            ClientManager::treatMessage(dict);
+	            treatMessage(dict); /* virtuelle */
+	            delete msg;
+	        }
+		}
+
 	public:
 		ClientManager(net::ClientConnectionManager & conn, UserData & user) : 
 		_connection(conn), _user(user) {}
