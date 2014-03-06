@@ -34,9 +34,12 @@ void MatchManager::treatDeltas(JSON::List const & deltas)
 		JSON::Dict const & delta = DICT(deltas[i]);
 		Position from(LIST(delta.get("from")));
 		Position to(LIST(delta.get("to")));
-		_pitch.setAt(to, _pitch.getAt(from));
+
+		Moveable *toMove = _pitch.getAt(from);
+		_pitch.setAt(to, toMove);
 		_pitch.setAt(from, NULL);
-		cout << "MOVE " << JSON::List(from) << " -> " << JSON::List(to) << endl;
+		cout << "MOVE " << toMove->getName() << " " 
+		     << JSON::List(from) << " -> " << JSON::List(to) << endl;
 	}
 	onPitchChange();
 }

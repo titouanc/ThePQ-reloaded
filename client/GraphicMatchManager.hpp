@@ -10,6 +10,9 @@
 class GraphicMatchManager : public MatchManager,  public GUI::GraphicManager {
 private:
 	UIMatch _match;
+
+	/* Return true if main loop should continue */
+	bool treatEvent(sf::Event const & ev);
 public:
 	GraphicMatchManager(
 		ClientManager const & parent,

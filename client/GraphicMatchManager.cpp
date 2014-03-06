@@ -1,10 +1,31 @@
 #include "GraphicMatchManager.hpp"
+#include <toolbox.hpp>
 
 void GraphicMatchManager::redraw()
 {
 	window().clear(sf::Color::White);
 	window().draw(_match);
 	window().display();
+}
+
+bool GraphicMatchManager::treatEvent(sf::Event const & ev)
+{
+	if (ev.type == sf::Event::Closed)
+		return false;
+	else if (ev.type == sf::Event::KeyPressed){
+		switch (ev.key.code){
+			case sf::Keyboard::Escape: return false;
+			case sf::Keyboard::Space: redraw(); break;
+			default: break;
+		}
+	} else if (ev.type == sf::Event::MouseButtonPressed){
+		Position GUI_click = Position(ev.mouseButton.x, ev.mouseButton.y);
+		Position pos(_match.GUI2pitch(GUI_click));
+		_match.clear();
+		_match.hilight(pos, &UIMatch::hilightBlue);
+		redraw();
+	}
+	return true;
 }
 
 void GraphicMatchManager::run()
@@ -15,29 +36,23 @@ void GraphicMatchManager::run()
 	bool running = true;
 	while (running){
 		sf::Event ev;
+		bool hasReceived = false;
+
 		if (window().pollEvent(ev)){
-			if (ev.type == sf::Event::Closed)
+			if (! treatEvent(ev))
 				running = false;
-			else if (ev.type == sf::Event::KeyPressed){
-				switch (ev.key.code){
-					case sf::Keyboard::Escape: running = false; break;
-					case sf::Keyboard::Space: redraw(); break;
-					default: break;
-				}
-			} else if (ev.type == sf::Event::MouseButtonPressed){
-				Position GUI_click = Position(ev.mouseButton.x, ev.mouseButton.y);
-				Position pos(_match.GUI2pitch(GUI_click));
-				_match.clear();
-				_match.hilight(pos, &UIMatch::hilightBlue);
-				redraw();
-			}
+			hasReceived = true;
 		}
 
 		if (connection().hasMessage()){
 			JSON::Value *msg = connection().popMessage();
 			treatMessage(DICT(msg));
 			delete msg;
+			hasReceived = true;
 		}
+
+		if (! hasReceived)
+			minisleep(0.01);
 	}
 
 	cout << "LEAVE GraphicMatchManager::run" << endl;
