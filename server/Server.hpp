@@ -12,7 +12,6 @@
 #include "PlayerMarket.hpp"
 #include <model/Championship.hpp>
 
-
 using namespace std;
 struct NetConfig : public Config {
     std::string ip;
