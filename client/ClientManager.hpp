@@ -8,6 +8,7 @@ class ClientManager {
 	private:
 		net::ClientConnectionManager & _connection;
 		UserData & _user;
+		std::queue<std::string> _notifications;
 
 	protected:
 		net::ClientConnectionManager & connection() const {return _connection;}
@@ -20,17 +21,25 @@ class ClientManager {
 			_connection.send(msg);
 		}
 
-		virtual void treatMessage(JSON::Dict const & dict)
+		virtual void treatMessage(std::string type, JSON::Value const * data)
 		{
-			std::string messageType = STR(dict.get("type"));
+			if (type == net::MSG::TEAM_INFOS)
+			{
+
+			}
+			else if (type == net::MSG::BID_ENDED)
+			{
+				_notifications.push("Bid ended!");
+			}
 		}
 
 		void readMessages() {
 	        while (_connection.hasMessage()){
 	        	JSON::Value * msg = _connection.popMessage();
 	            JSON::Dict const & dict = DICT(msg);
-	            ClientManager::treatMessage(dict);
-	            treatMessage(dict); /* virtuelle */
+				std::string messageType = STR(dict.get("type"));
+	            ClientManager::treatMessage(messageType, dict.get("data"));
+	            treatMessage(messageType, dict.get("data")); /* virtuelle */
 	            delete msg;
 	        }
 		}
