@@ -15,7 +15,7 @@
 #include "ClientMatchManager.hpp"
 #include <model/Installation.hpp>
 #include <model/Sale.hpp>
-#include "UserManager.hpp"
+#include "CLIUserManager.hpp"
 #include "UserData.hpp"
 #include "StadiumManager.hpp"
 #include "TeamManager.hpp"
@@ -56,7 +56,7 @@ private:
 	
 	// Managers
 	net::ClientConnectionManager _connection;
-	UserManager _userManager;
+	CLIUserManager _userManager;
 	StadiumManager _stadiumManager;
 	ClientMatchManager _matchManager;
 	TeamManager _teamManager;
@@ -72,12 +72,6 @@ private:
 	// Menus
 	void showMainMenu();
 	void showManagementMenu();
-	
-	// Users
-	bool showUserMenu();
-	void showLoginMenu();
-	void showRegisterMenu();
-	void showTeamNameMenu();
 	
 	// Team
 	void showTeamMenu();

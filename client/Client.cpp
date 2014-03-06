@@ -36,17 +36,7 @@ Client::~Client()
 void Client::run()
 {
 	cout << splashScreen();
-	while (_isRunning == true)
-	{
-		if (_user.isLogged() == true)
-		{
-			showMainMenu();
-		}
-		else
-		{
-			_isRunning = showUserMenu();
-		}
-	}
+	_userManager.run();
 	cout << goodBye();
 }	
 
@@ -295,104 +285,6 @@ string Client::goodBye(){
 
 // Users
 
-bool Client::showUserMenu()
-{
-	/* user menu */
-	Menu _menu;
-	_menu.addToDisplay("   - login\n");
-	_menu.addToDisplay("   - register\n");
-	_menu.addToDisplay("   - quit\n");
-	int option;
-	bool res = true;
-	option = _menu.run();
-	switch(option)
-	{
-		case 1:
-			showLoginMenu();
-			break;
-		case 2:
-			showRegisterMenu();
-			break;
-		default:
-			res = false;
-			break;
-	}
-	return res;
-}
-
-void Client::showLoginMenu()
-{	
-	string username = Menu::askForUserData("Username : ");
-	string password = Menu::askForUserData("Password : ");
-	
-	try {
-		cout << "Please wait..." << endl;
-		_userManager.loginUser(username, password);
-		cout << "You have successfully logged in! Welcome! :)\n\n\n" << endl;
-		//~ showMainMenu();
-	}
-	catch (NoTeamNameException e)
-	{
-		cout << "You have successfully logged in! Welcome! :)\n\n\n" << endl;
-		showTeamNameMenu();
-	}
-	catch (UserNotFoundException & e)
-	{
-		cout << "\nUser not found" << endl;
-	}
-	catch (WrongPasswordException & e)
-	{
-		cout << "\nWrong password" << endl;
-	}
-	catch (AlreadyLoggedInException & e)
-	{
-		cout << "\nYou're already logged in from another location" << endl;
-	}
-}
-
-void Client::showTeamNameMenu(){
-	bool found = false;
-	cout << "Hey, it's the first time you log in ! Please, pick up a name for your team." << endl;
-	do{
-		string teamname = Menu::askForUserData("Teamname : ");
-		try{
-			_userManager.chooseTeamName(_user.username,teamname);
-			cout << "You have successfully picked up a name for your team !\nYou are now the manager of \033[35m"<<teamname<<"\033[0m"<< " !"<<endl;
-			found = true;
-		}
-		catch(TeamNameNotAvailableException e){
-			cout << "That teamname is \033[31mnot\033[0m available, pick up another one." << endl;
-		}
-	}while(!found);
-}
-
-void Client::showRegisterMenu()
-{
-	bool registered = false;
-	for (int i = 0; i < 3 && ! registered; ++i)
-	{
-		string username = Menu::askForUserData("Pick a username : ");
-		try {
-			cout << "Please wait..." << endl;
-			_userManager.doesUserExist(username);
-			string password = "a";
-			string passwordConfirmation;
-			while (password != passwordConfirmation){
-				password = Menu::askForUserData("Enter a new password : ");
-				passwordConfirmation = Menu::askForUserData("Confirm password : ");
-				if (password != passwordConfirmation)
-					cout << "The two passwords entered were not the same." << endl;
-			}
-			cout << "Please wait..." << endl;
-			_userManager.registerUser(username, password);
-			registered = true;
-			cout << "You have successfully registered! You can now login." << endl;
-		}
-		catch (UserAlreadyExistsException e) {
-			cout << "Username already exists. Try again with a different username." << endl;		
-		}
-	}
-}
 
 // Team
 void Client::showTeamMenu()

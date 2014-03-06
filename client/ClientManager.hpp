@@ -45,7 +45,7 @@ class ClientManager {
 	            delete msg;
 	        }
 		}
-
+	private:
 		void handleEndOfSaleNotification(JSON::Value const * message){
 			std::stringstream res;
 			JSON::Dict const & json = DICT(message);
