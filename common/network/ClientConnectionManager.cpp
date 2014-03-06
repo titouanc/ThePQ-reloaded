@@ -52,6 +52,7 @@ void net::ClientConnectionManager::run()
 	pthread_create(&_thread, NULL, runClientThread, this);
 }
 
+#define min(a,b) ((a) < (b)) ? (a) : (b)
 void net::ClientConnectionManager::loop()
 {
 	while (_isRunning)
@@ -69,7 +70,7 @@ void net::ClientConnectionManager::loop()
 		
 		
 		while (len > 0) {
-			r = recv(_sockfd, data, MSG_SIZE, 0);
+			r = recv(_sockfd, data, min(len, MSG_SIZE), 0);
 			if (r == 0) throw DisconnectedException();
 			data[r] = '\0';
 			res << data;
