@@ -29,6 +29,8 @@ class MatchManager : public ClientManager {
 		Pitch & pitch() {return _pitch;}
 		void treatMessage(JSON::Dict const & msg);
 
+		bool isMyPlayer(Player const & player) const;
+
 		State state() const {return _state;}
 
 		void invite(std::string const & name);

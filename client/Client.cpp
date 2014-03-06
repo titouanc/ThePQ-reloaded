@@ -1,5 +1,6 @@
 #include "Client.hpp"
 #include <pthread.h>
+#include "CLIMatchManager.hpp"
 
 using namespace std;
 
@@ -212,21 +213,22 @@ void Client::handleFriendlyGameInvitation(JSON::Value const *json){
 		while(handle)
 		{
 			option = _menu.run();
-			switch(option)
-			{
-				case 1:
-					handle = false;
-					_matchManager.acceptInvitationFromUser(user);
-					showTurnMenu();
-					// TODO start to play game
-					break;
-				case 2:
-					handle = false;
-					_matchManager.denyInvitationFromUser(user);
-					break;
-				default:
-					cout << "Wrong option entered" << endl;
-					break;
+			if (option == 1){
+				handle = false;
+				
+				//_matchManager.acceptInvitationFromUser(user);
+				//showTurnMenu();
+				// TODO start to play game
+				CLIMatchManager YAYAYA(_connection, _user);
+				YAYAYA.run();
+				break;
+			} else if (option == 2){
+				handle = false;
+				_matchManager.denyInvitationFromUser(user);
+				break;
+			} else {
+				cout << "Wrong option entered" << endl;
+				break;
 			}
 		}
 	}

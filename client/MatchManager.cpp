@@ -50,9 +50,7 @@ void MatchManager::treatDeltas(JSON::List const & deltas)
 }
 
 MatchManager::MatchManager(ClientManager const & other) : ClientManager(other), _state(CREATED)
-{
-	say(MSG::FRIENDLY_GAME_USERNAME, JSON::String("archi"));
-}
+{}
 
 MatchManager::~MatchManager()
 {
@@ -98,4 +96,12 @@ void MatchManager::sendDisplacement(Player const & player, Displacement const & 
 		{"move", JSON::List(move)}
 	};
 	say(MSG::MATCH_STROKE, msg);
+}
+
+bool MatchManager::isMyPlayer(Player const & player) const
+{
+	for (int i=0; i<7; i++)
+		if (_mySquad.players[i] == &player)
+			return true;
+	return false;
 }

@@ -4,13 +4,21 @@
 class CLIMatchManager : public MatchManager {
 	private:
 	public:
-		void askUser(){
+		using MatchManager::MatchManager;
+
+		void selectPlayer(){
 			cout << "Choose a player to move: " << endl;
 			Menu menu;
 			for (int i=0; i<7; i++){
 				Player const & p = *(mySquad().players[i]);
-				menu.addToDisplay(colorPlayerLetter(p)+" "+p.getName());
+				menu.addToDisplay(
+					std::string("\033[1m")+
+					colorPlayerLetter(p)+" "+
+					p.getName()+"\033[0m"
+				);
 			}
+			menu.addToDisplay("Go back");
+			int choice = menu.run();
 		}
 
 		void run(){
@@ -23,7 +31,7 @@ class CLIMatchManager : public MatchManager {
 				}
 
 				displayPitch();
-				askUser();
+				selectPlayer();
 			}
 			cout << "CLIMatchManager ended" << endl;
 		}
@@ -93,7 +101,7 @@ class CLIMatchManager : public MatchManager {
 							/* Colorize players by type */
 							Player const & player = (Player const &) *atPos;
 							
-							if (_matchManager.isOwnPlayer(player))
+							if (isMyPlayer(player))
 								cout << "\033[1m";
 							cout << colorPlayerLetter(player);
 						}
