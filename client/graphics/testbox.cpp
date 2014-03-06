@@ -20,6 +20,13 @@ public:
 
 		hideButton = _canvas.addButton<TestBoxManager>(&TestBoxManager::hideTextbox, this, "Hide Textbox");
 		hideButton->setPosition(10, 110);
+
+		normalLabel = _canvas.addLabel("This is a label.");
+		normalLabel->setPosition(500, 10);
+
+		amazingLabel = _canvas.addLabel("This is a\ngreat label!", sf::Color(0xff, 0x00, 0x00, 0xff));
+		amazingLabel->setPosition(500, 60);
+
 		displayCanvas();
 		run();
 	}
@@ -44,6 +51,8 @@ public:
 private:
 	Textbox *myTextbox;
 	Button<TestBoxManager> *hideButton;
+	Label *normalLabel;
+	Label *amazingLabel;
 	
 };
 

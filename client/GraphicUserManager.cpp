@@ -37,7 +37,6 @@ GraphicUserManager::GraphicUserManager(net::ClientConnectionManager& connection,
 	// each button will display the corresponding form.
 
 	displayCanvas();
-	run();
 }
 
 void GraphicUserManager::displayChoice(){
@@ -93,7 +92,8 @@ void GraphicUserManager::displayTeamNameForm(){
 void GraphicUserManager::submitLoginForm(){
 	try{
 		loginUser(_usernameTextbox->getText(), _passwordTextbox->getText());
-		GraphicStadiumManager gsm(_connection, _user, _controller);
+		GraphicStadiumManager gsm(connection(), user(), _controller);
+		gsm.run();
 	}
 	catch (UserNotFoundException & e)
 	{
@@ -131,8 +131,9 @@ void GraphicUserManager::submitRegisterForm(){
 
 void GraphicUserManager::submitTeamNameForm(){
 	try{
-		chooseTeamName(_user.username,_teamNameTextbox->getText());
-		GraphicStadiumManager gsm(_connection, _user, _controller);
+		chooseTeamName(user().username,_teamNameTextbox->getText());
+		GraphicStadiumManager gsm(connection(), user(), _controller);
+		gsm.run();
 	}
 	catch(TeamNameNotAvailableException e){
 		cout << "Team name is not available" << endl;
