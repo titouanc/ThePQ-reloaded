@@ -21,10 +21,10 @@ void CLIStadiumManager::run()
 				printInstallationsList();
 				break;
 			case 2:
-				upgradeInstallation();
+				showUpgradeInstallation();
 				break;
 			case 3:
-				downgradeInstallation();
+				showDowngradeInstallation();
 				break;
 			default:
 				break;
@@ -52,7 +52,7 @@ void CLIStadiumManager::printInstallationsList()
 	}
 }
 
-void CLIStadiumManager::upgradeInstallation()
+void CLIStadiumManager::showUpgradeInstallation()
 {
 	size_t choice;
 	cout << "Enter the number of the installation you want to upgrade" << endl << ">";
@@ -75,7 +75,7 @@ void CLIStadiumManager::upgradeInstallation()
 	}
 }
 
-void CLIStadiumManager::downgradeInstallation()
+void CLIStadiumManager::showDowngradeInstallation()
 {
 	size_t choice;
 	cout << "Enter the number of the installation you want to downgrade" << endl << ">";

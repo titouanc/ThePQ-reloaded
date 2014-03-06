@@ -11,8 +11,8 @@ public:
 
 private:
 	void printInstallationsList();
-	void upgradeInstallation();
-	void downgradeInstallation();
+	void showUpgradeInstallation();
+	void showDowngradeInstallation();
 
 };
 
