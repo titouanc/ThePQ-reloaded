@@ -87,7 +87,7 @@ void GraphicMatchManager::run()
 	redraw();
 	
 	bool running = true;
-	while (running){
+	while (running && state() != FINISHED){
 		sf::Event ev;
 		bool hasReceived = false;
 
@@ -97,7 +97,7 @@ void GraphicMatchManager::run()
 			hasReceived = true;
 		}
 
-		if (connection().hasMessage()){
+		while (connection().hasMessage()){
 			JSON::Value *msg = connection().popMessage();
 			treatMessage(DICT(msg));
 			delete msg;

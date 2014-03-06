@@ -8,7 +8,8 @@
 
 class MatchManager : public ClientManager {
 	public:
-		typedef enum {CREATED, PROMPT, TIMEOUT, FINISHED} State;		
+		typedef enum {CREATED, PROMPT, TIMEOUT, FINISHED} State;
+				
 	private:
 		Pitch _pitch;
 		Squad _mySquad, _otherSquad;
@@ -17,6 +18,10 @@ class MatchManager : public ClientManager {
 		void treatBalls(JSON::List const & balls);
 		void treatSquads(JSON::List const & squads);
 		void treatDeltas(JSON::List const & delta);
+
+	protected:
+		Squad &mySquad() const {return _mySquad};
+
 	public:
 		using ClientManager::ClientManager;
 		MatchManager(ClientManager const & other);

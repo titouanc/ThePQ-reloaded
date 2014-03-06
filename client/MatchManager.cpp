@@ -77,6 +77,9 @@ void MatchManager::treatMessage(JSON::Dict const & msg)
 	} else if (type == MSG::MATCH_TIMEOUT){
 		_state = TIMEOUT;
 		onStateChange();
+	} else if (type == MSG::MATCH_END){
+		_state = FINISHED;
+		onStateChange();
 	}
 
 	else if (type == MSG::MATCH_BALLS)
