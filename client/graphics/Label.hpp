@@ -24,7 +24,11 @@ namespace GUI {
 			dest.draw(_text);
 		}
 
-		void setText(std::string text) { _text.setString(text); }
+		void setText(std::string text) { 
+			_text.setString(text); 
+			_w = _text.getLocalBounds().width;
+			_h = _text.getLocalBounds().height;
+		}
 		void setColor(sf::Color color) { _text.setColor(color); }
 private:
 		sf::Text _text;
