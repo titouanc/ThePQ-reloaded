@@ -17,6 +17,8 @@ namespace GUI {
 			_text.setString(text);
 			_text.setCharacterSize(BODY_TEXT_SIZE);
 			_text.setColor(color);
+			_w = _text.getLocalBounds().width;
+			_h = _text.getLocalBounds().height;
 		}
 
 		void renderTo(sf::RenderTarget & dest){
