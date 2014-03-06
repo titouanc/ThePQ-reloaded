@@ -20,7 +20,7 @@ class MatchManager : public ClientManager {
 		void treatDeltas(JSON::List const & delta);
 
 	protected:
-		Squad &mySquad() const {return _mySquad};
+		Squad & mySquad() {return _mySquad;}
 
 	public:
 		using ClientManager::ClientManager;
