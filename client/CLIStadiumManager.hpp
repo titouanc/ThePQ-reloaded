@@ -3,7 +3,7 @@
 
 #include "StadiumManager.hpp"
 
-class CLIStadiumManager : StadiumManager {
+class CLIStadiumManager : public StadiumManager {
 public:
 	using StadiumManager::StadiumManager;
 	CLIStadiumManager(ClientManager const & parent);

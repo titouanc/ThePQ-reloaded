@@ -1,6 +1,7 @@
 #include "CLIStadiumManager.hpp"
 
-CLIStadiumManager::CLIStadiumManager(ClientManager const & parent) : ClientManager(parent)
+CLIStadiumManager::CLIStadiumManager(ClientManager const & parent) : 
+StadiumManager(parent)
 {}
 
 void CLIStadiumManager::run()
@@ -32,7 +33,8 @@ void CLIStadiumManager::run()
 	while (option != 4);
 }
 
-void CLIStadiumManager::printInstallationsList(){
+void CLIStadiumManager::printInstallationsList()
+{
 	if (user().installations.empty())
 	{
 		loadInstallations();
