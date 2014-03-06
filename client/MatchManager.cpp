@@ -87,3 +87,12 @@ void MatchManager::treatMessage(JSON::Dict const & msg)
 	else if (type == MSG::MATCH_DELTA)
 		treatDeltas(LIST(msg.get("data")));
 }
+
+void MatchManager::sendDisplacement(Player const & player, Displacement const & move)
+{
+	JSON::Dict msg = {
+		{"mid", JSON::Integer(player.getID())},
+		{"move", JSON::List(move)}
+	};
+	say(MSG::MATCH_STROKE, msg);
+}

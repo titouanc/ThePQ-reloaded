@@ -4,6 +4,7 @@
 #include "ClientManager.hpp"
 #include <model/Pitch.hpp>
 #include <model/Squad.hpp>
+#include <model/Displacement.hpp>
 
 class MatchManager : public ClientManager {
 	public:
@@ -26,6 +27,7 @@ class MatchManager : public ClientManager {
 		State state() const {return _state;}
 
 		void invite(std::string const & name);
+		void sendDisplacement(Player const & player, Displacement const & move);
 
 		/* HOOKS */
 		virtual void onPitchChange(){}
