@@ -14,16 +14,15 @@ std::string humanExcName(const char *name)
 }
 
 Client::Client(NetConfig const &config) : 	_user(), _connection(config.host, config.port),
-												ClientManager(_connection, _user),
-												_userManager(*this),
-												_matchManager(connection(), user()),
-												_teamManager(connection(), user()),
-												_marketManager(connection(), user()),
-												_notificationManager(connection(), user()),
+												_userManager(_connection, _user),
+												_matchManager(_connection, _user),
+												_teamManager(_connection, _user),
+												_marketManager(_connection, _user),
+												_notificationManager(_connection, _user),
 												_isRunning(true),
 												_prompt(">")
 {
-	connection().run();
+	_connection.run();
 	_notificationManager.addCallback(pair<string, AbstractCallback*>(net::MSG::FRIENDLY_GAME_INVITATION, new ClassCallback<Client>(this, &Client::handleFriendlyGameInvitation)));
 	_notificationManager.addCallback(pair<string, AbstractCallback*>(net::MSG::MARKET_MESSAGE, new ClassCallback<Client>(this, &Client::handleEndOfSaleNotification)));
 	_notificationManager.addCallback(pair<string, AbstractCallback*>(net::MSG::TEAM_INFOS, new ClassCallback<NotificationManager>(&_notificationManager, &NotificationManager::loadTeam)));
@@ -46,8 +45,8 @@ void Client::run()
 /* main menu */
 void Client::showNotificationsMenu()
 {
-	connection().updateNotifications();
-	cout << "You have " << connection().getNotifications().size() << " notifications." << endl;
+	_connection.updateNotifications();
+	cout << "You have " << _connection.getNotifications().size() << " notifications." << endl;
 	_notificationManager.handleAllNotifications();
 }
 
@@ -252,8 +251,8 @@ void Client::showTeamMenu()
 void Client::displayPlayers(){
 	_teamManager.loadPlayers();
 	cout << "================ YOUR PLAYERS ================" << endl;
-	for(size_t i =0; i<user().players.size();++i){
-		cout << user().players[i] << endl; //modif
+	for(size_t i =0; i<_user.players.size();++i){
+		cout << _user.players[i] << endl; //modif
 	}
 	cout << "==============================================" << endl;
 }
@@ -291,9 +290,9 @@ void Client::sellPlayer(){
 	cout << "Choose a player to sale by entering his ID :" <<endl;
 	cout << _prompt;
 	cin >> player_id;
-	for(size_t i = 0; i<user().players.size(); ++i){
-		if(user().players[i].getMemberID() == player_id){
-			player = &(user().players[i]);
+	for(size_t i = 0; i<_user.players.size(); ++i){
+		if(_user.players[i].getMemberID() == player_id){
+			player = &(_user.players[i]);
 			found = true;
 		}
 	}
@@ -513,7 +512,7 @@ void Client::showTurnMenu(){
 			default:
 				break;
 		}
-		connection().updateNotifications();
+		_connection.updateNotifications();
 		_matchManager.updatePitchWithDeltas();
 		displayPitch();
 	} while (!_matchManager.isMatchFinished());
