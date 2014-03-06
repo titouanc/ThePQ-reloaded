@@ -38,7 +38,7 @@ void CLIUserManager::showLoginMenu()
 		cout << "Please wait..." << endl;
 		loginUser(username, password);
 		cout << "You have successfully logged in! Welcome! :)\n\n\n" << endl;
-		//~ showMainMenu();
+		showMainMenu();
 	}
 	catch (NoTeamNameException e)
 	{
