@@ -1,5 +1,9 @@
 #include "UserManager.hpp"
 
+UserManager::UserManager(ClientManager const & parent) : ClientManager(parent)
+{
+}
+
 void UserManager::loginUser(std::string username, std::string password)
 {
 	JSON::Dict toSend, credentials;

@@ -10,6 +10,7 @@ class StadiumManager : public ClientManager
 {
 public:
 	using ClientManager::ClientManager;
+	StadiumManager(ClientManager const & parent);
 	void showMenu();
 	void printInstallationsList();
 	void upgradeInstallation();

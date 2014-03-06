@@ -15,13 +15,14 @@
 #include "ClientMatchManager.hpp"
 #include <model/Installation.hpp>
 #include <model/Sale.hpp>
-#include "UserManager.hpp"
+#include "CLIUserManager.hpp"
 #include "UserData.hpp"
 #include "StadiumManager.hpp"
 #include "TeamManager.hpp"
 #include "MarketManager.hpp"
 #include "NotificationManager.hpp"
 #include <Constants.hpp>
+#include "ClientManager.hpp"
 
 
 struct NetConfig : public Config {
@@ -43,7 +44,7 @@ struct NetConfig : public Config {
     }
 };
 
-class Client
+class Client : public ClientManager
 {
 public:
 	Client(NetConfig const &config);
@@ -56,8 +57,7 @@ private:
 	
 	// Managers
 	net::ClientConnectionManager _connection;
-	UserManager _userManager;
-	StadiumManager _stadiumManager;
+	CLIUserManager _userManager;
 	ClientMatchManager _matchManager;
 	TeamManager _teamManager;
 	MarketManager _marketManager;
@@ -69,25 +69,9 @@ private:
 	std::string splashScreen();
 	std::string goodBye();
 	
-	// Menus
-	void showMainMenu();
-	void showManagementMenu();
-	
-	// Users
-	bool showUserMenu();
-	void showLoginMenu();
-	void showRegisterMenu();
-	void showTeamNameMenu();
-	
 	// Team
 	void showTeamMenu();
 	void displayPlayers();
-	
-	// Stadium
-	void showStadiumMenu();
-	void printInstallationsList();
-	void upgradeInstallation();
-	void downgradeInstallation();
 	
 	// Market
 	void showMarketMenu();
