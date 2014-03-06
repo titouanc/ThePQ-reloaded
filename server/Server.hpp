@@ -10,6 +10,7 @@
 #include <Config.hpp>
 #include "MatchManager.hpp"
 #include "PlayerMarket.hpp"
+#include "Championship.hpp"
 
 
 using namespace std;
@@ -76,6 +77,7 @@ private:
 	net::ConnectionManager _connectionManager;
     PlayerMarket *market;
     std::deque<MatchManager*> _matches;
+    std::deque<Championship*> _championships;
 
 	pthread_t _timeThread;
 };
