@@ -4,8 +4,9 @@
 #include <vector>
 #include <string>
 #include <ctime>
-#include "MatchManager.hpp"
 #include <json/json.hpp>
+#include "MatchResult.hpp"
+#include "User.hpp"
 
 struct Schedule
 {
@@ -43,7 +44,7 @@ public:
 	void addUser(User & user);
 	void removeUser(User & user);
 	Schedule* nextMatch();
-	void endMatch(MatchManager & match);
+	void endMatch(MatchResult & result);
 
 	bool isStarted() { return _isStarted; }
 	size_t getNbOfUsers() { return _nbOfUsers; }

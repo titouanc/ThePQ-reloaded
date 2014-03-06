@@ -123,7 +123,7 @@ Schedule* Championship::nextMatch()
 	return NULL;
 }
 
-void Championship::endMatch(MatchManager & match)
+void Championship::endMatch(MatchResult & result)
 {
 	// TODO get winner, get looser and create next match
 }

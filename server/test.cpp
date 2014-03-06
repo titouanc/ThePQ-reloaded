@@ -5,7 +5,7 @@
 #include <model/RandomNameGenerator.hpp>
 #include <Constants.hpp>
 #include <iostream>
-#include "Championship.hpp"
+#include <model/Championship.hpp>
 
 TEST(user)
 	User user("usertest", "passwdtest");
