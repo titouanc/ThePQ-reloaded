@@ -53,7 +53,8 @@ void UserManager::logoutUser()
 	user().logout();
 }
 
-void UserManager::chooseTeamName(std::string username, std::string teamname){
+void UserManager::chooseTeamName(std::string username, std::string teamname)
+{
 	JSON::Dict toSend, data;
 	data.set(net::MSG::TEAMNAME,teamname);
 	data.set(net::MSG::USERNAME,username);

@@ -1,7 +1,8 @@
 #include "CLIUserManager.hpp"
 #include "Menu.hpp"
 
-CLIUserManager::CLIUserManager(UserManager const & parent) : UserManager(parent) : _stadiumManager((ClientManager)*this)
+CLIUserManager::CLIUserManager(ClientManager const & parent) : 
+UserManager(parent), _stadiumManager((ClientManager)*this)
 {}
 
 void CLIUserManager::run()

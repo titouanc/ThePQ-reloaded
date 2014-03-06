@@ -7,7 +7,7 @@
 class CLIUserManager : public UserManager {
 public:
 	using UserManager::UserManager;
-	CLIUserManager(UserManager const & parent);
+	CLIUserManager(ClientManager const & parent);
 	virtual void run();
 	void showLoginMenu();
 	void showRegisterMenu();
