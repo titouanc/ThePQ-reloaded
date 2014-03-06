@@ -10,6 +10,7 @@
 #include <Config.hpp>
 #include "MatchManager.hpp"
 #include "PlayerMarket.hpp"
+#include "Championship.hpp"
 
 
 using namespace std;

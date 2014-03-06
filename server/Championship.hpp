@@ -12,12 +12,14 @@ struct Schedule
 	std::string user1;
 	std::string user2;
 	time_t date;
-	Schedule(std::string u1, std::string u2, clock_t d) : user1(u1), user2(u2), date(d) {}
+	bool isHappening;
+	Schedule(std::string u1, std::string u2, clock_t d) : user1(u1), user2(u2), date(d), isHappening(false) {}
 	Schedule(JSON::Dict const & json)
 	{
-		if (ISSTR(json.get("user1")))	{ user1 = STR(json.get("user1")).value(); }
-		if (ISSTR(json.get("user2")))	{ user1 = STR(json.get("user2")).value(); }
-		if (ISINT(json.get("date")))	{ date = INT(json.get("date")); }
+		if (ISSTR(json.get("user1")))		{ user1 = STR(json.get("user1")).value(); }
+		if (ISSTR(json.get("user2")))		{ user1 = STR(json.get("user2")).value(); }
+		if (ISINT(json.get("date")))		{ date = INT(json.get("date")); }
+		if (ISBOOL(json.get("isHappening"))){ isHappening = BOOL(json.get("isHappening")); }
 	}
 	operator JSON::Dict()
 	{
@@ -25,6 +27,7 @@ struct Schedule
 		res.set("user1", user1);
 		res.set("user2", user2);
 		res.set("date", INT(date));
+		res.set("isHappening", BOOL(isHappening));
 		return res;
 	}
 };
@@ -39,8 +42,12 @@ public:
 
 	void addUser(User & user);
 	void removeUser(User & user);
-	std::vector<std::string> nextMatch();
+	Schedule* nextMatch();
 	void endMatch(MatchManager & match);
+
+	bool isStarted() { return _isStarted; }
+	size_t getNbOfUsers() { return _nbOfUsers; }
+	std::vector<std::string>& getUsers() { return _users; }
 
 private:
 	bool _isStarted;
