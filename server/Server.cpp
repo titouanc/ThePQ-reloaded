@@ -515,5 +515,28 @@ void Server::timeUpdateStadium()
 
 void Server::timeUpdateChampionship()
 {
-
+	for (size_t i = 0; i < _championships.size(); ++i)
+	{
+		Schedule* next = _championships[i]->nextMatch();
+		while (next != NULL)
+		{
+			next->isHappening = true;
+			int clientIDA, clientIDB;
+			map<int, User*>::iterator it = _users.begin();
+			while (it != _users.end())
+			{
+				if (it->second->getUsername() == next->user1)
+				{
+					clientIDA = it->first;
+				}
+				else if (it->second->getUsername() == next->user2)
+				{
+					clientIDB = it->first;
+				}
+				it++;
+			}
+			startMatch(clientIDA, clientIDB);
+			next = _championships[i]->nextMatch();
+		}
+	}
 }
