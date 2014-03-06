@@ -481,11 +481,7 @@ User *Server::getUserByName(std::string username)
 void Server::timeLoop()
 {
 	time_t timeStart = time(NULL);
-	if (timeStart == -1)
-	{
-		cout << "error time" << endl;
-	}
-	else
+	if (timeStart != -1)
 	{
 		time_t timePrev = timeStart, timeNow;
 		while (_connectionManager.isRunning() == true)
