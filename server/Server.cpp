@@ -492,7 +492,7 @@ void Server::timeLoop()
 				timeNow = time(NULL);
 			}
 			while (timeNow - timePrev < 10);
-			cout << "tick : " << time(NULL) << endl;
+			cout << "It is  : " << ctime(&timeNow);
 			timePrev = timeNow;
 			timeUpdateStadium();
 			timeUpdateChampionship();
@@ -507,7 +507,9 @@ void Server::timeUpdateStadium()
 	for (size_t i = 0; i < users.size(); ++i)
 	{
 		users[i].loadTeam();
+		cout << "<" << users[i].getTeam().getName() << "> old : " << users[i].getTeam().getFunds();
 		users[i].getTeam().timeUpdate();
+		cout << " $ | new : " << users[i].getTeam().getFunds() << " $" << endl;
 	}
 }
 
