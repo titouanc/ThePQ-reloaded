@@ -23,7 +23,11 @@ void MatchManager::treatSquads(JSON::List const & squads)
 	_otherSquad = DICT(squads[1]);
 	for (int i=0; i<7; i++){
 		_pitch.insert(_mySquad.players[i]);
+		if (_mySquad.players[i]->getSpeed() == 0)
+			_mySquad.players[i]->setSpeed(5);
 		_pitch.insert(_otherSquad.players[i]);
+		if (_otherSquad.players[i]->getSpeed() == 0)
+			_otherSquad.players[i]->setSpeed(5);
 	}
 	onPitchChange();
 }
