@@ -11,6 +11,10 @@
 #include "GUIConstants.hpp"
 
 namespace GUI {
+
+	class TableCell;
+	class TableView;
+
 	class Layer {
 	public:
 		Layer(sf::Color backgroundColor=sf::Color(0xff, 0xff, 0xff, 0xff)): 
@@ -23,23 +27,28 @@ namespace GUI {
 
 		void handleClick(int x, int y);
 		void handleRightClick(int x, int y);
-		void renderTo(sf::RenderTarget & dest);
+		virtual void renderTo(sf::RenderTarget & dest);
+		virtual void renderAllAttributesTo(sf::RenderTarget &dest);
 
 		template <typename T> 
 		GUI::Button<T>* addButton(	const typename GUI::Clickable<T>::Callback& callback, 
 								T* target, std::string text="Button");
 		GUI::Textbox* addTextbox(std::string id);
 		GUI::Label* addLabel(std::string text, sf::Color color=BODY_TEXT_COLOR);
+		GUI::TableCell *addTableCell();
+		GUI::TableView *addTableView(int columns=1, int padding=5);
 
 		GUI::Textbox* textboxWithID(std::string id);
 		void unfocusAllTextboxes();
 		void handleTextEntered(sf::Event event);
-	private:
+	protected:
 		bool _active;
 		sf::Color _backgroundColor;
 		std::vector<GUI::ClickableInterface*> _clickables;
 		std::map<std::string, GUI::Textbox*> _textboxes;
 		std::vector<GUI::Label*> _labels;
+		std::vector<GUI::TableCell*> _tableCells;
+		std::vector<GUI::TableView*> _tableViews;
 		GUI::Textbox* _focusedTextbox;
 	};
 }

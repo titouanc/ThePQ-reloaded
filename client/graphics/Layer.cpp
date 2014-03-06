@@ -1,4 +1,5 @@
 #include "Layer.hpp"
+#include "TableView.hpp"
 #include "SFML/Window.hpp"
 
 using namespace std;
@@ -8,10 +9,16 @@ GUI::Layer::~Layer(){
 	_clickables.clear();
 	_textboxes.clear();
 	_labels.clear();
+	_tableCells.clear(); // TODO delete
+	_tableViews.clear();
 }
 
 void GUI::Layer::renderTo(sf::RenderTarget & dest){
 	dest.clear(_backgroundColor);
+	renderAllAttributesTo(dest);
+}
+
+void GUI::Layer::renderAllAttributesTo(sf::RenderTarget &dest){
 	// rendering clickables
 	for(unsigned int i=0; i<_clickables.size(); ++i)
 		if (!_clickables[i]->isHidden())
@@ -26,6 +33,15 @@ void GUI::Layer::renderTo(sf::RenderTarget & dest){
 		if (!_labels[i]->isHidden())
 			_labels[i]->renderTo(dest);
 	}
+	for(unsigned i=0; i<_tableCells.size(); ++i){ // TODO delete
+		if(!_tableCells[i]->isHidden())
+			_tableCells[i]->renderTo(dest);
+	}
+	for(unsigned i=0; i<_tableViews.size(); ++i){
+		if(!_tableViews[i]->isHidden())
+			_tableViews[i]->renderTo(dest);
+	}
+
 }
 
 void GUI::Layer::handleClick(int x, int y){
@@ -80,6 +96,19 @@ GUI::Label* GUI::Layer::addLabel(std::string text, sf::Color color){
 	_labels.push_back(res);
 	return res;
 }
+
+GUI::TableCell* GUI::Layer::addTableCell(){
+	TableCell* res = new TableCell();
+	_tableCells.push_back(res);
+	return res;
+}
+
+GUI::TableView* GUI::Layer::addTableView(int columns, int padding){
+	TableView* res = new TableView(columns, padding);
+	_tableViews.push_back(res);
+	return res;
+}
+
 
 GUI::Textbox* GUI::Layer::textboxWithID(string id){
 	if (_textboxes[id] == NULL)
