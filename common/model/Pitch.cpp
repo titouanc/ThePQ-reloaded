@@ -19,6 +19,10 @@ const Position Pitch::directions[6] = {
 	Pitch::SouthWest
 };
 
+const std::string Pitch::directions_names[6] = {
+	"West", "NorthWest", "NorthEast", "East", "SouthEast", "SouthWest"
+};
+
 Pitch::Pitch(size_t width, size_t height) : 
 PosMatrix<Moveable>(), _width(width), _height(height)
 {}
