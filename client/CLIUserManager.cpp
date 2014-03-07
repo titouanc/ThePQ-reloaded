@@ -142,7 +142,7 @@ void CLIUserManager::showMainMenu()
 /* Management menu */
 void CLIUserManager::showManagementMenu()
 {
-	CLIStadiumManager stadiumManager(connection(), user());
+	CLIStadiumManager stadiumManager(*this);
 	Menu _menu;
 	_menu.addToDisplay("   - manage your stadium and installations\n");
 	_menu.addToDisplay("   - manage your players\n");
