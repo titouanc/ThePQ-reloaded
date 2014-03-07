@@ -15,6 +15,9 @@ private:
 	void showBidMenu();
 	void displayPlayersOnSale();
 	void sellPlayer();
+
+	virtual void onPlayerBid(std::string data);
+	virtual void onAddPlayerOnMarket(std::string data);
 };
 
 #endif // __CLI_MARKET_MANAGER_HPP

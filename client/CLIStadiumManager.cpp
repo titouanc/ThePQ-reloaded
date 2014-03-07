@@ -55,19 +55,12 @@ void CLIStadiumManager::printInstallationsList()
 void CLIStadiumManager::showUpgradeInstallation()
 {
 	size_t choice;
-	cout << "Enter the number of the installation you want to upgrade" << endl << ">";
+	cout << "Enter the number of the installation you want to upgrade" << endl;
+	prompt();
 	cin >> choice;
 	if (choice < user().installations.size())
 	{
-		if (upgradeInstallation(choice))
-		{
-			user().funds -= user().installations[choice]->getUpgradeCost();
-			user().installations[choice]->upgrade();
-		}
-		else
-		{
-			cout << "You have insufficient funds" << endl;
-		}
+		upgradeInstallation(choice);
 	}
 	else
 	{
@@ -78,19 +71,12 @@ void CLIStadiumManager::showUpgradeInstallation()
 void CLIStadiumManager::showDowngradeInstallation()
 {
 	size_t choice;
-	cout << "Enter the number of the installation you want to downgrade" << endl << ">";
+	cout << "Enter the number of the installation you want to downgrade" << endl;
+	prompt();
 	cin >> choice;
 	if (choice < user().installations.size())
 	{
-		if (downgradeInstallation(choice))
-		{
-			user().funds += user().installations[choice]->getDowngradeRefunds();
-			user().installations[choice]->downgrade();
-		}
-		else
-		{
-			cout << "You can not downgrade this installation because it is not build yet !" << endl;
-		}
+		downgradeInstallation(choice);
 	}
 	else
 	{

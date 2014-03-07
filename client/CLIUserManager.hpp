@@ -15,6 +15,10 @@ public:
 	void showMainMenu();
 	void showManagementMenu();
 
+	void onLoginUser(std::string data);
+	void onRegisterUser(std::string data);
+	void onTeamName(std::string data);
+
 private:
 };
 

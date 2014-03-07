@@ -17,13 +17,13 @@ class FGameManager : public ClientManager {
 
 		/* === HOOKS === */
 		/* User list received */
-		virtual void onUserList(JSON::List const & list){}
+		virtual void onUserList(JSON::List const &){}
 		/* Other user accepted invitation */
-		virtual void onOtherAccept(std::string const & name){}
+		virtual void onOtherAccept(std::string const &){}
 		/* Other user denied invitation */
-		virtual void onOtherDeny(std::string const & name){}
+		virtual void onOtherDeny(std::string const &){}
 		/* Other user not found */
-		virtual void onUserNotFound(std::string const & name){}
+		virtual void onUserNotFound(std::string const &){}
 };
 
 #endif

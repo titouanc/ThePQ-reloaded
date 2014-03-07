@@ -51,16 +51,7 @@ void CLIMarketManager::sellPlayer(){
 			prompt();
 			cin >> bidValue;
 		}
-		try{
-			addPlayerOnMarket(player_id, bidValue);
-			cout << "Your player was successfully added on market." << endl;
-		}
-		catch(playerAlreadyOnMarketException e){
-			cout << "\033[1;31mError\033[0m : you are already selling this player." << endl;
-		}
-		catch(notEnoughPlayersException e){
-			cout<< "\033[1;31mError\033[0m : you do not have enough players to put a player on sale. You need at least " << gameconfig::MIN_PLAYERS + 1<<" players to do so."<<std::endl;
-		}
+		cout << "Your player was successfully added on market." << endl;
 	}
 	else{
 		cout << "Wrong ID." << endl;
@@ -114,25 +105,34 @@ void CLIMarketManager::placeBid(){
 	catch(PlayerNotFoundException& e) {
 		cout << "\033[1;31mError\033[0m : the player id you entered is not correct" << endl;
 	}
-	catch(bidValueNotUpdatedException e){
+}
+
+void CLIMarketManager::onPlayerBid(std::string res)
+{
+	if(res == net::MSG::BID_VALUE_NOT_UPDATED)
 		cout << "\033[1;31mError\033[0m : bid value not correct (update your market list)."<<endl;
-	}
-	catch(turnException e){
+	else if(res == net::MSG::BID_TURN_ERROR)
 		cout << "\033[1;31mError\033[0m : you did not bid last turn."<<endl;
-	}
-	catch(bidEndedException e){
+	else if(res == net::MSG::BID_ENDED)
 		cout << "\033[1;31mError\033[0m : player not on market any more (update your market list)."<<endl;
-	}
-	catch(bidOnYourPlayerException e){
+	else if(res == net::MSG::CANNOT_BID_ON_YOUR_PLAYER)
 		cout << "\033[1;31mError\033[0m : cannot bid on your player."<<endl;
-	}
-	catch(lastBidderException e){
+	else if(res == net::MSG::LAST_BIDDER)
 		cout << "\033[1;31mError\033[0m : you are currently winning this sale. Cannot bid on your own bid."<<endl;
-	}
-	catch(tooManyPlayersException e){
+	else if(res == net::MSG::TOO_MANY_PLAYERS)
 		cout << "\033[1;31mError\033[0m : you have too many players to be able to place a bid. You cannot have more than "<<gameconfig::MAX_PLAYERS<<" players."<<endl;
-	}
-	catch(insufficientFundsException e){
+	else if(res == net::MSG::INSUFFICIENT_FUNDS)
 		cout << "\033[1;31mError\033[0m : not enough money (GET MORE $$$$$)."<<endl;
+}
+
+void CLIMarketManager::onAddPlayerOnMarket(std::string data)
+{
+	if (data == net::MSG::PLAYER_ALREADY_ON_MARKET)
+	{
+		cout << "\033[1;31mError\033[0m : you are already selling this player." << endl;
+	}
+	else if (data == net::MSG::NOT_ENOUGH_PLAYERS)
+	{
+		cout<< "\033[1;31mError\033[0m : you do not have enough players to put a player on sale. You need at least " << gameconfig::MIN_PLAYERS + 1<<" players to do so."<<std::endl;
 	}
 }

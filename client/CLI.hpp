@@ -3,8 +3,11 @@
 
 #include <iostream>
 #include "Menu.hpp"
+#include <toolbox.hpp>
 
 class CLI {
+protected:
+	int _pending;
 public:
 	void prompt() const;
 	bool askForNotificationHandling() const;

@@ -4,6 +4,8 @@
 #include "CLITeamManager.hpp"
 #include "CLIMarketManager.hpp"
 #include "CLIFGameManager.hpp"
+#include <iostream>
+using namespace std;
 
 CLIUserManager::CLIUserManager(ClientManager const & parent) : 
 UserManager(parent)
@@ -18,7 +20,13 @@ void CLIUserManager::run()
 	_menu.addToDisplay("   - register\n");
 	_menu.addToDisplay("   - quit\n");
 	int option;
+	_pending = 0;
 	do {
+		do {
+			minisleep(0.1);
+			readMessages();
+		}
+		while(_pending > 0);
 		option = _menu.run();
 		switch(option)
 		{
@@ -40,75 +48,36 @@ void CLIUserManager::showLoginMenu()
 {	
 	string username = Menu::askForUserData("Username : ");
 	string password = Menu::askForUserData("Password : ");
-	
-	try {
-		cout << "Please wait..." << endl;
-		loginUser(username, password);
-		cout << "You have successfully logged in! Welcome! :)\n\n\n" << endl;
-		showMainMenu();
-	}
-	catch (NoTeamNameException e)
-	{
-		cout << "You have successfully logged in! Welcome! :)\n\n\n" << endl;
-		showTeamNameMenu();
-	}
-	catch (UserNotFoundException & e)
-	{
-		cout << "\nUser not found" << endl;
-	}
-	catch (WrongPasswordException & e)
-	{
-		cout << "\nWrong password" << endl;
-	}
-	catch (AlreadyLoggedInException & e)
-	{
-		cout << "\nYou're already logged in from another location" << endl;
-	}
+	cout << "Please wait..." << endl;
+	loginUser(username, password);
+	_pending++;
 }
 
 void CLIUserManager::showTeamNameMenu()
 {
-	bool found = false;
 	cout << "Hey, it's the first time you log in ! Please, pick up a name for your team." << endl;
-	do{
-		string teamname = Menu::askForUserData("Teamname : ");
-		try{
-			chooseTeamName(user().username,teamname);
-			cout << "You have successfully picked up a name for your team !\nYou are now the manager of \033[35m"<<teamname<<"\033[0m"<< " !"<<endl;
-			found = true;
-		}
-		catch(TeamNameNotAvailableException e){
-			cout << "That teamname is \033[31mnot\033[0m available, pick up another one." << endl;
-		}
-	}while(!found);
+	string teamname = Menu::askForUserData("Teamname : ");
+	chooseTeamName(user().username,teamname);
+	_pending++;
+	// cout << "You have successfully picked up a name for your team !\nYou are now the manager of \033[35m"<<teamname<<"\033[0m"<< " !"<<endl;
 }
 
 void CLIUserManager::showRegisterMenu()
 {
-	bool registered = false;
-	for (int i = 0; i < 3 && ! registered; ++i)
-	{
-		string username = Menu::askForUserData("Pick a username : ");
-		try {
-			cout << "Please wait..." << endl;
-			doesUserExist(username);
-			string password = "a";
-			string passwordConfirmation;
-			while (password != passwordConfirmation){
-				password = Menu::askForUserData("Enter a new password : ");
-				passwordConfirmation = Menu::askForUserData("Confirm password : ");
-				if (password != passwordConfirmation)
-					cout << "The two passwords entered were not the same." << endl;
-			}
-			cout << "Please wait..." << endl;
-			registerUser(username, password);
-			registered = true;
-			cout << "You have successfully registered! You can now login." << endl;
-		}
-		catch (UserAlreadyExistsException e) {
-			cout << "Username already exists. Try again with a different username." << endl;		
-		}
+	string username = Menu::askForUserData("Pick a username : ");
+	// cout << "Please wait..." << endl;
+	// doesUserExist(username);
+	string password = "a";
+	string passwordConfirmation;
+	while (password != passwordConfirmation){
+		password = Menu::askForUserData("Enter a new password : ");
+		passwordConfirmation = Menu::askForUserData("Confirm password : ");
+		if (password != passwordConfirmation)
+			cout << "The two passwords entered were not the same." << endl;
 	}
+	cout << "Please wait..." << endl;
+	registerUser(username, password);
+	_pending++;
 }
 
 void CLIUserManager::showMainMenu()
@@ -119,7 +88,6 @@ void CLIUserManager::showMainMenu()
 	_menu.addToDisplay("   - manage your team and stadium\n");
 	_menu.addToDisplay("   - access market\n");
 	_menu.addToDisplay("   - play a friendly game\n");
-	_menu.addToDisplay("   - see notifications\n");
 	_menu.addToDisplay("   - quit\n");
 	int option;
 	do
@@ -137,15 +105,12 @@ void CLIUserManager::showMainMenu()
 				friendlyGame.run();
 				break;
 			case 4:
-				// showNotificationsMenu();
-				break;
-			case 5:
 				logoutUser();
 			default:
 				break;
 		}
 	}
-	while (option != 5);
+	while (option != 4);
 }
 
 /* Management menu */
@@ -174,4 +139,61 @@ void CLIUserManager::showManagementMenu()
 		}
 	}
 	while (option != 3);
+}
+
+void CLIUserManager::onLoginUser(std::string payload)
+{
+	_pending--;
+	if (payload == net::MSG::PASSWORD_ERROR)
+	{
+		cout << "\nWrong password" << endl;
+	}
+	else if (payload == net::MSG::USER_NOT_FOUND)
+	{
+		cout << "\nUser not found" << endl;
+	}
+	else if (payload == net::MSG::ALREADY_LOGGED_IN)
+	{
+		cout << "\nYou're already logged in from another location" << endl;
+	}
+	else 
+	{
+		cout << "You have successfully logged in! Welcome! :)\n\n\n" << endl;
+		if (payload == net::MSG::USER_CHOOSE_TEAMNAME)
+		{
+			showTeamNameMenu();
+		}
+		else if (payload == net::MSG::USER_LOGIN)
+		{
+			showMainMenu();
+		}
+	}
+}
+
+void CLIUserManager::onRegisterUser(std::string data)
+{
+	_pending--;
+	if (data == net::MSG::USER_REGISTERED)
+	{
+		cout << "You have successfully registered! You can now login." << endl;
+	}
+	else if (data == net::MSG::USER_EXISTS)
+	{
+		cout << "The username you chose already exists. Please pick another one" << endl;
+		showRegisterMenu();
+	}
+}
+
+void CLIUserManager::onTeamName(std::string data)
+{
+	_pending--;
+	if (data == net::MSG::TEAMNAME_REGISTERED)
+	{
+		cout << "You team name is ok" << endl;
+		showMainMenu();
+	}
+	else if (data == net::MSG::TEAMNAME_ERROR)
+	{
+		cout << "That teamname is \033[31mnot\033[0m available, pick up another one." << endl;
+	}
 }

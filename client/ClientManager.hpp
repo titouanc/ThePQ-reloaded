@@ -14,7 +14,9 @@ class ClientManager {
 		std::queue<std::string> & _notifications;
 
 		/* handle message for end of player sale */
-		void handleEndOfSaleNotification(JSON::Value const * message);
+		void onEndOfSale(JSON::Dict const & json);
+		/* handle message for installations list */
+		void onInstallationsList(JSON::List const & json);
 
 	protected:
 		/* Return connection object */
@@ -35,8 +37,12 @@ class ClientManager {
 		/* Pop and treat all messages in incoming queue */
 		void readMessages();
 
+		/* Send methods */
+		void loadPlayers();
+
 		/* Hook on invitation */
-		virtual void onInvite(std::string user) {}
+		virtual void onInvite(std::string) {}
+		virtual void onPlayersLoad(JSON::List const & players);
 
 	public:
 		/* Create a new client manager with a connection to server, a user 

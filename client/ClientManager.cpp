@@ -31,8 +31,20 @@ void ClientManager::treatMessage(std::string const & type, JSON::Value const * d
 	}
 	else if (type == net::MSG::MARKET_MESSAGE)
 	{
-		handleEndOfSaleNotification(data);
+		onEndOfSale(DICT(data));
 	}
+	else if (type == net::MSG::INSTALLATIONS_LIST)
+	{
+		onInstallationsList(LIST(data));
+	}
+}
+
+void ClientManager::loadPlayers(){
+	JSON::Dict query, data;
+	data.set(net::MSG::USERNAME, user().username);
+	query.set("type", net::MSG::PLAYERS_LIST);
+	query.set("data",data);
+	connection().send(query);
 }
 
 void ClientManager::readMessages() 
@@ -47,10 +59,9 @@ void ClientManager::readMessages()
     }
 }
 
-void ClientManager::handleEndOfSaleNotification(JSON::Value const * message)
+void ClientManager::onEndOfSale(JSON::Dict const & json)
 {
 	std::stringstream res;
-	JSON::Dict const & json = DICT(message);
 	res << "\n\033[36mMessage : a sale has ended.\033[0m" << endl;
 	if(STR(json.get("type")).value()==net::MSG::END_OF_OWNED_SALE_RAPPORT){
 		if(STR(json.get(net::MSG::RAPPORT_SALE_STATUS)).value() == net::MSG::PLAYER_NOT_SOLD){
@@ -71,6 +82,24 @@ void ClientManager::handleEndOfSaleNotification(JSON::Value const * message)
 	}
 	res<<endl;
 	_notifications.push(res.str());
+}
+
+void ClientManager::onInstallationsList(JSON::List const & installs)
+{
+	user().installations.clear();
+	for (size_t i = 0; i < installs.len(); ++i)
+	{
+		user().installations.push_back(Installation::CAST(DICT(installs[i])));
+	}
+}
+
+void ClientManager::onPlayersLoad(JSON::List const & players)
+{
+	user().players.clear();
+	for(size_t i=0; i<players.len();++i){
+		Player player(DICT(players[i]));
+		user().players.push_back(player);
+	}
 }
 
 ClientManager::ClientManager(

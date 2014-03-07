@@ -19,7 +19,13 @@ public:
 	pair<int, int> getBidValueRange(Player *player);
 	
 	std::vector<Sale> const & getSales() { return _sales; }
-	
+
+protected:
+	virtual void onSalesUpdate(JSON::List const &);
+	virtual void onPlayerBid(std::string){}
+	virtual void onAddPlayerOnMarket(std::string){}
+	void treatMessage(std::string const & type, JSON::Value const* data);
+
 private:
 	int getNextBidValue(int player_id);
 	
