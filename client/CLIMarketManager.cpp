@@ -11,8 +11,17 @@ void CLIMarketManager::run()
 	_menu.addToDisplay("   - see the players on sale\n");
 	_menu.addToDisplay("   - quit to main menu\n");
 	int option;
+	_pending = 0;
 	do
 	{
+		updateSales();
+		loadPlayers();
+		do
+		{
+			minisleep(0.1);
+			readMessages();
+		}
+		while (_pending > 0);
 		option = _menu.run();
 		switch(option)
 		{
@@ -31,7 +40,7 @@ void CLIMarketManager::run()
 
 void CLIMarketManager::sellPlayer()
 {
-	// displayPlayers();			//this function updates _players
+	showPlayers();
 	int player_id, bidValue;
 	bool found = false;
 	Player * player;
@@ -63,7 +72,6 @@ void CLIMarketManager::sellPlayer()
 
 void CLIMarketManager::displayPlayersOnSale()
 {
-	updateSales();
 	cout << "================ PLAYERS ON SALE ================" << endl;
 	for(size_t i=0;i<getSales().size();++i){
 		std::cout<<getSales()[i]<<std::endl;
@@ -106,7 +114,6 @@ void CLIMarketManager::placeBid()
 	cin >> player_id;
 	try{
 		bidOnPlayer(player_id);
-		
 		cout << "Bid successfully placed ! Hurra !" << endl;
 	}
 	catch(PlayerNotFoundException& e) {
@@ -142,4 +149,25 @@ void CLIMarketManager::onAddPlayerOnMarket(std::string data)
 	{
 		cout<< "\033[1;31mError\033[0m : you do not have enough players to put a player on sale. You need at least " << gameconfig::MIN_PLAYERS + 1<<" players to do so."<<std::endl;
 	}
+}
+
+
+void CLIMarketManager::treatMessage(std::string const & type, JSON::Value const * data)
+{
+	_pending--;
+	MarketManager::treatMessage(type, data);
+}
+
+void CLIMarketManager::say(std::string const & type, JSON::Value const & data)
+{
+	_pending++;
+	MarketManager::say(type, data);
+}
+
+void CLIMarketManager::showPlayers(){
+	cout << "================ YOUR PLAYERS ================" << endl;
+	for(size_t i =0; i<user().players.size();++i){
+		cout << user().players[i] << endl; //modif
+	}
+	cout << "==============================================" << endl;
 }

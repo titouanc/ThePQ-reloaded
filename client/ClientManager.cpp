@@ -43,9 +43,7 @@ void ClientManager::treatMessage(std::string const & type, JSON::Value const * d
 void ClientManager::loadPlayers(){
 	JSON::Dict query, data;
 	data.set(net::MSG::USERNAME, user().username);
-	query.set("type", net::MSG::PLAYERS_LIST);
-	query.set("data",data);
-	connection().send(query);
+	say(net::MSG::PLAYERS_LIST, data);
 }
 
 void ClientManager::readMessages() 

@@ -13,10 +13,7 @@ pair<int, int> MarketManager::getBidValueRange(Player *player){
 }
 
 void MarketManager::updateSales(){
-	JSON::Dict query;
-	query.set("type", net::MSG::PLAYERS_ON_MARKET_LIST);
-	query.set("data", "");
-	connection().send(query);
+	this->say(net::MSG::PLAYERS_ON_MARKET_LIST, JSON::Dict());
 }
 
 void MarketManager::bidOnPlayer(int player_id){//modif
@@ -26,9 +23,7 @@ void MarketManager::bidOnPlayer(int player_id){//modif
 	data.set(net::MSG::USERNAME,user().username);
 	data.set(net::MSG::PLAYER_ID,player_id);
 	data.set(net::MSG::BID_VALUE,value);
-	query.set("type", net::MSG::BID_ON_PLAYER_QUERY);
-	query.set("data", data);
-	connection().send(query);
+	say(net::MSG::BID_ON_PLAYER_QUERY, data);
 }
 
 void MarketManager::addPlayerOnMarket(int player_id, int value){

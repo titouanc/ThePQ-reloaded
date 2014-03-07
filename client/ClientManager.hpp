@@ -28,7 +28,7 @@ class ClientManager {
 		std::queue<std::string> & notifications() const;
 
 		/* Shortcut to send {"type": "<type>", "data": <data>} */
-		void say(std::string const & type, JSON::Value const & data);
+		virtual void say(std::string const & type, JSON::Value const & data);
 
 		/* Handle general messages */
 		virtual void treatMessage(std::string const & type, JSON::Value const * data);
