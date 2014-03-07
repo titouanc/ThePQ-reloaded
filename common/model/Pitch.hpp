@@ -18,6 +18,7 @@ class Pitch : public PosMatrix<Moveable> {
 		static const Position NorthEast;
 		static const Position SouthEast;
 		static const Position directions[6];
+		static const std::string directions_names[6];
 
 		Pitch(size_t width = 100, size_t height = 36);
 		~Pitch();

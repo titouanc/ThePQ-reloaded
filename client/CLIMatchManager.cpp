@@ -2,7 +2,6 @@
 
 void CLIMatchManager::selectPlayer()
 {
-	displayAvailablePlayers();
 	cout << "Choose a player to move: " << endl;
 	Menu menu;
 	for (int i=0; i<7; i++){
@@ -13,14 +12,18 @@ void CLIMatchManager::selectPlayer()
 			p.getName()+"\033[0m"
 		);
 	}
-	menu.addToDisplay("Go back");
+	menu.addToDisplay("Refresh");
 	int choice = menu.run();
-	selectDirectionForPlayer(choice);
+	if (1 <= choice && choice <= 7){
+		selectDirectionForPlayer(mySquad().players[choice-1]);
+	}
 }
 
 void CLIMatchManager::run()
 {
 	cout << "CLIMatchManager started" << endl;
+	while (state() != READY)
+		readMessage();
 	while (state() != FINISHED){
 		readMessages();
 		displayPitch();
@@ -31,15 +34,25 @@ void CLIMatchManager::run()
 
 void CLIMatchManager::onStateChange()
 {
-	if (state() == PROMPT)
-		cout << "You can play now !" << endl;
-	else if (state() == TIMEOUT)
-		cout << "Your play time is finished." << endl;
+	cout << "\t\033[35mMATCH STATE: ";
+	switch (state()){
+		case CREATED: cout << "CREATED"; break;
+		case READY: cout << "READY"; break;
+		case PROMPT: cout << "PROMPT"; break;
+		case TIMEOUT: cout << "TIMEOUT"; break;
+		case FINISHED: cout << "FINISHED"; break;
+	}
+	cout << "\033[0m" << endl;
 }
 
 void CLIMatchManager::onPitchChange()
 {
 	displayPitch();
+}
+
+void CLIMatchManager::onError(std::string const & info)
+{
+	cout << "\033[1m\033[31m" << info << "\033[0m" << endl;
 }
 
 /* Return colored letter for a player (without cleanup escape code) */
@@ -116,74 +129,28 @@ void CLIMatchManager::displayPitch()
 		 << endl;
 }
 
-// Position CLIMatchManager::parseDirection(string userInput){
-// 	Position res(0,0);
-// 	if (userInput.size() == 1){
-// 		if (userInput == "e")
-// 			res = Pitch::East;
-// 		else if (userInput == "w")
-// 			res = Pitch::West;
-// 	}
-// 	else if (userInput.size() == 2){
-// 		if (userInput == "nw")
-// 			res = Pitch::NorthWest;
-// 		else if (userInput == "ne")
-// 			res = Pitch::NorthEast;
-// 		else if (userInput == "sw")
-// 			res = Pitch::SouthWest;
-// 		else if (userInput == "se")
-// 			res = Pitch::SouthEast;
-// 	}
-// 	return res;
-// }
-
-char CLIMatchManager::playerLetter(Player const & player)
+void CLIMatchManager::selectDirectionForPlayer(Player *player)
 {
-	return 'A' + player.getID() - 1;
-}
-
-
-void CLIMatchManager::selectDirectionForPlayer(int player){
-	Displacement currentDisplacement;
+	Displacement move;
 	Menu selectDirection;
-	selectDirection.addToDisplay("\t- NorthEast");
-	selectDirection.addToDisplay("\t- East");
-	selectDirection.addToDisplay("\t- SouthEast");
-	selectDirection.addToDisplay("\t- SouthWest");
-	selectDirection.addToDisplay("\t- West");
-	selectDirection.addToDisplay("\t- NorthWest");
-	selectDirection.addToDisplay("\t- done");
-	int option = 0;
-	while ((option = selectDirection.run()) != 7){
-		switch (option){
-			case 1:
-				currentDisplacement.addMove(Pitch::NorthEast);
-				break;
-			case 2:
-				currentDisplacement.addMove(Pitch::East);
-				break;
-			case 3:
-				currentDisplacement.addMove(Pitch::SouthEast);
-				break;
-			case 4:
-				currentDisplacement.addMove(Pitch::SouthWest);
-				break;
-			case 5:
-				currentDisplacement.addMove(Pitch::West);
-				break;
-			case 6:
-				currentDisplacement.addMove(Pitch::NorthWest);
-				break;
-			default:
-				break;
-		}
-	}
-	sendDisplacement(*(mySquad().players[player]), currentDisplacement);
-}
 
-void CLIMatchManager::displayAvailablePlayers(){
-	for (int i=0; i<7; ++i){
-		cout << "\t- " << playerLetter(*(mySquad().players[i])) << " ";
-		cout << mySquad().players[i]->getName() << endl;
+	/* create direction menu */
+	for (int i=0; i<6; i++)
+		selectDirection.addToDisplay(Pitch::directions_names[i]);
+	selectDirection.addToDisplay("End move");
+
+	/* prompt user */
+	for (
+		int option=selectDirection.run(); 
+		move.length()<player->getSpeed(); 
+		option=selectDirection.run()
+	){
+		if (option == 7)
+			break;
+		move.addMove(Pitch::directions[option-1]);
 	}
+
+	/* Send displacement to server */
+	if (move.length() > 0)
+		sendDisplacement(*player, move);
 }
