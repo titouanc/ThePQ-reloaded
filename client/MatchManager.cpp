@@ -68,7 +68,14 @@ void MatchManager::treatMessage(std::string const & type, JSON::Value const * da
 {
 	cout << "TREAT MESSAGE " << type << endl;
 
-	if (type == MSG::MATCH_PROMPT){
+	/* unwrap MSTATUS messages */
+	if (type == MSG::MATCH_STATUS){
+		/* TODO: remove MSTATUS wrapper message !!! */
+		std::string const & real_type = STR(DICT(data).get("type"));
+		treatMessage(real_type, DICT(data).get("data"));
+	}
+
+	else if (type == MSG::MATCH_PROMPT){
 		_state = PROMPT;
 		onStateChange();
 	} else if (type == MSG::MATCH_TIMEOUT){
