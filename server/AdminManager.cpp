@@ -1,5 +1,5 @@
 #include "AdminManager.hpp"
-
+#include <unistd.h>
 AdminManager::AdminManager(BaseConnectionManager & connections) : 
 	SubConnectionManager(_inbox, _outbox, connections), _admin(NULL), _admin_peer_id()
 {
@@ -70,12 +70,9 @@ User* AdminManager::load(std::string username){
 void AdminManager::_mainloop_out(){
 	std::cout << "[" << this << "] \033[31m\033[1mAdmin server start\033[0m" << endl;
 	while (isRunning() || _inbox.available()){
-		cout << "nClients: " << nClients() << endl;
-		for (int i=0; i<1000; i++)
-			if (hasClient(i))
-				cout << "Has client " << i << endl;
 		Message const & msg = _inbox.pop();
-		treatAdminMessage(msg);
+		if (ISDICT(msg.data))
+			treatAdminMessage(msg);
 		delete msg.data;
 	}
 	std::cout << "[" << this << "] \033[31m\033[1mAdmin server stop\033[0m" << endl;

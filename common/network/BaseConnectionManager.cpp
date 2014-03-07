@@ -100,17 +100,18 @@ bool BaseConnectionManager::_doRead(int fd)
     }
     if (r < 0 || i == 0)
         return false;
-
+    std::cout<<"GLOBALBUF : "<<globalBuf.str()<<std::endl;
     JSON::Value *res = JSON::parse(globalBuf.str().c_str());
+    std::cout<<"AFTER PARSE : "<<*res <<std::endl;
     if (res != NULL){
         if (ISDICT(res) && 
             ISSTR(DICT(res).get("type")) &&
             DICT(res).hasKey("data")
         ){
-            _incoming.push(Message(fd, res));
             if (_logger)
                 std::cout << "[" << this << "] "<< "\033[1m" << fd 
                           << " \033[33m>>\033[0m " << *res << std::endl;
+            _incoming.push(Message(fd, res));
         } else {
             delete res;
         }

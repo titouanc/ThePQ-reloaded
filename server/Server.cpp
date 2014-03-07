@@ -43,7 +43,6 @@ Server::~Server()
 		(*it)->stop();
 		delete *it;
 	}
-	_adminManager.stop();
 	delete _market;
 	_matches.clear();
 }
@@ -141,8 +140,8 @@ void Server::treatMessage(const Message &message)
 				}
 			}
 			else if(messageType == MSG::ADMIN_LOGIN){
-				_adminManager.start();
 				_adminManager.acquireClient(message.peer_id);
+				_adminManager.start();
 				_adminManager.transmit(Message(
 					message.peer_id, message.data->clone()
 				));
