@@ -2,7 +2,7 @@
 #include "Menu.hpp"
 
 CLIUserManager::CLIUserManager(ClientManager const & parent) : 
-UserManager(parent), _stadiumManager((ClientManager)*this)
+UserManager(parent)
 {}
 
 void CLIUserManager::run()
@@ -142,6 +142,7 @@ void CLIUserManager::showMainMenu()
 /* Management menu */
 void CLIUserManager::showManagementMenu()
 {
+	CLIStadiumManager stadiumManager(connection(), user());
 	Menu _menu;
 	_menu.addToDisplay("   - manage your stadium and installations\n");
 	_menu.addToDisplay("   - manage your players\n");
@@ -153,7 +154,7 @@ void CLIUserManager::showManagementMenu()
 		switch(option)
 		{
 			case 1:
-				_stadiumManager.run();
+				stadiumManager.run();
 				break;
 			case 2:
 				// showTeamMenu();
