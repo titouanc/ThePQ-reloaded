@@ -41,11 +41,11 @@ void CLIMarketManager::sellPlayer(){
 	if(found){
 		pair<int, int> range = getBidValueRange(player);
 		cout << "Enter the starting bid value (must be between " << range.first << " and " << range.second << ") :" << endl;
-		cout << _prompt;
+		prompt();
 		cin >> bidValue;
 		while(bidValue<range.first or bidValue>range.second){
 			cout << bidValue << " is not between " << range.first << " and " << range.second << " !\nTry again :" << endl;//modif
-			cout << _prompt;
+			prompt();
 			cin >> bidValue;
 		}
 		try{
