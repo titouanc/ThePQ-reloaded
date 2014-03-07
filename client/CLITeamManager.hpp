@@ -10,7 +10,7 @@ public:
 	using TeamManager::TeamManager;
 	CLITeamManager(ClientManager const & parent);
 	void run();
-	void displayPlayers();
+	virtual void showPlayers();
 };
 
 #endif // __CLI_TEAM_MANAGER_HPP

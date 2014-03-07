@@ -9,13 +9,20 @@ void CLITeamManager::run()
 	_menu.addToDisplay("	- Show list of players");
 	_menu.addToDisplay("    - quit to management menu\n");
 	int option;
+	_pending = 0;
 	do
 	{
+		loadPlayers();
+		do {
+			minisleep(0.1);
+			readMessages();
+		}
+		while (_pending > 0);
 		option = _menu.run();
 		switch(option)
 		{
 			case 1:
-				displayPlayers();
+				showPlayers();
 				break;
 			default:
 				break;
@@ -24,8 +31,7 @@ void CLITeamManager::run()
 	while (option != 2);
 }
 
-void CLITeamManager::displayPlayers(){
-	loadPlayers();
+void CLITeamManager::showPlayers(){
 	cout << "================ YOUR PLAYERS ================" << endl;
 	for(size_t i =0; i<user().players.size();++i){
 		cout << user().players[i] << endl; //modif

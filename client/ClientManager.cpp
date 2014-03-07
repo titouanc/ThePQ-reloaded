@@ -33,6 +33,10 @@ void ClientManager::treatMessage(std::string const & type, JSON::Value const * d
 	{
 		onEndOfSale(DICT(data));
 	}
+	else if (type == net::MSG::PLAYERS_LIST)
+	{
+		onPlayersLoad(LIST(data));
+	}
 	// TODO onInvite
 }
 
