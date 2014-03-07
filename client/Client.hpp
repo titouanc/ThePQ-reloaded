@@ -9,20 +9,12 @@
 #include <Exception.hpp>
 #include "Menu.hpp"
 #include <Config.hpp>
-#include <model/Player.hpp>
 #include <network/ClientConnectionManager.hpp>
 #include <queue>
 #include "ClientMatchManager.hpp"
-#include <model/Installation.hpp>
-#include <model/Sale.hpp>
 #include "CLIUserManager.hpp"
 #include "UserData.hpp"
-#include "StadiumManager.hpp"
-#include "TeamManager.hpp"
-#include "MarketManager.hpp"
-#include "NotificationManager.hpp"
 #include <Constants.hpp>
-#include "ClientManager.hpp"
 
 
 struct NetConfig : public Config {
@@ -60,18 +52,11 @@ private:
 	net::ClientConnectionManager _connection;
 	CLIUserManager _userManager;
 	ClientMatchManager _matchManager;
-	NotificationManager _notificationManager;
 	
 	// CLI
 	bool _isRunning;
-	std::string _prompt;
-	std::string splashScreen();
-	std::string goodBye();
 	
 	// Notifications
-	void showNotificationsMenu();
-	bool askForNotificationHandling();
-	void handleEndOfSaleNotification(JSON::Value const *message);
 	void handleFriendlyGameInvitation(JSON::Value const *message);
 	
 	// Match

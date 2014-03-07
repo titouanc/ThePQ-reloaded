@@ -16,36 +16,16 @@ std::string humanExcName(const char *name)
 Client::Client(NetConfig const &config) : 	_user(), _notifications(), _connection(config.host, config.port),
 												_userManager(_connection, _user, _notifications),
 												_matchManager(_connection, _user),
-												_notificationManager(_connection, _user, _notifications),
-												_isRunning(true),
-												_prompt(">")
-{
-	_connection.run();
-	_notificationManager.addCallback(pair<string, AbstractCallback*>(net::MSG::FRIENDLY_GAME_INVITATION, new ClassCallback<Client>(this, &Client::handleFriendlyGameInvitation)));
-	_notificationManager.addCallback(pair<string, AbstractCallback*>(net::MSG::MARKET_MESSAGE, new ClassCallback<Client>(this, &Client::handleEndOfSaleNotification)));
-	_notificationManager.addCallback(pair<string, AbstractCallback*>(net::MSG::TEAM_INFOS, new ClassCallback<NotificationManager>(&_notificationManager, &NotificationManager::loadTeam)));
-}
+												_isRunning(true)
+{}
 
 Client::~Client()
-{
-}
+{}
 
 void Client::run()
 {
-	cout << splashScreen();
+	_connection.run();
 	_userManager.run();
-	cout << goodBye();
-}	
-
-/* main menu */
-
-
-/* main menu */
-void Client::showNotificationsMenu()
-{
-	_connection.updateNotifications();
-	cout << "You have " << _connection.getNotifications().size() << " notifications." << endl;
-	_notificationManager.handleAllNotifications();
 }
 
 /* Friendly match menu */
@@ -102,36 +82,12 @@ void Client::printConnectedUsersList(){
  		cout << "  - " << connectedUsers[i] << endl;
 }
 
-bool Client::askForNotificationHandling()
-{
-	Menu _menu;
-	_menu.addToDisplay("   - handle this notification\n");
-	_menu.addToDisplay("   - see next notification\n");
-	int option;
-	do
-	{
-		option = _menu.run();
-		switch(option)
-		{
-			case 1:
-				return true;
-				break;
-			case 2:
-				return false;
-				break;
-			default:
-				cout << "Wrong option entered" << endl;
-				break;
-		}
-	}
-	while (true);
-}
-
 void Client::handleFriendlyGameInvitation(JSON::Value const *json){
 	if (ISSTR(json)){
 		string user = STR(json).value();
 		cout << user << " invited you to a game" << endl;
-		bool handle = askForNotificationHandling();
+		// bool handle = askForNotificationHandling();
+		bool handle = true;
 		Menu _menu;
 		_menu.addToDisplay("   - accept\n");
 		_menu.addToDisplay("   - deny\n");
@@ -158,67 +114,6 @@ void Client::handleFriendlyGameInvitation(JSON::Value const *json){
 			}
 		}
 	}
-}
-
-/*Market notifications*/
-
-void Client::handleEndOfSaleNotification(JSON::Value const * message){
-	JSON::Dict const & json = DICT(message);
-	cout << "\n\033[36mMessage : a sale has ended.\033[0m" << endl;
-	if(STR(json.get("type")).value()==net::MSG::END_OF_OWNED_SALE_RAPPORT){
-		if(STR(json.get(net::MSG::RAPPORT_SALE_STATUS)).value() == net::MSG::PLAYER_NOT_SOLD){
-			cout << "Your player " << INT(json.get(net::MSG::PLAYER_ID)) << " has not been sold." << endl; 
-		}
-		else if(STR(json.get(net::MSG::RAPPORT_SALE_STATUS)).value() == net::MSG::PLAYER_SOLD){
-			cout << "Your player " << INT(json.get(net::MSG::PLAYER_ID)) << " has been sold for " << INT(json.get(net::MSG::BID_VALUE)) 
-			<< " to " << STR(json.get(net::MSG::CURRENT_BIDDER)).value() << endl;
-		}
-	}
-	else if(STR(json.get("type")).value()==net::MSG::WON_SALE_RAPPORT){
-		std::string owner = STR(json.get(net::MSG::SALE_OWNER)).value();
-		cout << "You bought player " << INT(json.get(net::MSG::PLAYER_ID)) << " for \33[32m" << INT(json.get(net::MSG::BID_VALUE)) << "\033[0m." <<endl;
-		if(owner==net::MSG::GENERATED_BY_MARKET)
-			cout << "This player did not belong to any team. He was free. Like the wind."<<endl;
-		else
-			cout << "This player comes from " << owner << "'s team." << endl;
-	}
-	cout<<endl;
-}
-
-
-string Client::splashScreen(){
-	string message;
-	message+="	             _____ _            ____            \n";
-	message+="	            |_   _| |__   ___  |  _ \\ _ __ ___ \n";
-	message+="		      | | | '_ \\ / _ \\ | |_) | '__/ _ \\\n ";
-	message+="		      | | | | | |  __/ |  __/| | | (_) |\n";
-	message+="		      |_| |_| |_|\\___| |_|   |_|  \\___/ \n";
-	message+="		   ___        _     _     _ _ _       _ \n";
-	message+="		  / _ \\ _   _(_) __| | __| (_) |_ ___| |__ \n";
-	message+="		 | | | | | | | |/ _` |/ _` | | __/ __| '_ \\ \n";
-	message+="		 | |_| | |_| | | (_| | (_| | | |_ (__| | | |\n";
-	message+="		  \\__\\_ \\__,_|_|\\__,_|\\__,_|_|\\__\\___|_| |_|\n";
-	message+= "        =======||\\    	Just a game, no bullshit!\n";
-	message+= "    ===========|| \\___________________________  ___            |\n";
-	message+= "  =============|| |___________________________==___|>        - * -\n";
-	message+= "    ===========|| /                                            |\n";
-	message+= "        =======||/ 		\n";
-	message+="		  _ __ ___   __ _ _ __   __ _  __ _  ___ _ __ \n";
-	message+="		 | '_ ` _ \\ / _` | '_ \\ / _` |/ _` |/ _ \\ '__|\n";
-	message+="		 | | | | | | (_| | | | | (_| | (_| |  __/ |\n";
-	message+="		 |_| |_| |_|\\__,_|_| |_|\\__,_|\\__, |\\___|_|\n";
-	message+="   		               	              |___/\n";
-	message+="			Welcome to The Pro Quidditch Manager 2014!\n";
-return message;
-}
-
-string Client::goodBye(){
-	string message;
-	message+= "                 =========================            \n";
-	message+= "   Thank you for playing the Pro Quidditch Manager 2014!\n";
-	message+= "                   See you next time! :)\n";
-	message+= "                 =========================            \n";
-	return message;
 }
 // Match
 

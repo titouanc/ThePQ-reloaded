@@ -5,6 +5,7 @@
 #include "UserData.hpp"
 #include <sstream>
 #include <string>
+#include <queue>
 
 class ClientManager {
 	private:
@@ -33,6 +34,9 @@ class ClientManager {
 
 		/* Pop and treat all messages in incoming queue */
 		void readMessages();
+
+		/* Hook on invitation */
+		virtual void onInvite(JSON::Value const *data) {}
 
 	public:
 		/* Create a new client manager with a connection to server, a user 

@@ -33,6 +33,10 @@ void ClientManager::treatMessage(std::string type, JSON::Value const * data)
 	{
 		handleEndOfSaleNotification(data);
 	}
+	else if (type == net::MSG::MATCH_START)
+	{
+		onInvite(data);
+	}
 }
 
 void ClientManager::readMessages() 
