@@ -6,6 +6,7 @@
 #include "Button.hpp"
 #include "Textbox.hpp"
 #include "Label.hpp"
+#include "TableView.hpp"
 
 namespace GUI {
 	class GraphicManager {
