@@ -11,7 +11,6 @@
 #include <Config.hpp>
 #include <network/ClientConnectionManager.hpp>
 #include <queue>
-#include "ClientMatchManager.hpp"
 #include "CLIUserManager.hpp"
 #include "UserData.hpp"
 #include <Constants.hpp>
@@ -51,26 +50,9 @@ private:
 	// Managers
 	net::ClientConnectionManager _connection;
 	CLIUserManager _userManager;
-	ClientMatchManager _matchManager;
 	
 	// CLI
 	bool _isRunning;
-	
-	// Notifications
-	void handleFriendlyGameInvitation(JSON::Value const *message);
-	
-	// Match
-	void showFriendlyMatchMenu();
-	void printConnectedUsersList();
-	void showChooseUserMenu();
-	void showTurnMenu();
-	void displayAvailablePlayers();
-	void selectPlayer();
-	void selectDirectionForPlayer(int player);
-	Position parseDirection(string userInput);
-	char playerLetter(Player const & player);
-	std::string colorPlayerLetter(Player const & player);
-	void displayPitch();
 };
 
 #endif // __CLIENT_HPP
