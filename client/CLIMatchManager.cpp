@@ -129,12 +129,6 @@ void CLIMatchManager::displayPitch()
 		 << endl;
 }
 
-char CLIMatchManager::playerLetter(Player const & player)
-{
-	return 'A' + player.getID() - 1;
-}
-
-
 void CLIMatchManager::selectDirectionForPlayer(Player *player)
 {
 	Displacement move;

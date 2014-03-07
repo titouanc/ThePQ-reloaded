@@ -28,8 +28,6 @@ class CLIMatchManager : public MatchManager {
 		void displayPitch();
 		
 		void selectDirectionForPlayer(Player * player);
-		// Position parseDirection(string userInput);
-		char playerLetter(Player const & player);
 };
 
 #endif
