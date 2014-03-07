@@ -507,9 +507,9 @@ void Server::timeUpdateStadium()
 	for (size_t i = 0; i < users.size(); ++i)
 	{
 		users[i].loadTeam();
-		cout << "<" << users[i].getTeam().getName() << "> old : " << users[i].getTeam().getFunds();
+		cout << "[" << users[i].getTeam().getName() << "] before : " << users[i].getTeam().getFunds();
 		users[i].getTeam().timeUpdate();
-		cout << " $ | new : " << users[i].getTeam().getFunds() << " $" << endl;
+		cout << " $ | after : " << users[i].getTeam().getFunds() << " $" << endl;
 	}
 }
 
