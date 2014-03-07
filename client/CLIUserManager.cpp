@@ -2,6 +2,7 @@
 #include "Menu.hpp"
 #include "CLIStadiumManager.hpp"
 #include "CLITeamManager.hpp"
+#include "CLIMarketManager.hpp"
 
 CLIUserManager::CLIUserManager(ClientManager const & parent) : 
 UserManager(parent)
@@ -108,6 +109,7 @@ void CLIUserManager::showRegisterMenu()
 
 void CLIUserManager::showMainMenu()
 {
+	CLIMarketManager marketManager(*this);
 	Menu _menu;
 	_menu.addToDisplay("   - manage your team and stadium\n");
 	_menu.addToDisplay("   - access market\n");
@@ -124,7 +126,7 @@ void CLIUserManager::showMainMenu()
 				showManagementMenu();
 				break;
 			case 2:
-				// showMarketMenu();
+				marketManager.run();
 				break;
 			case 3:
 				// _matchManager.showFriendlyMatchMenu();

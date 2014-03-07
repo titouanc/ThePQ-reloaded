@@ -1,5 +1,8 @@
 #include "CLIMarketManager.hpp"
 
+CLIMarketManager::CLIMarketManager(ClientManager const & parent) : MarketManager(parent)
+{}
+
 void CLIMarketManager::run(){
 	Menu _menu;
 	_menu.addToDisplay("   - put a player on sale\n");
