@@ -14,8 +14,7 @@ private:
 	void printInstallationsList();
 	void showUpgradeInstallation();
 	void showDowngradeInstallation();
-	virtual void onInstallationsLoad(JSON::List const & json);
-
+	virtual void treatMessage(std::string const & type, JSON::Value const * data);
 };
 
 #endif // __CLI_STADIUM_MANAGER_HPP

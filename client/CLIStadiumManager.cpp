@@ -13,6 +13,8 @@ void CLIStadiumManager::run()
 	_menu.addToDisplay("    - quit to management menu\n");
 	int option;
 	_pending = 0;
+	loadInstallations();
+	_pending++;
 	do
 	{
 		do {
@@ -24,8 +26,7 @@ void CLIStadiumManager::run()
 		switch(option)
 		{
 			case 1:
-				loadInstallations();
-				_pending++;
+				printInstallationsList();
 				break;
 			case 2:
 				showUpgradeInstallation();
@@ -63,6 +64,7 @@ void CLIStadiumManager::showUpgradeInstallation()
 	if (choice < user().installations.size())
 	{
 		upgradeInstallation(choice);
+		_pending++;
 	}
 	else
 	{
@@ -79,6 +81,7 @@ void CLIStadiumManager::showDowngradeInstallation()
 	if (choice < user().installations.size())
 	{
 		downgradeInstallation(choice);
+		_pending++;
 	}
 	else
 	{
@@ -86,9 +89,12 @@ void CLIStadiumManager::showDowngradeInstallation()
 	}
 }
 
-void CLIStadiumManager::onInstallationsLoad(JSON::List const & installs)
+void CLIStadiumManager::treatMessage(std::string const & type, JSON::Value const * data)
 {
-	StadiumManager::onInstallationsLoad(installs);
+	StadiumManager::treatMessage(type, data);
+	if (type != net::MSG::INSTALLATIONS_LIST)
+	{
+		_pending++;
+	}
 	_pending--;
-	printInstallationsList();
 }

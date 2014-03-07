@@ -10,7 +10,7 @@ class TeamManager : public ClientManager
 {
 public:
 	using ClientManager::ClientManager;
-	TeamManager(ClientManager const & parent);	
+	TeamManager(ClientManager const & parent);
 private:
 };
 

@@ -10,9 +10,10 @@ void CLITeamManager::run()
 	_menu.addToDisplay("    - quit to management menu\n");
 	int option;
 	_pending = 0;
+	loadPlayers();
+	_pending++;
 	do
 	{
-		loadPlayers();
 		do {
 			minisleep(0.1);
 			readMessages();
@@ -37,4 +38,10 @@ void CLITeamManager::showPlayers(){
 		cout << user().players[i] << endl; //modif
 	}
 	cout << "==============================================" << endl;
+}
+
+void CLITeamManager::treatMessage(std::string const & type, JSON::Value const * data)
+{
+	TeamManager::treatMessage(type, data);
+	_pending--;
 }
