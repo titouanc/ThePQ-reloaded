@@ -58,9 +58,7 @@ std::string CLIMatchManager::colorPlayerLetter(Player const & player)
 	else if (player.isKeeper())
 		res[3] = '6';
 	res[5] = 'A' + player.getID() - 1;
-	if (isMyPlayer(player))
-		res = std::string("\033[1m") + res;
-	return std::string(res);
+	return isMyPlayer(player) ? std::string("\033[1m")+res : std::string(res);
 }
 
 /* Return a colored star for a ball */
