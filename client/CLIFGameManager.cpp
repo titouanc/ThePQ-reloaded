@@ -2,6 +2,7 @@
 #include "CLI.hpp"
 #include "CLIMatchManager.hpp"
 
+#include <toolbox.hpp>
 #include <iostream>
 
 using namespace std;
@@ -10,20 +11,57 @@ CLIFGameManager::CLIFGameManager(ClientManager const & parent) :
 FGameManager(parent)
 {}
 
+void CLIFGameManager::showChooseUserMenu()
+{
+	string userInput = Menu::askForUserData("Enter a username to send an invitation to another user : ");
+	sendInvitation(userInput);
+	cout << "Please wait for " << userInput << " to answer to your invitation..." << endl;
+}
+
+bool CLIFGameManager::showFriendlyMatchMenu()
+{
+	Menu _menu;
+	_menu.addToDisplay("   - list all connected players\n");
+	_menu.addToDisplay("   - choose one to play a friendly game with\n");
+	_menu.addToDisplay("   - quit to main menu\n");
+	int option;
+	option = _menu.run();
+	switch(option)
+	{
+		case 1:
+			askConnectedList();
+			_pending++;
+			break;
+		case 2:
+			showChooseUserMenu();
+			break;
+		default:
+			return false;
+	}
+	return true;
+}
+
 void CLIFGameManager::onUserList(JSON::List const & list)
 {
-	cout << "Connected users " << endl;
+	cout << "\033[1mConnected users: \033[0m";
 	for (size_t i=0; i<list.len(); i++){
 		if (i > 0)
 			cout << ", ";
 		cout << STR(list[i]).value();
 	}
 	cout << endl;
+	_pending--;
 }
 
 void CLIFGameManager::run()
 {
-
+	_pending = 0;
+	while(showFriendlyMatchMenu()){
+		do {
+			minisleep(0.1);
+			readMessages();
+		} while (_pending > 0);
+	}
 }
 
 void CLIFGameManager::onOtherAccept(std::string const & name)

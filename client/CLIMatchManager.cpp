@@ -20,12 +20,7 @@ void CLIMatchManager::run()
 {
 	cout << "CLIMatchManager started" << endl;
 	while (state() != FINISHED){
-		while (connection().hasMessage()){
-			JSON::Value *msg = connection().popMessage();
-			treatMessage(DICT(msg));
-			delete msg;
-		}
-
+		readMessages();
 		displayPitch();
 		selectPlayer();
 	}

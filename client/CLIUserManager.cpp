@@ -3,6 +3,7 @@
 #include "CLIStadiumManager.hpp"
 #include "CLITeamManager.hpp"
 #include "CLIMarketManager.hpp"
+#include "CLIFGameManager.hpp"
 
 CLIUserManager::CLIUserManager(ClientManager const & parent) : 
 UserManager(parent)
@@ -65,7 +66,8 @@ void CLIUserManager::showLoginMenu()
 	}
 }
 
-void CLIUserManager::showTeamNameMenu(){
+void CLIUserManager::showTeamNameMenu()
+{
 	bool found = false;
 	cout << "Hey, it's the first time you log in ! Please, pick up a name for your team." << endl;
 	do{
@@ -112,6 +114,7 @@ void CLIUserManager::showRegisterMenu()
 void CLIUserManager::showMainMenu()
 {
 	CLIMarketManager marketManager(*this);
+	CLIFGameManager friendlyGame(*this);
 	Menu _menu;
 	_menu.addToDisplay("   - manage your team and stadium\n");
 	_menu.addToDisplay("   - access market\n");
@@ -131,7 +134,7 @@ void CLIUserManager::showMainMenu()
 				marketManager.run();
 				break;
 			case 3:
-				// _matchManager.showFriendlyMatchMenu();
+				friendlyGame.run();
 				break;
 			case 4:
 				// showNotificationsMenu();

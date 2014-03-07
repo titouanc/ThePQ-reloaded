@@ -64,9 +64,8 @@ MatchManager::~MatchManager()
 	}
 }
 
-void MatchManager::treatMessage(JSON::Dict const & msg)
+void MatchManager::treatMessage(std::string const & type, JSON::Value const * data)
 {
-	std::string const & type = STR(msg.get("type"));
 	cout << "TREAT MESSAGE " << type << endl;
 
 	if (type == MSG::MATCH_PROMPT){
@@ -81,12 +80,12 @@ void MatchManager::treatMessage(JSON::Dict const & msg)
 	}
 
 	else if (type == MSG::MATCH_BALLS)
-		treatBalls(LIST(msg.get("data")));
+		treatBalls(LIST(data));
 	else if (type == MSG::MATCH_SQUADS)
-		treatSquads(LIST(msg.get("data")));
+		treatSquads(LIST(data));
 
 	else if (type == MSG::MATCH_DELTA)
-		treatDeltas(LIST(msg.get("data")));
+		treatDeltas(LIST(data));
 }
 
 void MatchManager::sendDisplacement(Player const & player, Displacement const & move)

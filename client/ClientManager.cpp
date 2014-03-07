@@ -23,7 +23,7 @@ void ClientManager::say(std::string const & type, JSON::Value const & data){
 	_connection.send(msg);
 }
 
-void ClientManager::treatMessage(std::string type, JSON::Value const * data)
+void ClientManager::treatMessage(std::string const & type, JSON::Value const * data)
 {
 	if (type == net::MSG::TEAM_INFOS)
 	{
@@ -46,7 +46,7 @@ void ClientManager::readMessages()
         JSON::Dict const & dict = DICT(msg);
 		std::string messageType = STR(dict.get("type"));
         ClientManager::treatMessage(messageType, dict.get("data"));
-        treatMessage(messageType, dict.get("data")); /* virtuelle */
+        this->treatMessage(messageType, dict.get("data")); /* virtuelle */
         delete msg;
     }
 }

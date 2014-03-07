@@ -6,9 +6,14 @@
 
 /* Command line friendly game manager */
 class CLIFGameManager : public FGameManager, public CLI {
+	private:
+		int _pending;
 	public:
 		using FGameManager::FGameManager;
 		CLIFGameManager(ClientManager const & parent);
+
+		void showChooseUserMenu();
+		bool showFriendlyMatchMenu();
 
 		void run();
 

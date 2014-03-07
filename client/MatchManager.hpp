@@ -27,7 +27,7 @@ class MatchManager : public ClientManager {
 		MatchManager(ClientManager const & other);
 		virtual ~MatchManager();
 		Pitch & pitch() {return _pitch;}
-		void treatMessage(JSON::Dict const & msg);
+		void treatMessage(std::string const & type, JSON::Value const * msg);
 
 		bool isMyPlayer(Player const & player) const;
 

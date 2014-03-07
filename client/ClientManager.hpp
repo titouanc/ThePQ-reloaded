@@ -30,7 +30,7 @@ class ClientManager {
 		void say(std::string const & type, JSON::Value const & data);
 
 		/* Handle general messages */
-		virtual void treatMessage(std::string type, JSON::Value const * data);
+		virtual void treatMessage(std::string const & type, JSON::Value const * data);
 
 		/* Pop and treat all messages in incoming queue */
 		void readMessages();

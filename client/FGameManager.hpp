@@ -11,7 +11,7 @@ class FGameManager : public ClientManager {
 	public:
 		using ClientManager::ClientManager;
 		FGameManager(ClientManager const & parent);
-		void treatMessage(JSON::Dict const & msg);
+		void treatMessage(std::string const & type, JSON::Value const * data);
 
 		/* === HOOKS === */
 		/* User list received */

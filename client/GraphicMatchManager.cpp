@@ -97,12 +97,7 @@ void GraphicMatchManager::run()
 			hasReceived = true;
 		}
 
-		while (connection().hasMessage()){
-			JSON::Value *msg = connection().popMessage();
-			treatMessage(DICT(msg));
-			delete msg;
-			hasReceived = true;
-		}
+		readMessages();
 
 		if (! hasReceived)
 			minisleep(0.01);

@@ -16,13 +16,12 @@ void FGameManager::sendInvitation(std::string const & name)
 	say(MSG::FRIENDLY_GAME_USERNAME, JSON::String(name));
 }
 
-void FGameManager::treatMessage(JSON::Dict const & msg)
+void FGameManager::treatMessage(std::string const & type, JSON::Value const * data)
 {
-	std::string type = STR(msg.get("type"));
 	if (type == MSG::CONNECTED_USERS_LIST)
-		onUserList(LIST(msg.get("data")));
+		onUserList(LIST(data));
 	else if (type == MSG::FRIENDLY_GAME_INVITATION_RESPONSE){
-		JSON::Dict const & details = DICT(msg.get("data"));
+		JSON::Dict const & details = DICT(data);
 		std::string const & name = STR(details.get("username"));
 		std::string const & answer = STR(details.get("answer"));
 		if (answer == MSG::FRIENDLY_GAME_INVITATION_ACCEPT)
