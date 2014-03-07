@@ -27,7 +27,7 @@ void StadiumManager::downgradeInstallation(size_t i)
 	connection().send(query);
 }
 
-void StadiumManager::treatMessage(std::string const & type, JSON::Value const *)
+void StadiumManager::treatMessage(std::string const & type, JSON::Value const * data)
 {
 	if (type == net::MSG::INSTALLATION_UPGRADE)
 	{
@@ -36,6 +36,10 @@ void StadiumManager::treatMessage(std::string const & type, JSON::Value const *)
 	else if (type == net::MSG::INSTALLATION_DOWNGRADE)
 	{
 		onUpgradeInstallation();
+	}
+	else if (type == net::MSG::INSTALLATIONS_LIST)
+	{
+		onInstallationsLoad(LIST(data));
 	}
 }
 
@@ -49,4 +53,12 @@ void StadiumManager::onDowngradeInstallation()
 	loadInstallations();
 }
 
+void StadiumManager::onInstallationsLoad(JSON::List const & installs)
+{
+	user().installations.clear();
+	for (size_t i = 0; i < installs.len(); ++i)
+	{
+		user().installations.push_back(Installation::CAST(DICT(installs[i])));
+	}
+}
 

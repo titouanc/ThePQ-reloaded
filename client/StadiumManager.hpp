@@ -15,9 +15,9 @@ public:
 	void downgradeInstallation(size_t i);
 	void loadInstallations();
 	void treatMessage(std::string const & type, JSON::Value const * data);
-	void onInstallationsList(JSON::List const & installs);
-	void onUpgradeInstallation();
-	void onDowngradeInstallation();
+	virtual void onUpgradeInstallation();
+	virtual void onDowngradeInstallation();
+	virtual void onInstallationsLoad(JSON::List const & json);
 };
 
 #endif // __STADIUM_MANAGER_HPP

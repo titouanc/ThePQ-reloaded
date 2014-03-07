@@ -16,7 +16,7 @@ class ClientManager {
 		/* handle message for end of player sale */
 		void onEndOfSale(JSON::Dict const & json);
 		/* handle message for installations list */
-		void onInstallationsList(JSON::List const & json);
+		virtual void onPlayersLoad(JSON::List const & players);
 
 	protected:
 		/* Return connection object */
@@ -42,7 +42,6 @@ class ClientManager {
 
 		/* Hook on invitation */
 		virtual void onInvite(std::string) {}
-		virtual void onPlayersLoad(JSON::List const & players);
 
 	public:
 		/* Create a new client manager with a connection to server, a user 

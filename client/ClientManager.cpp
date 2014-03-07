@@ -33,10 +33,7 @@ void ClientManager::treatMessage(std::string const & type, JSON::Value const * d
 	{
 		onEndOfSale(DICT(data));
 	}
-	else if (type == net::MSG::INSTALLATIONS_LIST)
-	{
-		onInstallationsList(LIST(data));
-	}
+	// TODO onInvite
 }
 
 void ClientManager::loadPlayers(){
@@ -82,15 +79,6 @@ void ClientManager::onEndOfSale(JSON::Dict const & json)
 	}
 	res<<endl;
 	_notifications.push(res.str());
-}
-
-void ClientManager::onInstallationsList(JSON::List const & installs)
-{
-	user().installations.clear();
-	for (size_t i = 0; i < installs.len(); ++i)
-	{
-		user().installations.push_back(Installation::CAST(DICT(installs[i])));
-	}
 }
 
 void ClientManager::onPlayersLoad(JSON::List const & players)

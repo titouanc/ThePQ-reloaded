@@ -14,6 +14,7 @@ private:
 	void printInstallationsList();
 	void showUpgradeInstallation();
 	void showDowngradeInstallation();
+	virtual void onInstallationsLoad(JSON::List const & json);
 
 };
 

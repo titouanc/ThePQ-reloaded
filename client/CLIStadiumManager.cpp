@@ -12,13 +12,20 @@ void CLIStadiumManager::run()
 	_menu.addToDisplay("    - downgrade an installation\n");
 	_menu.addToDisplay("    - quit to management menu\n");
 	int option;
+	_pending = 0;
 	do
 	{
+		do {
+			minisleep(0.1);
+			readMessages();
+		}
+		while (_pending > 0);
 		option = _menu.run();
 		switch(option)
 		{
 			case 1:
-				printInstallationsList();
+				loadInstallations();
+				_pending++;
 				break;
 			case 2:
 				showUpgradeInstallation();
@@ -35,11 +42,6 @@ void CLIStadiumManager::run()
 
 void CLIStadiumManager::printInstallationsList()
 {
-	if (user().installations.empty())
-	{
-		loadInstallations();
-	}
-	// TODO implement printInstallationsList
 	cout << "You have " << user().funds << "$$$$" << endl;
 	cout << "Here are all the installations you own :" << endl;
 	for (size_t i = 0; i < user().installations.size(); ++i){
@@ -82,4 +84,11 @@ void CLIStadiumManager::showDowngradeInstallation()
 	{
 		cout << "The number you entered is wrong" << endl;
 	}
+}
+
+void CLIStadiumManager::onInstallationsLoad(JSON::List const & installs)
+{
+	StadiumManager::onInstallationsLoad(installs);
+	_pending--;
+	printInstallationsList();
 }
