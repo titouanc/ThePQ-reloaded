@@ -20,7 +20,6 @@
 #include "StadiumManager.hpp"
 #include "TeamManager.hpp"
 #include "MarketManager.hpp"
-#include "NotificationManager.hpp"
 #include <Constants.hpp>
 #include "ClientManager.hpp"
 
@@ -60,18 +59,11 @@ private:
 	net::ClientConnectionManager _connection;
 	CLIUserManager _userManager;
 	ClientMatchManager _matchManager;
-	NotificationManager _notificationManager;
 	
 	// CLI
 	bool _isRunning;
-	std::string _prompt;
-	std::string splashScreen();
-	std::string goodBye();
 	
 	// Notifications
-	void showNotificationsMenu();
-	bool askForNotificationHandling();
-	void handleEndOfSaleNotification(JSON::Value const *message);
 	void handleFriendlyGameInvitation(JSON::Value const *message);
 	
 	// Match

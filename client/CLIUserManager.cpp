@@ -11,6 +11,7 @@ UserManager(parent)
 void CLIUserManager::run()
 {
 	/* user menu */
+	splashScreen();
 	Menu _menu;
 	_menu.addToDisplay("   - login\n");
 	_menu.addToDisplay("   - register\n");
@@ -31,6 +32,7 @@ void CLIUserManager::run()
 		}
 	}
 	while (option != 3);
+	goodBye();
 }
 
 void CLIUserManager::showLoginMenu()
