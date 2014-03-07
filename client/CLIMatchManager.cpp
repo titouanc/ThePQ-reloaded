@@ -2,6 +2,7 @@
 
 void CLIMatchManager::selectPlayer()
 {
+	displayAvailablePlayers();
 	cout << "Choose a player to move: " << endl;
 	Menu menu;
 	for (int i=0; i<7; i++){
@@ -14,6 +15,7 @@ void CLIMatchManager::selectPlayer()
 	}
 	menu.addToDisplay("Go back");
 	int choice = menu.run();
+	selectDirectionForPlayer(choice);
 }
 
 void CLIMatchManager::run()
@@ -37,7 +39,7 @@ void CLIMatchManager::onStateChange()
 	if (state() == PROMPT)
 		cout << "You can play now !" << endl;
 	else if (state() == TIMEOUT)
-		cout << "You're play time is finished." << endl;
+		cout << "Your play time is finished." << endl;
 }
 
 void CLIMatchManager::onPitchChange()
@@ -117,4 +119,76 @@ void CLIMatchManager::displayPitch()
 		 << "\033[0m :: \033[1m"
 	     << "\033[34m*Quaffle \033[31m*Bludger \033[33m*Golden Snitch\033[0m"
 		 << endl;
+}
+
+// Position CLIMatchManager::parseDirection(string userInput){
+// 	Position res(0,0);
+// 	if (userInput.size() == 1){
+// 		if (userInput == "e")
+// 			res = Pitch::East;
+// 		else if (userInput == "w")
+// 			res = Pitch::West;
+// 	}
+// 	else if (userInput.size() == 2){
+// 		if (userInput == "nw")
+// 			res = Pitch::NorthWest;
+// 		else if (userInput == "ne")
+// 			res = Pitch::NorthEast;
+// 		else if (userInput == "sw")
+// 			res = Pitch::SouthWest;
+// 		else if (userInput == "se")
+// 			res = Pitch::SouthEast;
+// 	}
+// 	return res;
+// }
+
+char CLIMatchManager::playerLetter(Player const & player)
+{
+	return 'A' + player.getID() - 1;
+}
+
+
+void CLIMatchManager::selectDirectionForPlayer(int player){
+	Displacement currentDisplacement;
+	Menu selectDirection;
+	selectDirection.addToDisplay("\t- NorthEast");
+	selectDirection.addToDisplay("\t- East");
+	selectDirection.addToDisplay("\t- SouthEast");
+	selectDirection.addToDisplay("\t- SouthWest");
+	selectDirection.addToDisplay("\t- West");
+	selectDirection.addToDisplay("\t- NorthWest");
+	selectDirection.addToDisplay("\t- done");
+	int option = 0;
+	while ((option = selectDirection.run()) != 7){
+		switch (option){
+			case 1:
+				currentDisplacement.addMove(Pitch::NorthEast);
+				break;
+			case 2:
+				currentDisplacement.addMove(Pitch::East);
+				break;
+			case 3:
+				currentDisplacement.addMove(Pitch::SouthEast);
+				break;
+			case 4:
+				currentDisplacement.addMove(Pitch::SouthWest);
+				break;
+			case 5:
+				currentDisplacement.addMove(Pitch::West);
+				break;
+			case 6:
+				currentDisplacement.addMove(Pitch::NorthWest);
+				break;
+			default:
+				break;
+		}
+	}
+	sendDisplacement(*(mySquad().players[player]), currentDisplacement);
+}
+
+void CLIMatchManager::displayAvailablePlayers(){
+	for (int i=0; i<7; ++i){
+		cout << "\t- " << playerLetter(*(mySquad().players[i])) << " ";
+		cout << mySquad().players[i]->getName() << endl;
+	}
 }

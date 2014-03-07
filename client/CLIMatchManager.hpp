@@ -24,6 +24,11 @@ class CLIMatchManager : public MatchManager {
 		std::string colorBallLetter(Ball const & ball);
 
 		void displayPitch();
+		
+		void displayAvailablePlayers();
+		void selectDirectionForPlayer(int player);
+		// Position parseDirection(string userInput);
+		char playerLetter(Player const & player);
 };
 
 #endif
