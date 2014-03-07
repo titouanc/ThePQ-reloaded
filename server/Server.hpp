@@ -60,7 +60,7 @@ public:
     void placeBidOnPlayer(const JSON::Dict &bid, int peer_id);
     string getRandomName();
     void collectFinishedMatches(void);
-    void startMatch(int client_idA, int client_idB);
+    void startMatch(int client_idA, int client_idB, bool champMatch);
     void sendPlayersList(int peer_id);
     void sendMarketMessage(const std::string&, const JSON::Dict&);
     int getPeerID(const std::string&);
@@ -70,6 +70,7 @@ public:
         /* Return a pointer to the user object with given username,
        or NULL if not connected */
     User *getUserByName(std::string username);
+    Championship* getChampionshipByUsername(std::string username);
     size_t nbrUsersConnected(){return _users.size();}
 private:
 	SharedQueue<net::Message> _inbox, _outbox;

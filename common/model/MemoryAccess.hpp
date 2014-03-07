@@ -12,6 +12,7 @@ class Sale;
 class Team;
 class Broomstick;
 class Jersey;
+class Championship;
 namespace MemoryAccess
 {
 	std::string getUserDirectory(std::string);
@@ -26,12 +27,14 @@ namespace MemoryAccess
 	std::string getTeamNamesPath();
 	std::string getAdminPath(std::string);
 	std::string getUserNamesPath();
+	std::string getChampionshipPath(std::string);
 
 	void save(Installation*);
 	void save(User&);
 	void save(Player&);
 	void save(Sale&);
 	void save(Team&);
+	void save(Championship&);
 	void save(std::vector<std::string>&,std::string);
 
 	void load(Player&);
@@ -45,6 +48,7 @@ namespace MemoryAccess
 	void load(std::vector<Installation*>&,std::string);
 	void load(std::vector<Player>&,std::string);
 	void load(std::vector<Sale*>&);
+	void load(std::vector<Championship*>&);
 	void load(std::vector<std::string>&, std::string);
 
 	void loadSkel(Broomstick&);

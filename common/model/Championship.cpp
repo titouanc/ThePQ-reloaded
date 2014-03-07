@@ -3,7 +3,11 @@
 
 using namespace std;
 
-Championship::Championship(size_t nbOfTurns) : _isStarted(false), _nbOfUsers(2<<(nbOfTurns-1))
+std::ostream& operator<< (std::ostream& out, const Championship& champ){
+	out << champ._name << " : \033[1m" << champ._users.size() << "/" << champ._nbOfUsers << "\033[0m" << std::endl;
+}
+
+Championship::Championship(size_t nbOfTurns) : _isStarted(false), _isEnded(false), _name(), _turn(1), _nbOfUsers(2<<(nbOfTurns-1))
 {
 	if (_nbOfUsers < 2 || _nbOfUsers > 32)
 	{
@@ -18,6 +22,9 @@ Championship::Championship(JSON::Dict const & json) : Championship()
 {
 	if (ISINT(json.get("nbOfUsers")))	{ _nbOfUsers = INT(json.get("nbOfUsers")); }
 	if (ISBOOL(json.get("isStarted")))	{ _isStarted = BOOL(json.get("isStarted")); }
+	if (ISBOOL(json.get("isEnded")))	{ _isEnded = BOOL(json.get("isEnded")); }
+	if (ISSTR(json.get("name")))		{ _name = STR(json.get("name")).value(); }
+	if (ISINT(json.get("turn")))		{ _turn = INT(json.get("turn")); }
 	if (ISLIST(json.get("users")))
 	{
 		JSON::List users = LIST(json.get("users"));
@@ -43,6 +50,9 @@ Championship::operator JSON::Dict()
 	JSON::Dict res;
 	res.set("nbOfUsers", _nbOfUsers);
 	res.set("isStarted", _isStarted);
+	res.set("isEnded", _isEnded);
+	res.set("name", _name);
+	res.set("turn", _turn);
 	JSON::List users;
 	for (size_t i = 0; i < _users.size(); ++i)
 	{
@@ -60,7 +70,7 @@ Championship::operator JSON::Dict()
 
 void Championship::addUser(User & user)
 {
-	if (_isStarted == false && isUserIn(user) == false)
+	if (_isStarted == false && isUserIn(user.getUsername()) == false)
 	{
 		// TODO check if user is already in championship
 		// Put him in championship
@@ -125,14 +135,41 @@ Schedule* Championship::nextMatch()
 
 void Championship::endMatch(MatchResult & result)
 {
-	// TODO get winner, get looser and create next match
+	// erase schedule
+	for(size_t i = 0;i<_schedules.size();++i){
+		if(_schedules[i].user1 == result.winner || _schedules[i].user2 == result.winner){
+			_schedules.erase(_schedules.begin()+i);
+		}
+	}
+	// erase loser
+	for(size_t i =0;i<_users.size();++i){
+		if(_users[i] == result.loser){
+			_users.erase(_users.begin()+i);
+		}
+	}
+	// check if championship ended
+	if(_users.size() == 1){
+		_isEnded = true;
+	}
+	// check if turn ended
+	else if(_users.size() == _nbOfUsers/(2<<(_turn-1))) { //or _schedules.empty() but less safe
+		++_turn;
+		time_t currentTime = time(NULL);
+		struct tm* date = localtime(&currentTime);
+		date->tm_min +=1;
+		time_t begin = mktime(date);
+		for (size_t i = 0; i < _users.size(); i+=2){
+			_schedules.push_back(Schedule(_users[i], _users[i+1], begin));
+		}
+	}
+
 }
 
-bool Championship::isUserIn(User & user)
+bool Championship::isUserIn(std::string username)
 {
 	for (size_t i = 0; i < _users.size(); ++i)
 	{
-		if (_users[i] == user.getUsername())
+		if (_users[i] == username)
 		{
 			return true;
 		}

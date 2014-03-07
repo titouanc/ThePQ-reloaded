@@ -3,7 +3,7 @@
 #include <stdlib.h> // itoa
 
 #include "GraphicManager.hpp"
-#include "MessageBox.hpp"
+//#include "MessageBox.hpp"
 
 using namespace std;
 using namespace GUI;
@@ -68,8 +68,8 @@ public:
 	void printWowTextBox(){
 		cout << "directly accessed : \"" << myTextbox->getText() << "\"" << endl;
 		cout << "searched from id  : \"" << _canvas.textboxWithID("wow")->getText() << "\"" << endl;
-		MessageBox mb(_controller, "Je code avec le cul, lalalalala.");
-		mb.run();
+		//MessageBox mb(_controller, "Je code avec le cul, lalalalala.");
+		//mb.run();
 	}
 
 	void hideTextbox(){

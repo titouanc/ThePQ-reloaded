@@ -35,29 +35,37 @@ struct Schedule
 
 class Championship
 {
+	friend std::ostream& operator<< (std::ostream&, const Championship&);
 public:
 	Championship(size_t nbOfTurns = 3);
 	~Championship();
 	Championship(JSON::Dict const & json);
 	operator JSON::Dict();
 
+
 	void addUser(User & user);
 	void removeUser(User & user);
 	Schedule* nextMatch();
 	void endMatch(MatchResult & result);
 
+	bool isEnded(){ return _isEnded; }
 	bool isStarted() { return _isStarted; }
+	std::string getName() { return _name; }
 	size_t getNbOfUsers() { return _nbOfUsers; }
 	std::vector<std::string>& getUsers() { return _users; }
+	bool isUserIn(std::string username);
 
 private:
 	bool _isStarted;
+	bool _isEnded;
+	std::string _name;
+	int _turn;
 	size_t _nbOfUsers;
 	std::vector<std::string> _users;
 	std::vector<Schedule> _schedules;
 
 	void start();
-	bool isUserIn(User & user);
+	
 };
 
 #endif // __CHAMPIONSHIP_HPP

@@ -74,6 +74,13 @@ void Server::collectFinishedMatches(void)
 		next = it;
 		next++;
 		if(! (*it)->isRunning()){
+			if( (*it)->isChampMatch()){
+				struct MatchResult & result = (*it)->getResult();
+				Championship* champ = getChampionshipByUsername(result.winner);
+				if (champ != NULL){
+					champ->endMatch(result);
+				}
+			}
 			delete *it;
 			_matches.erase(it);
 		}
@@ -81,9 +88,18 @@ void Server::collectFinishedMatches(void)
 	}
 }
 
-void Server::startMatch(int client_idA, int client_idB)
+Championship* Server::getChampionshipByUsername(std::string username){
+	std::deque<Championship*>::iterator it;
+	for(it=_championships.begin();it<_championships.end();it++){
+		if( (*it)->isUserIn(username) == true){
+			return *it;
+		}
+	}
+	return NULL;
+}
+
+void Server::startMatch(int client_idA, int client_idB, bool champMatch)
 {
-	collectFinishedMatches();
 	if (_users.find(client_idA) == _users.end() || 
 		_users.find(client_idB) == _users.end()){
 		return;
@@ -105,7 +121,7 @@ void Server::startMatch(int client_idA, int client_idB)
 	delete json;
 
 	while (_outbox.available()); /* Clear outbox (do not lose msgs) */
-	MatchManager *match = new MatchManager(_connectionManager, squad1, squad2);
+	MatchManager *match = new MatchManager(_connectionManager, squad1, squad2, champMatch);
 	match->start();
 	_matches.push_back(match);
 }
@@ -416,7 +432,7 @@ void Server::sendInvitationResponseToPlayer(const JSON::Dict &response, int peer
 			Message status(it->first, toSend.clone());
 			_outbox.push(status);
 			if (answer == MSG::FRIENDLY_GAME_INVITATION_ACCEPT){
-				startMatch(peer_id, it->first);
+				startMatch(peer_id, it->first, false);
 			}
 		}
 	}
@@ -503,6 +519,7 @@ void Server::timeLoop()
 			while (timeNow - timePrev < 10);
 			cout << "It is  : " << ctime(&timeNow);
 			timePrev = timeNow;
+			collectFinishedMatches();
 			timeUpdateStadium();
 			timeUpdateChampionship();
 		}
@@ -544,8 +561,13 @@ void Server::timeUpdateChampionship()
 				}
 				it++;
 			}
-			startMatch(clientIDA, clientIDB);
+			startMatch(clientIDA, clientIDB, true);
 			next = _championships[i]->nextMatch();
+		}
+		if(_championships[i]->isEnded()){
+			delete _championships[i]; 
+			_championships.erase(_championships.begin()+i);
+			--i;
 		}
 	}
 }

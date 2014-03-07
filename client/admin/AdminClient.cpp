@@ -3,6 +3,7 @@
 AdminClient::AdminClient(NetConfig const &config) : _connection(config.host, config.port), _isRunning(true),
 _admin()
 {
+	_connection.run();
 	/*
 	JSON::Dict identify;
 	identify.set("type",net::MSG::ADMIN_CLIENT);
