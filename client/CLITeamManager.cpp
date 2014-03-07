@@ -1,5 +1,7 @@
 #include "CLITeamManager.hpp"
 
+CLITeamManager(ClientManager const & parent) : TeamManager(parent) {}
+
 void CLITeamManager::run()
 {
 	Menu _menu;
