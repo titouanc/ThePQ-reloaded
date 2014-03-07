@@ -9,19 +9,12 @@
 #include <Exception.hpp>
 #include "Menu.hpp"
 #include <Config.hpp>
-#include <model/Player.hpp>
 #include <network/ClientConnectionManager.hpp>
 #include <queue>
 #include "ClientMatchManager.hpp"
-#include <model/Installation.hpp>
-#include <model/Sale.hpp>
 #include "CLIUserManager.hpp"
 #include "UserData.hpp"
-#include "StadiumManager.hpp"
-#include "TeamManager.hpp"
-#include "MarketManager.hpp"
 #include <Constants.hpp>
-#include "ClientManager.hpp"
 
 
 struct NetConfig : public Config {

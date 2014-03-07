@@ -2,14 +2,10 @@
 #define __MARKET_MANAGER_HPP
 
 #include <vector>
-#include <network/ClientConnectionManager.hpp>
-#include "UserData.hpp"
+#include <model/Sale.hpp>
+#include "ClientManager.hpp"
 #include "Menu.hpp"
 #include "Exception.hpp"
-#include <model/Sale.hpp>
-#include "TeamManager.hpp"
-#include <map>
-#include "ClientManager.hpp"
 
 class MarketManager : public ClientManager
 {

@@ -2,6 +2,7 @@
 #define DEFINE_CLI_HEADER
 
 #include <iostream>
+#include "Menu.hpp"
 
 class CLI {
 public:
