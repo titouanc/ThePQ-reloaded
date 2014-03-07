@@ -1,9 +1,9 @@
-#include "StadiumManager.hpp"
+#include "CLIStadiumManager.hpp"
 
-StadiumManager::StadiumManager(ClientManager const & parent) : ClientManager(parent)
+CLIStadiumManager::CLIStadiumManager(ClientManager const & parent) : ClientManager(parent)
 {}
 
-void StadiumManager::showMenu()
+void CLIStadiumManager::run()
 {
 	Menu _menu;
 	_menu.addToDisplay("    - view your installations\n");
@@ -32,13 +32,13 @@ void StadiumManager::showMenu()
 	while (option != 4);
 }
 
-void StadiumManager::printInstallationsList()
-{
+void CLIStadiumManager::printInstallationsList(){
 	if (user().installations.empty())
 	{
 		loadInstallations();
 	}
 	// TODO implement printInstallationsList
+	cout << "You have " << user().funds << "$$$$" << endl;
 	cout << "Here are all the installations you own :" << endl;
 	for (size_t i = 0; i < user().installations.size(); ++i){
 		cout << i << " - " << user().installations[i]->getName() << endl;
@@ -50,7 +50,7 @@ void StadiumManager::printInstallationsList()
 	}
 }
 
-void StadiumManager::upgradeInstallation()
+void CLIStadiumManager::upgradeInstallation()
 {
 	size_t choice;
 	cout << "Enter the number of the installation you want to upgrade" << endl << ">";
@@ -59,7 +59,12 @@ void StadiumManager::upgradeInstallation()
 	{
 		if (upgradeInstallation(choice))
 		{
+			user().funds -= user().installations[choice]->getUpgradeCost();
 			user().installations[choice]->upgrade();
+		}
+		else
+		{
+			cout << "You have insufficient funds" << endl;
 		}
 	}
 	else
@@ -68,7 +73,7 @@ void StadiumManager::upgradeInstallation()
 	}
 }
 
-void StadiumManager::downgradeInstallation()
+void CLIStadiumManager::downgradeInstallation()
 {
 	size_t choice;
 	cout << "Enter the number of the installation you want to downgrade" << endl << ">";
@@ -77,7 +82,12 @@ void StadiumManager::downgradeInstallation()
 	{
 		if (downgradeInstallation(choice))
 		{
+			user().funds += user().installations[choice]->getDowngradeRefunds();
 			user().installations[choice]->downgrade();
+		}
+		else
+		{
+			cout << "You can not downgrade this installation because it is not build yet !" << endl;
 		}
 	}
 	else
@@ -85,65 +95,3 @@ void StadiumManager::downgradeInstallation()
 		cout << "The number you entered is wrong" << endl;
 	}
 }
-
-void StadiumManager::loadInstallations()
-{
-	JSON::Dict query;
-	JSON::List toFill;
-	query.set("type", net::MSG::INSTALLATIONS_LIST);
-	query.set("data", "");
-	connection().send(query);
-
-	JSON::Value *serverResponse = connection().waitForMsg(net::MSG::INSTALLATIONS_LIST);
-	JSON::Dict const & response = DICT(serverResponse);
-	
-	user().installations.clear();
-	if (ISLIST(response.get("data")))
-	{
-		toFill = LIST(response.get("data"));
-		for (size_t i = 0; i < toFill.len(); ++i)
-		{
-			user().installations.push_back(Installation::CAST(DICT(toFill[i])));
-		}
-	}
-	delete serverResponse;
-}
-
-bool StadiumManager::upgradeInstallation(size_t i)
-{
-	bool ret = false;
-	JSON::Dict query;
-	query.set("type", net::MSG::INSTALLATION_UPGRADE);
-	query.set("data", i);
-	connection().send(query);
-	
-	JSON::Value *serverResponse = connection().waitForMsg(net::MSG::INSTALLATION_UPGRADE);
-	JSON::Dict const & received = DICT(serverResponse);
-	if (ISBOOL(received.get("data")))
-	{
-		ret = BOOL(received.get("data"));
-	}
-	delete serverResponse;
-	return ret;
-}
-
-bool StadiumManager::downgradeInstallation(size_t i)
-{
-	bool ret = false;
-	JSON::Dict query;
-	query.set("type", net::MSG::INSTALLATION_DOWNGRADE);
-	query.set("data", i);
-	connection().send(query);
-	
-	JSON::Value *serverResponse = connection().waitForMsg(net::MSG::INSTALLATION_DOWNGRADE);
-	JSON::Dict const & received = DICT(serverResponse);
-	
-	if (ISBOOL(received.get("data")))
-	{
-		ret = BOOL(received.get("data"));
-	}
-	
-	delete serverResponse;
-	return ret;
-}
-

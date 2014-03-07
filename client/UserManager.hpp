@@ -11,6 +11,7 @@ class UserManager : public ClientManager
 {
 public:
 	using ClientManager::ClientManager;
+	UserManager(ClientManager const & parent);
 	
 	void loginUser(std::string username, std::string password);
 	void logoutUser();

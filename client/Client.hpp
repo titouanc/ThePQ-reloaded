@@ -22,6 +22,7 @@
 #include "MarketManager.hpp"
 #include "NotificationManager.hpp"
 #include <Constants.hpp>
+#include "ClientManager.hpp"
 
 
 struct NetConfig : public Config {
@@ -43,7 +44,7 @@ struct NetConfig : public Config {
     }
 };
 
-class Client
+class Client : public ClientManager
 {
 public:
 	Client(NetConfig const &config);
@@ -57,7 +58,6 @@ private:
 	// Managers
 	net::ClientConnectionManager _connection;
 	CLIUserManager _userManager;
-	StadiumManager _stadiumManager;
 	ClientMatchManager _matchManager;
 	TeamManager _teamManager;
 	MarketManager _marketManager;
@@ -69,19 +69,9 @@ private:
 	std::string splashScreen();
 	std::string goodBye();
 	
-	// Menus
-	void showMainMenu();
-	void showManagementMenu();
-	
 	// Team
 	void showTeamMenu();
 	void displayPlayers();
-	
-	// Stadium
-	void showStadiumMenu();
-	void printInstallationsList();
-	void upgradeInstallation();
-	void downgradeInstallation();
 	
 	// Market
 	void showMarketMenu();
