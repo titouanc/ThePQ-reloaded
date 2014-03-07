@@ -9,11 +9,13 @@
 #include <model/Sale.hpp>
 #include "TeamManager.hpp"
 #include <map>
+#include "ClientManager.hpp"
 
-class MarketManager
+class MarketManager : public ClientManager
 {
 public:
-	MarketManager(net::ClientConnectionManager& connection, UserData& user);
+	using ClientManager::ClientManager;
+	MarketManager(ClientManager const & parent);
 	// TODO replace player_id by const Player*
 	void updateSales();
 	void bidOnPlayer(int player_id);
@@ -25,8 +27,6 @@ public:
 private:
 	int getNextBidValue(int player_id);
 	
-	net::ClientConnectionManager& _connection;
-	UserData& _user;
 	std::vector<Sale> _sales;
 };
 

@@ -2,8 +2,9 @@
 #define __CLI_STADIUM_MANAGER_HPP
 
 #include "StadiumManager.hpp"
+#include "CLI.hpp"
 
-class CLIStadiumManager : public StadiumManager {
+class CLIStadiumManager : public StadiumManager, public CLI {
 public:
 	using StadiumManager::StadiumManager;
 	CLIStadiumManager(ClientManager const & parent);

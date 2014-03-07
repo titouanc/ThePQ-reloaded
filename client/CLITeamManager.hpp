@@ -2,8 +2,9 @@
 #define __CLI_TEAM_MANAGER_HPP
 
 #include "TeamManager.hpp"
+#include "CLI.hpp"
 
-class CLITeamManager : public TeamManager
+class CLITeamManager : public TeamManager, public CLI
 {
 public:
 	using TeamManager::TeamManager;

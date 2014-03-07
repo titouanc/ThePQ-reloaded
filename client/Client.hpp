@@ -59,8 +59,6 @@ private:
 	net::ClientConnectionManager _connection;
 	CLIUserManager _userManager;
 	ClientMatchManager _matchManager;
-	TeamManager _teamManager;
-	MarketManager _marketManager;
 	NotificationManager _notificationManager;
 	
 	// CLI
@@ -68,17 +66,6 @@ private:
 	std::string _prompt;
 	std::string splashScreen();
 	std::string goodBye();
-	
-	// Team
-	void showTeamMenu();
-	void displayPlayers();
-	
-	// Market
-	void showMarketMenu();
-	void placeBid();
-	void showBidMenu();
-	void displayPlayersOnSale();
-	void sellPlayer();
 	
 	// Notifications
 	void showNotificationsMenu();
