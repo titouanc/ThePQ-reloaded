@@ -15,7 +15,7 @@ class FGameManager : public ClientManager {
 
 		/* === HOOKS === */
 		/* User list received */
-		virtual void onUserList(){}
+		virtual void onUserList(JSON::List const & list){}
 		/* Other user accepted invitation */
 		virtual void onOtherAccept(std::string const & name){}
 		/* Other user denied invitation */
