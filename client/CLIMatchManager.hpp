@@ -17,6 +17,8 @@ class CLIMatchManager : public MatchManager {
 
 		void onPitchChange();
 
+		void onError(std::string const & info);
+
 		/* Return colored letter for a player (without cleanup escape code) */
 		std::string colorPlayerLetter(Player const & player);
 
@@ -25,8 +27,7 @@ class CLIMatchManager : public MatchManager {
 
 		void displayPitch();
 		
-		void displayAvailablePlayers();
-		void selectDirectionForPlayer(int player);
+		void selectDirectionForPlayer(Player * player);
 		// Position parseDirection(string userInput);
 		char playerLetter(Player const & player);
 };

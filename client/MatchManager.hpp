@@ -8,7 +8,7 @@
 
 class MatchManager : public ClientManager {
 	public:
-		typedef enum {CREATED, PROMPT, TIMEOUT, FINISHED} State;
+		typedef enum {CREATED, READY, PROMPT, TIMEOUT, FINISHED} State;
 				
 	private:
 		Pitch _pitch;
@@ -39,6 +39,7 @@ class MatchManager : public ClientManager {
 		/* HOOKS */
 		virtual void onPitchChange(){}
 		virtual void onStateChange(){}
+		virtual void onError(std::string const & info){}
 };
 
 #endif

@@ -33,7 +33,11 @@ class ClientManager {
 		/* Handle general messages */
 		virtual void treatMessage(std::string const & type, JSON::Value const * data);
 
-		/* Pop and treat all messages in incoming queue */
+		/* Pop message from incoming queue and treat it (first with 
+		   ClientManager::treatMessage; then with <Subclass>::treatMessage;) */
+		void readMessage();
+
+		/* readMessage() until incoming queue empty */
 		void readMessages();
 
 		/* Send methods */

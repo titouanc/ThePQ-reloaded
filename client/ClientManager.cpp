@@ -15,7 +15,8 @@ std::queue<std::string> & ClientManager::notifications() const
 	return _notifications;
 }
 
-void ClientManager::say(std::string const & type, JSON::Value const & data){
+void ClientManager::say(std::string const & type, JSON::Value const & data)
+{
 	JSON::Dict msg = {
 		{"type", JSON::String(type)},
 		{"data", data}
@@ -40,7 +41,8 @@ void ClientManager::treatMessage(std::string const & type, JSON::Value const * d
 	// TODO onInvite
 }
 
-void ClientManager::loadPlayers(){
+void ClientManager::loadPlayers()
+{
 	JSON::Dict query, data;
 	data.set(net::MSG::USERNAME, user().username);
 	query.set("type", net::MSG::PLAYERS_LIST);
@@ -48,16 +50,20 @@ void ClientManager::loadPlayers(){
 	connection().send(query);
 }
 
+void ClientManager::readMessage()
+{
+	JSON::Value * msg = _connection.popMessage();
+    JSON::Dict const & dict = DICT(msg);
+    std::string messageType = STR(dict.get("type"));
+    ClientManager::treatMessage(messageType, dict.get("data"));
+    this->treatMessage(messageType, dict.get("data")); /* virtuelle */
+    delete msg;
+}
+
 void ClientManager::readMessages() 
 {
-    while (_connection.hasMessage()){
-    	JSON::Value * msg = _connection.popMessage();
-        JSON::Dict const & dict = DICT(msg);
-		std::string messageType = STR(dict.get("type"));
-        ClientManager::treatMessage(messageType, dict.get("data"));
-        this->treatMessage(messageType, dict.get("data")); /* virtuelle */
-        delete msg;
-    }
+    while (_connection.hasMessage())
+    	readMessage();
 }
 
 void ClientManager::onEndOfSale(JSON::Dict const & json)

@@ -79,13 +79,20 @@ void MatchManager::treatMessage(std::string const & type, JSON::Value const * da
 		onStateChange();
 	}
 
-	else if (type == MSG::MATCH_BALLS)
-		treatBalls(LIST(data));
-	else if (type == MSG::MATCH_SQUADS)
-		treatSquads(LIST(data));
+	else if (type == MSG::MATCH_MOVEABLES){
+		treatBalls(LIST(DICT(data).get("balls")));
+		treatSquads(LIST(DICT(data).get("squads")));
+		if (_state == CREATED){
+			_state = READY;
+			onStateChange();
+		}
+	}
 
 	else if (type == MSG::MATCH_DELTA)
 		treatDeltas(LIST(data));
+
+	else if (type == MSG::MATCH_ERROR)
+		onError(STR(data));
 }
 
 void MatchManager::sendDisplacement(Player const & player, Displacement const & move)
