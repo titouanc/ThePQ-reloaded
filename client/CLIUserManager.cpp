@@ -1,6 +1,9 @@
 #include "CLIUserManager.hpp"
 #include "Menu.hpp"
 
+CLIUserManager::CLIUserManager(UserManager const & parent) : UserManager(parent) : _stadiumManager((ClientManager)*this)
+{}
+
 void CLIUserManager::run()
 {
 	/* user menu */
@@ -98,4 +101,65 @@ void CLIUserManager::showRegisterMenu()
 			cout << "Username already exists. Try again with a different username." << endl;		
 		}
 	}
+}
+
+void CLIUserManager::showMainMenu()
+{
+	Menu _menu;
+	_menu.addToDisplay("   - manage your team and stadium\n");
+	_menu.addToDisplay("   - access market\n");
+	_menu.addToDisplay("   - play a friendly game\n");
+	_menu.addToDisplay("   - see notifications\n");
+	_menu.addToDisplay("   - quit\n");
+	int option;
+	do
+	{
+		option = _menu.run();
+		switch(option)
+		{
+			case 1:
+				showManagementMenu();
+				break;
+			case 2:
+				// showMarketMenu();
+				break;
+			case 3:
+				// _matchManager.showFriendlyMatchMenu();
+				break;
+			case 4:
+				// showNotificationsMenu();
+				break;
+			case 5:
+				logoutUser();
+			default:
+				break;
+		}
+	}
+	while (option != 5);
+}
+
+/* Management menu */
+void CLIUserManager::showManagementMenu()
+{
+	Menu _menu;
+	_menu.addToDisplay("   - manage your stadium and installations\n");
+	_menu.addToDisplay("   - manage your players\n");
+	_menu.addToDisplay("   - quit to main menu\n");
+	int option;
+	do
+	{
+		option = _menu.run();
+		switch(option)
+		{
+			case 1:
+				_stadiumManager.run();
+				break;
+			case 2:
+				// showTeamMenu();
+				break;
+			default:
+				break;
+		}
+	}
+	while (option != 3);
 }

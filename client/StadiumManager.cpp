@@ -1,5 +1,8 @@
 #include "StadiumManager.hpp"
 
+StadiumManager::StadiumManager(ClientManager const & parent) : ClientManager(parent)
+{}
+
 void StadiumManager::showMenu()
 {
 	Menu _menu;
