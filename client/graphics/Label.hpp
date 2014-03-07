@@ -17,6 +17,8 @@ namespace GUI {
 			_text.setString(text);
 			_text.setCharacterSize(BODY_TEXT_SIZE);
 			_text.setColor(color);
+			_w = _text.getLocalBounds().width;
+			_h = _text.getLocalBounds().height;
 		}
 
 		void renderTo(sf::RenderTarget & dest){
@@ -24,7 +26,11 @@ namespace GUI {
 			dest.draw(_text);
 		}
 
-		void setText(std::string text) { _text.setString(text); }
+		void setText(std::string text) { 
+			_text.setString(text); 
+			_w = _text.getLocalBounds().width;
+			_h = _text.getLocalBounds().height;
+		}
 		void setColor(sf::Color color) { _text.setColor(color); }
 private:
 		sf::Text _text;
