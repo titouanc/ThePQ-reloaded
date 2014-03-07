@@ -11,10 +11,6 @@ class StadiumManager : public ClientManager
 public:
 	using ClientManager::ClientManager;
 	StadiumManager(ClientManager const & parent);
-	void showMenu();
-	void printInstallationsList();
-	void upgradeInstallation();
-	void downgradeInstallation();
 	bool upgradeInstallation(size_t i);
 	bool downgradeInstallation(size_t i);
 	void loadInstallations();
