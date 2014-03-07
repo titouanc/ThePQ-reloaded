@@ -1,5 +1,7 @@
 #include "CLIUserManager.hpp"
 #include "Menu.hpp"
+#include "CLIStadiumManager.hpp"
+#include "CLITeamManager.hpp"
 
 CLIUserManager::CLIUserManager(ClientManager const & parent) : 
 UserManager(parent)
@@ -143,6 +145,7 @@ void CLIUserManager::showMainMenu()
 void CLIUserManager::showManagementMenu()
 {
 	CLIStadiumManager stadiumManager(connection(), user());
+	CLITeamManager teamManager(connection(), user());
 	Menu _menu;
 	_menu.addToDisplay("   - manage your stadium and installations\n");
 	_menu.addToDisplay("   - manage your players\n");
@@ -157,7 +160,7 @@ void CLIUserManager::showManagementMenu()
 				stadiumManager.run();
 				break;
 			case 2:
-				// showTeamMenu();
+				teamManager.run();
 				break;
 			default:
 				break;

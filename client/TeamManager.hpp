@@ -2,20 +2,19 @@
 #define __TEAM_MANAGER_HPP
 
 #include <vector>
-#include <network/ClientConnectionManager.hpp>
 #include "UserData.hpp"
 #include "Menu.hpp"
+#include "ClientManager.hpp"
 
-class TeamManager
+class TeamManager : public ClientManager
 {
 public:
-	TeamManager(net::ClientConnectionManager& connection, UserData& user);
+	using ClientManager::ClientManager;
+	TeamManager(ClientManager const & parent);
 	
 	void loadPlayers();
 	
 private:
-	net::ClientConnectionManager& _connection;
-	UserData& _user;
 };
 
 #endif // __TEAM_MANAGER_HPP

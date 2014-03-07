@@ -1,7 +1,7 @@
 #include "MarketManager.hpp"
 
-MarketManager::MarketManager(net::ClientConnectionManager& connection, UserData& user) :
-	_connection(connection), _user(user), _sales()
+MarketManager::MarketManager(ClientManager const & parent) :
+	ClientManager(parent)
 {}
 
 pair<int, int> MarketManager::getBidValueRange(Player *player){
@@ -16,8 +16,8 @@ void MarketManager::updateSales(){
 	JSON::Dict query;
 	query.set("type", net::MSG::PLAYERS_ON_MARKET_LIST);
 	query.set("data", "");
-	_connection.send(query);
-	JSON::Value *serverResponse = _connection.waitForMsg(net::MSG::PLAYERS_ON_MARKET_LIST);
+	connection().send(query);
+	JSON::Value *serverResponse = connection().waitForMsg(net::MSG::PLAYERS_ON_MARKET_LIST);
 	JSON::Dict const & received = DICT(serverResponse);
 	
 	_sales.clear();
@@ -32,13 +32,13 @@ void MarketManager::bidOnPlayer(int player_id){//modif
 	int value = getNextBidValue(player_id);
 	if (value == -1) throw PlayerNotFoundException();
 	JSON::Dict query, data;
-	data.set(net::MSG::USERNAME,_user.username);
+	data.set(net::MSG::USERNAME,user().username);
 	data.set(net::MSG::PLAYER_ID,player_id);
 	data.set(net::MSG::BID_VALUE,value);
 	query.set("type", net::MSG::BID_ON_PLAYER_QUERY);
 	query.set("data", data);
-	_connection.send(query);
-	JSON::Value *serverResponse = _connection.waitForMsg(net::MSG::BID_ON_PLAYER_QUERY);
+	connection().send(query);
+	JSON::Value *serverResponse = connection().waitForMsg(net::MSG::BID_ON_PLAYER_QUERY);
 	JSON::Dict const & received = DICT(serverResponse);
 	
 	if(ISSTR(received.get("data"))){
@@ -62,13 +62,13 @@ void MarketManager::bidOnPlayer(int player_id){//modif
 
 void MarketManager::addPlayerOnMarket(int player_id, int value){
 	JSON::Dict query, data;
-	data.set(net::MSG::USERNAME,_user.username);
+	data.set(net::MSG::USERNAME,user().username);
 	data.set(net::MSG::PLAYER_ID,player_id);
 	data.set(net::MSG::BID_VALUE,value);
 	query.set("type", net::MSG::ADD_PLAYER_ON_MARKET_QUERY);
 	query.set("data", data);
-	_connection.send(query);
-	JSON::Value *serverResponse = _connection.waitForMsg(net::MSG::ADD_PLAYER_ON_MARKET_QUERY);
+	connection().send(query);
+	JSON::Value *serverResponse = connection().waitForMsg(net::MSG::ADD_PLAYER_ON_MARKET_QUERY);
 	JSON::Dict const & received = DICT(serverResponse);
 		if(ISSTR(received.get("data"))){
 			std::string res = STR((received.get("data"))).value();
