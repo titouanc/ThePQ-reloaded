@@ -67,6 +67,10 @@ void GUI::Layer::handleClick(int x, int y){
 	}
 	if (!hasTextboxBeenSelected)
 		_focusedTextbox = NULL;
+
+	for (unsigned int i=0; i<_tableViews.size(); ++i)
+		if (!_tableViews[i]->isHidden())
+			_tableViews[i]->handleClick(x,y);
 }
 
 void GUI::Layer::handleRightClick(int x, int y){
@@ -114,18 +118,6 @@ GUI::TableView* GUI::Layer::addTableView(int columns, int padding){
 	_tableViews.push_back(res);
 	return res;
 }
-
-int GUI::Layer::showMessage(string text, vector<string> options){
-	for (int i = 0; i < options.size(); ++i)
-	{
-		_messageOptions.push_back(new Button<Layer>(&Layer::discardmessage, this, options[i]));
-	}
-}
-
-void GUI::Layer::discardMessage(){
-
-}
-
 
 GUI::Textbox* GUI::Layer::textboxWithID(string id){
 	if (_textboxes[id] == NULL)

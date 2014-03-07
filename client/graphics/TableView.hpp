@@ -81,6 +81,26 @@ namespace GUI {
 			}
 			
 		}
+
+		void handleClick(int x, int y){
+			if (_elements.size() > 0){
+				int clickedRow = (x-_x)/(_elements[0]->getHeight()+_padding);
+				// we have to check if the click is not on a padding zone.
+				int relativePosX = (x-_x)%(_elements[0]->getHeight()+_padding);
+				if (relativePosX <= _elements[0]->getHeight()){
+					int clickedCol = (y-_y)/(_elements[0]->getWidth()+_padding);
+
+					int relativePosY = (y-_y)%(_elements[0]->getWidth()+_padding);
+					if (relativePosY <= _elements[0]->getWidth()){
+						std::cout << "TV hc -> x=" << x << ", y="<<y<<", cR=" << clickedRow<<", cC="<<clickedCol<<", rpX="<<relativePosX<<", rpy="<<relativePosY<<std::endl; // TODO DEBUG delete
+						int index = clickedRow * _columnsNbr + clickedCol;
+						if (index < _elements.size())
+							_elements[index]->handleClick(relativePosX, relativePosY);
+					}
+				}
+
+			}
+		}
 	private:
 		int _columnsNbr;
 		int _padding;

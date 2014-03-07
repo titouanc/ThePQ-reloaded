@@ -34,6 +34,7 @@ void GUI::MainController::deleteTopLayer(){
 void GUI::MainController::handleClick(sf::Event e){
 	if (_layers.size() != 0)
 		_layers.top()->handleClick(e.mouseButton.x, e.mouseButton.y);
+	window.display();
 }
 void GUI::MainController::handleRightClick(sf::Event e){
 	if (_layers.size() != 0){

@@ -50,6 +50,8 @@ public:
 					myTableCell->addLabel("Magic");
 					break;
 			}
+			Button<TestBoxManager>* b = myTableCell->addButton<TestBoxManager>(&TestBoxManager::printWow, this, "Wow");
+			b->setPosition(10, 60);
 			myTableView->append(myTableCell);
 		}
 
@@ -57,6 +59,10 @@ public:
 
 		displayCanvas();
 		run();
+	}
+
+	void printWow(){
+		cout << "wow"<< endl;
 	}
 
 	void printWowTextBox(){
