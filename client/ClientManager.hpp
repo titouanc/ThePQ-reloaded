@@ -22,6 +22,9 @@ class ClientManager {
 		/* Return logged in user */
 		UserData & user() const;
 
+		/* Return notifications queue */
+		std::queue<std::string> & notifications() const;
+
 		/* Shortcut to send {"type": "<type>", "data": <data>} */
 		void say(std::string const & type, JSON::Value const & data);
 

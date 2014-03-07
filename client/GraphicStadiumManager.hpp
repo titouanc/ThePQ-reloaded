@@ -8,7 +8,7 @@
 class GraphicStadiumManager : public StadiumManager, public GUI::GraphicManager 
 {
 public:
-	GraphicStadiumManager(net::ClientConnectionManager& connection, UserData& user, GUI::MainController &controller);
+	GraphicStadiumManager(ClientManager const & parent, GUI::MainController &controller);
 	~GraphicStadiumManager(){}
 private:
 	void startMatch() const;

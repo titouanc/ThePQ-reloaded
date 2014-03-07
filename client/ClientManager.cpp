@@ -10,6 +10,11 @@ UserData & ClientManager::user() const
 	return _user;
 }
 
+std::queue<std::string> & ClientManager::notifications() const
+{
+	return _notifications;
+}
+
 void ClientManager::say(std::string const & type, JSON::Value const & data){
 	JSON::Dict msg = {
 		{"type", JSON::String(type)},

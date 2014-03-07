@@ -13,10 +13,10 @@ std::string humanExcName(const char *name)
 	return res;
 }
 
-Client::Client(NetConfig const &config) : 	_user(), _connection(config.host, config.port),
-												_userManager(_connection, _user),
+Client::Client(NetConfig const &config) : 	_user(), _notifications(), _connection(config.host, config.port),
+												_userManager(_connection, _user, _notifications),
 												_matchManager(_connection, _user),
-												_notificationManager(_connection, _user),
+												_notificationManager(_connection, _user, _notifications),
 												_isRunning(true),
 												_prompt(">")
 {
@@ -145,7 +145,7 @@ void Client::handleFriendlyGameInvitation(JSON::Value const *json){
 				//_matchManager.acceptInvitationFromUser(user);
 				//showTurnMenu();
 				// TODO start to play game
-				CLIMatchManager YAYAYA(_connection, _user);
+				CLIMatchManager YAYAYA(_connection, _user, _notifications);
 				YAYAYA.run();
 				break;
 			} else if (option == 2){

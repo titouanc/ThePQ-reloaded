@@ -54,6 +54,7 @@ public:
 private:
 	// Cache
 	UserData _user;
+	std::queue<std::string> _notifications;
 	
 	// Managers
 	net::ClientConnectionManager _connection;
