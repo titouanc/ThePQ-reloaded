@@ -1,7 +1,7 @@
 #ifndef DEFINE_CLI_HEADER
 #define DEFINE_CLI_HEADER
 
-#include <iostream.hpp>
+#include <iostream>
 
 class CLI {
 public:
