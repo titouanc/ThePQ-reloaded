@@ -14,7 +14,13 @@ GUI::Layer::~Layer(){
 }
 
 void GUI::Layer::renderTo(sf::RenderTarget & dest){
-	dest.clear(_backgroundColor);
+	if (_backgroundColor.a != 0xff){
+		sf::RectangleShape background(sf::Vector2f(dest.getSize().x, dest.getSize().y));
+		background.setFillColor(_backgroundColor);
+		dest.draw(background);
+	}
+	else
+		dest.clear(_backgroundColor);
 	renderAllAttributesTo(dest);
 }
 
@@ -107,6 +113,17 @@ GUI::TableView* GUI::Layer::addTableView(int columns, int padding){
 	TableView* res = new TableView(columns, padding);
 	_tableViews.push_back(res);
 	return res;
+}
+
+int GUI::Layer::showMessage(string text, vector<string> options){
+	for (int i = 0; i < options.size(); ++i)
+	{
+		_messageOptions.push_back(new Button<Layer>(&Layer::discardmessage, this, options[i]));
+	}
+}
+
+void GUI::Layer::discardMessage(){
+
 }
 
 

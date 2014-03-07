@@ -18,7 +18,7 @@ namespace GUI {
 	class Layer {
 	public:
 		Layer(sf::Color backgroundColor=sf::Color(0xff, 0xff, 0xff, 0xff)): 
-				_active(false), _backgroundColor(backgroundColor), _focusedTextbox(NULL){}
+				_active(false), _inMessage(false), _backgroundColor(backgroundColor), _focusedTextbox(NULL){}
 		~Layer();
 
 		bool isActive() 	{ return _active; }
@@ -37,14 +37,17 @@ namespace GUI {
 		GUI::Label* addLabel(std::string text, sf::Color color=BODY_TEXT_COLOR);
 		GUI::TableCell *addTableCell();
 		GUI::TableView *addTableView(int columns=1, int padding=5);
+		int showMessage(std::string text, std::vector<std::string> options={"OK"});
+		void discardMessage();
 
 		GUI::Textbox* textboxWithID(std::string id);
 		void unfocusAllTextboxes();
 		void handleTextEntered(sf::Event event);
 
 		void setBackgroundColor(sf::Color color) {_backgroundColor = color;}
+		sf::Color getBackgroundColor() { return _backgroundColor; }
 	protected:
-		bool _active;
+		bool _active, _inMessage;
 		sf::Color _backgroundColor;
 		std::vector<GUI::ClickableInterface*> _clickables;
 		std::map<std::string, GUI::Textbox*> _textboxes;
@@ -52,6 +55,10 @@ namespace GUI {
 		std::vector<GUI::TableCell*> _tableCells;
 		std::vector<GUI::TableView*> _tableViews;
 		GUI::Textbox* _focusedTextbox;
+
+		std::vector<GUI::Button<Layer>*> _messageOptions;
+		sf::RectangleShape _messageWindow;
+		sf::Text _messageText;
 	};
 }
 
