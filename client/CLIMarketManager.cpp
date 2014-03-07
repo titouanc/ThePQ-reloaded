@@ -1,9 +1,11 @@
 #include "CLIMarketManager.hpp"
 
-CLIMarketManager::CLIMarketManager(ClientManager const & parent) : MarketManager(parent)
+CLIMarketManager::CLIMarketManager(ClientManager const & parent) :
+MarketManager(parent)
 {}
 
-void CLIMarketManager::run(){
+void CLIMarketManager::run()
+{
 	Menu _menu;
 	_menu.addToDisplay("   - put a player on sale\n");
 	_menu.addToDisplay("   - see the players on sale\n");
@@ -27,7 +29,8 @@ void CLIMarketManager::run(){
 	while(option != 3);
 }
 
-void CLIMarketManager::sellPlayer(){
+void CLIMarketManager::sellPlayer()
+{
 	// displayPlayers();			//this function updates _players
 	int player_id, bidValue;
 	bool found = false;
@@ -66,7 +69,9 @@ void CLIMarketManager::sellPlayer(){
 		cout << "Wrong ID." << endl;
 	}
 }
-void CLIMarketManager::displayPlayersOnSale(){
+
+void CLIMarketManager::displayPlayersOnSale()
+{
 	updateSales();
 	cout << "================ PLAYERS ON SALE ================" << endl;
 	for(size_t i=0;i<getSales().size();++i){
@@ -75,7 +80,8 @@ void CLIMarketManager::displayPlayersOnSale(){
 	cout << "=================================================" << endl;
 }
 
-void CLIMarketManager::showBidMenu(){
+void CLIMarketManager::showBidMenu()
+{
 	displayPlayersOnSale();
 	Menu _menu;
 	_menu.addToDisplay("   - place a bid on a player\n");
@@ -100,7 +106,8 @@ void CLIMarketManager::showBidMenu(){
 	while (option != 3);
 }
 
-void CLIMarketManager::placeBid(){
+void CLIMarketManager::placeBid()
+{
 	int player_id;
 	string response;
 	cout << "Enter the ID of the player you wish to bid on : " << endl;
