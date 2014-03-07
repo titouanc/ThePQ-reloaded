@@ -3,6 +3,7 @@
 
 #include "MatchManager.hpp"
 #include "Menu.hpp"
+#include <model/Ball.hpp>
 
 class CLIMatchManager : public MatchManager {
 	private:
