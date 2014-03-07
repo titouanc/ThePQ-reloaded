@@ -490,11 +490,7 @@ User *Server::getUserByName(std::string username)
 void Server::timeLoop()
 {
 	time_t timeStart = time(NULL);
-	if (timeStart == -1)
-	{
-		cout << "error time" << endl;
-	}
-	else
+	if (timeStart != -1)
 	{
 		time_t timePrev = timeStart, timeNow;
 		while (_connectionManager.isRunning() == true)
@@ -505,7 +501,7 @@ void Server::timeLoop()
 				timeNow = time(NULL);
 			}
 			while (timeNow - timePrev < 10);
-			cout << "tick : " << time(NULL) << endl;
+			cout << "It is  : " << ctime(&timeNow);
 			timePrev = timeNow;
 			timeUpdateStadium();
 			timeUpdateChampionship();
@@ -520,11 +516,36 @@ void Server::timeUpdateStadium()
 	for (size_t i = 0; i < users.size(); ++i)
 	{
 		users[i].loadTeam();
+		cout << "[" << users[i].getTeam().getName() << "] before : " << users[i].getTeam().getFunds();
 		users[i].getTeam().timeUpdate();
+		cout << " $ | after : " << users[i].getTeam().getFunds() << " $" << endl;
 	}
 }
 
 void Server::timeUpdateChampionship()
 {
-
+	for (size_t i = 0; i < _championships.size(); ++i)
+	{
+		Schedule* next = _championships[i]->nextMatch();
+		while (next != NULL)
+		{
+			next->isHappening = true;
+			int clientIDA, clientIDB;
+			map<int, User*>::iterator it = _users.begin();
+			while (it != _users.end())
+			{
+				if (it->second->getUsername() == next->user1)
+				{
+					clientIDA = it->first;
+				}
+				else if (it->second->getUsername() == next->user2)
+				{
+					clientIDB = it->first;
+				}
+				it++;
+			}
+			startMatch(clientIDA, clientIDB);
+			next = _championships[i]->nextMatch();
+		}
+	}
 }

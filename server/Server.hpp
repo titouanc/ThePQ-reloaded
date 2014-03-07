@@ -11,7 +11,7 @@
 #include "MatchManager.hpp"
 #include "PlayerMarket.hpp"
 #include "AdminManager.hpp"
-
+#include <model/Championship.hpp>
 
 using namespace std;
 struct NetConfig : public Config {
@@ -78,6 +78,7 @@ private:
     PlayerMarket *_market;
     std::deque<MatchManager*> _matches;
     AdminManager _adminManager;
+    std::deque<Championship*> _championships;
 
 	pthread_t _timeThread;
 };

@@ -123,15 +123,10 @@ void Team::generateStartingTeam(){
 }
 void Team::timeUpdate()
 {
-	cout << "-----------team : " << getName() << endl;
-	cout << "old team funds : " << getFunds() << endl;
 	for (size_t j = 0; j < _installations.size(); ++j)
 	{
-		cout << _installations[j]->getName() << endl;
-		cout << _installations[j]->getMaintenanceCost() << endl;
 		_funds -= _installations[j]->getMaintenanceCost();
 		_funds += _fame*_installations[j]->getIncome(); // fame dependant income
 	}
-	cout << "new team funds : " << getFunds() << endl;;
 	saveInfos();
 }
