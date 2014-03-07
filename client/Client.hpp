@@ -44,7 +44,7 @@ struct NetConfig : public Config {
     }
 };
 
-class Client : public ClientManager
+class Client
 {
 public:
 	Client(NetConfig const &config);
