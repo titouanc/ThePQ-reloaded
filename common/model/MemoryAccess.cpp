@@ -183,6 +183,7 @@ void MemoryAccess::load(std::vector<Player> &toFill,std::string username){
 }
 
 void MemoryAccess::load(std::vector<Sale*> &toFill){
+	mkdir(memory::MARKET_PATH.c_str(), 0755);
 	JSON::List sales = loadFilesInVec(memory::MARKET_PATH);
 	for(size_t i=0;i<sales.len();++i){
 		toFill.push_back(new Sale(DICT(sales[i])));
@@ -190,6 +191,7 @@ void MemoryAccess::load(std::vector<Sale*> &toFill){
 }
 
 void MemoryAccess::load(std::vector<Championship*>& toFill){
+	mkdir(memory::CHAMPIONSHIPS_DIR.c_str(), 0755);
 	JSON::List champs = loadFilesInVec(memory::CHAMPIONSHIPS_DIR);
 	for(size_t i=0;i<champs.len();++i){
 		toFill.push_back(new Championship(DICT(champs[i])));

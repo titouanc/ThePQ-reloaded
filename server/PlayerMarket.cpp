@@ -12,7 +12,6 @@
 
 PlayerMarket::PlayerMarket(Server *server): _server(server), _sales(),
 _manager(), _generator(), _runManager(true), _runGenerator(true), _locker(PTHREAD_MUTEX_INITIALIZER) {
-	mkdir(memory::MARKET_PATH.c_str(), 0755);
 	MemoryAccess::load(_sales);
 	startManager();
 	startGenerator();
