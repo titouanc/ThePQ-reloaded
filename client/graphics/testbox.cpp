@@ -51,7 +51,7 @@ public:
 					break;
 			}
 			Button<TestBoxManager>* b = myTableCell->addButton<TestBoxManager>(&TestBoxManager::printWow, this, "Wow");
-			b->setPosition(10, 60);
+			b->setPosition(10, 40);
 			myTableView->append(myTableCell);
 		}
 

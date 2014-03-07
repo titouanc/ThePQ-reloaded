@@ -92,7 +92,6 @@ namespace GUI {
 
 					int relativePosY = (y-_y)%(_elements[0]->getWidth()+_padding);
 					if (relativePosY <= _elements[0]->getWidth()){
-						std::cout << "TV hc -> x=" << x << ", y="<<y<<", cR=" << clickedRow<<", cC="<<clickedCol<<", rpX="<<relativePosX<<", rpy="<<relativePosY<<std::endl; // TODO DEBUG delete
 						int index = clickedRow * _columnsNbr + clickedCol;
 						if (index < _elements.size())
 							_elements[index]->handleClick(relativePosX, relativePosY);
