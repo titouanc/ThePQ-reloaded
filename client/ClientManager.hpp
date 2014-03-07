@@ -36,7 +36,7 @@ class ClientManager {
 		void readMessages();
 
 		/* Hook on invitation */
-		virtual void onInvite(JSON::Value const *data) {}
+		virtual void onInvite(std::string user) {}
 
 	public:
 		/* Create a new client manager with a connection to server, a user 

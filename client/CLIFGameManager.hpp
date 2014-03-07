@@ -21,6 +21,7 @@ class CLIFGameManager : public FGameManager, public CLI {
 		void onOtherAccept(std::string const & name);
 		void onOtherDeny(std::string const & name);
 		void onUserNotFound(std::string const & name);
+		void onInvite(std::string username);
 };
 
 #endif

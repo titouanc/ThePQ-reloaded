@@ -31,4 +31,29 @@ void FGameManager::treatMessage(std::string const & type, JSON::Value const * da
 		else if (answer == MSG::USER_NOT_FOUND)
 			onUserNotFound(name);
 	}
+	else if (type == MSG::FRIENDLY_GAME_INVITATION)
+	{
+		onInvite(STR(data).value());
+	}
+}
+
+
+void FGameManager::acceptInvitationFromUser(string username){
+	JSON::Dict toSend;
+	toSend.set("type", net::MSG::FRIENDLY_GAME_INVITATION_RESPONSE);
+	JSON::Dict data;
+	data.set("username", username);
+	data.set("answer", net::MSG::FRIENDLY_GAME_INVITATION_ACCEPT);
+	toSend.set("data", data);
+	connection().send(toSend);
+}
+
+void FGameManager::denyInvitationFromUser(string username){
+	JSON::Dict toSend;
+	toSend.set("type", net::MSG::FRIENDLY_GAME_INVITATION_RESPONSE);
+	JSON::Dict data;
+	data.set("username", username);
+	data.set("answer", net::MSG::FRIENDLY_GAME_INVITATION_DENY);
+	toSend.set("data", data);
+	connection().send(toSend);
 }

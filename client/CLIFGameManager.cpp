@@ -34,6 +34,7 @@ bool CLIFGameManager::showFriendlyMatchMenu()
 			break;
 		case 2:
 			showChooseUserMenu();
+			_pending++;
 			break;
 		default:
 			return false;
@@ -56,18 +57,20 @@ void CLIFGameManager::onUserList(JSON::List const & list)
 void CLIFGameManager::run()
 {
 	_pending = 0;
-	while(showFriendlyMatchMenu()){
+	do{
 		do {
 			minisleep(0.1);
 			readMessages();
 		} while (_pending > 0);
 	}
+	while(showFriendlyMatchMenu());
 }
 
 void CLIFGameManager::onOtherAccept(std::string const & name)
 {
 	cout << "\033[1m" << name 
 		 << " \033[32mhas accepted to play a friendly game !\033[0m" << endl;
+	_pending--;
 	CLIMatchManager match(*this);
 	match.run();
 }
@@ -76,10 +79,42 @@ void CLIFGameManager::onOtherDeny(std::string const & name)
 {
 	cout << "\033[1m" << name 
 		 << " \033[33mdoesn't want to play a friendly game now !\033[0m" << endl;
+	_pending--;
 }
 
 void CLIFGameManager::onUserNotFound(std::string const & name)
 {
 	cout << "\033[1m" << name 
 		 << " \033[31mnot found !\033[0m" << endl;
+	_pending--;
+}
+
+void CLIFGameManager::onInvite(std::string user)
+{
+	cout << user << " invited you to a game" << endl;
+	Menu _menu;
+	_menu.addToDisplay("   - accept\n");
+	_menu.addToDisplay("   - deny\n");
+	int option;
+	bool ok = false;
+	do
+	{
+		option = _menu.run();
+		if (option == 1){
+			ok = true;
+			
+			acceptInvitationFromUser(user);
+			CLIMatchManager YAYAYA(*this);
+			YAYAYA.run();
+			break;
+		} else if (option == 2){
+			ok = true;
+			denyInvitationFromUser(user);
+			break;
+		} else {
+			cout << "Wrong option entered" << endl;
+			break;
+		}
+	}
+	while(! ok);
 }

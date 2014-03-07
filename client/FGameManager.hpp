@@ -8,6 +8,8 @@ class FGameManager : public ClientManager {
 	protected:
 		void askConnectedList();
 		void sendInvitation(std::string const & name);
+		void acceptInvitationFromUser(string username);
+		void denyInvitationFromUser(string username);
 	public:
 		using ClientManager::ClientManager;
 		FGameManager(ClientManager const & parent);
