@@ -44,22 +44,28 @@ void UserManager::doesUserExist(std::string username)
 
 void UserManager::treatMessage(std::string const & type, JSON::Value const * data)
 {
-	if (type == net::MSG::LOGIN)
-	{
+	if (type == net::MSG::REGISTER)
+		onRegisterUser(STR(data));
+	
+	else if (type == net::MSG::TEAMNAME)
+		onTeamName(STR(data));
+
+	else if (type == net::MSG::LOGIN){
 		std::string const & response = STR(data).value();
 		if (response == net::MSG::USER_LOGIN)
 			onLoginUser();
 		else if (response == net::MSG::USER_CHOOSE_TEAMNAME)
 			onAskTeamName();
-		else
-			onLoginError(response);
-	}
-	else if (type == net::MSG::REGISTER)
-	{
-		onRegisterUser(STR(data));
-	}
-	else if (type == net::MSG::TEAMNAME)
-	{
-		onTeamName(STR(data));
+		else {
+			std::string reason = "Unknow error";
+			if (response == net::MSG::PASSWORD_ERROR)
+				reason = "Wrong password";
+			else if (response == net::MSG::USER_NOT_FOUND)
+				reason = "User not found";
+			else if (response == net::MSG::ALREADY_LOGGED_IN)
+				reason = "Already logged in from another location";
+
+			onLoginError(reason);
+		}
 	}
 }

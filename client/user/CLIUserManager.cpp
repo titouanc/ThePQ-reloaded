@@ -153,21 +153,10 @@ void CLIUserManager::onLoginUser()
 	showMainMenu();
 }
 
-void CLIUserManager::onLoginError(std::string const & payload)
+void CLIUserManager::onLoginError(std::string const & error)
 {
 	_pending--;
-	if (payload == net::MSG::PASSWORD_ERROR)
-	{
-		cout << "\nWrong password" << endl;
-	}
-	else if (payload == net::MSG::USER_NOT_FOUND)
-	{
-		cout << "\nUser not found" << endl;
-	}
-	else if (payload == net::MSG::ALREADY_LOGGED_IN)
-	{
-		cout << "\nYou're already logged in from another location" << endl;
-	}
+	cout << "\033[1;31m" << error << "\033[0m" << endl;
 }
 
 void CLIUserManager::onRegisterUser(std::string const & data)
