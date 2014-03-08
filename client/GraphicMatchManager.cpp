@@ -37,7 +37,8 @@ bool GraphicMatchManager::treatEvent(sf::Event const & ev)
 
 		/* find if there is someone at this position */
 		Moveable *atPos = pitch().getAt(pos);
-		if (! _selectedPlayer && atPos && atPos->isPlayer()){
+		if (! _selectedPlayer && atPos && atPos->isPlayer() && 
+			isMyPlayer(*((Player*)atPos))){
 			cout << JSON::List(pos) << " <=> " << JSON::List(atPos->getPosition()) << endl;
 			_selectedPlayer = (Player *) atPos;
 			_match.hilightAccessibles(pos, _selectedPlayer->getSpeed());
