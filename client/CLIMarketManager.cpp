@@ -165,15 +165,3 @@ void CLIMarketManager::showPlayers(){
 	}
 	cout << "==============================================" << endl;
 }
-
-void CLIMarketManager::onPlayersLoad(JSON::List const & players)
-{
-	MarketManager::onPlayersLoad(players);
-	_pending--;
-}
-
-void CLIMarketManager::onSalesUpdate(JSON::List const & sales)
-{
-	MarketManager::onSalesUpdate(sales);
-	_pending--;
-}
