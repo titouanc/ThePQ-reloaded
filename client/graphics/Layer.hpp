@@ -21,6 +21,8 @@ namespace GUI {
 				_active(false), _inMessage(false), _backgroundColor(backgroundColor), _focusedTextbox(NULL){}
 		~Layer();
 
+		void clear();
+
 		bool isActive() 	{ return _active; }
 		void activate() 	{ _active = true; }
 		void deactivate() 	{ _active = false; }

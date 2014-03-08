@@ -6,6 +6,10 @@ using namespace std;
 using namespace GUI;
 
 GUI::Layer::~Layer(){
+	clear();
+}
+
+void GUI::Layer::clear(){
 	std::map<std::string, GUI::Textbox*>::iterator it;
 	for (it=_textboxes.begin(); it!=_textboxes.end(); it++)
 		delete it->second;
