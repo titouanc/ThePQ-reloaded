@@ -5,6 +5,7 @@
 #include <model/RandomNameGenerator.hpp>
 #include <Constants.hpp>
 #include <iostream>
+#include <model/Championship.hpp>
 
 TEST(user)
 	User user("usertest", "passwdtest");
@@ -63,13 +64,47 @@ TEST(randomname)
 	cout << endl;
 ENDTEST()
 
+TEST(championship)
+	User toon("toon");
+	User caca("caca");
+	User titou("titou");
+	User flo("flo");
+	User jerome("jerome");
+	Championship cs(2); // 2 turns = 4 players
+	ASSERT(cs.getUsers().size() == 0);
+	ASSERT(cs.isStarted() == false);
+	ASSERT(cs.getNbOfUsers() == 4);
+	cs.addUser(toon);
+	cs.addUser(caca);
+	cs.addUser(titou);
+	cs.removeUser(caca);
+	cs.addUser(flo);
+	cs.addUser(jerome);
+	ASSERT(cs.isStarted() == true);
+	ASSERT(cs.getUsers()[0] == "toon");
+	ASSERT(cs.getUsers()[1] == "titou");
+	ASSERT(cs.getUsers()[2] == "flo");
+	ASSERT(cs.getUsers()[3] == "jerome");
+	Schedule* next = cs.nextMatch();
+	ASSERT(next->user1 == "toon");
+	ASSERT(next->user2 == "titou");
+	next->isHappening = true;
+	next = cs.nextMatch();
+	ASSERT(next->user1 == "flo");
+	ASSERT(next->user2 == "jerome");
+	next->isHappening = true;
+	next = cs.nextMatch();
+	ASSERT(next == NULL);
+ENDTEST()
+
 int main()
 {
 	TestFunc tests[] = {
 		ADDTEST(user),
 		ADDTEST(squad),
 		//ADDTEST(matchmanager),
-		ADDTEST(randomname)
+		ADDTEST(randomname),
+		ADDTEST(championship)
 	};
 	return RUN(tests);
 }

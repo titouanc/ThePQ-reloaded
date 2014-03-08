@@ -115,16 +115,26 @@ namespace gameconfig
 
 namespace memory
 {
+	// Directories
+	static const std::string GLOBAL_DATA_DIR = "data/global/";
+	static const std::string SKEL_DIR = "data/skel/";
 	static const std::string USERS_DIR = "data/users/";
-	static const std::string USER_FILE = "user";
 	static const std::string PLAYERS_DIR = "Players/";
 	static const std::string INSTALLATIONS_DIR = "Installations/";
+	static const std::string MARKET_PATH = "data/PlayerMarket/";
+	// Files
+	static const std::string FILE_FORMAT = ".json";
+	static const std::string USER_FILE = "user";
 	static const std::string TEAM_INFOS_FILE = "teamInfos";
+	static const std::string BROOM_FILE = "broomstick";
+	static const std::string JERSEY_FILE = "jersey";
+	static const std::string INSTS_SKEL_FILE = "installations";
+	static const std::string TEAMNAMES_FILE = "teamNames";
+	static const std::string USERNAMES_FILE = "userNames";
+	// Data
 	static const std::string FUNDS = "funds";
 	static const std::string TEAM_NAME = "teamname";
 	static const std::string FAME = "fame";
-	static const std::string FILE_FORMAT = ".json";
-	static const std::string MARKET_PATH = "data/PlayerMarket/";
 	static const std::string SALE_FILE = "_sale";
 	static const std::string INST_TYPE = "name";
 	static const std::string LEVEL = "level";
@@ -134,14 +144,7 @@ namespace memory
 	static const std::string MEDIC_CENTER = "Medical Center";
 	static const std::string FOOD_STAND = "Food Stand";
 	static const std::string TRIBUNE = "Tribune";
-	static const std::string SKEL_DIR = "data/skel/";
-	static const std::string BROOM_FILE = "broomstick";
-	static const std::string JERSEY_FILE = "jersey";
-	static const std::string INSTS_SKEL_FILE = "installations";
-	static const std::string GLOBAL_DATA_DIR = "data/global/";
-	static const std::string TEAMNAMES_FILE = "teamNames";
 	static const std::string ALL_TEAM_NAMES = "A_T_N";
-	static const std::string USERNAMES_FILE = "userNames";
 	static const std::string ALL_USER_NAMES = "A_U_N";
 
 }

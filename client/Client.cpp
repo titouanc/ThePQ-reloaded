@@ -354,7 +354,11 @@ void Client::showTeamNameMenu(){
 	bool found = false;
 	cout << "Hey, it's the first time you log in ! Please, pick up a name for your team." << endl;
 	do{
-		string teamname = Menu::askForUserData("Teamname : ");
+		string teamname;
+		cout << "Team name : ";
+		while(teamname.empty()){
+			std::getline(cin,teamname);
+		}
 		try{
 			_userManager.chooseTeamName(_user.username,teamname);
 			cout << "You have successfully picked up a name for your team !\nYou are now the manager of \033[35m"<<teamname<<"\033[0m"<< " !"<<endl;

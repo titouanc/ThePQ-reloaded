@@ -8,8 +8,11 @@ GUI::MainController::MainController(): window(sf::VideoMode(WINDOW_WIDTH, WINDOW
 }
 
 void GUI::MainController::addLayer(Layer & layer){
-	if (_layers.size() != 0)
+	if (_layers.size() != 0){
 		_layers.top()->deactivate();
+		if (layer.getBackgroundColor().a != 0xff)
+			_layers.top()->renderTo(window);
+	}
 	_layers.push(&layer);
 	layer.renderTo(window);
 	layer.activate();
