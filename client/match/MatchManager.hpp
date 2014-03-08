@@ -1,7 +1,7 @@
 #ifndef DEFINE_MATCHMANAGER_HEADER
 #define DEFINE_MATCHMANAGER_HEADER
 
-#include "ClientManager.hpp"
+#include <ClientManager.hpp>
 #include <model/Pitch.hpp>
 #include <model/Squad.hpp>
 #include <model/Displacement.hpp>

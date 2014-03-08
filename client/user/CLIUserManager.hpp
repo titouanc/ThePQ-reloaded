@@ -2,7 +2,7 @@
 #define __CLI_USER_MANAGER_HPP
 
 #include "UserManager.hpp"
-#include "CLI.hpp"
+#include <cli/CLI.hpp>
 
 class CLIUserManager : public UserManager, public CLI {
 public:

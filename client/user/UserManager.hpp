@@ -3,9 +3,9 @@
 
 #include <string>
 #include <Constants.hpp>
-#include "Menu.hpp"
-#include "Exception.hpp"
-#include "ClientManager.hpp"
+#include <cli/Menu.hpp>
+#include <Exception.hpp>
+#include <ClientManager.hpp>
 
 class UserManager : public ClientManager
 {

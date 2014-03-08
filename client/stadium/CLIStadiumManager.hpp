@@ -2,7 +2,7 @@
 #define __CLI_STADIUM_MANAGER_HPP
 
 #include "StadiumManager.hpp"
-#include "CLI.hpp"
+#include <cli/CLI.hpp>
 
 class CLIStadiumManager : public StadiumManager, public CLI {
 public:

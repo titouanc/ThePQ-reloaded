@@ -1,5 +1,5 @@
 #include "GraphicStadiumManager.hpp"
-#include "GraphicMatchManager.hpp"
+#include <match/GraphicMatchManager.hpp>
 
 using namespace std;
 using namespace GUI;

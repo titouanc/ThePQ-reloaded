@@ -1,9 +1,9 @@
 #include "CLIUserManager.hpp"
-#include "Menu.hpp"
-#include "CLIStadiumManager.hpp"
-#include "CLITeamManager.hpp"
-#include "CLIMarketManager.hpp"
-#include "CLIFGameManager.hpp"
+#include <cli/Menu.hpp>
+#include <stadium/CLIStadiumManager.hpp>
+#include <team/CLITeamManager.hpp>
+#include <market/CLIMarketManager.hpp>
+#include <fgame/CLIFGameManager.hpp>
 #include <iostream>
 using namespace std;
 

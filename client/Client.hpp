@@ -7,13 +7,12 @@
 #include <typeinfo>
 #include <cxxabi.h>
 #include <Exception.hpp>
-#include "Menu.hpp"
+#include "cli/Menu.hpp"
 #include <Config.hpp>
 #include <network/ClientConnectionManager.hpp>
 #include <queue>
-#include "CLIUserManager.hpp"
+#include "user/CLIUserManager.hpp"
 #include "UserData.hpp"
-#include <Constants.hpp>
 
 
 struct NetConfig : public Config {

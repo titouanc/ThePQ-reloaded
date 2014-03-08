@@ -1,6 +1,6 @@
 #include "CLIFGameManager.hpp"
-#include "CLI.hpp"
-#include "CLIMatchManager.hpp"
+#include <cli/CLI.hpp>
+#include <match/CLIMatchManager.hpp>
 
 #include <iostream>
 

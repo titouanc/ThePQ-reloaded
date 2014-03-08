@@ -3,7 +3,7 @@
 #define __CLI_MARKET_MANAGER_HPP
 
 #include "MarketManager.hpp"
-#include "CLI.hpp"
+#include <cli/CLI.hpp>
 
 class CLIMarketManager : public MarketManager, public CLI
 {

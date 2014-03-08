@@ -2,8 +2,8 @@
 #define __STADIUM_MANAGER_HPP
 
 #include <vector>
-#include "ClientManager.hpp"
-#include "Menu.hpp"
+#include <ClientManager.hpp>
+#include <cli/Menu.hpp>
 #include <model/Installation.hpp>
 
 class StadiumManager : public ClientManager

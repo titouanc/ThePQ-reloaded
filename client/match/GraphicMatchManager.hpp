@@ -1,9 +1,9 @@
 #ifndef DEFINE_GMATCHMANAGER_HEADER
 #define DEFINE_GMATCHMANAGER_HEADER
 
-#include "graphics/UIMatch.hpp"
-#include "graphics/GraphicManager.hpp"
-#include "StadiumManager.hpp"
+#include <graphics/UIMatch.hpp>
+#include <graphics/GraphicManager.hpp>
+#include <stadium/StadiumManager.hpp>
 #include <model/Pitch.hpp>
 #include "MatchManager.hpp"
 
