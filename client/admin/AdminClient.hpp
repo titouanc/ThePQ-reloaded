@@ -1,5 +1,5 @@
 #include <string>
-#include "../Menu.hpp"
+#include "../cli/Menu.hpp"
 #include "../UserData.hpp"
 #include <Config.hpp>
 #include <iostream>
