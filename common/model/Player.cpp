@@ -123,46 +123,40 @@ void Beater::equipBat(Bat aBat){
     *_bat = aBat;
 }
 
-float Beater::shootBludger (){ 
+float Beater::shootBludger () const{ 
     float res = (2*getStrength()+getPrecision()+getChance());
     res = res * (100000000 +(rand()%10000000))/100000000;
     return res;
 }
 
 // CHASER ----------------------------------------------------------------------
-float Chaser::speed (){
-    float res = 4*getVelocity();
-    res = res * (100000000 +(rand()%10000000))/100000000;
-    return res;
-}
-
-float Chaser::pass (){
+float Chaser::pass () const {
     float res = getStrength()+2*getPrecision()+getChance();
     res = res * (100000000 +(rand()%10000000))/100000000;
     return res;
 }
 
-float Chaser::shoot (){
+float Chaser::shoot () const {
     float res = 2*getStrength()+getPrecision()+getChance();
     res = res * (100000000 +(rand()%10000000))/100000000;
     return res;
 }
 
 // KEEPER ----------------------------------------------------------------------
-float Keeper::catchBall (){
+float Keeper::catchBall () const {
     float res = 2*getPrecision()+getVelocity()+getChance();
     res = res * (100000000 +(rand()%10000000))/100000000;
     return res;
 }
 
-float Keeper::pass (){
+float Keeper::pass () const {
     float res = getStrength()+2*getPrecision()+getChance();
     res = res * (100000000 +(rand()%10000000))/100000000;
     return res;
 }
 
-// KEEPER ----------------------------------------------------------------------
-float Seeker::catchGS (){
+// SEEKER ----------------------------------------------------------------------
+float Seeker::catchGS () const {
     float res = 2*getPrecision()+getVelocity()+getChance();
     res = res * (100000000 +(rand()%10000000))/100000000;
     return res;

@@ -79,6 +79,13 @@ public:
 		_chance = player._chance;
 		return *this;
 	}
+
+    float getSpeed() const {
+        float res = 4*getVelocity();
+        res = res * (100000000 +(rand()%10000000))/100000000;
+        return res;
+    }
+
 protected:
     int _maxLife;
     int _maxMana;
@@ -110,7 +117,7 @@ public:
 	int getStrength() const { return Player::getStrength() + _bat->getStrengthBonus() ; }
     int getPrecision() const { return Player::getPrecision() + _bat->getPrecisionBonus(); }
     void equipBat (Bat aBat);
-    float shootBludger ();
+    float shootBludger () const;
 private:
 	Bat * _bat;
 };
@@ -121,9 +128,8 @@ class Chaser : public Player
 public:
 	using Player::Player;
     bool isChaser () const { return true; }
-    float speed ();
-    float pass ();
-    float shoot ();
+    float pass () const;
+    float shoot () const;
 };
 
 /*================================CHASER================================*/
@@ -132,8 +138,8 @@ class Keeper : public Player
 public:
     using Player::Player;
 	bool isKeeper () const { return true; }
-    float catchBall ();
-    float pass ();
+    float catchBall () const;
+    float pass () const;
 };
 
 // SEEKER ----------------------------------------------------------------------
@@ -142,7 +148,7 @@ class Seeker : public Player
 public:
     using Player::Player;
 	bool isSeeker () const { return true; }
-    float catchGS ();
+    float catchGS () const;
 
 };
 
