@@ -49,9 +49,9 @@ class ClientManager {
 		void onEndOfSale(JSON::Dict const & json);
 
 		/* Hooks */
-		/* Asks the player to accept or deny a friendly game invitation from another player */
-		// TODO onInvite EVERYWHERE
-		virtual void onInvite(std::string) {}
+		/* Triggered when we receive a match invitation */
+		virtual void onInvite(std::string const & otherUser) {}
+
 		/* Load players in user().players */
 		virtual void onPlayersLoad(JSON::List const & players);
 

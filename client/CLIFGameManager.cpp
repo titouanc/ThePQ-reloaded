@@ -88,7 +88,7 @@ void CLIFGameManager::onUserNotFound(std::string const & name)
 	_pending--;
 }
 
-void CLIFGameManager::onInvite(std::string user)
+void CLIFGameManager::onInvite(std::string const & user)
 {
 	cout << user << " invited you to a game" << endl;
 	Menu _menu;

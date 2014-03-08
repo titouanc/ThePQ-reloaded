@@ -55,7 +55,10 @@ void ClientManager::treatMessage(std::string const & type, JSON::Value const * d
 	{
 		onPlayersLoad(LIST(data));
 	}
-	// TODO onInvite
+	else if (type == net::MSG::FRIENDLY_GAME_INVITATION)
+	{
+		onInvite(STR(data).value());
+	}
 }
 
 void ClientManager::loadPlayers()
