@@ -24,11 +24,11 @@ protected:
 	virtual void treatMessage(std::string const & type, JSON::Value const * data);
 	/* Hooks */
 	/* received login user response */
-	virtual void onLoginUser(std::string){}
+	virtual void onLoginUser(std::string const &){}
 	/* received register user response */
-	virtual void onRegisterUser(std::string) {}
+	virtual void onRegisterUser(std::string const &) {}
 	/* received team name choice response */
-	virtual void onTeamName(std::string) {}
+	virtual void onTeamName(std::string const &) {}
 public:
 	using ClientManager::ClientManager;
 	UserManager(ClientManager const & parent);
