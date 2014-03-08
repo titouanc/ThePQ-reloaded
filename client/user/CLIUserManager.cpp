@@ -59,7 +59,6 @@ void CLIUserManager::showTeamNameMenu()
 	string teamname = Menu::askForUserData("Teamname : ");
 	chooseTeamName(user().username,teamname);
 	_pending++;
-	// cout << "You have successfully picked up a name for your team !\nYou are now the manager of \033[35m"<<teamname<<"\033[0m"<< " !"<<endl;
 }
 
 void CLIUserManager::showRegisterMenu()
@@ -141,48 +140,49 @@ void CLIUserManager::showManagementMenu()
 	while (option != 3);
 }
 
+/* HOOKS */
 void CLIUserManager::onAskTeamName()
 {
 	_pending--;
 	showTeamNameMenu();
 }
 
-void CLIUserManager::onLoginUser()
+void CLIUserManager::onLoginOK()
 {
 	_pending--;
+	okMsg("Login successful");
 	showMainMenu();
 }
 
 void CLIUserManager::onLoginError(std::string const & error)
 {
 	_pending--;
-	cout << "\033[1;31m" << error << "\033[0m" << endl;
+	errorMsg(error);
 }
 
-void CLIUserManager::onRegisterUser(std::string const & data)
+void CLIUserManager::onRegisterUserOK()
 {
 	_pending--;
-	if (data == net::MSG::USER_REGISTERED)
-	{
-		cout << "You have successfully registered! You can now login." << endl;
-	}
-	else if (data == net::MSG::USER_EXISTS)
-	{
-		cout << "The username you chose already exists. Please pick another one" << endl;
-		showRegisterMenu();
-	}
+	okMsg("You have successfully registered! You can now login.");
 }
 
-void CLIUserManager::onTeamName(std::string const & data)
+void CLIUserManager::onRegisterUserError(std::string const & data)
 {
 	_pending--;
-	if (data == net::MSG::TEAMNAME_REGISTERED)
-	{
-		cout << "You team name is ok" << endl;
-		showMainMenu();
-	}
-	else if (data == net::MSG::TEAMNAME_ERROR)
-	{
-		cout << "That teamname is \033[31mnot\033[0m available, pick up another one." << endl;
-	}
+	errorMsg("The username you chose already exists. Please pick another one");
+	showRegisterMenu();
+}
+
+void CLIUserManager::onTeamNameOK()
+{
+	_pending--;
+	okMsg("Team name accepted");
+	showMainMenu();
+}
+
+void CLIUserManager::onTeamNameError(std::string const & reason)
+{
+	_pending--;
+	errorMsg(reason);
+	showTeamNameMenu();
 }

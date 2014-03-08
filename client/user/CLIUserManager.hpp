@@ -15,11 +15,16 @@ public:
 	void showMainMenu();
 	void showManagementMenu();
 
-	void onLoginUser();
 	void onAskTeamName();
-	void onLoginError(std::string const & data);
-	void onRegisterUser(std::string const & data);
-	void onTeamName(std::string const & teamname);
+
+	void onLoginOK();
+	void onLoginError(std::string const & error);
+
+	void onTeamNameOK();
+	void onTeamNameError(std::string const & error);
+
+	void onRegisterUserOK();
+	void onRegisterUserError(std::string const & data);
 
 private:
 };

@@ -1,4 +1,5 @@
 #include "UserManager.hpp"
+#include <Constants.hpp>
 
 UserManager::UserManager(ClientManager const & parent) : ClientManager(parent)
 {
@@ -44,16 +45,27 @@ void UserManager::doesUserExist(std::string username)
 
 void UserManager::treatMessage(std::string const & type, JSON::Value const * data)
 {
-	if (type == net::MSG::REGISTER)
-		onRegisterUser(STR(data));
-	
-	else if (type == net::MSG::TEAMNAME)
-		onTeamName(STR(data));
+	if (! ISSTR(data))
+		return;
+	std::string const & response = STR(data);
+
+	if (type == net::MSG::REGISTER){
+		if (response == net::MSG::USER_REGISTERED)
+			onRegisterUserOK();
+		else if (response == net::MSG::USER_EXISTS)
+			onRegisterUserError("This username already exists. Please chose another one");
+	}
+
+	else if (type == net::MSG::TEAMNAME){
+		if (response == net::MSG::TEAMNAME_REGISTERED)
+			onTeamNameOK();
+		else if (response == net::MSG::TEAMNAME_ERROR)
+			onTeamNameError("This teamname is not available, chose another one.");
+	}
 
 	else if (type == net::MSG::LOGIN){
-		std::string const & response = STR(data).value();
 		if (response == net::MSG::USER_LOGIN)
-			onLoginUser();
+			onLoginOK();
 		else if (response == net::MSG::USER_CHOOSE_TEAMNAME)
 			onAskTeamName();
 		else {

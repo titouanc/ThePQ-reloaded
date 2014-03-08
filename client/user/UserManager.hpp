@@ -2,7 +2,6 @@
 #define __USER_MANAGER_HPP
 
 #include <string>
-#include <Constants.hpp>
 #include <cli/Menu.hpp>
 #include <Exception.hpp>
 #include <ClientManager.hpp>
@@ -25,7 +24,7 @@ protected:
 	
 	/* Hooks */
 	/* Triggered after successful login */
-	virtual void onLoginUser(){}
+	virtual void onLoginOK(){}
 
 	/* Triggered after login failed.
 	   @param err_message: an error text */
@@ -34,11 +33,15 @@ protected:
 	/* Triggered when server ask a new team name */
 	virtual void onAskTeamName(){}
 
-	/* received register user response */
-	virtual void onRegisterUser(std::string const &) {}
-	
-	/* received team name choice response */
-	virtual void onTeamName(std::string const &) {}
+	/* Triggered after a successful register */
+	virtual void onRegisterUserOK() {}
+	/* Trigered when register fails */
+	virtual void onRegisterUserError(std::string const & reason) {}
+
+	/* Triggered when new team name is accepted */
+	virtual void onTeamNameOK() {}
+	/* Triggered when team name is rejected */
+	virtual void onTeamNameError(std::string const & reason) {}
 public:
 	using ClientManager::ClientManager;
 	UserManager(ClientManager const & parent);
