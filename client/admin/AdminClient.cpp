@@ -70,7 +70,7 @@ void AdminClient::showIdentifyMenu(){
 	try {
 		std::cout << "Please wait..." << std::endl;
 		loginAdmin(username, password);
-		std::cout << "You have successfully logged in as administrator." << std::endl;
+		std::cout << "You have \033[32msuccessfully\033[0m logged in as administrator." << std::endl;
 	}
 	catch (const AlreadyLoggedInException& e){
 		std::cout << "\033[31mError :\033[0m the admin client is already being used." <<std::endl;
@@ -133,14 +133,17 @@ void AdminClient::showCreateChampionshipMenu(){
 	while(champName.empty()){
 		std::getline(cin,champName);
 	}
-	int nbTurns;
-	cout << "Number of turns : "; cin >> nbTurns;
+	int nbTurns = 0;
+	while(nbTurns <=1 || nbTurns > gameconfig::MAX_CHAMPIONSHIP_TURNS){
+		std::cout << "Number of turns (between 2 and " << gameconfig::MAX_CHAMPIONSHIP_TURNS <<") : "; 
+		cin >> nbTurns;
+	}
 	try{
 		createChampionship(champName, nbTurns);
-		std::cout << "\033[32mChampionship succesfully created !\033[0m" << std::endl;
+		std::cout << "Championship \033[32msuccessfully\033[0m created !" << std::endl;
 	}
 	catch(const ChampionshipNameError & e){
-		std::cout << "\033[31mError : \033[0m" << "that championship name already exists." <<std::endl;
+		std::cout << "\033[31mError : \033[0mthat championship name already exists." <<std::endl;
 	}
 }
 

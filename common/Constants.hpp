@@ -131,6 +131,7 @@ namespace gameconfig
 	static const int SALE_FIRST_TURN_TIME = 30;
 	static const int SALE_TURN_TIME = 30;
 	static const float BID_RATIO = 0.05;
+	static const int MAX_CHAMPIONSHIP_TURNS = 5; //32 teams
 }
 
 namespace memory

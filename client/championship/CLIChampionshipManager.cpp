@@ -47,7 +47,7 @@ void CLIChampionshipManager::joinChampionshipMenu(){
 			readMessage();
 	}
 	else
-		std::cout << "Championship name not correct." << std::endl;
+		std::cout << "\033[1;31mError\033[0m : championship name not correct." << std::endl;
 }
 
 void CLIChampionshipManager::currentChampionshipMenu(){
