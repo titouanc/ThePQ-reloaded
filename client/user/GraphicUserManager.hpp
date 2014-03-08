@@ -20,6 +20,12 @@ private:
 	void submitRegisterForm();
 	void submitTeamNameForm();
 
+	void onLoginUser();
+	void onAskTeamName();
+	void onLoginError(std::string const & err);
+
+	bool _wait;
+
 	GUI::Button<GraphicUserManager> *_loginChoiceButton;
 	GUI::Button<GraphicUserManager> *_registerChoiceButton;
 

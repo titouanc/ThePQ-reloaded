@@ -11,8 +11,9 @@ using namespace GUI;
 #define NEW_PASSWORD_CONFIRMATION_TEXTBOX_ID "Confirm Password"
 #define TEAM_NAME_TEXTBOX_ID "Team Name"
 
-GraphicUserManager::GraphicUserManager(net::ClientConnectionManager& connection, UserData& user, std::queue<std::string> & notifications, GUI::MainController &controller) 
-			: UserManager(connection, user, notifications), GraphicManager(controller){
+GraphicUserManager::GraphicUserManager(net::ClientConnectionManager& connection, UserData& user, std::queue<std::string> & notifications, GUI::MainController &controller) : 
+	UserManager(connection, user, notifications), GraphicManager(controller)
+{
 	
 	_loginChoiceButton = _canvas.addButton<GraphicUserManager>(&GraphicUserManager::displayLoginForm, this, "Login");
 	_registerChoiceButton = _canvas.addButton<GraphicUserManager>(&GraphicUserManager::displayRegisterForm, this, "Register");
@@ -39,7 +40,8 @@ GraphicUserManager::GraphicUserManager(net::ClientConnectionManager& connection,
 	displayCanvas();
 }
 
-void GraphicUserManager::displayChoice(){
+void GraphicUserManager::displayChoice()
+{
 	_usernameTextbox->hide();
 	_passwordTextbox->hide();
 	_passwordConfirmationTextbox->hide();
@@ -51,7 +53,8 @@ void GraphicUserManager::displayChoice(){
 	redrawCanvas();
 }
 
-void GraphicUserManager::displayLoginForm(){
+void GraphicUserManager::displayLoginForm()
+{
 	_passwordConfirmationTextbox->hide();
 	_submitRegisterButton->hide();
 	_loginChoiceButton->hide();
@@ -63,7 +66,8 @@ void GraphicUserManager::displayLoginForm(){
 	redrawCanvas();
 }
 
-void GraphicUserManager::displayRegisterForm(){
+void GraphicUserManager::displayRegisterForm()
+{
 	_loginChoiceButton->hide();
 	_registerChoiceButton->hide();
 	_submitLoginButton->hide();
@@ -75,7 +79,8 @@ void GraphicUserManager::displayRegisterForm(){
 	redrawCanvas();
 }
 
-void GraphicUserManager::displayTeamNameForm(){
+void GraphicUserManager::displayTeamNameForm()
+{
 	_submitTeamNameButton = _canvas.addButton<GraphicUserManager>(&GraphicUserManager::submitTeamNameForm, this, "Let's gooooo!");
 	_teamNameTextbox = _canvas.addTextbox(TEAM_NAME_TEXTBOX_ID);
 	
@@ -89,47 +94,29 @@ void GraphicUserManager::displayTeamNameForm(){
 	redrawCanvas();
 }
 
-void GraphicUserManager::submitLoginForm(){
-	try{
-		loginUser(_usernameTextbox->getText(), _passwordTextbox->getText());
-		GraphicStadiumManager gsm(*this, _controller);
-		gsm.run();
-	}
-	catch (UserNotFoundException & e)
-	{
-		cout << "\nUser not found" << endl;
-	}
-	catch (WrongPasswordException & e)
-	{
-		cout << "\nWrong password" << endl;
-	}
-	catch (AlreadyLoggedInException & e)
-	{
-		cout << "\nYou're already logged in from another location" << endl;
-	}
-	catch (NoTeamNameException & e)
-	{
-		displayTeamNameForm();
+void GraphicUserManager::submitLoginForm()
+{
+	_wait = true;
+	loginUser(_usernameTextbox->getText(), _passwordTextbox->getText());
+	while (_wait){
+		readEvent();
+		readMessages();
 	}
 }
 
-void GraphicUserManager::submitRegisterForm(){
-	try{
-		if (_passwordTextbox->getText() != _passwordConfirmationTextbox->getText()){
-			cout << "passwords not identical" << endl;
-		}
-		else {
-			registerUser(_usernameTextbox->getText(), _passwordTextbox->getText());
-			displayLoginForm();
-		}
+void GraphicUserManager::submitRegisterForm()
+{
+	if (_passwordTextbox->getText() != _passwordConfirmationTextbox->getText()){
+		cout << "passwords not identical" << endl;
 	}
-	catch (UserAlreadyExistsException & e)
-	{
-		cout << "\nUser already exists!" << endl;
+	else {
+		registerUser(_usernameTextbox->getText(), _passwordTextbox->getText());
+		displayLoginForm();
 	}
 }
 
-void GraphicUserManager::submitTeamNameForm(){
+void GraphicUserManager::submitTeamNameForm()
+{
 	try{
 		chooseTeamName(user().username,_teamNameTextbox->getText());
 		GraphicStadiumManager gsm(*this, _controller);
@@ -140,3 +127,20 @@ void GraphicUserManager::submitTeamNameForm(){
 	}
 }
 
+void GraphicUserManager::onLoginUser()
+{
+	GraphicStadiumManager stadium(*this, _controller);
+	stadium.run();
+	_wait = false;
+}
+
+void GraphicUserManager::onAskTeamName()
+{
+	displayTeamNameForm();
+}
+
+void GraphicUserManager::onLoginError(std::string const & err)
+{
+	std::cout << err << std::endl;
+	_wait = false;
+}
