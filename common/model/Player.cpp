@@ -1,5 +1,6 @@
 #include "Player.hpp"
 #include <model/MemoryAccess.hpp>
+#include <cmath>
 
 std::ostream& operator<< (std::ostream& out, const Player& player)
     {
@@ -117,6 +118,10 @@ float Player::collisionScore() const{
     res = res * (100000000 +(rand()%10000000))/100000000;
     return res;
 } 
+
+int Player::level () const{
+    return static_cast<int>(pow(_strength * _velocity * _precision * _chance, 0.25));
+}
 
 // BEATER ----------------------------------------------------------------------
 void Beater::equipBat(Bat aBat){
