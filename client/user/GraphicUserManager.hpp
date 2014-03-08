@@ -2,7 +2,7 @@
 #define GRAPHIC_USER_MANAGER_HPP 
 
 #include <network/ClientConnectionManager.hpp>
-#include "graphics/GraphicManager.hpp"
+#include <graphics/GraphicManager.hpp>
 #include "UserManager.hpp"
 
 class GraphicUserManager : public UserManager, public GUI::GraphicManager 

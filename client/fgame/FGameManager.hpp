@@ -1,7 +1,7 @@
 #ifndef DEFINE_FGAMEMANAGER_HEADER
 #define DEFINE_FGAMEMANAGER_HEADER
 
-#include "ClientManager.hpp"
+#include <ClientManager.hpp>
 
 /* Friendly game manager */
 class FGameManager : public ClientManager {

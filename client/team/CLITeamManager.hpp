@@ -2,7 +2,7 @@
 #define __CLI_TEAM_MANAGER_HPP
 
 #include "TeamManager.hpp"
-#include "CLI.hpp"
+#include <cli/CLI.hpp>
 
 class CLITeamManager : public TeamManager, public CLI
 {

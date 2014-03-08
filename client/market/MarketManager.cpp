@@ -16,27 +16,27 @@ pair<int, int> MarketManager::getBidValueRange(Player *player){
 }
 
 void MarketManager::updateSales(){
-	this->say(net::MSG::PLAYERS_ON_MARKET_LIST, JSON::String(""));
+	say(net::MSG::PLAYERS_ON_MARKET_LIST, JSON::String(""));
 }
 
 void MarketManager::bidOnPlayer(int player_id){//modif
 	int value = getNextBidValue(player_id);
 	if (value == -1) throw PlayerNotFoundException();
-	JSON::Dict query, data;
-	data.set(net::MSG::USERNAME,user().username);
-	data.set(net::MSG::PLAYER_ID,player_id);
-	data.set(net::MSG::BID_VALUE,value);
+	JSON::Dict data = {
+		{ net::MSG::USERNAME, JSON::String(user().username) },
+		{ net::MSG::PLAYER_ID, JSON::Integer(player_id) },
+		{ net::MSG::BID_VALUE, JSON::Integer(value) }
+	};
 	say(net::MSG::BID_ON_PLAYER_QUERY, data);
 }
 
 void MarketManager::addPlayerOnMarket(int player_id, int value){
-	JSON::Dict query, data;
-	data.set(net::MSG::USERNAME,user().username);
-	data.set(net::MSG::PLAYER_ID,player_id);
-	data.set(net::MSG::BID_VALUE,value);
-	query.set("type", net::MSG::ADD_PLAYER_ON_MARKET_QUERY);
-	query.set("data", data);
-	connection().send(query);
+	JSON::Dict data = {
+		{ net::MSG::USERNAME, JSON::String(user().username) },
+		{ net::MSG::PLAYER_ID, JSON::Integer(player_id) },
+		{ net::MSG::BID_VALUE, JSON::Integer(value) }
+	};
+	say (net::MSG::ADD_PLAYER_ON_MARKET_QUERY, data);
 }
 
 int MarketManager::getNextBidValue(int player_id)

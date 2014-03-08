@@ -1,4 +1,4 @@
-#include "GraphicUserManager.hpp"
+#include "user/GraphicUserManager.hpp"
 #include "UserData.hpp"
 #include <network/ClientConnectionManager.hpp>
 #include <Config.hpp>
@@ -24,13 +24,9 @@ struct NetConfig : public Config {
 
 class GraphicClient {
 public:
-    GraphicClient(NetConfig const &config) :
-    _user(), _connection(config.host, config.port), _notifications(),
-    _controller(), _gUserManager(_connection, _user, _notifications, _controller){
-        _connection.run();
-        _gUserManager.run();
-    }
-
+    GraphicClient(NetConfig const &config);
+    void run();
+    
 private:
     UserData _user;
     net::ClientConnectionManager _connection;

@@ -3,9 +3,9 @@
 
 #include <vector>
 #include <model/Sale.hpp>
-#include "ClientManager.hpp"
-#include "Menu.hpp"
-#include "Exception.hpp"
+#include <ClientManager.hpp>
+#include <cli/Menu.hpp>
+#include <Exception.hpp>
 
 class MarketManager : public ClientManager
 {

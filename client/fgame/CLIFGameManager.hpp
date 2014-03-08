@@ -2,7 +2,7 @@
 #define DEFINE_CLIFGAMEMANAGER_HEADER 
 
 #include "FGameManager.hpp"
-#include "CLI.hpp"
+#include <cli/CLI.hpp>
 
 /* Command line friendly game manager */
 class CLIFGameManager : public FGameManager, public CLI {

@@ -1,5 +1,5 @@
 #include "GraphicUserManager.hpp"
-#include "GraphicStadiumManager.hpp"
+#include <stadium/GraphicStadiumManager.hpp>
 
 using namespace std;
 using namespace GUI;

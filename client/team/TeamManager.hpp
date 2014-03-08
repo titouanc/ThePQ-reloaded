@@ -2,9 +2,9 @@
 #define __TEAM_MANAGER_HPP
 
 #include <vector>
-#include "UserData.hpp"
-#include "Menu.hpp"
-#include "ClientManager.hpp"
+#include <UserData.hpp>
+#include <cli/Menu.hpp>
+#include <ClientManager.hpp>
 
 class TeamManager : public ClientManager
 {

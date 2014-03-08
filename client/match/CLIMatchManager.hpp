@@ -2,7 +2,7 @@
 #define DEFINE_CLIMATCHMANAGER_HEADER 
 
 #include "MatchManager.hpp"
-#include "Menu.hpp"
+#include <cli/Menu.hpp>
 #include <model/Ball.hpp>
 
 class CLIMatchManager : public MatchManager {
