@@ -7,21 +7,12 @@
 #include <typeinfo>
 #include <cxxabi.h>
 #include <Exception.hpp>
-#include "Menu.hpp"
+#include "cli/Menu.hpp"
 #include <Config.hpp>
-#include <model/Player.hpp>
 #include <network/ClientConnectionManager.hpp>
 #include <queue>
-#include "ClientMatchManager.hpp"
-#include <model/Installation.hpp>
-#include <model/Sale.hpp>
-#include "UserManager.hpp"
+#include "user/CLIUserManager.hpp"
 #include "UserData.hpp"
-#include "StadiumManager.hpp"
-#include "TeamManager.hpp"
-#include "MarketManager.hpp"
-#include "NotificationManager.hpp"
-#include <Constants.hpp>
 
 
 struct NetConfig : public Config {
@@ -53,67 +44,14 @@ public:
 private:
 	// Cache
 	UserData _user;
+	std::queue<std::string> _notifications;
 	
 	// Managers
 	net::ClientConnectionManager _connection;
-	UserManager _userManager;
-	StadiumManager _stadiumManager;
-	ClientMatchManager _matchManager;
-	TeamManager _teamManager;
-	MarketManager _marketManager;
-	NotificationManager _notificationManager;
+	CLIUserManager _userManager;
 	
 	// CLI
 	bool _isRunning;
-	std::string _prompt;
-	std::string splashScreen();
-	std::string goodBye();
-	
-	// Menus
-	void showMainMenu();
-	void showManagementMenu();
-	
-	// Users
-	bool showUserMenu();
-	void showLoginMenu();
-	void showRegisterMenu();
-	void showTeamNameMenu();
-	
-	// Team
-	void showTeamMenu();
-	void displayPlayers();
-	
-	// Stadium
-	void showStadiumMenu();
-	void printInstallationsList();
-	void upgradeInstallation();
-	void downgradeInstallation();
-	
-	// Market
-	void showMarketMenu();
-	void placeBid();
-	void showBidMenu();
-	void displayPlayersOnSale();
-	void sellPlayer();
-	
-	// Notifications
-	void showNotificationsMenu();
-	bool askForNotificationHandling();
-	void handleEndOfSaleNotification(JSON::Value const *message);
-	void handleFriendlyGameInvitation(JSON::Value const *message);
-	
-	// Match
-	void showFriendlyMatchMenu();
-	void printConnectedUsersList();
-	void showChooseUserMenu();
-	void showTurnMenu();
-	void displayAvailablePlayers();
-	void selectPlayer();
-	void selectDirectionForPlayer(int player);
-	Position parseDirection(string userInput);
-	char playerLetter(Player const & player);
-	std::string colorPlayerLetter(Player const & player);
-	void displayPitch();
 };
 
 #endif // __CLIENT_HPP
