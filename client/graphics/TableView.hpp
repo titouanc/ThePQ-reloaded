@@ -92,7 +92,7 @@ namespace GUI {
 
 					int relativePosY = (y-_y)%(_elements[0]->getWidth()+_padding);
 					if (relativePosY <= _elements[0]->getWidth()){
-						int index = clickedRow * _columnsNbr + clickedCol;
+						unsigned int index = clickedRow * _columnsNbr + clickedCol;
 						if (index < _elements.size())
 							_elements[index]->handleClick(relativePosX, relativePosY);
 					}
