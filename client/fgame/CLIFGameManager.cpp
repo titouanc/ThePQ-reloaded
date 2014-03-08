@@ -3,7 +3,7 @@
 #include <match/CLIMatchManager.hpp>
 
 #include "graphics/MainController.hpp"
-#include "GraphicMatchManager.hpp"
+#include <match/GraphicMatchManager.hpp>
 
 #include <iostream>
 
