@@ -7,6 +7,12 @@
 #include <string>
 #include <queue>
 
+struct TeamInfo {
+	std::string username, teamname;
+	int funds;
+	TeamInfo(JSON::Dict const & json);
+};
+
 class ClientManager {
 	private:
 		net::ClientConnectionManager & _connection;
@@ -39,15 +45,18 @@ class ClientManager {
 		/* Send methods */
 		void loadPlayers();
 
+		/* handle message for end of player sale */
+		void onEndOfSale(JSON::Dict const & json);
+
 		/* Hooks */
 		/* Asks the player to accept or deny a friendly game invitation from another player */
 		// TODO onInvite EVERYWHERE
 		virtual void onInvite(std::string) {}
 		/* Load players in user().players */
 		virtual void onPlayersLoad(JSON::List const & players);
-		/* handle message for end of player sale */
-		void onEndOfSale(JSON::Dict const & json);
 
+		/* Triggered when user's team informations are updated */
+		virtual void onTeamInfo(TeamInfo const & team){}
 	public:
 		/* Create a new client manager with a connection to server, a user 
 		   object (might be not initialised), and a queue to put all 
