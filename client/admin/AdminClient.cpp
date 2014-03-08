@@ -92,7 +92,7 @@ void AdminClient::loginAdmin(std::string username, std::string password)
 	toSend.set("data", data);
 	_connection.send(toSend);
 
-	JSON::Value *serverMessage = _connection.waitForMsg(net::MSG::STATUS);
+	JSON::Value *serverMessage = _connection.popMessage();
 	JSON::Dict const & received = DICT(serverMessage); 
 	if (ISSTR(received.get("data"))) {
 		std::string const & res = STR(received.get("data"));
@@ -113,7 +113,7 @@ void AdminClient::loginAdmin(std::string username, std::string password)
 		}
 
 	}
-	_admin.login(username);
+	_admin.username =username;
 	delete serverMessage;
 }
 
@@ -153,7 +153,7 @@ void AdminClient::createChampionship(std::string name, int nbTurns){
 	data.set(net::MSG::TURN_NUMBER,nbTurns);
 	toSend.set("data",data);
 	_connection.send(toSend);
-	JSON::Value *serverMessage = _connection.waitForMsg(net::MSG::CHAMPIONSHIP_CREATION);
+	JSON::Value *serverMessage = _connection.popMessage();
 	JSON::Dict const & received = DICT(serverMessage);
 	if(ISSTR(received.get("data"))){
 		std::string response = STR(received.get("data")).value();

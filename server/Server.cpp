@@ -6,6 +6,7 @@
 #include <Constants.hpp>
 #include "Server.hpp"
 #include <sys/stat.h>
+#include <unistd.h>
 #include <model/MemoryAccess.hpp>
 
 using namespace std;

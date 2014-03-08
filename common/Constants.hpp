@@ -107,6 +107,11 @@ namespace net
 		static const std::string CHAMPIONSHIP_NAME = "name";
 		static const std::string CHAMPIONSHIP_ALREADY_EXISTS = "C_name_E";
 		static const std::string CHAMPIONSHIP_CREATED = "C_created";
+		static const std::string CHAMPIONSHIPS_LIST = "C_LIST";
+		static const std::string ALREADY_IN_CHAMPIONSHIP = "C_AIC";
+		static const std::string CHAMPIONSHIP_FILL = "C_FULL";
+		static const std::string CHAMPIONSHIP_STARTED = "C_START";
+		static const std::string NOT_IN_CHAMPIONSHIP = "C_NIC";
 	}
 }
 

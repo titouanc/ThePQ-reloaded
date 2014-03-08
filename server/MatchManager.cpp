@@ -13,7 +13,6 @@ MatchManager::MatchManager(
 {
 	_score[0] = 0;
 	_score[1] = 0;
-	_running = true;
 	_champMatch = champMatch;
 
 	_quaffle.setID(101);
@@ -149,10 +148,6 @@ void MatchManager::_mainloop_out()
 	stop();
 	for (int i=0; i<2; i++)
 		releaseClient(_squads[i].client_id);
-}
-
-bool MatchManager::isRunning(){
-	return _running;
 }
 
 bool MatchManager::isChampMatch(){
@@ -426,7 +421,6 @@ void MatchManager::endMatch(void)
 	_matchRes.loser = _squads[looser].squad_owner;
 	_matchRes.score[0] = _score[winner];
 	_matchRes.score[1] = _score[looser];
-	_running = false;
 }
 
 void MatchManager::onCollision(

@@ -4,6 +4,7 @@
 #include <team/CLITeamManager.hpp>
 #include <market/CLIMarketManager.hpp>
 #include <fgame/CLIFGameManager.hpp>
+#include <championship/CLIChampionshipManager.hpp>
 #include <iostream>
 using namespace std;
 
@@ -82,8 +83,10 @@ void CLIUserManager::showRegisterMenu()
 
 void CLIUserManager::showMainMenu()
 {
+	readMessages();
 	CLIMarketManager marketManager(*this);
 	CLIFGameManager friendlyGame(*this);
+	//CLIChampionshipManager champManager(*this);
 	Menu _menu;
 	_menu.addToDisplay("   - manage your team and stadium\n");
 	_menu.addToDisplay("   - access market\n");
@@ -105,12 +108,15 @@ void CLIUserManager::showMainMenu()
 				friendlyGame.run();
 				break;
 			case 4:
+				//champManager.run();
+				break;
+			case 5:
 				logoutUser();
 			default:
 				break;
 		}
 	}
-	while (option != 4);
+	while (option != 5);
 }
 
 /* Management menu */
