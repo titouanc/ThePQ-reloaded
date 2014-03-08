@@ -17,6 +17,10 @@ namespace GUI {
 		void displayCanvas();
 		void redrawCanvas();
 	protected:
+		/* Standard event processing; always return true */
+		virtual bool treatEvent(sf::Event const & event);
+		/* non blocking event pop+treat. If no event popped, return false; */
+		bool readEvent();
 		sf::RenderWindow & window(){return _controller.window;}
 		MainController &_controller;
 		Layer _canvas;
