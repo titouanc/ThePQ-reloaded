@@ -19,6 +19,8 @@ bool GraphicMatchManager::treatEvent(sf::Event const & ev)
 {
 	if (ev.type == sf::Event::Closed)
 		return false;
+	else if (ev.type == sf::Event::GainedFocus)
+		redraw();
 	else if (ev.type == sf::Event::KeyPressed){
 		switch (ev.key.code){
 			case sf::Keyboard::Escape: return false;
