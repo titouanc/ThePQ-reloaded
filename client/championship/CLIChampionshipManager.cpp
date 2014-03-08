@@ -75,8 +75,6 @@ void CLIChampionshipManager::currentChampionshipMenu(){
 	while(option != 2);
 }
 
-
-
 void CLIChampionshipManager::displayCurrentChampionship(){
 	_waitForChamps = true;
 	loadChampionships();

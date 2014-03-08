@@ -15,6 +15,7 @@ void ChampionshipManager::joinChampionship(std::string champName)
 
 void ChampionshipManager::updateCurrentChampionship()
 {
+	user().joinedChamp = Championship();
 	for(size_t i = 0;i<_champs.size();++i){
 		if(_champs[i].isUserIn(user().username)){
 			user().joinedChamp = _champs[i];
