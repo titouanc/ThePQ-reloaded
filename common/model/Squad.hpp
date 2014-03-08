@@ -151,7 +151,7 @@ struct Squad {
         chaser.setSalary(player.getSalary());
         chaser.setPrice(player.getSalary());
         chaser.setMemberID(player.getMemberID());
-        chaser.getOwner(player.getOwner());
+        chaser.setOwner(player.getOwner());
         return chaser;
     }
 
@@ -167,7 +167,7 @@ struct Squad {
         keeper.setSalary(player.getSalary());
         keeper.setPrice(player.getSalary());
         keeper.setMemberID(player.getMemberID());
-        keeper.getOwner(player.getOwner());
+        keeper.setOwner(player.getOwner());
         return keeper;
     }
 
@@ -183,7 +183,7 @@ struct Squad {
         seeker.setSalary(player.getSalary());
         seeker.setPrice(player.getSalary());
         seeker.setMemberID(player.getMemberID());
-        seeker.getOwner(player.getOwner());
+        seeker.setOwner(player.getOwner());
         return seeker;
     }
 
@@ -200,7 +200,7 @@ struct Squad {
         beater.setSalary(player.getSalary());
         beater.setPrice(player.getSalary());
         beater.setMemberID(player.getMemberID());
-        beater.getOwner(player.getOwner());
+        beater.setOwner(player.getOwner());
         return beater;
     }
 };
