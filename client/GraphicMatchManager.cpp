@@ -69,10 +69,10 @@ bool GraphicMatchManager::treatEvent(sf::Event const & ev)
 				_currentMove.addMove(delta);
 				_match.clear(); /* clear hilights */
 				
-				_match.hilightDisplacement(_selectedPlayer->getPosition(), _currentMove);
 				if (_currentMove.length() < _selectedPlayer->getSpeed()){
 					_match.hilightAccessibles(pos, rest);
 				}
+				_match.hilightDisplacement(_selectedPlayer->getPosition(), _currentMove);
 			} else {
 				cout << " &&&&& Reject move " << _selectedPlayer->getName() 
 				     << " to " << JSON::List(pos) << " because delta "
