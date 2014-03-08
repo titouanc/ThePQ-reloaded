@@ -2,6 +2,7 @@
 #define DEFINE_SQUAD_HEADER
 
 #include <cstdlib>
+#include <string>
 #include "Player.hpp"
 #include <json/json.hpp>
 #include "MemoryAccess.hpp"
@@ -24,7 +25,7 @@ struct Squad {
 		players[5] = &seeker;
 		players[6] = &keeper;
 	}
-    
+    /*
     Squad(string name, int listID [7]){
         std::vector<Player> toLoad;
         MemoryAccess::load(toLoad, name);
@@ -63,6 +64,29 @@ struct Squad {
             }
         }
 
+    }*/
+
+    Squad(std::string name, int listID[7]){
+        squad_owner = name;
+        size_t i(0);
+        for (i;i<7;++i){
+            Player toLoad(listID[i], squad_owner);
+            MemoryAccess::load(toLoad);
+            switch (i){
+                case 0: ;
+                case 1: ;
+                case 2: chasers[i] = new Chaser(toLoad);
+                        break;
+                case 3: ;
+                case 4: beaters[i] = new Beater(toLoad,new Bat(0,0));
+                        break;
+                case 5: seeker = new Seeker(toLoad);
+                        break;
+                case 6: keeper = new Keeper(toLoad);
+                        break;
+            }
+        }
+        Squad();
     }
 
 	Squad(JSON::Dict const & json) :  Squad() {
