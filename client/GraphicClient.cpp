@@ -6,6 +6,6 @@ GraphicClient::GraphicClient(NetConfig const &config) :
 }
 
 void GraphicClient::run() {
-        _connection.run();
-        _gUserManager.run();
+    _connection.run();
+    _gUserManager.run();
 }
