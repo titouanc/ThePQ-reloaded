@@ -14,6 +14,8 @@ struct UserData
 		installations.clear();
 		players.clear();
 		username = ""; 
+		teamname = "";
+		funds = -1;
 	}
 	bool isLogged() { return username != ""; }
 
