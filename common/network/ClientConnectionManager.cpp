@@ -52,6 +52,7 @@ void net::ClientConnectionManager::run()
 	pthread_create(&_thread, NULL, runClientThread, this);
 }
 
+#define min(a,b) ((a) < (b)) ? (a) : (b)
 void net::ClientConnectionManager::loop()
 {
 	while (_isRunning)
@@ -69,7 +70,7 @@ void net::ClientConnectionManager::loop()
 		
 		
 		while (len > 0) {
-			r = recv(_sockfd, data, MSG_SIZE, 0);
+			r = recv(_sockfd, data, min(len, MSG_SIZE), 0);
 			if (r == 0) throw DisconnectedException();
 			data[r] = '\0';
 			res << data;
@@ -104,53 +105,15 @@ void net::ClientConnectionManager::send(JSON::Value const & json)
 	}
 }
 
-JSON::Value* net::ClientConnectionManager::waitForMsg(std::string typeToWait)
-{
-	JSON::Value* msg = NULL, *res = NULL;
-	while (res == NULL || _messages.available())
-	{
-		msg = _messages.pop();
-		JSON::Dict const & dict = DICT(msg);
-		if (STR(dict.get("type")).value() == typeToWait)
-		{
-			res = msg;
-		}
-		else
-		{
-			_notifications.push(msg);
-		}
-	}
-	return res;
-}
-
-JSON::Value* net::ClientConnectionManager::getNotification(std::string messageType){
-	JSON::Value* res = NULL;
-	for (size_t i = 0; i<_notifications.size(); ++i){
-		JSON::Dict notif = DICT(_notifications.front());
-		if (ISSTR(notif.get("type"))&& STR(notif.get("type")).value() == messageType){
-			res =  _notifications.front();
-			_notifications.pop();
-		}
-		_notifications.push(_notifications.front());
-		_notifications.pop();
-	}
-	return res;
-}
-
 JSON::Value* net::ClientConnectionManager::popMessage()
 {
 	return _messages.pop();
 }
 
-SharedQueue<JSON::Value*>& net::ClientConnectionManager::getNotifications()
+bool net::ClientConnectionManager::hasMessage()
 {
-	return _notifications;
+	return _messages.available();
 }
 
-void net::ClientConnectionManager::updateNotifications(){
-	while (_messages.available()){
-		_notifications.push(_messages.pop());
-	}
-}
 
 

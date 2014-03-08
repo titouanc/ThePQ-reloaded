@@ -80,6 +80,7 @@ bool BaseConnectionManager::_doWrite(int fd, const JSON::Value *obj)
 }
 
 #define BUFSIZE 0x1000
+#define min(a, b) ((a) < (b)) ? (a) : (b)
 bool BaseConnectionManager::_doRead(int fd)
 {
     std::stringstream globalBuf;
@@ -92,7 +93,7 @@ bool BaseConnectionManager::_doRead(int fd)
         return false;
     msglen = ntohl(msglen);
 
-    while (msglen > 0 && (r = recv(fd, buffer, BUFSIZE, 0)) > 0){
+    while (msglen > 0 && (r = recv(fd, buffer, min(msglen, BUFSIZE), 0)) > 0){
         buffer[r] = '\0';
         globalBuf << buffer;
         i++;

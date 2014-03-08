@@ -8,7 +8,7 @@
 class GraphicUserManager : public UserManager, public GUI::GraphicManager 
 {
 public:
-	GraphicUserManager(net::ClientConnectionManager& connection, UserData& user, GUI::MainController &controller);
+	GraphicUserManager(net::ClientConnectionManager& connection, UserData& user, std::queue<std::string> & notifications, GUI::MainController &controller);
 	~GraphicUserManager(){}
 private:
 	void displayChoice();	// choice between login and register

@@ -115,8 +115,7 @@ void MatchManager::processMessage(Message const & msg)
 
 void MatchManager::_mainloop_out()
 {
-	sendBalls();
-	sendSquads();
+	sendMoveables();
 	time_t tick;
 	cout << "[" << this << "] \033[32mMatch started\033[0m" << endl;
 	sendSignal(net::MSG::MATCH_START);
@@ -210,30 +209,20 @@ void MatchManager::mkSnitchStroke(void)
 	_strokes.push_back(Stroke(_snitch, move));
 }
 
-/* send squads composition */
-void MatchManager::sendSquads(void)
+void MatchManager::sendMoveables(void)
 {
-	JSON::List list = JSON::List();
+	JSON::List squads = JSON::List();
 	for (int i=0; i<2; i++)
-		list.append(JSON::Dict(_squads[i]));
+		squads.append(JSON::Dict(_squads[i]));
 	
-	JSON::Dict msg;
-	msg.set("data", list);
-	msg.set("type", net::MSG::MATCH_SQUADS);
-	sendToAll(msg);
-}
-
-void MatchManager::sendBalls(void)
-{
 	JSON::List balls = JSON::List();
 	balls.append(JSON::Dict(_quaffle));
 	balls.append(JSON::Dict(_snitch));
 	for (int i=0; i<2; i++)
 		balls.append(JSON::Dict(_bludgers[i]));
-	
-	JSON::Dict msg;
-	msg.set("data", balls);
-	msg.set("type", net::MSG::MATCH_BALLS);
+
+	JSON::Dict data = {{"balls", balls}, {"squads", squads}};
+	JSON::Dict msg = {{"type", JSON::String(MSG::MATCH_MOVEABLES)}, {"data", data}};
 	sendToAll(msg);
 }
 

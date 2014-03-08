@@ -10,13 +10,14 @@ class StadiumManager : public ClientManager
 {
 public:
 	using ClientManager::ClientManager;
-	void showMenu();
-	void printInstallationsList();
-	void upgradeInstallation();
-	void downgradeInstallation();
-	bool upgradeInstallation(size_t i);
-	bool downgradeInstallation(size_t i);
+	StadiumManager(ClientManager const & parent);
+	void upgradeInstallation(size_t i);
+	void downgradeInstallation(size_t i);
 	void loadInstallations();
+	void treatMessage(std::string const & type, JSON::Value const * data);
+	virtual void onUpgradeInstallation();
+	virtual void onDowngradeInstallation();
+	virtual void onInstallationsLoad(JSON::List const & json);
 };
 
 #endif // __STADIUM_MANAGER_HPP

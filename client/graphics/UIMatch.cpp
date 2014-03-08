@@ -24,6 +24,7 @@ double UIMatch::vAlign(void) const
 #define ALPHA 0x60
 const sf::Color UIMatch::hilightYellow(0xcc, 0xcc, 0x00, ALPHA);
 const sf::Color UIMatch::hilightRed(0xcc, 0x00, 0x00, ALPHA);
+const sf::Color UIMatch::hilightBlue(0x00, 0x00, 0xff, ALPHA);
 
 UIMatch::UIMatch(Pitch & pitch, int hexagonSize) : 
     sf::Drawable(),

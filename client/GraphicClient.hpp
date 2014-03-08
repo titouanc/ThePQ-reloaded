@@ -25,7 +25,8 @@ struct NetConfig : public Config {
 class GraphicClient {
 public:
     GraphicClient(NetConfig const &config) :
-    _user(), _connection(config.host, config.port), _controller(), _gUserManager(_connection, _user, _controller){
+    _user(), _connection(config.host, config.port), _notifications(),
+    _controller(), _gUserManager(_connection, _user, _notifications, _controller){
         _connection.run();
         _gUserManager.run();
     }
@@ -33,6 +34,7 @@ public:
 private:
     UserData _user;
     net::ClientConnectionManager _connection;
+    std::queue<std::string> _notifications;
     GUI::MainController _controller;
     GraphicUserManager _gUserManager;
 };

@@ -72,8 +72,7 @@ class MatchManager : public SubConnectionManager {
 		/* Like ^ but data set to "<text>" */
 		void reply(Message const & msg, std::string type, const char *text);
 		/* Send squads composition to everyone */
-		void sendSquads(void);
-		void sendBalls(void);
+		void sendMoveables(void);
 		/* Send match delta to everyone */
 		void sendMatchDeltas(void);
 		void stopStroke(Stroke & stroke, Position const & pos);

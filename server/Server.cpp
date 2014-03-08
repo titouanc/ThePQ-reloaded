@@ -209,7 +209,7 @@ void Server::registerUser(const JSON::Dict &credentials, int peer_id)
 		std::string const & username = STR(credentials.get(MSG::USERNAME));
 		std::string const & password = STR(credentials.get(MSG::PASSWORD));
 		JSON::Dict response = JSON::Dict();
-		response.set("type", MSG::STATUS);
+		response.set("type", MSG::REGISTER);
 		User* newUser = User::load(username);
 		if (newUser != NULL){
 			response.set("data", MSG::USER_EXISTS);
@@ -238,7 +238,7 @@ User *Server::logUserIn(const JSON::Dict &credentials, int peer_id)
 		std::string const & password = STR(credentials.get(MSG::PASSWORD));
 
 		JSON::Dict response;
-		response.set("type", MSG::STATUS);
+		response.set("type", MSG::LOGIN);
 		if (getUserByName(username)){
 			response.set("data", MSG::ALREADY_LOGGED_IN);
 		} else {
@@ -293,7 +293,7 @@ void Server::checkTeamName(const JSON::Dict &data, int peer_id){
 			exists = true;
 	}
 	JSON::Dict response;
-	response.set("type", MSG::STATUS);
+	response.set("type", MSG::TEAMNAME);
 	if(!exists){
 		teamNames.push_back(teamname);
 		MemoryAccess::save(teamNames,memory::ALL_TEAM_NAMES);

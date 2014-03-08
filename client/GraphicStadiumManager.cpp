@@ -4,8 +4,8 @@
 using namespace std;
 using namespace GUI;
 
-GraphicStadiumManager::GraphicStadiumManager(net::ClientConnectionManager& connection, UserData& user, GUI::MainController &controller) 
-			: StadiumManager(connection, user), GraphicManager(controller){
+GraphicStadiumManager::GraphicStadiumManager(ClientManager const & parent, GUI::MainController &controller) 
+			: StadiumManager(parent), GraphicManager(controller){
 	_startMatchButton = _canvas.addButton<GraphicStadiumManager>(&GraphicStadiumManager::startMatch, this, "Start match");
 	_startMatchButton->setPosition(1000, 600);
 	displayCanvas();

@@ -85,19 +85,18 @@ namespace net
 		static const std::string FRIENDLY_GAME_INVITATION_DENY = "F_G_I_D";
 
 		// MATCH ----------------------------------------------------------------
-		static const std::string MATCH_START   = "MSTART";
-		static const std::string MATCH_END     = "MEND";
-		static const std::string MATCH_SQUADS  = "MSQUADS";
-		static const std::string MATCH_BALLS   = "MBALLS";
-		static const std::string MATCH_PROMPT  = "M?";
-		static const std::string MATCH_TIMEOUT = "MTOUT";
-		static const std::string MATCH_STROKE  = "MSTROKE";
-		static const std::string MATCH_ERROR   = "M!!!";
-		static const std::string MATCH_ACK     = "MACK";
-		static const std::string MATCH_DELTA   = "MDELTA";
-		static const std::string MATCH_SCORES  = "MSCORES";
-		static const std::string MATCH_STATUS  = "MSTATUS";
-
+		static const std::string MATCH_START     = "MSTART";
+		static const std::string MATCH_END       = "MEND";
+		static const std::string MATCH_MOVEABLES = "MMOV";
+		static const std::string MATCH_PROMPT    = "M?";
+		static const std::string MATCH_TIMEOUT   = "MTOUT";
+		static const std::string MATCH_STROKE    = "MSTROKE";
+		static const std::string MATCH_ERROR     = "M!!!";
+		static const std::string MATCH_ACK       = "MACK";
+		static const std::string MATCH_DELTA     = "MDELTA";
+		static const std::string MATCH_SCORES    = "MSCORES";
+		static const std::string MATCH_STATUS    = "MSTATUS";
+		
 		//Admin------------------
 		static const std::string ADMIN_CLIENT = "ADMIN";
 		static const std::string ADMIN_LOGIN = "ALI";

@@ -28,7 +28,7 @@ class UIMatch : public sf::Drawable {
         void drawMoveables(sf::RenderTarget & target) const;
         void drawHighlights(sf::RenderTarget & target) const;
     public:
-        static const sf::Color hilightYellow, hilightRed;
+        static const sf::Color hilightYellow, hilightRed, hilightBlue;
 
         /* Create a new UIMatch bound to pitch, where the distance between
            two borders of an hexagon is hexagonSize pixels */

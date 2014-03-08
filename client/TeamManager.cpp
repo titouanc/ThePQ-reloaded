@@ -1,27 +1,5 @@
 #include "TeamManager.hpp"
 
-TeamManager::TeamManager(net::ClientConnectionManager &connection, UserData& user) : 
-	_connection(connection), _user(user)
+TeamManager::TeamManager(ClientManager const & parent) : ClientManager(parent) 
 {}
 
-void TeamManager::loadPlayers(){
-	_user.players.clear();
-	JSON::Dict query, data;
-	data.set(net::MSG::USERNAME, _user.username);
-	query.set("type", net::MSG::PLAYERS_LIST);
-	query.set("data",data);
-	_connection.send(query);
-	
-	JSON::Value *serverResponse = _connection.waitForMsg(net::MSG::PLAYERS_LIST);
-	JSON::Dict const & received = DICT(serverResponse);
-	JSON::List toFill;
-	if(ISLIST(received.get("data"))){
-		toFill = LIST(received.get("data"));
-	}
-	_user.players.clear();
-	for(size_t i=0; i<toFill.len();++i){
-		Player player(DICT(toFill[i]));
-		_user.players.push_back(player);
-	}
-	delete serverResponse;
-}
