@@ -134,7 +134,7 @@ void Team::timeUpdate()
 
 int Team::level () const {
     int sum(0);
-    for (std::vector<Player>::iterator it = _players.begin() ; it != _players.end() ; ++it)
-        sum += *(it).level();
+    for (Player it : _players)
+        sum += it.level();
     return static_cast<int>(pow(sum, 1.0/_players.size()));
 }
