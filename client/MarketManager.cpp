@@ -68,6 +68,7 @@ void MarketManager::treatMessage(std::string const & type, JSON::Value const * d
 
 void MarketManager::onSalesUpdate(JSON::List const & sales)
 {
+	_sales.clear();
 	for(size_t i = 0; i<sales.len();++i){
 		Player const & inSale = Player(DICT(DICT(sales[i]).get(net::MSG::PLAYER)));
 		cout << " +++++ IN SALE: " << inSale.getName() << endl;
