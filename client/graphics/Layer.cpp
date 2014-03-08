@@ -106,35 +106,35 @@ void GUI::Layer::handleTextEntered(sf::Event event){
 		_focusedTextbox->updateText(event);
 }
 
-GUI::Textbox* GUI::Layer::addTextbox(string id){
+GUI::Textbox & GUI::Layer::addTextbox(string id){
 	Textbox* res = new Textbox(id);
 
 	_textboxes.insert(pair<string, Textbox*>(id, res));
-	return res;
+	return *res;
 }
 
-GUI::Label* GUI::Layer::addLabel(std::string text, sf::Color color){
+GUI::Label & GUI::Layer::addLabel(std::string text, sf::Color color){
 	Label* res = new Label(text, color);
 	_labels.push_back(res);
-	return res;
+	return *res;
 }
 
-GUI::TableCell* GUI::Layer::addTableCell(){
+GUI::TableCell & GUI::Layer::addTableCell(){
 	TableCell* res = new TableCell();
 	_tableCells.push_back(res);
-	return res;
+	return *res;
 }
 
-GUI::TableView* GUI::Layer::addTableView(int columns, int padding){
+GUI::TableView & GUI::Layer::addTableView(int columns, int padding){
 	TableView* res = new TableView(columns, padding);
 	_tableViews.push_back(res);
-	return res;
+	return *res;
 }
 
-GUI::Textbox* GUI::Layer::textboxWithID(string id){
+GUI::Textbox & GUI::Layer::textboxWithID(string id){
 	if (_textboxes[id] == NULL)
 		throw "There is no textbox with id " + id + ".";
-	return _textboxes[id];
+	return *_textboxes[id];
 }
 
 void GUI::Layer::unfocusAllTextboxes(){
