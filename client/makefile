@@ -1,7 +1,7 @@
 PKGCONFIG = pkg-config
-OBJS = Menu.o ClientMatchManager.o Client.o UserManager.o StadiumManager.o TeamManager.o MarketManager.o GraphicUserManager.o GraphicStadiumManager.o NotificationManager.o GraphicMatchManager.o
+OBJS = cli/Menu.o Client.o GraphicClient.o user/UserManager.o stadium/StadiumManager.o team/TeamManager.o market/MarketManager.o user/GraphicUserManager.o stadium/GraphicStadiumManager.o match/GraphicMatchManager.o match/MatchManager.o user/CLIUserManager.o stadium/CLIStadiumManager.o team/CLITeamManager.o market/CLIMarketManager.o match/CLIMatchManager.o ClientManager.o cli/CLI.o fgame/FGameManager.o fgame/CLIFGameManager.o
 LIBS = ../common/json/libjson.a ../common/network/libnetwork.a ../common/model/libmodel.a graphics/libgraphics.a
-CPPFLAGS = -I../common
+CPPFLAGS = -I../common -I.
 
 ifeq ($(shell uname -s),Darwin)
 	CPPFLAGS += -I/Library/Frameworks/SFML.framework/Headers/
