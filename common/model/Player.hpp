@@ -63,6 +63,7 @@ public:
 	void improvePrecision (int added) 		{ _precision+=added; }
 	int estimatedValue(){ return (_strength+_velocity+_precision+_chance)*1000;} //TODO
 	float collisionScore() const;
+    int level () const;
 
 	Player &operator=(Player const & player){
 		Moveable::operator=(player);
