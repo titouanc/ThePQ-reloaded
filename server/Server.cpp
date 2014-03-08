@@ -49,6 +49,8 @@ Server::~Server()
 
 void Server::run()
 {
+	time_t tstart = time(NULL);
+	unsigned long long int tick = 0;
 	srand(time(NULL));	// rand() is used throughout some modules
 	pthread_create(&_timeThread, NULL, runTimeLoop, this);
 	while (_connectionManager.isRunning() || _inbox.available()){
@@ -63,6 +65,16 @@ void Server::run()
 				 << "\033[0m" << endl;
 		}
 		delete msg.data;
+		tick++;
+		if (tick%10 == 0){
+			unsigned long long int tx = _connectionManager.txBytes()>>10;
+			unsigned long long int rx = _connectionManager.rxBytes()>>10;
+			time_t uptime = time(NULL) - tstart;
+			cout << "[" << this << "] \033[1;47;30mNetwork statistics\033[0m :: "
+				 << "sent: " << tx << "kB "
+				 << "received: " << rx << "kB " 
+				 << "(up " << uptime << " seconds)" << endl;
+		}
 	}
 }
 

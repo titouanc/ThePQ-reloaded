@@ -25,8 +25,11 @@ BaseConnectionManager::BaseConnectionManager(
     SharedQueue<Message> & incoming_queue,
     SharedQueue<Message> & outgoing_queue,
     bool logger
-) : _running(false), _incoming(incoming_queue), 
-    _outgoing(outgoing_queue), _logger(logger)
+) : 
+    _running(false), 
+    _tx_bytes(0), _rx_bytes(0),
+    _incoming(incoming_queue), _outgoing(outgoing_queue),
+    _logger(logger)
 {
     pthread_mutex_init(&_mutex, NULL);
     pthread_mutex_init(&_fdset_mutex, NULL);
@@ -59,12 +62,15 @@ bool BaseConnectionManager::_doWrite(int fd, const JSON::Value *obj)
             if (r != 4)
                 res = false;
             else {
+                _tx_bytes += 4;
+
                 for (size_t i=0; i<repr.length(); i+=r){
                     r = send(fd, repr.c_str()+i, repr.length()-i, 0);
                     if (r < 0){
                         res = false;
                         break;
                     }
+                    _tx_bytes += r;
                 }
                 if (_logger && res)
                     std::cout << "[" << this << "] " << "\033[1m" << fd 
@@ -89,8 +95,10 @@ bool BaseConnectionManager::_doRead(int fd)
     if (r != 4)
         return false;
     msglen = ntohl(msglen);
+    _rx_bytes += 4;
 
     while (msglen > 0 && (r = recv(fd, buffer, min(msglen, BUFSIZE), 0)) > 0){
+        _rx_bytes += r;
         buffer[r] = '\0';
         globalBuf << buffer;
         i++;

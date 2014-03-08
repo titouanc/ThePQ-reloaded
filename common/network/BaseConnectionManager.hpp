@@ -29,6 +29,8 @@ namespace net {
 			bool _running;
 			/* Currently connected clients */
 			std::set<int> _clients;
+			/* network statistics */
+			unsigned long long int _tx_bytes, _rx_bytes;
 		protected:
 			/* Incoming message queue */
 			SharedQueue<Message> & _incoming, & _outgoing;
@@ -75,6 +77,11 @@ namespace net {
 
 			/* Number of connected clients */
 			size_t nClients(void);
+
+			/* How many bytes were sent over network */
+			unsigned long long int txBytes(void) const {return _tx_bytes;}
+			/* How many bytes were received over network */
+			unsigned long long int rxBytes(void) const {return _rx_bytes;}
 
 			/* Main in loop: feed incoming queue */
 			virtual void _mainloop_in(void);
