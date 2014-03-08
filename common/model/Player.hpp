@@ -52,6 +52,10 @@ public:
 	int getVelocity () const 		{ return _velocity + _broomstick->getVelocityBonus() ;}
 	int getPrecision () const 		{ return _precision; }
 	int getChance () const 			{ return _chance; }
+    void setStrength(int strength) { _strength = strength; }
+    void setVelocity(int velocity) { _velocity = velocity; }
+    void setPrecision (int prec)   { _precision = prec;    }
+    void setChance (int chance)    { _chance = chance;     }
 	void improveStrength (int added) 		{ _strength+=added; }
 	void improveVelocity (int added) 		{ _velocity+=added; }
 	void improvePrecision (int added) 		{ _precision+=added; }
