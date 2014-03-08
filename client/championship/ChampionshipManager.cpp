@@ -22,7 +22,7 @@ void ChampionshipManager::updateCurrentChampionship()
 	}
 }
 
-void ChampionshipManager::leaveChampionship()
+void ChampionshipManager::leaveCurrentChampionship()
 {
 	say(net::MSG::LEAVE_CHAMPIONSHIP, JSON::String(""));
 }
@@ -31,11 +31,15 @@ void ChampionshipManager::treatMessage(std::string const & type, JSON::Value con
 {
 	if (type == net::MSG::JOIN_CHAMPIONSHIP)
 	{
-		onJoinChampionship();
+		onJoinChampionship(STR(data).value());
 	}
 	else if (type == net::MSG::CHAMPIONSHIPS_LIST)
 	{
 		onChampionshipsLoad(LIST(data));
+	}
+	else if(type == net::MSG::LEAVE_CHAMPIONSHIP)
+	{
+		onLeaveChampionship(STR(data).value());
 	}
 }
 

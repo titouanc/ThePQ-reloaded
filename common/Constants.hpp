@@ -112,6 +112,7 @@ namespace net
 		static const std::string CHAMPIONSHIP_FILL = "C_FULL";
 		static const std::string CHAMPIONSHIP_STARTED = "C_START";
 		static const std::string NOT_IN_CHAMPIONSHIP = "C_NIC";
+		static const std::string LEAVE_CHAMPIONSHIP = "C_LEAVE";
 	}
 }
 

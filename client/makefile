@@ -1,5 +1,5 @@
 PKGCONFIG = pkg-config
-OBJS = cli/Menu.o Client.o GraphicClient.o user/UserManager.o stadium/StadiumManager.o team/TeamManager.o market/MarketManager.o user/GraphicUserManager.o stadium/GraphicStadiumManager.o match/GraphicMatchManager.o match/MatchManager.o user/CLIUserManager.o stadium/CLIStadiumManager.o team/CLITeamManager.o market/CLIMarketManager.o match/CLIMatchManager.o ClientManager.o cli/CLI.o fgame/FGameManager.o fgame/CLIFGameManager.o
+OBJS = cli/Menu.o Client.o GraphicClient.o user/UserManager.o stadium/StadiumManager.o team/TeamManager.o market/MarketManager.o user/GraphicUserManager.o stadium/GraphicStadiumManager.o match/GraphicMatchManager.o match/MatchManager.o user/CLIUserManager.o stadium/CLIStadiumManager.o team/CLITeamManager.o market/CLIMarketManager.o match/CLIMatchManager.o ClientManager.o cli/CLI.o fgame/FGameManager.o fgame/CLIFGameManager.o championship/ChampionshipManager.o championship/CLIChampionshipManager.o
 LIBS = ../common/json/libjson.a ../common/network/libnetwork.a ../common/model/libmodel.a graphics/libgraphics.a
 
 CPPFLAGS = -I../common -I.

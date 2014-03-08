@@ -18,7 +18,7 @@ protected:
 	/* set joinedChamp to the championship the user joined if any, "" else */
 	void updateCurrentChampionship();
 	/* leave championship if any */
-	void leaveChampionship();
+	void leaveCurrentChampionship();
 	/* treat Championship specific messages */
 	void treatMessage(std::string const & type, JSON::Value const * data);
 	/* HOOKS */

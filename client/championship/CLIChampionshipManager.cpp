@@ -6,7 +6,6 @@ void run(){
 	_menu.addToDisplay("   - access your championship\n");
 	_menu.addToDisplay("   - quit to main menu\n");
 	int option;
-	_pending = 0;
 	do {
 		readMessages();
 		option = _menu.run();
@@ -61,7 +60,7 @@ void currentChampionshipMenu(){
 		{
 			case 1:
 				_waitForJoin = true;
-				leaveChampionship();
+				leaveCurrentChampionship();
 				while(_waitForJoin)
 					readMessage();
 				break;

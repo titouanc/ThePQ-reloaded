@@ -1,3 +1,6 @@
+#ifndef __CLICHAMPMANAGER__HPP
+#define __CLICHAMPMANAGER__HPP
+
 #include "ChampionshipManager.hpp"
 #include <cli/Menu.hpp>
 #include <cli/CLI.hpp>
@@ -14,10 +17,11 @@ private:
 	void joinChampionshipMenu();
 	void currentChampionshipMenu();
 	void displayChampionships();
+	void displayCurrentChampionship();
+
 	virtual void onJoinChampionship(std::string data);
 	virtual void onLeaveChampionship(std::string data);
 	virtual void onChampionshipsLoad(JSON::List const & list);
-
-
-
 };
+
+#endif

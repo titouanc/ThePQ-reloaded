@@ -86,7 +86,7 @@ void CLIUserManager::showMainMenu()
 	readMessages();
 	CLIMarketManager marketManager(*this);
 	CLIFGameManager friendlyGame(*this);
-	//CLIChampionshipManager champManager(*this);
+	CLIChampionshipManager champManager(*this);
 	Menu _menu;
 	_menu.addToDisplay("   - manage your team and stadium\n");
 	_menu.addToDisplay("   - access market\n");
@@ -108,7 +108,7 @@ void CLIUserManager::showMainMenu()
 				friendlyGame.run();
 				break;
 			case 4:
-				//champManager.run();
+				champManager.run();
 				break;
 			case 5:
 				logoutUser();
