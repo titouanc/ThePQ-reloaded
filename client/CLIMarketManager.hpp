@@ -18,10 +18,11 @@ private:
 	void sellPlayer();
 	void showPlayers();
 
+	bool _waitForSales;
+
+	virtual void onSalesUpdate(JSON::List const &);
 	virtual void onPlayerBid(std::string data);
 	virtual void onAddPlayerOnMarket(std::string data);
-	virtual void treatMessage(std::string const & type, JSON::Value const * data);
-	virtual void say(std::string const & type, JSON::Value const & data);
 };
 
 #endif // __CLI_MARKET_MANAGER_HPP

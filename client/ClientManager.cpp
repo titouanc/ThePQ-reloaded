@@ -95,7 +95,9 @@ void ClientManager::onPlayersLoad(JSON::List const & players)
 	for(size_t i=0; i<players.len();++i){
 		Player player(DICT(players[i]));
 		user().players.push_back(player);
+		cout << " ****** RECEIVE PLAYER " << player.getName() << endl;
 	}
+	cout << " ****** TOTAL: " << user().players.size() << endl;
 }
 
 ClientManager::ClientManager(
