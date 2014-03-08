@@ -106,7 +106,8 @@ namespace net
 		//Championship------------------
 		static const std::string TEAMS_NUMBER = "nbOfUsers";
 		static const std::string CHAMPIONSHIP_NAME = "name";
-		static const std::string CHAMPIONSHIP_ALREADY_EXISTS = "Cname_E";
+		static const std::string CHAMPIONSHIP_ALREADY_EXISTS = "C_name_E";
+		static const std::string CHAMPIONSHIP_CREATED = "C_created";
 	}
 }
 
@@ -132,7 +133,7 @@ namespace memory
 	static const std::string PLAYERS_DIR = "Players/";
 	static const std::string INSTALLATIONS_DIR = "Installations/";
 	static const std::string MARKET_PATH = "data/PlayerMarket/";
-	static const std::string CHAMPIONSHIPS_DIR = "data/Championships/";
+	static const std::string CHAMPIONSHIPS_DIR = "data/championships/";
 	// Files
 	static const std::string FILE_FORMAT = ".json";
 	static const std::string USER_FILE = "user";

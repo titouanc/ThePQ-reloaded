@@ -8,6 +8,7 @@
 #include "MatchResult.hpp"
 #include "User.hpp"
 
+
 struct Schedule
 {
 	std::string user1;
@@ -37,7 +38,7 @@ class Championship
 {
 	friend std::ostream& operator<< (std::ostream&, const Championship&);
 public:
-	Championship(size_t nbOfTurns = 3);
+	Championship(size_t nbOfTurns = 3,std::string name="");
 	~Championship();
 	Championship(JSON::Dict const & json);
 	operator JSON::Dict();

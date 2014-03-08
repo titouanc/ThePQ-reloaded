@@ -7,9 +7,9 @@ std::ostream& operator<< (std::ostream& out, const Championship& champ){
 	out << champ._name << " : \033[1m" << champ._users.size() << "/" << champ._nbOfUsers << "\033[0m" << std::endl;
 }
 
-Championship::Championship(size_t nbOfTurns) : _isStarted(false), _isEnded(false), _name(), _turn(1), _nbOfUsers(2<<(nbOfTurns-1))
+Championship::Championship(size_t nbOfTurns,std::string name) : _isStarted(false), _isEnded(false), _name(name), _turn(1), _nbOfUsers(2<<(nbOfTurns-1))
 {
-	if (_nbOfUsers < 2 || _nbOfUsers > 32)
+	if (_nbOfUsers < 2 || _nbOfUsers > 32) //Should never happen (AdminClient verifying it)
 	{
 		_nbOfUsers = 8;
 	}

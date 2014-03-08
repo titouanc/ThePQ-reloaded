@@ -133,9 +133,9 @@ void AdminClient::showCreateChampionshipMenu(){
 	while(champName.empty()){
 		std::getline(cin,champName);
 	}
-	std::string nbTeams = Menu::askForUserData("Number of teams : ");
+	std::string nbTurns = Menu::askForUserData("Number of turns : ");
 	try{
-		createChampionship(champName, std::stoi(nbTeams));
+		createChampionship(champName, std::stoi(nbTurns));
 		std::cout << "\033[32mChampionship succesfully created !\033[0m" << std::endl;
 	}
 	catch(const ChampionshipNameError & e){
@@ -144,12 +144,12 @@ void AdminClient::showCreateChampionshipMenu(){
 }
 
 
-void AdminClient::createChampionship(std::string name, int nbTeams){
+void AdminClient::createChampionship(std::string name, int nbTurns){
 	JSON::Dict toSend;
 	toSend.set("type",net::MSG::CHAMPIONSHIP_CREATION);
 	JSON::Dict data;
 	data.set(net::MSG::CHAMPIONSHIP_NAME,name);
-	data.set(net::MSG::TEAMS_NUMBER,nbTeams);
+	data.set(net::MSG::TURN_NUMBER,nbTurns);
 	toSend.set("data",data);
 	_connection.send(toSend);
 	JSON::Value *serverMessage = _connection.waitForMsg(net::MSG::CHAMPIONSHIP_CREATION);

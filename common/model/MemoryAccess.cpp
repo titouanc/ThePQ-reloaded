@@ -84,6 +84,7 @@ void MemoryAccess::save(Team& team){
 	toSave.save(path.c_str());
 }
 void MemoryAccess::save(Championship& champ){
+	mkdir(memory::CHAMPIONSHIPS_DIR.c_str(), 0755);
 	std::string path = getChampionshipPath(champ.getName());
 	JSON::Dict toSave = champ;
 	toSave.save(path.c_str());
@@ -132,6 +133,12 @@ void MemoryAccess::load(Team& team){
 	team = DICT(loaded);
 	delete loaded;
 }
+void MemoryAccess::load(Championship& champ){
+	JSON::Value *loaded = JSON::load(getChampionshipPath(champ.getName()).c_str());
+	champ = DICT(loaded);
+	delete loaded;
+}
+
 
 JSON::List MemoryAccess::loadFilesInVec(std::string directory){/*Check for memleaks*/
 	JSON::List ret = JSON::List();

@@ -42,6 +42,7 @@ namespace MemoryAccess
 	void load(Sale&);
 	void load(Installation*);
 	void load(Team&);//Loads _funds, etc.
+	void load(Championship&);
 
 	JSON::List loadFilesInVec(std::string);
 	void load(std::vector<User>&);

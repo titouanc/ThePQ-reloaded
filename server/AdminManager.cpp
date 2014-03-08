@@ -1,7 +1,8 @@
 #include "AdminManager.hpp"
 #include <unistd.h>
-AdminManager::AdminManager(BaseConnectionManager & connections) : 
-	SubConnectionManager(_inbox, _outbox, connections), _admin(NULL), _admin_peer_id()
+#include "Server.hpp"
+AdminManager::AdminManager(BaseConnectionManager & connections, Server* serv) : 
+	SubConnectionManager(_inbox, _outbox, connections), _server(serv),_admin(NULL), _admin_peer_id()
 {
 	makeDefaultAdmin();
 }
@@ -101,8 +102,22 @@ void AdminManager::treatAdminMessage(const Message &message){
 
 /* Requests */
 void AdminManager::createChampionship(const JSON::Dict& data, int peer_id){
-	std::cout<<"\033[32mCREATING CHAMPIONSHIP\033[0m"<<std::endl;
+	JSON::Dict response;
 	if(peer_id != _admin_peer_id){
-		//TODO
+		response.set("type","WUT HACKER");
+		response.set("data","YOU AINT ADMIN WTF");
 	}
+	else{
+		response.set("type",net::MSG::CHAMPIONSHIP_CREATION);
+		Championship champ(INT(data.get(net::MSG::TURN_NUMBER)),STR(data.get(net::MSG::CHAMPIONSHIP_NAME)).value());
+		try{
+			MemoryAccess::load(champ);
+			response.set("data",net::MSG::CHAMPIONSHIP_ALREADY_EXISTS);
+		}
+		catch(const JSON::IOError& e){
+			response.set("data",net::MSG::CHAMPIONSHIP_CREATED);
+			_server->addChampionship(champ);
+		}
+	}
+	_doWrite(peer_id,&response);
 }

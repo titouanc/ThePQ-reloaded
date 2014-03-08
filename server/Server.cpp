@@ -30,7 +30,7 @@ static void* runTimeLoop(void* args)
 Server::Server(NetConfig const & config) : 
 	_inbox(), _outbox(), _users(),
 	_connectionManager(_inbox, _outbox, config.ip.c_str(), config.port, config.maxClients),
-	_market(new PlayerMarket(this)),_matches(),_adminManager(_connectionManager)
+	_market(new PlayerMarket(this)),_matches(),_adminManager(_connectionManager,this)
 {
 	_connectionManager.start();
 	cout << "Launched server on " << _connectionManager.ip() << ":" << _connectionManager.port() << endl;
@@ -569,4 +569,12 @@ void Server::timeUpdateChampionship()
 			--i;
 		}
 	}
+}
+
+void Server::addChampionship(const Championship& champ){
+	pthread_mutex_lock(&_dequeMutex);
+	Championship* newChamp = new Championship(champ);
+	_championships.push_back(newChamp);
+	MemoryAccess::save(*newChamp);
+	pthread_mutex_unlock(&_dequeMutex);
 }

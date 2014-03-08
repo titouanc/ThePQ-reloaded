@@ -67,6 +67,7 @@ public:
     void timeLoop();
     void timeUpdateStadium();
     void timeUpdateChampionship();
+    void addChampionship(const Championship&);
         /* Return a pointer to the user object with given username,
        or NULL if not connected */
     User *getUserByName(std::string username);
@@ -81,6 +82,7 @@ private:
     AdminManager _adminManager;
     std::deque<Championship*> _championships;
 
+    pthread_mutex_t _dequeMutex;
 	pthread_t _timeThread;
 };
 
