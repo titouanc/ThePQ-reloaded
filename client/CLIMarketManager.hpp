@@ -18,7 +18,7 @@ private:
 	void sellPlayer();
 	void showPlayers();
 
-	bool _waitForSales;
+	bool _waitForSales, _waitForBid;
 
 	virtual void onSalesUpdate(JSON::List const &);
 	virtual void onPlayerBid(std::string data);
