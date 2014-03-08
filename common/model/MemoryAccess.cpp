@@ -197,7 +197,7 @@ void MemoryAccess::load(std::vector<Sale*> &toFill){
 	}
 }
 
-void MemoryAccess::load(std::vector<Championship*>& toFill){
+void MemoryAccess::load(std::deque<Championship*>& toFill){
 	mkdir(memory::CHAMPIONSHIPS_DIR.c_str(), 0755);
 	JSON::List champs = loadFilesInVec(memory::CHAMPIONSHIPS_DIR);
 	for(size_t i=0;i<champs.len();++i){

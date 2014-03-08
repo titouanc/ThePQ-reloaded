@@ -4,6 +4,7 @@
 #include <json/json.hpp>
 #include <string>
 #include <vector>
+#include <deque>
 
 class Installation;
 class User;
@@ -49,7 +50,7 @@ namespace MemoryAccess
 	void load(std::vector<Installation*>&,std::string);
 	void load(std::vector<Player>&,std::string);
 	void load(std::vector<Sale*>&);
-	void load(std::vector<Championship*>&);
+	void load(std::deque<Championship*>&);
 	void load(std::vector<std::string>&, std::string);
 
 	void loadSkel(Broomstick&);
