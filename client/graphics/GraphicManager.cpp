@@ -20,7 +20,7 @@ bool GUI::GraphicManager::readEvent()
 
 bool GUI::GraphicManager::treatEvent(sf::Event const & event)
 {
-	if (event.type == sf::Event::MouseButtonPressed ){
+	if (event.type == sf::Event::MouseButtonPressed){
 		if (event.mouseButton.button == sf::Mouse::Left)
 			_controller.handleClick(event);
 		else if (event.mouseButton.button == sf::Mouse::Right)

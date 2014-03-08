@@ -15,10 +15,12 @@ private:
 	void displayLoginForm();
 	void displayRegisterForm();
 	void displayTeamNameForm();
+	void displayMainMenu();
 
 	void submitLoginForm();
 	void submitRegisterForm();
 	void submitTeamNameForm();
+	void goToStadium();
 
 	void onAskTeamName();
 

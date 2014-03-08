@@ -11,8 +11,8 @@ public:
 	GraphicStadiumManager(ClientManager const & parent, GUI::MainController &controller);
 	~GraphicStadiumManager(){}
 private:
-	void startMatch() const;
-	GUI::Button<GraphicStadiumManager> *_startMatchButton;
+	void displayMainMenu();
+	void doNothing();
 };
 
 
