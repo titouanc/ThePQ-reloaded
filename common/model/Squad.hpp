@@ -25,49 +25,10 @@ struct Squad {
 		players[5] = &seeker;
 		players[6] = &keeper;
 	}
-    /*
-    Squad(string name, int listID [7]){
-        std::vector<Player> toLoad;
-        MemoryAccess::load(toLoad, name);
-        bool found;
-        size_t i(0);
-        for (i ; i < 3 ; ++i){
-            found = false ;
-            for (std::vector<Player>::iterator it(toLoad.begin()); ( found || it != toLoad.end()) ; ++it){
-                if (it->getMemberID() == listID[i]){
-                    players[i] = new Chaser(*it);
-                    found = true ;
-                }
-            }
-        }
-        for (i ; i < 5 ; ++i){
-            found = false ;
-            for (std::vector<Player>::iterator it(toLoad.begin()); ( found || it != toLoad.end()) ; ++it){
-                if (it->getMemberID() == listID[i]){
-                    players[i] = new Beater(*it);
-                    found = true ;
-                }
-            }
-        }
-        found = false ;
-        for (std::vector<Player>::iterator it(toLoad.begin()); ( found || it != toLoad.end()) ; ++it){
-            if (it->getMemberID() == listID[i]){
-                players[i] = new Seeker(*it);
-                found = true ;
-            }
-        }
-        ++i;
-        for (std::vector<Player>::iterator it(toLoad.begin()); ( found || it != toLoad.end()) ; ++it){
-            if (it->getMemberID() == listID[i]){
-                players[i] = new Keeper(*it);
-                found = true ;
-            }
-        }
-
-    }*/
 
     Squad(std::string name, int listID[7]){
         squad_owner = name;
+        Bat bat(0,0);
         size_t i(0);
         for (i;i<7;++i){
             Player toLoad(listID[i], squad_owner);
@@ -78,7 +39,7 @@ struct Squad {
                 case 2: chasers[i] = convertToChaser(toLoad);
                         break;
                 case 3: ;
-                case 4: beaters[i] = convertToBeater(toLoad,new Bat(0,0));
+                case 4: beaters[i] = convertToBeater(toLoad,bat);
                         break;
                 case 5: seeker = convertToSeeker(toLoad);
                         break;
