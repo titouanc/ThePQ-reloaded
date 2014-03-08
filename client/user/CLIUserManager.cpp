@@ -141,7 +141,19 @@ void CLIUserManager::showManagementMenu()
 	while (option != 3);
 }
 
-void CLIUserManager::onLoginUser(std::string const & payload)
+void CLIUserManager::onAskTeamName()
+{
+	_pending--;
+	showTeamNameMenu();
+}
+
+void CLIUserManager::onLoginUser()
+{
+	_pending--;
+	showMainMenu();
+}
+
+void CLIUserManager::onLoginError(std::string const & payload)
 {
 	_pending--;
 	if (payload == net::MSG::PASSWORD_ERROR)
@@ -155,18 +167,6 @@ void CLIUserManager::onLoginUser(std::string const & payload)
 	else if (payload == net::MSG::ALREADY_LOGGED_IN)
 	{
 		cout << "\nYou're already logged in from another location" << endl;
-	}
-	else 
-	{
-		cout << "You have successfully logged in! Welcome! :)\n\n\n" << endl;
-		if (payload == net::MSG::USER_CHOOSE_TEAMNAME)
-		{
-			showTeamNameMenu();
-		}
-		else if (payload == net::MSG::USER_LOGIN)
-		{
-			showMainMenu();
-		}
 	}
 }
 

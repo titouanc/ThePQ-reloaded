@@ -15,7 +15,9 @@ public:
 	void showMainMenu();
 	void showManagementMenu();
 
-	void onLoginUser(std::string const & data);
+	void onLoginUser();
+	void onAskTeamName();
+	void onLoginError(std::string const & data);
 	void onRegisterUser(std::string const & data);
 	void onTeamName(std::string const & teamname);
 

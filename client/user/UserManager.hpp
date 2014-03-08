@@ -22,9 +22,14 @@ protected:
 	void chooseTeamName(std::string username, std::string teamname);
 	/* Treat user specific messages */
 	virtual void treatMessage(std::string const & type, JSON::Value const * data);
+	
 	/* Hooks */
-	/* received login user response */
-	virtual void onLoginUser(std::string const &){}
+	/* Triggered after successful login */
+	virtual void onLoginUser(){}
+	/* Triggered after login failed */
+	virtual void onLoginError(std::string const & err_type){}
+	/* Triggered when server ask a new team name */
+	virtual void onAskTeamName(){}
 	/* received register user response */
 	virtual void onRegisterUser(std::string const &) {}
 	/* received team name choice response */

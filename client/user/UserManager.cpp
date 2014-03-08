@@ -46,7 +46,13 @@ void UserManager::treatMessage(std::string const & type, JSON::Value const * dat
 {
 	if (type == net::MSG::LOGIN)
 	{
-		onLoginUser(STR(data));
+		std::string const & response = STR(data).value();
+		if (response == net::MSG::USER_LOGIN)
+			onLoginUser();
+		else if (response == net::MSG::USER_CHOOSE_TEAMNAME)
+			onAskTeamName();
+		else
+			onLoginError(response);
 	}
 	else if (type == net::MSG::REGISTER)
 	{
