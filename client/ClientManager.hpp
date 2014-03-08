@@ -27,7 +27,7 @@ class ClientManager {
 		void say(std::string const & type, JSON::Value const & data);
 
 		/* Handle general messages */
-		void treatMessage(std::string const & type, JSON::Value const * data);
+		virtual void treatMessage(std::string const & type, JSON::Value const * data);
 
 		/* Pop message from incoming queue and treat it (first with 
 		   ClientManager::treatMessage; then with <Subclass>::treatMessage;) */
