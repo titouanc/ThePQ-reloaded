@@ -6,6 +6,18 @@ using namespace std;
 using namespace GUI;
 
 GUI::Layer::~Layer(){
+	std::map<std::string, GUI::Textbox*>::iterator it;
+	for (it=_textboxes.begin(); it!=_textboxes.end(); it++)
+		delete it->second;
+
+	for (size_t i=0; i<_clickables.size(); i++)
+		delete _clickables[i];
+	for (size_t i=0; i<_labels.size(); i++)
+		delete _labels[i];
+	for (size_t i=0; i<_tableCells.size(); i++)
+		delete _tableCells[i];
+	for (size_t i=0; i<_tableViews.size(); i++)
+		delete _tableViews[i];
 	_clickables.clear();
 	_textboxes.clear();
 	_labels.clear();
