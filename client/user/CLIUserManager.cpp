@@ -91,6 +91,7 @@ void CLIUserManager::showMainMenu()
 	_menu.addToDisplay("   - manage your team and stadium\n");
 	_menu.addToDisplay("   - access market\n");
 	_menu.addToDisplay("   - play a friendly game\n");
+	_menu.addToDisplay("   - access championships\n");
 	_menu.addToDisplay("   - quit\n");
 	int option;
 	do

@@ -98,6 +98,16 @@ Championship* Server::getChampionshipByUsername(std::string username){
 	return NULL;
 }
 
+Championship* Server::getChampionshipByName(std::string champName){
+	std::deque<Championship*>::iterator it;
+	for(it=_championships.begin();it<_championships.end();it++){
+		if( (*it)->getName() == champName){
+			return *it;
+		}
+	}
+	return NULL;
+}
+
 void Server::startMatch(int client_idA, int client_idB, bool champMatch)
 {
 	if (_users.find(client_idA) == _users.end() || 
@@ -191,7 +201,13 @@ void Server::treatMessage(const Message &message)
 						sendPlayersOnMarketList(message.peer_id);
 				} else if(messageType == MSG::FRIENDLY_GAME_USERNAME) {
 						sendInvitationToPlayer(data, message.peer_id);
-				} 
+				} else if(messageType == MSG::CHAMPIONSHIPS_LIST) {
+						sendChampionshipsList(message.peer_id);
+				} else if(messageType == MSG::JOIN_CHAMPIONSHIP) {
+						joinChampionship(data, message.peer_id);
+				} else if(messageType == MSG::LEAVE_CHAMPIONSHIP) {
+						leaveChampionship(message.peer_id);
+				}
 			} else if (ISINT(received.get("data"))) {
 				int data = INT(received.get("data"));
 				if (messageType == MSG::INSTALLATION_UPGRADE) {
@@ -578,4 +594,52 @@ void Server::addChampionship(const Championship& champ){
 	_championships.push_back(newChamp);
 	MemoryAccess::save(*newChamp);
 	pthread_mutex_unlock(&_dequeMutex);
+}
+
+void Server::sendChampionshipsList(int peer_id){
+	JSON::Dict toSend;
+	toSend.set("type",net::MSG::CHAMPIONSHIPS_LIST);
+	JSON::List champs;
+	std::deque<Championship*>::iterator it;
+	for(it = _championships.begin();it < _championships.end();++it){
+		champs.append(JSON::Dict(*(*it)))
+	}
+	toSend.set("data",champs);
+	Message status(peer_id, toSend.clone());
+	_outbox.push(status);
+}
+
+void Server::leaveChampionship(int peer_id){
+	JSON::Dict toSend;
+	toSend.set("type",net::MSG::LEAVE_CHAMPIONSHIP);
+	std::string username = _users[peer_id]->getUsername();
+	Championship* champ = getChampionshipByUsername(username);
+	if (champ == NULL)
+		toSend.set("data",net::MSG::NOT_IN_CHAMPIONSHIP);
+	else if(champ->isStarted())
+		toSend.set("data",net::MSG::CHAMPIONSHIP_STARTED);
+	else{
+		champ->removeUser(*(_users[peer_id]));
+		toSend.set("data",net::MSG::REMOVED_FROM_CHAMPIONSHIP);
+	}
+	Message status(peer_id, toSend.clone());
+	_outbox.push(status);
+}
+
+void Server::joinChampionship(std::string champName, int peer_id){
+	JSON::Dict toSend;
+	toSend.set("type",net::MSG::JOIN_CHAMPIONSHIP);
+	Championship* champ = getChampionshipByName(champName);
+	if(champ == NULL)
+		toSend.set("data",net::MSG::CHAMPIONSHIP_NOT_FOUND);
+	else if(champ->isFull())
+		toSend.set("data",net::MSG::CHAMPIONSHIPS_FULL);
+	else if(getChampionshipByUsername(*(_users[peer_id])) != NULL)
+		toSend.set("data",net::MSG::ALREADY_IN_CHAMPIONSHIP)
+	else if(champ->isStarted())
+		toSend.set("data",net::MSG::CHAMPIONSHIP_STARTED);
+	else{
+		champ->addUser(*(_users[peer_id]));
+		toSend.set("data",net::MSG::ADDED_TO_CHAMPIONSHIP);
+	}
 }

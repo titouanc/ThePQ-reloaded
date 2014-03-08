@@ -1,6 +1,10 @@
 #include "CLIChampionshipManager.hpp"
 
-void run(){
+CLIChampionshipManager::CLIChampionshipManager(ClientManager const & parent) : 
+ChampionshipManager(parent), _waitForChamps(false), _waitForJoin(false)
+{}
+
+void CLIChampionshipManager::run(){
 	Menu _menu;
 	_menu.addToDisplay("   - join a championship\n");
 	_menu.addToDisplay("   - access your championship\n");
@@ -24,7 +28,7 @@ void run(){
 	while(option != 3);
 }
 
-void joinChampionshipMenu(){
+void CLIChampionshipManager::joinChampionshipMenu(){
 	displayChampionships();
 	std::cout << "Enter the name of the championship you wish to join : ";
 	std::string champName;
@@ -46,7 +50,7 @@ void joinChampionshipMenu(){
 		std::cout << "Championship name not correct." << std::endl;
 }
 
-void currentChampionshipMenu(){
+void CLIChampionshipManager::currentChampionshipMenu(){
 	displayCurrentChampionship();
 	Menu _menu;
 	_menu.addToDisplay("   - leave your championship\n");
@@ -73,7 +77,7 @@ void currentChampionshipMenu(){
 
 
 
-void displayCurrentChampionship(){
+void CLIChampionshipManager::displayCurrentChampionship(){
 	_waitForChamps = true;
 	loadChampionships();
 	while (_waitForChamps)
@@ -86,7 +90,7 @@ void displayCurrentChampionship(){
 		std::cout << "Your championship :\n" << user().joinedChamp << std::endl;
 }
 
-void displayChampionships(){
+void CLIChampionshipManager::displayChampionships(){
 	_waitForChamps = true;
 	loadChampionships();
 	while (_waitForChamps)
@@ -98,7 +102,7 @@ void displayChampionships(){
 	std::cout << "===============================================" << std::endl;
 }
 
-void onJoinChampionship(std::string data){
+void CLIChampionshipManager::onJoinChampionship(std::string data){
 	_waitForJoin = false;
 	if(data == net::MSG::ALREADY_IN_CHAMPIONSHIP){
 		std::cout << "\033[1;31mError\033[0m : cannot take part in more than one championship at the same time." << std::endl;
@@ -108,7 +112,7 @@ void onJoinChampionship(std::string data){
 	}
 }
 
-void onLeaveChampionship(std::string data){
+void CLIChampionshipManager::onLeaveChampionship(std::string data){
 	_waitForJoin = false;
 	if(data == net::MSG::CHAMPIONSHIP_STARTED){
 		std::cout << "\033[1;31mError\033[0m : your championship started; cannot leave it." << std::endl;
@@ -118,7 +122,7 @@ void onLeaveChampionship(std::string data){
 	}
 }
 
-void onChampionshipsLoad(JSON::List const & list){
+void CLIChampionshipManager::onChampionshipsLoad(JSON::List const & list){
 	_waitForChamps = false;
 	ChampionshipManager::onChampionshipsLoad(list);
 }

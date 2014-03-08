@@ -49,9 +49,10 @@ public:
 	Schedule* nextMatch();
 	void endMatch(MatchResult & result);
 
-	bool isEnded(){ return _isEnded; }
-	bool isStarted() { return _isStarted; }
-	std::string getName() { return _name; }
+	bool isFull() const { return _users.size() == _nbOfUsers }
+	bool isEnded() const { return _isEnded; }
+	bool isStarted() const { return _isStarted; }
+	std::string getName() const { return _name; }
 	size_t getNbOfUsers() { return _nbOfUsers; }
 	std::vector<std::string>& getUsers() { return _users; }
 	bool isUserIn(std::string username);

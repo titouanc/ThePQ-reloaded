@@ -101,18 +101,22 @@ namespace net
 		static const std::string ADMIN_CLIENT = "ADMIN";
 		static const std::string ADMIN_LOGIN = "ALI";
 		static const std::string CHAMPIONSHIP_CREATION = "ACSHIPC";
+		static const std::string CHAMPIONSHIP_ALREADY_EXISTS = "C_name_E";
+		static const std::string CHAMPIONSHIP_CREATED = "C_CREATED";
 
 		//Championship------------------
 		static const std::string TEAMS_NUMBER = "nbOfUsers";
 		static const std::string CHAMPIONSHIP_NAME = "name";
-		static const std::string CHAMPIONSHIP_ALREADY_EXISTS = "C_name_E";
-		static const std::string CHAMPIONSHIP_CREATED = "C_created";
 		static const std::string CHAMPIONSHIPS_LIST = "C_LIST";
 		static const std::string ALREADY_IN_CHAMPIONSHIP = "C_AIC";
-		static const std::string CHAMPIONSHIP_FILL = "C_FULL";
+		static const std::string CHAMPIONSHIP_FULL = "C_FULL";
 		static const std::string CHAMPIONSHIP_STARTED = "C_START";
 		static const std::string NOT_IN_CHAMPIONSHIP = "C_NIC";
 		static const std::string LEAVE_CHAMPIONSHIP = "C_LEAVE";
+		static const std::string REMOVED_FROM_CHAMPIONSHIP = "C_REMOVED";
+		static const std::string JOIN_CHAMPIONSHIP = "C_JOIN";
+		static const std::string ADDED_TO_CHAMPIONSHIP = "C_ADDED";
+		static const std::string CHAMPIONSHIP_NOT_FOUND = "C_NOTFOUND";
 	}
 }
 
