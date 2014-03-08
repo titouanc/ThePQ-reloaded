@@ -10,6 +10,8 @@ namespace GUI{
 			_x = x; 
 			_y = y;
 		}
+		virtual int x() {return _x;}
+		virtual int y() {return _y;}
 		virtual void setWidth(int w) 	{ _w = w; }
 		virtual void setHeight(int h) 	{ _h = h; }
 		virtual int getWidth() 			{ return _w; }

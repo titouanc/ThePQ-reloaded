@@ -1,4 +1,4 @@
-OBJS = Position.o Displacement.o Pitch.o Player.o Installation.o Sale.o MemoryAccess.o RandomNameGenerator.o User.o Team.o
+OBJS = Position.o Displacement.o Pitch.o Player.o Installation.o Sale.o MemoryAccess.o RandomNameGenerator.o User.o Team.o Championship.o
 CPPFLAGS = -I..
 LIBS = ../json/libjson.a
 

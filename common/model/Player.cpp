@@ -1,18 +1,16 @@
 #include "Player.hpp"
 #include <model/MemoryAccess.hpp>
 
-std::ostream& operator<< (std::ostream& out, const Player& player)//modif
+std::ostream& operator<< (std::ostream& out, const Player& player)
     {
-        out << "---------------------------------------------------" << std::endl;
-        out << "Player:         " << player._name << std::endl;
-        out << "Life:           " << player._lifeBar << "/" << player._maxLife << std::endl;
-        out << "Mana:           " << player._manaBar << "/" << player._maxMana << std::endl;
-        out << "Strength:       " << player._strength << std::endl;
-        out << "Velocity:       " << player._velocity << std::endl;
-        out << "Precision:      " << player._precision << std::endl;
-        out << "Chance:         " << player._chance << std::endl;
-        out << "ID:             " << player._memberID << std::endl;//modif
-        //TODO : display mum and dad (aka super classes)
+        out << "\033[35m#" << player._memberID
+            << " \033[1m" << player._name 
+            << " : \033[0mLife(\033[32m" << player._lifeBar << "\033[0m/"<< player._maxLife 
+            << ") Mana(\033[32m" << player._manaBar << "\033[0m/" << player._maxMana 
+            << ") Strength(\033[32m" << player._strength 
+            << "\033[0m) Velocity(\033[32m" << player._velocity 
+            << "\033[0m) Precision(\033[32m" << player._precision 
+            << "\033[0m) Chance (\033[32m" << player._chance << ")\033[0m";
         return out;
     }
     

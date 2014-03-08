@@ -49,6 +49,8 @@ Server::~Server()
 
 void Server::run()
 {
+	time_t tstart = time(NULL);
+	unsigned long long int tick = 0;
 	srand(time(NULL));	// rand() is used throughout some modules
 	pthread_create(&_timeThread, NULL, runTimeLoop, this);
 	while (_connectionManager.isRunning() || _inbox.available()){
@@ -63,6 +65,16 @@ void Server::run()
 				 << "\033[0m" << endl;
 		}
 		delete msg.data;
+		tick++;
+		if (tick%10 == 0){
+			unsigned long long int tx = _connectionManager.txBytes()>>10;
+			unsigned long long int rx = _connectionManager.rxBytes()>>10;
+			time_t uptime = time(NULL) - tstart;
+			cout << "[" << this << "] \033[1;47;30mNetwork statistics\033[0m :: "
+				 << "sent: " << tx << "kB "
+				 << "received: " << rx << "kB " 
+				 << "(up " << uptime << " seconds)" << endl;
+		}
 	}
 }
 
@@ -185,7 +197,7 @@ void Server::registerUser(const JSON::Dict &credentials, int peer_id)
 		std::string const & username = STR(credentials.get(MSG::USERNAME));
 		std::string const & password = STR(credentials.get(MSG::PASSWORD));
 		JSON::Dict response = JSON::Dict();
-		response.set("type", MSG::STATUS);
+		response.set("type", MSG::REGISTER);
 		User* newUser = User::load(username);
 		if (newUser != NULL){
 			response.set("data", MSG::USER_EXISTS);
@@ -214,7 +226,7 @@ User *Server::logUserIn(const JSON::Dict &credentials, int peer_id)
 		std::string const & password = STR(credentials.get(MSG::PASSWORD));
 
 		JSON::Dict response;
-		response.set("type", MSG::STATUS);
+		response.set("type", MSG::LOGIN);
 		if (getUserByName(username)){
 			response.set("data", MSG::ALREADY_LOGGED_IN);
 		} else {
@@ -269,7 +281,7 @@ void Server::checkTeamName(const JSON::Dict &data, int peer_id){
 			exists = true;
 	}
 	JSON::Dict response;
-	response.set("type", MSG::STATUS);
+	response.set("type", MSG::TEAMNAME);
 	if(!exists){
 		teamNames.push_back(teamname);
 		MemoryAccess::save(teamNames,memory::ALL_TEAM_NAMES);
@@ -481,11 +493,7 @@ User *Server::getUserByName(std::string username)
 void Server::timeLoop()
 {
 	time_t timeStart = time(NULL);
-	if (timeStart == -1)
-	{
-		cout << "error time" << endl;
-	}
-	else
+	if (timeStart != -1)
 	{
 		time_t timePrev = timeStart, timeNow;
 		while (_connectionManager.isRunning() == true)
@@ -496,7 +504,7 @@ void Server::timeLoop()
 				timeNow = time(NULL);
 			}
 			while (timeNow - timePrev < 10);
-			cout << "tick : " << time(NULL) << endl;
+			cout << "It is  : " << ctime(&timeNow);
 			timePrev = timeNow;
 			timeUpdateStadium();
 			timeUpdateChampionship();
@@ -511,11 +519,41 @@ void Server::timeUpdateStadium()
 	for (size_t i = 0; i < users.size(); ++i)
 	{
 		users[i].loadTeam();
-		users[i].getTeam().timeUpdate();
+		Team & team = users[i].getTeam();
+		long int before = team.getFunds();
+		team.timeUpdate();
+
+		long int after = team.getFunds();
+
+		cout << "[" << this << "] \033[33m" << team.getName()
+			 << "\033[0m before: " << before << "$; after: " << after << "$" << endl;
 	}
 }
 
 void Server::timeUpdateChampionship()
 {
-
+	for (size_t i = 0; i < _championships.size(); ++i)
+	{
+		Schedule* next = _championships[i]->nextMatch();
+		while (next != NULL)
+		{
+			next->isHappening = true;
+			int clientIDA, clientIDB;
+			map<int, User*>::iterator it = _users.begin();
+			while (it != _users.end())
+			{
+				if (it->second->getUsername() == next->user1)
+				{
+					clientIDA = it->first;
+				}
+				else if (it->second->getUsername() == next->user2)
+				{
+					clientIDB = it->first;
+				}
+				it++;
+			}
+			startMatch(clientIDA, clientIDB);
+			next = _championships[i]->nextMatch();
+		}
+	}
 }
