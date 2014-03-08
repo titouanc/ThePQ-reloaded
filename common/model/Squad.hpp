@@ -75,14 +75,14 @@ struct Squad {
             switch (i){
                 case 0: ;
                 case 1: ;
-                case 2: chasers[i] = new Chaser(toLoad);
+                case 2: chasers[i] = convertToChaser(toLoad);
                         break;
                 case 3: ;
-                case 4: beaters[i] = new Beater(toLoad,new Bat(0,0));
+                case 4: beaters[i] = convertToBeater(toLoad,new Bat(0,0));
                         break;
-                case 5: seeker = new Seeker(toLoad);
+                case 5: seeker = convertToSeeker(toLoad);
                         break;
-                case 6: keeper = new Keeper(toLoad);
+                case 6: keeper = convertToKeeper(toLoad);
                         break;
             }
         }
@@ -138,6 +138,51 @@ struct Squad {
 		res.set("chasers", c);
 		return res;
 	}
+
+    Chaser convertToChaser(Player& player){
+        Chaser chaser;
+        chaser.setStrength(player.getStrength());
+        chaser.setVelocity(player.getVelocity());
+        chaser.setPrecision(player.getPrecision());
+        chaser.setChance(player.getChance());
+        chaser.equipBroomstick(player.getBroomstick());
+        chaser.equipJersey(player.getJersey());
+        return chaser;
+    }
+
+    Keeper convertToKeeper(Player& player){
+        Keeper keeper;
+        keeper.setStrength(player.getStrength());
+        keeper.setVelocity(player.getVelocity());
+        keeper.setPrecision(player.getPrecision());
+        keeper.setChance(player.getChance());
+        keeper.equipBroomstick(player.getBroomstick());
+        keeper.equipJersey(player.getJersey());
+        return keeper;
+    }
+
+    Seeker convertToSeeker(Player& player){
+        Seeker seeker;
+        seeker.setStrength(player.getStrength());
+        seeker.setVelocity(player.getVelocity());
+        seeker.setPrecision(player.getPrecision());
+        seeker.setChance(player.getChance());
+        seeker.equipBroomstick(player.getBroomstick());
+        seeker.equipJersey(player.getJersey());
+        return seeker;
+    }
+
+    Beater convertToBeater(Player& player, Bat bat){
+        Beater beater;
+        beater.setStrength(player.getStrength());
+        beater.setVelocity(player.getVelocity());
+        beater.setPrecision(player.getPrecision());
+        beater.setChance(player.getChance());
+        beater.equipBroomstick(player.getBroomstick());
+        beater.equipJersey(player.getJersey());
+        beater.equipBat(bat);
+        return beater;
+
 };
 
 #endif

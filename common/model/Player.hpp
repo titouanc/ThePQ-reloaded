@@ -52,6 +52,8 @@ public:
 	int getVelocity () const 		{ return _velocity + _broomstick->getVelocityBonus() ;}
 	int getPrecision () const 		{ return _precision; }
 	int getChance () const 			{ return _chance; }
+    Broomstick getBroomstick () const { return *(_broomstick); }
+    Jersey getJersey () const         { return *(_jersey);     }
     void setStrength(int strength) { _strength = strength; }
     void setVelocity(int velocity) { _velocity = velocity; }
     void setPrecision (int prec)   { _precision = prec;    }
