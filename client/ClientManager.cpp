@@ -26,11 +26,9 @@ void ClientManager::say(std::string const & type, JSON::Value const & data)
 
 void ClientManager::treatMessage(std::string const & type, JSON::Value const * data)
 {
-	cout << "ClientManager::treatMessage " << type << endl;
 	if (type == net::MSG::TEAM_INFOS)
 	{
 		onTeamInfo(DICT(data));
-		cout << " XXXXX " << user().username << endl;
 	}
 	else if (type == net::MSG::MARKET_MESSAGE)
 	{
@@ -97,16 +95,14 @@ void ClientManager::onPlayersLoad(JSON::List const & players)
 	for(size_t i=0; i<players.len();++i){
 		Player player(DICT(players[i]));
 		user().players.push_back(player);
-		cout << " ****** RECEIVE PLAYER " << player.getName() << endl;
 	}
-	cout << " ****** TOTAL: " << user().players.size() << endl;
 }
 
 
 void ClientManager::onTeamInfo(UserData const & user)
 {
-	user().username = user.username;
-	user().funds = user.funds;
+	_user.username = user.username;
+	_user.funds = user.funds;
 }
 
 ClientManager::ClientManager(
