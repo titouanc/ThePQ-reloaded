@@ -49,7 +49,7 @@ public:
 	Schedule* nextMatch();
 	void endMatch(MatchResult & result);
 
-	bool isFull() const { return _users.size() == _nbOfUsers }
+	bool isFull() const { return _users.size() == _nbOfUsers; }
 	bool isEnded() const { return _isEnded; }
 	bool isStarted() const { return _isStarted; }
 	std::string getName() const { return _name; }

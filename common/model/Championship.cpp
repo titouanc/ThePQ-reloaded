@@ -1,10 +1,12 @@
 #include "Championship.hpp"
 #include <cmath>
+#include <model/MemoryAccess.hpp>
 
 using namespace std;
 
 std::ostream& operator<< (std::ostream& out, const Championship& champ){
 	out << champ._name << " : \033[1m" << champ._users.size() << "/" << champ._nbOfUsers << "\033[0m" << std::endl;
+	return out;
 }
 
 Championship::Championship(size_t nbOfTurns,std::string name) : _isStarted(false), _isEnded(false), _name(name), _turn(1), _nbOfUsers(2<<(nbOfTurns-1))
@@ -72,9 +74,8 @@ void Championship::addUser(User & user)
 {
 	if (_isStarted == false && isUserIn(user.getUsername()) == false)
 	{
-		// TODO check if user is already in championship
-		// Put him in championship
 		_users.push_back(user.getUsername());
+		MemoryAccess::save(*this);
 		if (_users.size() == _nbOfUsers)
 		{
 			start();
@@ -90,8 +91,8 @@ void Championship::removeUser(User & user)
 		{
 			if (_users[i] == user.getUsername())
 			{
-				// TODO remove from championship
 				_users.erase(_users.begin()+i);
+				MemoryAccess::save(*this);
 				return;
 			}
 		}
@@ -161,6 +162,7 @@ void Championship::endMatch(MatchResult & result)
 		for (size_t i = 0; i < _users.size(); i+=2){
 			_schedules.push_back(Schedule(_users[i], _users[i+1], begin));
 		}
+		MemoryAccess::save(*this);
 	}
 
 }

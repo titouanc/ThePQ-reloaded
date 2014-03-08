@@ -71,8 +71,12 @@ public:
         /* Return a pointer to the user object with given username,
        or NULL if not connected */
     User *getUserByName(std::string username);
+    Championship* getChampionshipByName(std::string champName);
     Championship* getChampionshipByUsername(std::string username);
     size_t nbrUsersConnected(){return _users.size();}
+    void leaveChampionship(int);
+    void joinChampionship(std::string,int);
+    void sendChampionshipsList(int);
 private:
 	SharedQueue<net::Message> _inbox, _outbox;
 	map<int, User*> _users;
