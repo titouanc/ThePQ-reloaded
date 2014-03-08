@@ -16,7 +16,7 @@ pair<int, int> MarketManager::getBidValueRange(Player *player){
 }
 
 void MarketManager::updateSales(){
-	this->say(net::MSG::PLAYERS_ON_MARKET_LIST, JSON::Dict());
+	this->say(net::MSG::PLAYERS_ON_MARKET_LIST, JSON::String(""));
 }
 
 void MarketManager::bidOnPlayer(int player_id){//modif
