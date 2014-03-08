@@ -86,7 +86,7 @@ private:
     AdminManager _adminManager;
     std::deque<Championship*> _championships;
 
-    pthread_mutex_t _dequeMutex;
+    pthread_mutex_t _champsMutex; //_championships used by 3 threads
 	pthread_t _timeThread;
 };
 

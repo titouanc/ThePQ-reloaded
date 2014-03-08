@@ -582,19 +582,21 @@ void Server::timeUpdateChampionship()
 			next = _championships[i]->nextMatch();
 		}
 		if(_championships[i]->isEnded()){
+			pthread_mutex_lock(&_champsMutex);
 			delete _championships[i]; 
 			_championships.erase(_championships.begin()+i);
 			--i;
+			pthread_mutex_unlock(&_champsMutex);
 		}
 	}
 }
 
 void Server::addChampionship(const Championship& champ){
-	pthread_mutex_lock(&_dequeMutex);
+	pthread_mutex_lock(&_champsMutex);
 	Championship* newChamp = new Championship(champ);
 	_championships.push_back(newChamp);
 	MemoryAccess::save(*newChamp);
-	pthread_mutex_unlock(&_dequeMutex);
+	pthread_mutex_unlock(&_champsMutex);
 }
 
 void Server::sendChampionshipsList(int peer_id){
@@ -602,9 +604,12 @@ void Server::sendChampionshipsList(int peer_id){
 	toSend.set("type",net::MSG::CHAMPIONSHIPS_LIST);
 	JSON::List champs;
 	std::deque<Championship*>::iterator it;
+	pthread_mutex_lock(&_champsMutex);
 	for(it = _championships.begin();it < _championships.end();++it){
-		champs.append(JSON::Dict(*(*it)));
+		if(!(*it)->isStarted())
+			champs.append(JSON::Dict(*(*it)));
 	}
+	pthread_mutex_unlock(&_champsMutex);
 	toSend.set("data",champs);
 	Message status(peer_id, toSend.clone());
 	_outbox.push(status);
@@ -614,6 +619,7 @@ void Server::leaveChampionship(int peer_id){
 	JSON::Dict toSend;
 	toSend.set("type",net::MSG::LEAVE_CHAMPIONSHIP);
 	std::string username = _users[peer_id]->getUsername();
+	pthread_mutex_lock(&_champsMutex);
 	Championship* champ = getChampionshipByUsername(username);
 	if (champ == NULL)
 		toSend.set("data",net::MSG::NOT_IN_CHAMPIONSHIP);
@@ -623,6 +629,7 @@ void Server::leaveChampionship(int peer_id){
 		champ->removeUser(*(_users[peer_id]));
 		toSend.set("data",net::MSG::REMOVED_FROM_CHAMPIONSHIP);
 	}
+	pthread_mutex_unlock(&_champsMutex);
 	Message status(peer_id, toSend.clone());
 	_outbox.push(status);
 }
@@ -630,6 +637,7 @@ void Server::leaveChampionship(int peer_id){
 void Server::joinChampionship(std::string champName, int peer_id){
 	JSON::Dict toSend;
 	toSend.set("type",net::MSG::JOIN_CHAMPIONSHIP);
+	pthread_mutex_lock(&_champsMutex);
 	Championship* champ = getChampionshipByName(champName);
 	if(champ == NULL)
 		toSend.set("data",net::MSG::CHAMPIONSHIP_NOT_FOUND);
@@ -643,6 +651,7 @@ void Server::joinChampionship(std::string champName, int peer_id){
 		champ->addUser(*(_users[peer_id]));
 		toSend.set("data",net::MSG::ADDED_TO_CHAMPIONSHIP);
 	}
+	pthread_mutex_unlock(&_champsMutex);
 	Message status(peer_id, toSend.clone());
 	_outbox.push(status);
 }
