@@ -26,6 +26,8 @@ int main(int argc, char const *argv[])
 	GraphicClient gClient(config);
 	if (! has_chdir)
 		config.save();
+
+	gClient.run();
 	
 	return 0;
 }
