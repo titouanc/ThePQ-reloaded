@@ -7,12 +7,6 @@
 #include <string>
 #include <queue>
 
-struct TeamInfo {
-	std::string username, teamname;
-	int funds;
-	TeamInfo(JSON::Dict const & json);
-};
-
 class ClientManager {
 	private:
 		net::ClientConnectionManager & _connection;
@@ -56,7 +50,7 @@ class ClientManager {
 		virtual void onPlayersLoad(JSON::List const & players);
 
 		/* Triggered when user's team informations are updated */
-		virtual void onTeamInfo(TeamInfo const & team){}
+		virtual void onTeamInfo(UserData const & user);
 	public:
 		/* Create a new client manager with a connection to server, a user 
 		   object (might be not initialised), and a queue to put all 

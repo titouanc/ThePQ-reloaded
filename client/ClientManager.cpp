@@ -1,17 +1,5 @@
 #include "ClientManager.hpp"
 
-TeamInfo::TeamInfo(JSON::Dict const & json)
-{
-	if (ISSTR(json.get(net::MSG::USERNAME)))
-		username = STR(json.get(net::MSG::USERNAME)).value();
-	
-	if (ISSTR(json.get("teamname")))
-		teamname = STR(json.get("teamname")).value();
-	
-	if (ISINT(json.get("funds")))
-		funds = INT(json.get("funds"));
-}
-
 net::ClientConnectionManager & ClientManager::connection() const 
 {
 	return _connection;
@@ -41,10 +29,7 @@ void ClientManager::treatMessage(std::string const & type, JSON::Value const * d
 	cout << "ClientManager::treatMessage " << type << endl;
 	if (type == net::MSG::TEAM_INFOS)
 	{
-		TeamInfo team(DICT(data));
-		user().username = team.username;
-		user().funds = team.funds;
-		onTeamInfo(team);
+		onTeamInfo(DICT(data));
 		cout << " XXXXX " << user().username << endl;
 	}
 	else if (type == net::MSG::MARKET_MESSAGE)
@@ -115,6 +100,13 @@ void ClientManager::onPlayersLoad(JSON::List const & players)
 		cout << " ****** RECEIVE PLAYER " << player.getName() << endl;
 	}
 	cout << " ****** TOTAL: " << user().players.size() << endl;
+}
+
+
+void ClientManager::onTeamInfo(UserData const & user)
+{
+	user().username = user.username;
+	user().funds = user.funds;
 }
 
 ClientManager::ClientManager(
