@@ -19,8 +19,17 @@ void MatchManager::treatBalls(JSON::List const & balls)
 
 void MatchManager::treatSquads(JSON::List const & squads)
 {
-	_mySquad = DICT(squads[0]);
-	_otherSquad = DICT(squads[1]);
+	Squad sq1(DICT(squads[0]));
+	Squad sq2(DICT(squads[1]));
+
+	if (sq1.squad_owner == user().username){
+		_mySquad = sq1;
+		_otherSquad = sq2;
+	} else {
+		_mySquad = sq2;
+		_otherSquad = sq1;
+	}
+
 	for (int i=0; i<7; i++){
 		_pitch.insert(_mySquad.players[i]);
 		if (_mySquad.players[i]->getSpeed() == 0)
