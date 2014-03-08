@@ -131,6 +131,9 @@ void GraphicUserManager::goToStadium()
 {
 	GraphicStadiumManager stadium(*this, _controller);
 	stadium.run();
+	deleteCanvas();
+	logoutUser();
+	displayLoginForm();
 }
 
 
