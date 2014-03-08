@@ -64,3 +64,19 @@ void CLI::goodBye() const
 	cout <<  "                   See you next time! :)" << endl;
 	cout <<  "                 =========================            " << endl;
 }
+
+std::ostream & CLI::errorMsg(std::string const & message) const
+{
+	cout << "\033[1;31mError:\033[0m ";
+	if (message.length() > 0)
+		cout << message << endl;
+	return cout;
+}
+
+std::ostream & CLI::okMsg(std::string const & message) const
+{
+	cout << "\033[1;32mOK:\033[0m ";
+	if (message.length() > 0)
+		cout << message << endl;
+	return cout;
+}
