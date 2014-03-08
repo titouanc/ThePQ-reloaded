@@ -20,9 +20,16 @@ private:
 	void submitRegisterForm();
 	void submitTeamNameForm();
 
-	void onLoginUser();
 	void onAskTeamName();
-	void onLoginError(std::string const & err);
+
+	void onLoginOK();
+	void onLoginError(std::string const & error);
+
+	void onTeamNameOK();
+	void onTeamNameError(std::string const & error);
+
+	void onRegisterUserOK();
+	void onRegisterUserError(std::string const & data);
 
 	bool _wait;
 

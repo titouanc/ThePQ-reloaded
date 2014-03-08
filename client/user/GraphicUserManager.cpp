@@ -107,40 +107,66 @@ void GraphicUserManager::submitLoginForm()
 void GraphicUserManager::submitRegisterForm()
 {
 	if (_passwordTextbox->getText() != _passwordConfirmationTextbox->getText()){
-		cout << "passwords not identical" << endl;
-	}
-	else {
+		onRegisterUserError("The 2 passwords doesn't match");
+	} else {
+		_wait = true;
 		registerUser(_usernameTextbox->getText(), _passwordTextbox->getText());
-		displayLoginForm();
+		while (_wait){
+			readEvent();
+			readMessages();
+		}
 	}
 }
 
 void GraphicUserManager::submitTeamNameForm()
 {
-	try{
-		chooseTeamName(user().username,_teamNameTextbox->getText());
-		GraphicStadiumManager gsm(*this, _controller);
-		gsm.run();
-	}
-	catch(TeamNameNotAvailableException e){
-		cout << "Team name is not available" << endl;
+	_wait = true;
+	chooseTeamName(user().username, _teamNameTextbox->getText());
+	while (_wait){
+		readEvent();
+		readMessages();
 	}
 }
 
-void GraphicUserManager::onLoginUser()
+
+/* HOOKS */
+void GraphicUserManager::onLoginOK()
 {
 	GraphicStadiumManager stadium(*this, _controller);
 	stadium.run();
 	_wait = false;
 }
 
-void GraphicUserManager::onAskTeamName()
-{
-	displayTeamNameForm();
-}
-
 void GraphicUserManager::onLoginError(std::string const & err)
 {
 	std::cout << err << std::endl;
 	_wait = false;
+}
+
+void GraphicUserManager::onTeamNameOK()
+{
+	onLoginOK();
+}
+
+void GraphicUserManager::onTeamNameError(std::string const & err)
+{
+	std::cout << err << std::endl;
+	_wait = false;
+}
+
+void GraphicUserManager::onRegisterUserOK()
+{
+	displayLoginForm();
+	_wait = false;
+}
+
+void GraphicUserManager::onRegisterUserError(std::string const & err)
+{
+	std::cout << err << std::endl;
+	_wait = false;
+}
+
+void GraphicUserManager::onAskTeamName()
+{
+	displayTeamNameForm();
 }
