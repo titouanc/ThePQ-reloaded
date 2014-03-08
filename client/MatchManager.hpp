@@ -26,12 +26,14 @@ class MatchManager : public ClientManager {
 		bool isMyPlayer(Player const & player) const;
 		State state() const {return _state;}
 
-
-		void invite(std::string const & name);
+		/* Send a player displacement to the server */
 		void sendDisplacement(Player const & player, Displacement const & move);
 		/* HOOKS */
+		/* Called after pitch gets updated */
 		virtual void onPitchChange(){}
+		/* Called after state gets updated */
 		virtual void onStateChange(){}
+		/* Called when there is an error */
 		virtual void onError(std::string const & info){}
 		/* Treat Match specific messages */
 		void treatMessage(std::string const & type, JSON::Value const * msg);

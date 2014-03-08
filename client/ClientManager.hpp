@@ -41,6 +41,7 @@ class ClientManager {
 
 		/* Hooks */
 		/* Asks the player to accept or deny a friendly game invitation from another player */
+		// TODO onInvite EVERYWHERE
 		virtual void onInvite(std::string) {}
 		/* Load players in user().players */
 		virtual void onPlayersLoad(JSON::List const & players);
