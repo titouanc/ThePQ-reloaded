@@ -43,7 +43,7 @@ void ClientManager::treatMessage(std::string const & type, JSON::Value const * d
 
 void ClientManager::loadPlayers()
 {
-	JSON::Dict query, data;
+	JSON::Dict data;
 	data.set(net::MSG::USERNAME, user().username);
 	say(net::MSG::PLAYERS_LIST, data);
 }

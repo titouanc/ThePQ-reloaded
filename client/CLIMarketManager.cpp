@@ -16,6 +16,7 @@ void CLIMarketManager::run()
 	{
 		updateSales();
 		loadPlayers();
+		_pending+=2;
 		do
 		{
 			minisleep(0.1);
@@ -114,6 +115,7 @@ void CLIMarketManager::placeBid()
 	cin >> player_id;
 	try{
 		bidOnPlayer(player_id);
+		_pending++;
 		cout << "Bid successfully placed ! Hurra !" << endl;
 	}
 	catch(PlayerNotFoundException& e) {
@@ -151,23 +153,22 @@ void CLIMarketManager::onAddPlayerOnMarket(std::string data)
 	}
 }
 
-
-void CLIMarketManager::treatMessage(std::string const & type, JSON::Value const * data)
-{
-	_pending--;
-	MarketManager::treatMessage(type, data);
-}
-
-void CLIMarketManager::say(std::string const & type, JSON::Value const & data)
-{
-	_pending++;
-	MarketManager::say(type, data);
-}
-
 void CLIMarketManager::showPlayers(){
 	cout << "================ YOUR PLAYERS ================" << endl;
 	for(size_t i =0; i<user().players.size();++i){
 		cout << user().players[i] << endl; //modif
 	}
 	cout << "==============================================" << endl;
+}
+
+void CLIMarketManager::onPlayersLoad(JSON::List const & players)
+{
+	MarketManager::onPlayersLoad(players);
+	_pending--;
+}
+
+void CLIMarketManager::onSalesUpdate(JSON::List const & sales)
+{
+	MarketManager::onSalesUpdate(sales);
+	_pending--;
 }
