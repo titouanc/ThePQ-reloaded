@@ -147,6 +147,11 @@ struct Squad {
         chaser.setChance(player.getChance());
         chaser.equipBroomstick(player.getBroomstick());
         chaser.equipJersey(player.getJersey());
+        chaser.setName(player.getName());
+        chaser.setSalary(player.getSalary());
+        chaser.setPrice(player.getSalary());
+        chaser.setMemberID(player.getMemberID());
+        chaser.getOwner(player.getOwner());
         return chaser;
     }
 
@@ -158,6 +163,11 @@ struct Squad {
         keeper.setChance(player.getChance());
         keeper.equipBroomstick(player.getBroomstick());
         keeper.equipJersey(player.getJersey());
+        keeper.setName(player.getName());
+        keeper.setSalary(player.getSalary());
+        keeper.setPrice(player.getSalary());
+        keeper.setMemberID(player.getMemberID());
+        keeper.getOwner(player.getOwner());
         return keeper;
     }
 
@@ -169,6 +179,11 @@ struct Squad {
         seeker.setChance(player.getChance());
         seeker.equipBroomstick(player.getBroomstick());
         seeker.equipJersey(player.getJersey());
+        seeker.setName(player.getName());
+        seeker.setSalary(player.getSalary());
+        seeker.setPrice(player.getSalary());
+        seeker.setMemberID(player.getMemberID());
+        seeker.getOwner(player.getOwner());
         return seeker;
     }
 
@@ -181,8 +196,13 @@ struct Squad {
         beater.equipBroomstick(player.getBroomstick());
         beater.equipJersey(player.getJersey());
         beater.equipBat(bat);
+        beater.setName(player.getName());
+        beater.setSalary(player.getSalary());
+        beater.setPrice(player.getSalary());
+        beater.setMemberID(player.getMemberID());
+        beater.getOwner(player.getOwner());
         return beater;
-
+    }
 };
 
 #endif
