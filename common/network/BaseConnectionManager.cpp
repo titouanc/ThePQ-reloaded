@@ -158,7 +158,8 @@ int BaseConnectionManager::_doSelect(int fdmax, fd_set *readable)
     }
     pthread_mutex_unlock(&_fdset_mutex);
 
-    int res = select(fdmax+1, readable, NULL, NULL, NULL);
+    timeval timeout = {0, 100000};
+    int res = select(fdmax+1, readable, NULL, NULL, &timeout);
 
     if (res > 0){
         pthread_mutex_lock(&_fdset_mutex);
