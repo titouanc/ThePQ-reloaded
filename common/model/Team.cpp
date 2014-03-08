@@ -132,9 +132,9 @@ void Team::timeUpdate()
 	saveInfos();
 }
 
-void Team::level () const {
+int Team::level () const {
     int sum(0);
     for (_players::iterator it = _players.begin() ; it != _players.end() ; ++it)
         res += *(it).level();
-    return pow(res, 1.0/_players.size());
+    return static_cast<int>(pow(res, 1.0/_players.size()));
 }
