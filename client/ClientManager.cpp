@@ -41,7 +41,11 @@ void ClientManager::treatMessage(std::string const & type, JSON::Value const * d
 	cout << "ClientManager::treatMessage " << type << endl;
 	if (type == net::MSG::TEAM_INFOS)
 	{
-
+		TeamInfo team(DICT(data));
+		user().username = team.username;
+		user().funds = team.funds;
+		onTeamInfo(team);
+		cout << " XXXXX " << user().username << endl;
 	}
 	else if (type == net::MSG::MARKET_MESSAGE)
 	{
@@ -50,14 +54,6 @@ void ClientManager::treatMessage(std::string const & type, JSON::Value const * d
 	else if (type == net::MSG::PLAYERS_LIST)
 	{
 		onPlayersLoad(LIST(data));
-	}
-	else if (type == net::MSG::TEAM_INFOS)
-	{
-		TeamInfo team(DICT(data));
-		user().username = team.username;
-		user().funds = team.funds;
-		onTeamInfo(team);
-		cout << " XXXXX " << user().username << endl;
 	}
 	// TODO onInvite
 }
