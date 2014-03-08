@@ -19,6 +19,8 @@ bool GraphicMatchManager::treatEvent(sf::Event const & ev)
 {
 	if (ev.type == sf::Event::Closed)
 		return false;
+	else if (ev.type == sf::Event::GainedFocus)
+		redraw();
 	else if (ev.type == sf::Event::KeyPressed){
 		switch (ev.key.code){
 			case sf::Keyboard::Escape: return false;
@@ -35,7 +37,8 @@ bool GraphicMatchManager::treatEvent(sf::Event const & ev)
 
 		/* find if there is someone at this position */
 		Moveable *atPos = pitch().getAt(pos);
-		if (! _selectedPlayer && atPos && atPos->isPlayer()){
+		if (! _selectedPlayer && atPos && atPos->isPlayer() && 
+			isMyPlayer(*((Player*)atPos))){
 			cout << JSON::List(pos) << " <=> " << JSON::List(atPos->getPosition()) << endl;
 			_selectedPlayer = (Player *) atPos;
 			_match.hilightAccessibles(pos, _selectedPlayer->getSpeed());
@@ -66,10 +69,10 @@ bool GraphicMatchManager::treatEvent(sf::Event const & ev)
 				_currentMove.addMove(delta);
 				_match.clear(); /* clear hilights */
 				
-				_match.hilightDisplacement(_selectedPlayer->getPosition(), _currentMove);
 				if (_currentMove.length() < _selectedPlayer->getSpeed()){
 					_match.hilightAccessibles(pos, rest);
 				}
+				_match.hilightDisplacement(_selectedPlayer->getPosition(), _currentMove);
 			} else {
 				cout << " &&&&& Reject move " << _selectedPlayer->getName() 
 				     << " to " << JSON::List(pos) << " because delta "

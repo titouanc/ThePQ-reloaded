@@ -33,13 +33,18 @@ UIMatch::UIMatch(Pitch & pitch, int hexagonSize) :
     _hexagon(circleSize(), 6), /* 6 sides regular polygon */
     _left(0), _top(0)
 {
-    
-    if (! _grass_texture.loadFromFile(texturePath("grass1.png")))
-        throw TextureNotFound("grass1");
-    if (! _sand_texture.loadFromFile(texturePath("sand1.png")))
-        throw TextureNotFound("sand1");
-    if (! _goal_texture.loadFromFile(texturePath("goal2_50.png")))
-        throw TextureNotFound("goal2_50");
+    sf::Texture *toLoad[6] = {
+        &_grass_texture, &_sand_texture, &_goal_texture, &_bludger_texture,
+        &_quaffle_texture, &_snitch_texture
+    };
+    const char *files[6] = {
+        "grass1.png", "sand1.png", "goal2_50.png", "Bludger.png", "Quaffle.png",
+        "GoldenSnitch.png"
+    };
+    for (int i=0; i<6; i++){
+        if (! toLoad[i]->loadFromFile(texturePath(files[i])))
+            throw TextureNotFound(files[i]);
+    }
 }
 
 unsigned int UIMatch::width(void) const
@@ -66,13 +71,14 @@ void UIMatch::setPosition(int left, int top)
 Position UIMatch::GUI2pitch(Position const & pos) const
 {
     Position const & relpos = pos - Position(_left, _top);
-    int w=width(), h=height(), s=_size; /* Signed versions */
-    int x = 1 + (2*relpos.x() - s/2 - w)/s;
-    int y = ((h-vAlign())/2 - relpos.y())/vAlign();
-    if (! _pitch.isValid(x, y)){
-        x--;
-    }
-    return Position(x, y);
+    double w=width(), h=height(), s=_size; /* Signed versions */
+    double x = 1 + (2*relpos.x() - s/2 - w)/s;
+    double y = ((h-vAlign())/2 - relpos.y())/vAlign();
+
+    Position res = Position(x, (y > 0) ? ceil(y) : y);
+    if (! _pitch.isValid(res))
+        res = res - Position(1, 0);
+    return res;
 }
 
 Position UIMatch::pitch2GUI(Position const & pos) const
@@ -112,22 +118,45 @@ void UIMatch::drawHighlights(sf::RenderTarget & dest) const
 
 void UIMatch::drawMoveables(sf::RenderTarget & dest) const
 {
+    sf::Sprite bludger(_bludger_texture);
+    sf::Vector2u s = _bludger_texture.getSize();
+    double rx = (double)_size/s.x;
+    double ry = (double)_size/s.y;
+    bludger.setScale(sf::Vector2f(rx, ry));
+
+    sf::Sprite quaffle(_quaffle_texture);
+    s = _quaffle_texture.getSize();
+    rx = (double)_size/s.x;
+    ry = (double)_size/s.y;
+    quaffle.setScale(sf::Vector2f(rx, ry));
+
+    sf::Sprite snitch(_snitch_texture);
+    s = _snitch_texture.getSize();
+    rx = (double)_size/s.x;
+    ry = (double)_size/s.y;
+    snitch.setScale(sf::Vector2f(rx, ry));
+
     if (_pitch.size() > 0){
         Pitch::const_iterator it;
-        sf::CircleShape shape(5*circleSize()/6);
+        sf::CircleShape shape(circleSize());
 
         for (it=_pitch.begin(); it!=_pitch.end(); it++){
             Position const & destpos = pitch2GUI(it->first);
-            shape.setPosition(destpos.x(), destpos.y());
             
             if (it->second->isBall()){
                 Ball const & ball = (Ball const &) *(it->second);
-                if (ball.isBludger())
-                    shape.setFillColor(sf::Color(0xff, 0, 0, 0xff));
-                else if (ball.isGoldenSnitch())
-                    shape.setFillColor(sf::Color(0xcc, 0xcc, 0, 0xff));
-                else if (ball.isQuaffle())
-                    shape.setFillColor(sf::Color(0, 0, 0xff, 0xff));
+                if (ball.isBludger()){
+                    bludger.setPosition(destpos.x(), destpos.y());
+                    dest.draw(bludger);
+                }
+                else if (ball.isGoldenSnitch()){
+                    snitch.setPosition(destpos.x(), destpos.y());
+                    dest.draw(snitch);
+                }
+                else if (ball.isQuaffle()){
+                    quaffle.setPosition(destpos.x(), destpos.y());
+                    dest.draw(quaffle);
+                }
 
             } else if (it->second->isPlayer()){
                 Player const & player = (Player const &) *(it->second);
@@ -139,8 +168,9 @@ void UIMatch::drawMoveables(sf::RenderTarget & dest) const
                     shape.setFillColor(sf::Color(0x33, 0, 0xff, 0xff));
                 else if (player.isKeeper())
                     shape.setFillColor(sf::Color(0, 0xff, 0x33, 0xff));
+                shape.setPosition(destpos.x(), destpos.y());
+                dest.draw(shape);
             }
-            dest.draw(shape);
         }
     }
 }

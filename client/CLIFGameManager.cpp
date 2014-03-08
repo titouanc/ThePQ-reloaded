@@ -2,6 +2,9 @@
 #include "CLI.hpp"
 #include "CLIMatchManager.hpp"
 
+#include "graphics/MainController.hpp"
+#include "GraphicMatchManager.hpp"
+
 #include <iostream>
 
 using namespace std;
@@ -65,13 +68,22 @@ void CLIFGameManager::run()
 	while(showFriendlyMatchMenu());
 }
 
+void startGUIMatch(ClientManager const & client)
+{
+	GUI::MainController Gcontroller;
+	GraphicMatchManager match(client, Gcontroller);
+	match.run();
+}
+
+
 void CLIFGameManager::onOtherAccept(std::string const & name)
 {
 	cout << "\033[1m" << name 
 		 << " \033[32mhas accepted to play a friendly game !\033[0m" << endl;
 	_pending--;
-	CLIMatchManager match(*this);
-	match.run();
+	/*CLIMatchManager match(*this);
+	match.run();*/
+	startGUIMatch(*this);
 }
 
 void CLIFGameManager::onOtherDeny(std::string const & name)
@@ -88,7 +100,7 @@ void CLIFGameManager::onUserNotFound(std::string const & name)
 	_pending--;
 }
 
-void CLIFGameManager::onInvite(std::string user)
+void CLIFGameManager::onInvite(std::string const & user)
 {
 	cout << user << " invited you to a game" << endl;
 	Menu _menu;
@@ -103,8 +115,11 @@ void CLIFGameManager::onInvite(std::string user)
 			ok = true;
 			
 			acceptInvitationFromUser(user);
-			CLIMatchManager YAYAYA(*this);
-			YAYAYA.run();
+			//CLIMatchManager match(*this); 
+			//match.run();
+			
+			startGUIMatch(*this);
+
 			break;
 		} else if (option == 2){
 			ok = true;

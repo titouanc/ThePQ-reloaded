@@ -1,28 +1,23 @@
 #include "CLIMarketManager.hpp"
 
 CLIMarketManager::CLIMarketManager(ClientManager const & parent) :
-MarketManager(parent)
+MarketManager(parent), _waitForSales(false), _waitForBid(false)
 {}
 
 void CLIMarketManager::run()
 {
+	cout << "MARKET MANAGER STARTING..." << endl;
+	while (user().players.size() == 0){
+		readMessage();
+	}
 	Menu _menu;
 	_menu.addToDisplay("   - put a player on sale\n");
 	_menu.addToDisplay("   - see the players on sale\n");
 	_menu.addToDisplay("   - quit to main menu\n");
 	int option;
 	_pending = 0;
-	do
-	{
-		updateSales();
-		loadPlayers();
-		_pending+=2;
-		do
-		{
-			minisleep(0.1);
-			readMessages();
-		}
-		while (_pending > 0);
+	do {
+		readMessages();
 		option = _menu.run();
 		switch(option)
 		{
@@ -64,7 +59,10 @@ void CLIMarketManager::sellPlayer()
 			prompt();
 			cin >> bidValue;
 		}
-		cout << "Your player was successfully added on market." << endl;
+		_waitForBid = true;
+		addPlayerOnMarket(player_id, bidValue);
+		while (_waitForBid)
+			readMessage();
 	}
 	else{
 		cout << "Wrong ID." << endl;
@@ -73,6 +71,10 @@ void CLIMarketManager::sellPlayer()
 
 void CLIMarketManager::displayPlayersOnSale()
 {
+	_waitForSales = true;
+	updateSales();
+	while (_waitForSales)
+		readMessage();
 	cout << "================ PLAYERS ON SALE ================" << endl;
 	for(size_t i=0;i<getSales().size();++i){
 		std::cout<<getSales()[i]<<std::endl;
@@ -114,9 +116,10 @@ void CLIMarketManager::placeBid()
 	prompt();
 	cin >> player_id;
 	try{
+		_waitForBid = true;
 		bidOnPlayer(player_id);
-		_pending++;
-		cout << "Bid successfully placed ! Hurra !" << endl;
+		while (_waitForBid)
+			readMessage();
 	}
 	catch(PlayerNotFoundException& e) {
 		cout << "\033[1;31mError\033[0m : the player id you entered is not correct" << endl;
@@ -125,6 +128,7 @@ void CLIMarketManager::placeBid()
 
 void CLIMarketManager::onPlayerBid(std::string res)
 {
+	_waitForBid = false;
 	if(res == net::MSG::BID_VALUE_NOT_UPDATED)
 		cout << "\033[1;31mError\033[0m : bid value not correct (update your market list)."<<endl;
 	else if(res == net::MSG::BID_TURN_ERROR)
@@ -143,6 +147,7 @@ void CLIMarketManager::onPlayerBid(std::string res)
 
 void CLIMarketManager::onAddPlayerOnMarket(std::string data)
 {
+	_waitForBid = false;
 	if (data == net::MSG::PLAYER_ALREADY_ON_MARKET)
 	{
 		cout << "\033[1;31mError\033[0m : you are already selling this player." << endl;
@@ -153,22 +158,16 @@ void CLIMarketManager::onAddPlayerOnMarket(std::string data)
 	}
 }
 
+void CLIMarketManager::onSalesUpdate(JSON::List const & list)
+{
+	_waitForSales = false;
+	MarketManager::onSalesUpdate(list);
+}
+
 void CLIMarketManager::showPlayers(){
 	cout << "================ YOUR PLAYERS ================" << endl;
 	for(size_t i =0; i<user().players.size();++i){
 		cout << user().players[i] << endl; //modif
 	}
 	cout << "==============================================" << endl;
-}
-
-void CLIMarketManager::onPlayersLoad(JSON::List const & players)
-{
-	MarketManager::onPlayersLoad(players);
-	_pending--;
-}
-
-void CLIMarketManager::onSalesUpdate(JSON::List const & sales)
-{
-	MarketManager::onSalesUpdate(sales);
-	_pending--;
 }

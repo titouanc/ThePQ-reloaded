@@ -39,14 +39,18 @@ class ClientManager {
 		/* Send methods */
 		void loadPlayers();
 
-		/* Hooks */
-		/* Asks the player to accept or deny a friendly game invitation from another player */
-		virtual void onInvite(std::string) {}
-		/* Load players in user().players */
-		virtual void onPlayersLoad(JSON::List const & players);
 		/* handle message for end of player sale */
 		void onEndOfSale(JSON::Dict const & json);
 
+		/* Hooks */
+		/* Triggered when we receive a match invitation */
+		virtual void onInvite(std::string const & otherUser) {}
+
+		/* Load players in user().players */
+		virtual void onPlayersLoad(JSON::List const & players);
+
+		/* Triggered when user's team informations are updated */
+		virtual void onTeamInfo(UserData const & user);
 	public:
 		/* Create a new client manager with a connection to server, a user 
 		   object (might be not initialised), and a queue to put all 

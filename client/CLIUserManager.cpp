@@ -141,7 +141,7 @@ void CLIUserManager::showManagementMenu()
 	while (option != 3);
 }
 
-void CLIUserManager::onLoginUser(std::string payload)
+void CLIUserManager::onLoginUser(std::string const & payload)
 {
 	_pending--;
 	if (payload == net::MSG::PASSWORD_ERROR)
@@ -170,7 +170,7 @@ void CLIUserManager::onLoginUser(std::string payload)
 	}
 }
 
-void CLIUserManager::onRegisterUser(std::string data)
+void CLIUserManager::onRegisterUser(std::string const & data)
 {
 	_pending--;
 	if (data == net::MSG::USER_REGISTERED)
@@ -184,7 +184,7 @@ void CLIUserManager::onRegisterUser(std::string data)
 	}
 }
 
-void CLIUserManager::onTeamName(std::string data)
+void CLIUserManager::onTeamName(std::string const & data)
 {
 	_pending--;
 	if (data == net::MSG::TEAMNAME_REGISTERED)

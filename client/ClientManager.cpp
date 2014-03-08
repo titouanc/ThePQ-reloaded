@@ -28,7 +28,7 @@ void ClientManager::treatMessage(std::string const & type, JSON::Value const * d
 {
 	if (type == net::MSG::TEAM_INFOS)
 	{
-
+		onTeamInfo(DICT(data));
 	}
 	else if (type == net::MSG::MARKET_MESSAGE)
 	{
@@ -38,7 +38,10 @@ void ClientManager::treatMessage(std::string const & type, JSON::Value const * d
 	{
 		onPlayersLoad(LIST(data));
 	}
-	// TODO onInvite
+	else if (type == net::MSG::FRIENDLY_GAME_INVITATION)
+	{
+		onInvite(STR(data).value());
+	}
 }
 
 void ClientManager::loadPlayers()
@@ -96,6 +99,13 @@ void ClientManager::onPlayersLoad(JSON::List const & players)
 		Player player(DICT(players[i]));
 		user().players.push_back(player);
 	}
+}
+
+
+void ClientManager::onTeamInfo(UserData const & user)
+{
+	_user.username = user.username;
+	_user.funds = user.funds;
 }
 
 ClientManager::ClientManager(
