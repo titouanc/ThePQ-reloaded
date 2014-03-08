@@ -104,10 +104,11 @@ bool BaseConnectionManager::_doRead(int fd)
             ISSTR(DICT(res).get("type")) &&
             DICT(res).hasKey("data")
         ){
-            _incoming.push(Message(fd, res));
             if (_logger)
                 std::cout << "[" << this << "] "<< "\033[1m" << fd 
                           << " \033[33m>>\033[0m " << *res << std::endl;
+            
+            _incoming.push(Message(fd, res));
         } else {
             delete res;
         }
