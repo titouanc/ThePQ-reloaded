@@ -127,8 +127,45 @@ void AdminClient::logoutAdmin(){
 }
 
 void AdminClient::showCreateChampionshipMenu(){	
+	std::cout << "\n\033[33mCreating championship :\033[0m"<<std::endl;
+	std::cout<<"Championship name : ";
+	std::string champName;
+	while(champName.empty()){
+		std::getline(cin,champName);
+	}
+	std::string nbTeams = Menu::askForUserData("Number of teams : ");
+	try{
+		createChampionship(champName, std::stoi(nbTeams));
+		std::cout << "\033[32mChampionship succesfully created !\033[0m" << std::endl;
+	}
+	catch(const ChampionshipNameError & e){
+		std::cout << "\033[31mError : \033[0m" << "that championship name already exists." <<std::endl;
+	}
+}
+
+
+void AdminClient::createChampionship(std::string name, int nbTeams){
 	JSON::Dict toSend;
 	toSend.set("type",net::MSG::CHAMPIONSHIP_CREATION);
-	toSend.set("data",JSON::Dict());
+	JSON::Dict data;
+	data.set(net::MSG::CHAMPIONSHIP_NAME,name);
+	data.set(net::MSG::TEAMS_NUMBER,nbTeams);
+	toSend.set("data",data);
 	_connection.send(toSend);
+	JSON::Value *serverMessage = _connection.waitForMsg(net::MSG::CHAMPIONSHIP_CREATION);
+	JSON::Dict const & received = DICT(serverMessage);
+	if(ISSTR(received.get("data"))){
+		std::string response = STR(received.get("data")).value();
+		if(response == net::MSG::CHAMPIONSHIP_ALREADY_EXISTS){
+			throw ChampionshipNameError();
+		}
+	}
+	delete serverMessage;
 }
+
+
+
+
+
+
+

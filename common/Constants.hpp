@@ -102,6 +102,11 @@ namespace net
 		static const std::string ADMIN_CLIENT = "ADMIN";
 		static const std::string ADMIN_LOGIN = "ALI";
 		static const std::string CHAMPIONSHIP_CREATION = "ACSHIPC";
+
+		//Championship------------------
+		static const std::string TEAMS_NUMBER = "nbOfUsers";
+		static const std::string CHAMPIONSHIP_NAME = "name";
+		static const std::string CHAMPIONSHIP_ALREADY_EXISTS = "Cname_E";
 	}
 }
 
