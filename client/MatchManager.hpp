@@ -20,26 +20,29 @@ class MatchManager : public ClientManager {
 		void treatDeltas(JSON::List const & delta);
 
 	protected:
+		/* logic-related methods */
 		Squad & mySquad() {return _mySquad;}
+		Pitch & pitch() {return _pitch;}
+		bool isMyPlayer(Player const & player) const;
+		State state() const {return _state;}
+
+		/* Send a player displacement to the server */
+		void sendDisplacement(Player const & player, Displacement const & move);
+		/* HOOKS */
+		/* Called after pitch gets updated */
+		virtual void onPitchChange(){}
+		/* Called after state gets updated */
+		virtual void onStateChange(){}
+		/* Called when there is an error */
+		virtual void onError(std::string const & info){}
+		/* Treat Match specific messages */
+		void treatMessage(std::string const & type, JSON::Value const * msg);
 
 	public:
 		using ClientManager::ClientManager;
 		MatchManager(ClientManager const & other);
 		virtual ~MatchManager();
-		Pitch & pitch() {return _pitch;}
-		void treatMessage(std::string const & type, JSON::Value const * msg);
 
-		bool isMyPlayer(Player const & player) const;
-
-		State state() const {return _state;}
-
-		void invite(std::string const & name);
-		void sendDisplacement(Player const & player, Displacement const & move);
-
-		/* HOOKS */
-		virtual void onPitchChange(){}
-		virtual void onStateChange(){}
-		virtual void onError(std::string const & info){}
 };
 
 #endif

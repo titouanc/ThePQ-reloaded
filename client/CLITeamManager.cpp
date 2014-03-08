@@ -40,8 +40,8 @@ void CLITeamManager::showPlayers(){
 	cout << "==============================================" << endl;
 }
 
-void CLITeamManager::treatMessage(std::string const & type, JSON::Value const * data)
+void CLITeamManager::onPlayersLoad(JSON::List const & players)
 {
-	TeamManager::treatMessage(type, data);
+	TeamManager::onPlayersLoad(players);
 	_pending--;
 }

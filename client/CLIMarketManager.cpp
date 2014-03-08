@@ -114,6 +114,7 @@ void CLIMarketManager::placeBid()
 	cin >> player_id;
 	try{
 		bidOnPlayer(player_id);
+		_pending++;
 		cout << "Bid successfully placed ! Hurra !" << endl;
 	}
 	catch(PlayerNotFoundException& e) {
@@ -163,4 +164,16 @@ void CLIMarketManager::showPlayers(){
 		cout << user().players[i] << endl; //modif
 	}
 	cout << "==============================================" << endl;
+}
+
+void CLIMarketManager::onPlayersLoad(JSON::List const & players)
+{
+	MarketManager::onPlayersLoad(players);
+	_pending--;
+}
+
+void CLIMarketManager::onSalesUpdate(JSON::List const & sales)
+{
+	MarketManager::onSalesUpdate(sales);
+	_pending--;
 }

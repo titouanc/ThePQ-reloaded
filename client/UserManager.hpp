@@ -9,21 +9,29 @@
 
 class UserManager : public ClientManager
 {
+protected:
+	/* attempt to login */
+	void loginUser(std::string username, std::string password);
+	/* notify the server to logout */
+	void logoutUser();
+	/* attempt to register */
+	void registerUser(std::string username, std::string password);
+	/* unused for the moment : check if a user exists TODO */
+	void doesUserExist(std::string username);
+	/* choose a team name (on first login) */
+	void chooseTeamName(std::string username, std::string teamname);
+	/* Treat user specific messages */
+	virtual void treatMessage(std::string const & type, JSON::Value const * data);
+	/* Hooks */
+	/* received login user response */
+	virtual void onLoginUser(std::string){}
+	/* received register user response */
+	virtual void onRegisterUser(std::string) {}
+	/* received team name choice response */
+	virtual void onTeamName(std::string) {}
 public:
 	using ClientManager::ClientManager;
 	UserManager(ClientManager const & parent);
-	
-	void loginUser(std::string username, std::string password);
-	void logoutUser();
-	void registerUser(std::string username, std::string password);
-	void doesUserExist(std::string username);
-	void chooseTeamName(std::string username, std::string teamname);
-
-	virtual void treatMessage(std::string const & type, JSON::Value const * data);
-	/* Hooks */
-	virtual void onLoginUser(std::string){}
-	virtual void onRegisterUser(std::string) {}
-	virtual void onTeamName(std::string) {}
 };
 
 #endif // __USER_MANAGER_HPP

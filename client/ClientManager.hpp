@@ -13,10 +13,6 @@ class ClientManager {
 		UserData & _user;
 		std::queue<std::string> & _notifications;
 
-		/* handle message for end of player sale */
-		void onEndOfSale(JSON::Dict const & json);
-		void onPlayersLoad(JSON::List const & players);
-
 	protected:
 		/* Return connection object */
 		net::ClientConnectionManager & connection() const;
@@ -28,7 +24,7 @@ class ClientManager {
 		std::queue<std::string> & notifications() const;
 
 		/* Shortcut to send {"type": "<type>", "data": <data>} */
-		virtual void say(std::string const & type, JSON::Value const & data);
+		void say(std::string const & type, JSON::Value const & data);
 
 		/* Handle general messages */
 		virtual void treatMessage(std::string const & type, JSON::Value const * data);
@@ -43,8 +39,14 @@ class ClientManager {
 		/* Send methods */
 		void loadPlayers();
 
-		/* Hook on invitation */
+		/* Hooks */
+		/* Asks the player to accept or deny a friendly game invitation from another player */
+		// TODO onInvite EVERYWHERE
 		virtual void onInvite(std::string) {}
+		/* Load players in user().players */
+		virtual void onPlayersLoad(JSON::List const & players);
+		/* handle message for end of player sale */
+		void onEndOfSale(JSON::Dict const & json);
 
 	public:
 		/* Create a new client manager with a connection to server, a user 

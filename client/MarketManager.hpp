@@ -9,27 +9,33 @@
 
 class MarketManager : public ClientManager
 {
+private:
+	std::vector<Sale> _sales;
+protected:
+	/* compute next bid value for a player in the market */
+	int getNextBidValue(int player_id);
+	pair<int, int> getBidValueRange(Player *player);
+	std::vector<Sale> const & getSales() { return _sales; }
+	// TODO replace player_id by const Player*
+	/* asks for the list of current sales in the market */
+	void updateSales();
+	/* bid request on a player in the market */
+	void bidOnPlayer(int player_id);
+	/* attempt to sell a player in the market */
+	void addPlayerOnMarket(int player_id, int value);
+
+	/* HOOKS */
+	/* received list of current sales in the market */
+	virtual void onSalesUpdate(JSON::List const &);
+	/* received response from a bid request on a player */
+	virtual void onPlayerBid(std::string){}
+	/* received response from an attempt to sell a player in the market */
+	virtual void onAddPlayerOnMarket(std::string){}
+	/* treat Market specific messages */
+	void treatMessage(std::string const & type, JSON::Value const* data);
 public:
 	using ClientManager::ClientManager;
 	MarketManager(ClientManager const & parent);
-	// TODO replace player_id by const Player*
-	void updateSales();
-	void bidOnPlayer(int player_id);
-	void addPlayerOnMarket(int player_id, int value);
-	pair<int, int> getBidValueRange(Player *player);
-	
-	std::vector<Sale> const & getSales() { return _sales; }
-
-protected:
-	virtual void onSalesUpdate(JSON::List const &);
-	virtual void onPlayerBid(std::string){}
-	virtual void onAddPlayerOnMarket(std::string){}
-	void treatMessage(std::string const & type, JSON::Value const* data);
-
-private:
-	int getNextBidValue(int player_id);
-	
-	std::vector<Sale> _sales;
 };
 
 #endif // __MARKET_MANAGER_HPP

@@ -11,7 +11,7 @@ public:
 	CLITeamManager(ClientManager const & parent);
 	void run();
 	virtual void showPlayers();
-	virtual void treatMessage(std::string const & type, JSON::Value const * data);
+	virtual void onPlayersLoad(JSON::List const & players);
 };
 
 #endif // __CLI_TEAM_MANAGER_HPP
