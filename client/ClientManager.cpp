@@ -46,8 +46,9 @@ void ClientManager::treatMessage(std::string const & type, JSON::Value const * d
 
 void ClientManager::loadPlayers()
 {
-	JSON::Dict data;
-	data.set(net::MSG::USERNAME, user().username);
+	JSON::Dict data = {
+		{ net::MSG::USERNAME, JSON::String(user().username) }
+	};
 	say(net::MSG::PLAYERS_LIST, data);
 }
 
@@ -106,6 +107,7 @@ void ClientManager::onTeamInfo(UserData const & user)
 {
 	_user.username = user.username;
 	_user.funds = user.funds;
+	_user.teamname = user.teamname;
 }
 
 ClientManager::ClientManager(

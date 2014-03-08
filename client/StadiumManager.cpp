@@ -5,26 +5,17 @@ StadiumManager::StadiumManager(ClientManager const & parent) : ClientManager(par
 
 void StadiumManager::loadInstallations()
 {
-	JSON::Dict query;
-	query.set("type", net::MSG::INSTALLATIONS_LIST);
-	query.set("data", "");
-	connection().send(query);
+	say(net::MSG::INSTALLATIONS_LIST, JSON::String(""));
 }
 
 void StadiumManager::upgradeInstallation(size_t i)
 {
-	JSON::Dict query;
-	query.set("type", net::MSG::INSTALLATION_UPGRADE);
-	query.set("data", i);
-	connection().send(query);
+	say(net::MSG::INSTALLATION_UPGRADE, JSON::Integer(i));
 }
 
 void StadiumManager::downgradeInstallation(size_t i)
 {
-	JSON::Dict query;
-	query.set("type", net::MSG::INSTALLATION_DOWNGRADE);
-	query.set("data", i);
-	connection().send(query);
+	say(net::MSG::INSTALLATION_DOWNGRADE, JSON::Integer(i));
 }
 
 void StadiumManager::treatMessage(std::string const & type, JSON::Value const * data)

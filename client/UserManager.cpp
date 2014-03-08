@@ -6,49 +6,40 @@ UserManager::UserManager(ClientManager const & parent) : ClientManager(parent)
 
 void UserManager::loginUser(std::string username, std::string password)
 {
-	JSON::Dict toSend, credentials;
-	credentials.set(net::MSG::USERNAME, username);
-	credentials.set(net::MSG::PASSWORD, password);
-	toSend.set("type", net::MSG::LOGIN);
-	toSend.set("data", credentials);
-	connection().send(toSend);
+	JSON::Dict credentials = {
+		{ net::MSG::USERNAME, JSON::String(username) },
+		{ net::MSG::PASSWORD, JSON::String(password) }
+	};
+	say (net::MSG::LOGIN, credentials);
 }
 
 void UserManager::logoutUser()
 {
-	JSON::Dict toSend;
-	toSend.set("type", net::MSG::DISCONNECT);
-	toSend.set("data", "");
-	connection().send(toSend);
+	say (net::MSG::DISCONNECT, JSON::String(""));
 	user().logout();
 }
 
 void UserManager::chooseTeamName(std::string username, std::string teamname)
 {
-	JSON::Dict toSend, data;
-	data.set(net::MSG::TEAMNAME,teamname);
-	data.set(net::MSG::USERNAME,username);
-	toSend.set("type",net::MSG::USER_CHOOSE_TEAMNAME);
-	toSend.set("data",data);
-	connection().send(toSend);
+	JSON::Dict data = {
+		{ net::MSG::TEAMNAME, JSON::String(teamname) },
+		{ net::MSG::USERNAME, JSON::String(username) }
+	};
+	say (net::MSG::USER_CHOOSE_TEAMNAME, data);
 }
 
 void UserManager::registerUser(std::string username, std::string password)
 {
-	JSON::Dict toSend, credentials;
-	credentials.set(net::MSG::USERNAME, username);
-	credentials.set(net::MSG::PASSWORD, password);
-	toSend.set("type", net::MSG::REGISTER);
-	toSend.set("data", credentials);
-	connection().send(toSend);
+	JSON::Dict credentials = {
+		{ net::MSG::USERNAME, JSON::String(username) },
+		{ net::MSG::PASSWORD, JSON::String(password) }
+	};
+	say (net::MSG::REGISTER, credentials);
 }
 
 void UserManager::doesUserExist(std::string username)
 {
-	JSON::Dict toSend;
-	toSend.set("type", net::MSG::USER_EXISTS);
-	toSend.set("data", username);
-	connection().send(toSend);
+	say(net::MSG::USER_EXISTS, JSON::String(username));
 }
 
 void UserManager::treatMessage(std::string const & type, JSON::Value const * data)

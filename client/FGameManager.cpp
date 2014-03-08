@@ -40,21 +40,17 @@ void FGameManager::treatMessage(std::string const & type, JSON::Value const * da
 
 
 void FGameManager::acceptInvitationFromUser(string username){
-	JSON::Dict toSend;
-	toSend.set("type", net::MSG::FRIENDLY_GAME_INVITATION_RESPONSE);
-	JSON::Dict data;
-	data.set("username", username);
-	data.set("answer", net::MSG::FRIENDLY_GAME_INVITATION_ACCEPT);
-	toSend.set("data", data);
-	connection().send(toSend);
+	JSON::Dict data = {
+		{ "username", JSON::String(username) },
+		{ "answer", JSON::String(net::MSG::FRIENDLY_GAME_INVITATION_ACCEPT) }
+	};
+	say (net::MSG::FRIENDLY_GAME_INVITATION_RESPONSE, data);
 }
 
 void FGameManager::denyInvitationFromUser(string username){
-	JSON::Dict toSend;
-	toSend.set("type", net::MSG::FRIENDLY_GAME_INVITATION_RESPONSE);
-	JSON::Dict data;
-	data.set("username", username);
-	data.set("answer", net::MSG::FRIENDLY_GAME_INVITATION_DENY);
-	toSend.set("data", data);
-	connection().send(toSend);
+	JSON::Dict data {
+		{ "username", JSON::String(username) },
+		{ "answer", JSON::String(net::MSG::FRIENDLY_GAME_INVITATION_DENY) }
+	};
+	say(net::MSG::FRIENDLY_GAME_INVITATION_RESPONSE, data);
 }
