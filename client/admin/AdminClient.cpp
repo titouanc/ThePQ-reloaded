@@ -127,15 +127,16 @@ void AdminClient::logoutAdmin(){
 }
 
 void AdminClient::showCreateChampionshipMenu(){	
-	std::cout << "\n\033[33mCreating championship :\033[0m"<<std::endl;
+	std::cout << "\n\033[1m\033[33mCreating championship :\033[0m"<<std::endl;
 	std::cout<<"Championship name : ";
 	std::string champName;
 	while(champName.empty()){
 		std::getline(cin,champName);
 	}
-	std::string nbTurns = Menu::askForUserData("Number of turns : ");
+	int nbTurns;
+	cout << "Number of turns : "; cin >> nbTurns;
 	try{
-		createChampionship(champName, std::stoi(nbTurns));
+		createChampionship(champName, nbTurns);
 		std::cout << "\033[32mChampionship succesfully created !\033[0m" << std::endl;
 	}
 	catch(const ChampionshipNameError & e){
