@@ -66,13 +66,14 @@ void UIMatch::setPosition(int left, int top)
 Position UIMatch::GUI2pitch(Position const & pos) const
 {
     Position const & relpos = pos - Position(_left, _top);
-    int w=width(), h=height(), s=_size; /* Signed versions */
-    int x = 1 + (2*relpos.x() - s/2 - w)/s;
-    int y = ((h-vAlign())/2 - relpos.y())/vAlign();
-    if (! _pitch.isValid(x, y)){
-        x--;
-    }
-    return Position(x, y);
+    double w=width(), h=height(), s=_size; /* Signed versions */
+    double x = 1 + (2*relpos.x() - s/2 - w)/s;
+    double y = ((h-vAlign())/2 - relpos.y())/vAlign();
+
+    Position res = Position(x, (y > 0) ? ceil(y) : y);
+    if (! _pitch.isValid(res))
+        res = res - Position(1, 0);
+    return res;
 }
 
 Position UIMatch::pitch2GUI(Position const & pos) const
