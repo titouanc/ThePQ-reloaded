@@ -125,16 +125,8 @@ Sale::operator JSON::Dict(){
 }
 
 std::ostream& operator<< (std::ostream& out, const Sale& sale){
-	out << "PLAYER INFOS : " << std::endl;
-	out << sale._player << std::endl;
-	out << "SALE INFOS :\n---------------------------------------------------" 		<< std::endl;
-	out << "Time left (in seconds) :    " 	<< 	sale._timeLeft 			<< std::endl;
-	out << "Bid value :                 "	<<	sale._bidValue 			<< std::endl;
-	out << "Next bid value :            "	<< 	sale.getNextBidValue()	<< std::endl;
-	std::string bidder = sale._currentBidder;
-	if(bidder.empty()){bidder = "No one has bid on this player";}
-	out << "Current bidder :            "	<<	bidder 					<< std::endl;
-	out << "Sale ID :                   "	<<	sale._saleID			<< std::endl;
-	out << "**************************************************" << std::endl;
+	out << sale._player;
+	out << " Time(\033[32m" 	<< 	sale._timeLeft << "\033[0m) Value(\033[32m" <<	sale._bidValue <<"\033[0m -> \033[32m"
+	<<sale.getNextBidValue()<<  "\033[0m) Bidder(\033[32m"<<sale._currentBidder<<"\033[0m)"<<std::endl;
     return out;
 }
