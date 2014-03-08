@@ -103,8 +103,8 @@ void CLIFGameManager::onInvite(std::string const & user)
 			ok = true;
 			
 			acceptInvitationFromUser(user);
-			CLIMatchManager YAYAYA(*this);
-			YAYAYA.run();
+			CLIMatchManager match(*this);
+			match.run();
 			break;
 		} else if (option == 2){
 			ok = true;
