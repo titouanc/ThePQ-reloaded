@@ -20,10 +20,28 @@ namespace GUI{
 	public:
 		typedef std::function<void(T*)> Callback;
 		typedef std::function<void(T*, P)> CallbackWithParam;
-		Clickable(const Callback& callback, T* target) : _callback(callback), _target(target), _hasParam(false) {}
-		Clickable(const CallbackWithParam& callback, T* target, P param) 
-				: _callbackWithParam(callback), _target(target), _param(param), _hasParam(true){}
-		~Clickable(){}
+		Clickable(
+			const Callback& callback, 
+			T* target
+		) : 
+			_callback(callback), 
+			_target(target), 
+			_hasParam(false) 
+		{}
+
+		Clickable(
+			const CallbackWithParam& callback,
+			T* target, 
+			P param
+		) : 
+			_callbackWithParam(callback),
+			_target(target), 
+			_param(param), 
+			_hasParam(true)
+		{}
+		
+		virtual ~Clickable(){}
+		
 		void triggerAction(){ 
 			if (_hasParam)
 				_callbackWithParam(_target, _param);

@@ -66,7 +66,7 @@ namespace GUI {
 					Widget(MARGIN, MARGIN, 400, 600, false), _columnsNbr(columns), 
 					_padding(padding) {
 		}
-		~TableView(){
+		virtual ~TableView(){
 			for (unsigned int i = 0; i < _elements.size(); ++i) 
 				delete _elements[i];
 			_elements.clear();

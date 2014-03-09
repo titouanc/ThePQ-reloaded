@@ -12,8 +12,13 @@
 namespace GUI {
 	template <typename T, typename P=int> class Button : public Clickable<T> {
 	public:
-		Button(	const typename Clickable<T>::Callback& callback, T* target, std::string text="Button"):
-									Clickable<T>(callback, target){
+		Button(
+			const typename Clickable<T>::Callback& callback, 
+			T* target, 
+			std::string text="Button"
+		):
+			Clickable<T>(callback, target)
+		{
 			this->_h = BUTTON_HEIGHT; 
 			this->_hidden = false;
 
@@ -28,8 +33,14 @@ namespace GUI {
 			_backgroundRect.setFillColor(BUTTON_BACKGROUND_COLOR);
 		}
 
-		Button(	const typename Clickable<T, P>::CallbackWithParam& callback, P param, T* target, std::string text="Button"):
-									Clickable<T, P>(callback, target, param){
+		Button(
+			const typename Clickable<T, P>::CallbackWithParam& callback, 
+			P param,
+			T* target, 
+			std::string text="Button"
+		):
+			Clickable<T, P>(callback, target, param)
+		{
 			this->_h = BUTTON_HEIGHT; 
 			this->_hidden = false;
 
@@ -47,6 +58,7 @@ namespace GUI {
 		bool isInBounds (int x, int y) const {
 			return ((x >=this->_x) && (x <= this->_x+this->_w) && (y >=this->_y) && (y <= this->_y+this->_h));
 		}
+
 		void renderTo(sf::RenderTarget & dest){
 			_backgroundRect.setPosition(this->_x, this->_y);
 			dest.draw(_backgroundRect);
@@ -58,6 +70,7 @@ namespace GUI {
 			this->_w = w; 
 			_backgroundRect.setSize(sf::Vector2f(this->_w, this->_h));
 		}
+		
 		void setHeight(int h){ 
 			this->_h = h; 
 			_backgroundRect.setSize(sf::Vector2f(this->_w, this->_h));

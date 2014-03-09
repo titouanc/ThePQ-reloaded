@@ -32,6 +32,7 @@ namespace GUI {
 			_w = _text.getLocalBounds().width;
 			_h = _text.getLocalBounds().height;
 		}
+		virtual ~Label(){}
 
 		void renderTo(sf::RenderTarget & dest){
 			_text.setPosition(_x, _y);
