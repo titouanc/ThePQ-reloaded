@@ -95,11 +95,11 @@ namespace GUI {
 
 		void handleClick(int x, int y){
 			if (_elements.size() > 0){
-				int clickedRow = (x-_x)/(_elements[0]->getHeight()+_padding);
+				int clickedCol = (x-_x)/(_elements[0]->getHeight()+_padding);
 				// we have to check if the click is not on a padding zone.
 				int relativePosX = (x-_x)%(_elements[0]->getHeight()+_padding);
 				if (relativePosX <= _elements[0]->getHeight()){
-					int clickedCol = (y-_y)/(_elements[0]->getWidth()+_padding);
+					int clickedRow = (y-_y)/(_elements[0]->getWidth()+_padding);
 
 					int relativePosY = (y-_y)%(_elements[0]->getWidth()+_padding);
 					if (relativePosY <= _elements[0]->getWidth()){

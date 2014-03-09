@@ -10,14 +10,11 @@
 #include "loadPath.hpp"
 
 namespace GUI {
-	template <typename T> class Button : public Clickable<T> {
+	template <typename T, typename P=int> class Button : public Clickable<T> {
 	public:
-		Button(	const typename Clickable<T>::Callback& callback, T* target, std::string text="Button", 
-				int x=MARGIN, int y=MARGIN, int h=BUTTON_HEIGHT):
+		Button(	const typename Clickable<T>::Callback& callback, T* target, std::string text="Button"):
 									Clickable<T>(callback, target){
-			this->_x = x;
-			this->_y = y;
-			this->_h = h; 
+			this->_h = BUTTON_HEIGHT; 
 			this->_hidden = false;
 
 			if (!_font.loadFromFile(fontPath(BODY_FONT_PATH)))
@@ -30,6 +27,23 @@ namespace GUI {
 			_backgroundRect = sf::RectangleShape(sf::Vector2f(this->_w, this->_h));
 			_backgroundRect.setFillColor(BUTTON_BACKGROUND_COLOR);
 		}
+
+		Button(	const typename Clickable<T, P>::CallbackWithParam& callback, P param, T* target, std::string text="Button"):
+									Clickable<T, P>(callback, target, param){
+			this->_h = BUTTON_HEIGHT; 
+			this->_hidden = false;
+
+			if (!_font.loadFromFile(fontPath(BODY_FONT_PATH)))
+				throw "Could not load font!";
+			_text.setFont(_font);
+			_text.setString(text);
+			_text.setCharacterSize(BUTTON_TEXT_SIZE);
+			_text.setColor(BUTTON_TEXT_COLOR);
+			this->_w = (int)_text.getLocalBounds().width + 2*BUTTON_SIDE_PADDING;
+			_backgroundRect = sf::RectangleShape(sf::Vector2f(this->_w, this->_h));
+			_backgroundRect.setFillColor(BUTTON_BACKGROUND_COLOR);
+		}
+
 		bool isInBounds (int x, int y) const {
 			return ((x >=this->_x) && (x <= this->_x+this->_w) && (y >=this->_y) && (y <= this->_y+this->_h));
 		}
