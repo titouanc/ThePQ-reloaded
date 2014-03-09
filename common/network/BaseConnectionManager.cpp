@@ -109,9 +109,7 @@ bool BaseConnectionManager::_doRead(int fd)
     }
     if (r < 0 || i == 0)
         return false;
-    std::cout<<"GLOBALBUF : "<<globalBuf.str()<<std::endl;
     JSON::Value *res = JSON::parse(globalBuf.str().c_str());
-    std::cout<<"AFTER PARSE : "<<*res <<std::endl;
     if (res != NULL){
         if (ISDICT(res) && 
             ISSTR(DICT(res).get("type")) &&
