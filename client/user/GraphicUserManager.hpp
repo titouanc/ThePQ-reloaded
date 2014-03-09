@@ -11,17 +11,21 @@ public:
 	GraphicUserManager(net::ClientConnectionManager& connection, UserData& user, std::queue<std::string> & notifications, GUI::MainController &controller);
 	~GraphicUserManager(){}
 private:
+	/* Display methods */
 	void displayChoice();	// choice between login and register
 	void displayLoginForm();
 	void displayRegisterForm();
 	void displayTeamNameForm();
 	void displayMainMenu();
 
+	/* Buttons methods */
 	void submitLoginForm();
 	void submitRegisterForm();
 	void submitTeamNameForm();
 	void goToStadium();
+	void goToMarket();
 
+	/* Hooks */
 	void onAskTeamName();
 
 	void onLoginOK();
@@ -34,21 +38,6 @@ private:
 	void onRegisterUserError(std::string const & data);
 
 	bool _wait;
-
-	GUI::Button<GraphicUserManager> *_loginChoiceButton;
-	GUI::Button<GraphicUserManager> *_registerChoiceButton;
-
-	// Login
-	GUI::Button<GraphicUserManager> *_submitLoginButton;
-	GUI::Textbox *_usernameTextbox;
-	GUI::Textbox *_passwordTextbox;
-	// Register
-	GUI::Button<GraphicUserManager> *_submitRegisterButton;
-	GUI::Textbox *_passwordConfirmationTextbox;
-
-	// Team name
-	GUI::Button<GraphicUserManager> *_submitTeamNameButton;
-	GUI::Textbox *_teamNameTextbox;
 };
 
 #endif

@@ -52,8 +52,15 @@ int MarketManager::getNextBidValue(int player_id)
 
 void MarketManager::treatMessage(std::string const & type, JSON::Value const * data)
 {
-	if (type == net::MSG::PLAYERS_ON_MARKET_LIST)
-		onSalesUpdate(LIST(data));
+	if (type == net::MSG::PLAYERS_ON_MARKET_LIST){
+		JSON::List const & sales = LIST(data);
+		_sales.clear();
+		for(size_t i = 0; i<sales.len();++i){
+			Player const & onSale = Player(DICT(DICT(sales[i]).get(net::MSG::PLAYER)));
+			_sales.push_back(Sale(DICT(sales[i]), onSale));
+		}
+		onSalesUpdate();
+	}
 	else if (type == net::MSG::BID_ON_PLAYER_QUERY){
 		std::string const & response = STR(data);
 		if (response == net::MSG::BID_VALUE_NOT_UPDATED)
@@ -81,15 +88,5 @@ void MarketManager::treatMessage(std::string const & type, JSON::Value const * d
 			onAddPlayerError("Not enough players in your team to put a player on sale.");
 		else
 			onAddPlayerOK();
-	}
-}
-
-void MarketManager::onSalesUpdate(JSON::List const & sales)
-{
-	_sales.clear();
-	for(size_t i = 0; i<sales.len();++i){
-		Player const & inSale = Player(DICT(DICT(sales[i]).get(net::MSG::PLAYER)));
-		cout << " +++++ IN SALE: " << inSale.getName() << endl;
-		_sales.push_back(Sale(DICT(sales[i]), inSale));
 	}
 }

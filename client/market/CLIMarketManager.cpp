@@ -158,8 +158,7 @@ void CLIMarketManager::onAddPlayerError(std::string const & reason)
 	errorMsg(reason);
 }
 
-void CLIMarketManager::onSalesUpdate(JSON::List const & list)
+void CLIMarketManager::onSalesUpdate()
 {
 	_waitForSales = false;
-	MarketManager::onSalesUpdate(list);
 }

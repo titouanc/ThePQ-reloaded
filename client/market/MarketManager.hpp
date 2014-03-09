@@ -29,7 +29,7 @@ protected:
 
 	/* HOOKS */
 	/* received list of current sales in the market */
-	virtual void onSalesUpdate(JSON::List const &);
+	virtual void onSalesUpdate(){}
 
 	/* Successfully placed bid */
 	virtual void onBidOK(){}

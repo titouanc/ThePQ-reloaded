@@ -20,7 +20,7 @@ private:
 
 	bool _waitForSales, _waitForBid;
 
-	virtual void onSalesUpdate(JSON::List const &players);
+	virtual void onSalesUpdate();
 	virtual void onBidOK();
 	virtual void onBidError(std::string const & err);
 	virtual void onAddPlayerOK();
