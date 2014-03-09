@@ -39,7 +39,7 @@ void ClientManager::treatMessage(std::string const & type, JSON::Value const * d
 	{
 		onPlayersLoad(LIST(data));
 	}
-	else if( type == net::MSG::CHAMPIONSHIP_MATCH_READY)
+	else if( type == net::MSG::CHAMPIONSHIP_MATCH_START)
 	{
 		this->onMatchStart();
 	}

@@ -36,7 +36,7 @@ void CLITeamManager::run()
 void CLITeamManager::showPlayers(){
 	cout << "================ YOUR PLAYERS ================" << endl;
 	for(size_t i =0; i<user().players.size();++i){
-		cout << user().players[i] << endl; //modif
+		cout << user().players[i] << endl;
 	}
 	cout << "==============================================" << endl;
 }
