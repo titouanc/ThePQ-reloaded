@@ -32,6 +32,7 @@ void GraphicStadiumManager::displayMainMenu()
 
 void GraphicStadiumManager::displayInstallations()
 {
+	readMessages();
 
 	_canvas.clear();
 
