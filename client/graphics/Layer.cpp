@@ -1,6 +1,7 @@
 #include "Layer.hpp"
 #include "TableView.hpp"
 #include "SFML/Window.hpp"
+#include <sstream>
 
 using namespace std;
 using namespace GUI;
@@ -121,6 +122,12 @@ GUI::Label & GUI::Layer::addLabel(std::string text, sf::Color color){
 	Label* res = new Label(text, color);
 	_labels.push_back(res);
 	return *res;
+}
+
+GUI::Label & GUI::Layer::addLabel(double val, sf::Color color){
+	std::stringstream converter;
+	converter << val;
+	return addLabel(converter.str());
 }
 
 GUI::TableCell & GUI::Layer::addTableCell(){
