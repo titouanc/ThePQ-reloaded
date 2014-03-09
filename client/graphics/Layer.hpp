@@ -83,6 +83,7 @@ GUI::Button<T, P> & GUI::Layer::addButton(	const typename GUI::Clickable<T>::Cal
 											P param, T* target, std::string text){
 	GUI::Button<T, P> * toAdd = new GUI::Button<T, P>(callback, param, target, text);
 	_clickables.push_back((GUI::ClickableInterface*)toAdd);
+	return *toAdd;
 }
 
 
