@@ -1,7 +1,6 @@
 #include "GraphicManager.hpp"
 
 void GUI::GraphicManager::run(){
-	_controller.window.display();
 	while(_controller.window.isOpen() && _isRunning){
 		sf::Event event;
 		if (_controller.window.waitEvent(event))
