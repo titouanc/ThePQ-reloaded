@@ -1,6 +1,7 @@
 #include "Championship.hpp"
 #include <cmath>
 #include <model/MemoryAccess.hpp>
+#include <Constants.hpp>
 
 using namespace std;
 
@@ -125,7 +126,7 @@ Schedule* Championship::nextMatch()
 		{
 			time_t now = time(NULL);
 			if (_schedules[i].isHappening == false 
-				&& abs(difftime(now, _schedules[i].date)) < 3600) // 5minutes offset max
+				&& abs(difftime(now, _schedules[i].date)) < gameconfig::MAX_CHAMP_MATCH_OFFSET) // 5minutes offset max
 			{
 				return &_schedules[i];
 			}

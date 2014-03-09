@@ -63,6 +63,8 @@ public:
     void startMatch(int client_idA, int client_idB, bool champMatch);
     void sendPlayersList(int peer_id);
     void sendMarketMessage(const std::string&, const JSON::Dict&);
+    void sendChampionshipNotification(std::string, const JSON::Dict&);
+    void sendNotification(std::string, const JSON::Dict&);
     int getPeerID(const std::string&);
     void timeLoop();
     void timeUpdateStadium();
@@ -77,6 +79,9 @@ public:
     void leaveChampionship(int);
     void joinChampionship(std::string,int);
     void sendChampionshipsList(int);
+    void notifyPendingChampMatch(std::string);
+    void responsePendingChampMatch(std::string,int);
+    Schedule* getPendingMatchByUsername(std::string);
 private:
 	SharedQueue<net::Message> _inbox, _outbox;
 	map<int, User*> _users;
@@ -85,6 +90,7 @@ private:
     std::deque<MatchManager*> _matches;
     AdminManager _adminManager;
     std::deque<Championship*> _championships;
+    std::deque<Schedule*> _pendingChampMatches;
 
     pthread_mutex_t _champsMutex; //_championships used by 3 threads
 	pthread_t _timeThread;

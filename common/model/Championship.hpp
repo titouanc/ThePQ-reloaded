@@ -15,6 +15,7 @@ struct Schedule
 	std::string user2;
 	time_t date;
 	bool isHappening;
+	std::string statusUser1, statusUser2;
 	Schedule(std::string u1, std::string u2, clock_t d) : user1(u1), user2(u2), date(d), isHappening(false) {}
 	Schedule(JSON::Dict const & json)
 	{

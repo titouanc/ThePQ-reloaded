@@ -105,6 +105,7 @@ namespace net
 		static const std::string CHAMPIONSHIP_CREATED = "C_CREATED";
 
 		//Championship------------------
+		static const std::string CHAMPIONSHIP_NOTIFICATION = "CHAMP_NOTIF";
 		static const std::string TEAMS_NUMBER = "nbOfUsers";
 		static const std::string CHAMPIONSHIP_NAME = "name";
 		static const std::string CHAMPIONSHIPS_LIST = "C_LIST";
@@ -117,6 +118,15 @@ namespace net
 		static const std::string JOIN_CHAMPIONSHIP = "C_JOIN";
 		static const std::string ADDED_TO_CHAMPIONSHIP = "C_ADDED";
 		static const std::string CHAMPIONSHIP_NOT_FOUND = "C_NOTFOUND";
+
+		static const std::string CHAMPIONSHIP_MATCH_STATUS = "CMATCH_STATUS";
+		static const std::string CHAMPIONSHIP_MATCH_NOT_FOUND = "CMATCH_NFOUND";
+		static const std::string CHAMPIONSHIP_MATCH_CAN_START = "CMATCH_OK";
+		static const std::string CHAMPIONSHIP_MATCH_READY = "CMATCH_USER_RDY";
+		static const std::string CHAMPIONSHIP_MATCH_OPPONENT_READY = "CMATCH_OPP_RDY";
+		static const std::string CHAMPIONSHIP_MATCH_OPPONENT_WITHDRAW = "CMATCH_OPP_WD";
+		static const std::string CHAMPIONSHIP_MATCH_WITHDRAW = "CMATCH_USER_WD";
+		static const std::string CHAMPIONSHIP_MATCH_WAIT = "CMATCH_WAIT";
 	}
 }
 
@@ -132,6 +142,7 @@ namespace gameconfig
 	static const int SALE_TURN_TIME = 30;
 	static const float BID_RATIO = 0.05;
 	static const int MAX_CHAMPIONSHIP_TURNS = 5; //32 teams
+	static const int MAX_CHAMP_MATCH_OFFSET = 3600;
 }
 
 namespace memory
