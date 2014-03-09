@@ -43,7 +43,8 @@ void GraphicStadiumManager::displayInstallations()
 		TableCell & current = installations.addTableCell(250, 250, sf::Color(0xee, 0xee, 0xee, 0xff));
 		current.addLabel(user().installations[i]->getName()).setPosition(10, 10);
 		Label &levelLabel = current.addLabel(user().installations[i]->getLevel());	
-		levelLabel.setPosition(250-10-levelLabel.getWidth(), 10);
+		levelLabel.setPosition(250-15-levelLabel.getWidth(), 10);
+		levelLabel.setColor(BLUE_TEXT_COLOR);
 	}
 
 	redrawCanvas();
