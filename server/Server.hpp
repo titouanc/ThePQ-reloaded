@@ -63,7 +63,6 @@ public:
     void startMatch(int client_idA, int client_idB, bool champMatch);
     void sendPlayersList(int peer_id);
     void sendMarketMessage(const std::string&, const JSON::Dict&);
-    void sendChampionshipNotification(std::string, const JSON::Dict&);
     void sendNotification(std::string, const JSON::Dict&);
     int getPeerID(const std::string&);
     void timeLoop();
