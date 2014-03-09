@@ -24,15 +24,22 @@ protected:
 	/* attempt to sell a player in the market */
 	void addPlayerOnMarket(int player_id, int value);
 
+	/* treat Market specific messages */
+	void treatMessage(std::string const & type, JSON::Value const* data);
+
 	/* HOOKS */
 	/* received list of current sales in the market */
 	virtual void onSalesUpdate(JSON::List const &);
-	/* received response from a bid request on a player */
-	virtual void onPlayerBid(std::string){}
-	/* received response from an attempt to sell a player in the market */
-	virtual void onAddPlayerOnMarket(std::string){}
-	/* treat Market specific messages */
-	void treatMessage(std::string const & type, JSON::Value const* data);
+
+	/* Successfully placed bid */
+	virtual void onBidOK(){}
+	/* Failed to place bid */
+	virtual void onBidError(std::string const & err){}
+
+	/* Successfully added player on market */
+	virtual void onAddPlayerOK(){}
+	/* Failed to add player on market */
+	virtual void onAddPlayerError(std::string const & err){}
 public:
 	using ClientManager::ClientManager;
 	MarketManager(ClientManager const & parent);

@@ -20,9 +20,11 @@ private:
 
 	bool _waitForSales, _waitForBid;
 
-	virtual void onSalesUpdate(JSON::List const &);
-	virtual void onPlayerBid(std::string data);
-	virtual void onAddPlayerOnMarket(std::string data);
+	virtual void onSalesUpdate(JSON::List const &players);
+	virtual void onBidOK();
+	virtual void onBidError(std::string const & err);
+	virtual void onAddPlayerOK();
+	virtual void onAddPlayerError(std::string const & err);
 };
 
 #endif // __CLI_MARKET_MANAGER_HPP

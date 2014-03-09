@@ -108,6 +108,14 @@ void CLIMarketManager::showBidMenu()
 	while (option != 3);
 }
 
+void CLIMarketManager::showPlayers(){
+	cout << "================ YOUR PLAYERS ================" << endl;
+	for(size_t i =0; i<user().players.size();++i){
+		cout << user().players[i] << endl; //modif
+	}
+	cout << "==============================================" << endl;
+}
+
 void CLIMarketManager::placeBid()
 {
 	int player_id;
@@ -126,48 +134,32 @@ void CLIMarketManager::placeBid()
 	}
 }
 
-void CLIMarketManager::onPlayerBid(std::string res)
+void CLIMarketManager::onBidOK()
 {
 	_waitForBid = false;
-	if(res == net::MSG::BID_VALUE_NOT_UPDATED)
-		cout << "\033[1;31mError\033[0m : bid value not correct (update your market list)."<<endl;
-	else if(res == net::MSG::BID_TURN_ERROR)
-		cout << "\033[1;31mError\033[0m : you did not bid last turn."<<endl;
-	else if(res == net::MSG::BID_ENDED)
-		cout << "\033[1;31mError\033[0m : player not on market any more (update your market list)."<<endl;
-	else if(res == net::MSG::CANNOT_BID_ON_YOUR_PLAYER)
-		cout << "\033[1;31mError\033[0m : cannot bid on your player."<<endl;
-	else if(res == net::MSG::LAST_BIDDER)
-		cout << "\033[1;31mError\033[0m : you are currently winning this sale. Cannot bid on your own bid."<<endl;
-	else if(res == net::MSG::TOO_MANY_PLAYERS)
-		cout << "\033[1;31mError\033[0m : you have too many players to be able to place a bid. You cannot have more than "<<gameconfig::MAX_PLAYERS<<" players."<<endl;
-	else if(res == net::MSG::INSUFFICIENT_FUNDS)
-		cout << "\033[1;31mError\033[0m : not enough money (GET MORE $$$$$)."<<endl;
+	okMsg("Bid added");
 }
 
-void CLIMarketManager::onAddPlayerOnMarket(std::string data)
+void CLIMarketManager::onBidError(std::string const & reason)
 {
 	_waitForBid = false;
-	if (data == net::MSG::PLAYER_ALREADY_ON_MARKET)
-	{
-		cout << "\033[1;31mError\033[0m : you are already selling this player." << endl;
-	}
-	else if (data == net::MSG::NOT_ENOUGH_PLAYERS)
-	{
-		cout<< "\033[1;31mError\033[0m : you do not have enough players to put a player on sale. You need at least " << gameconfig::MIN_PLAYERS + 1<<" players to do so."<<std::endl;
-	}
+	errorMsg(reason);
+}
+
+void CLIMarketManager::onAddPlayerOK()
+{
+	_waitForBid = false;
+	okMsg("Player put on market");
+}
+
+void CLIMarketManager::onAddPlayerError(std::string const & reason)
+{
+	_waitForBid = false;
+	errorMsg(reason);
 }
 
 void CLIMarketManager::onSalesUpdate(JSON::List const & list)
 {
 	_waitForSales = false;
 	MarketManager::onSalesUpdate(list);
-}
-
-void CLIMarketManager::showPlayers(){
-	cout << "================ YOUR PLAYERS ================" << endl;
-	for(size_t i =0; i<user().players.size();++i){
-		cout << user().players[i] << endl; //modif
-	}
-	cout << "==============================================" << endl;
 }

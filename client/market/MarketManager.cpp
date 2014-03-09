@@ -53,16 +53,34 @@ int MarketManager::getNextBidValue(int player_id)
 void MarketManager::treatMessage(std::string const & type, JSON::Value const * data)
 {
 	if (type == net::MSG::PLAYERS_ON_MARKET_LIST)
-	{
 		onSalesUpdate(LIST(data));
+	else if (type == net::MSG::BID_ON_PLAYER_QUERY){
+		std::string const & response = STR(data);
+		if (response == net::MSG::BID_VALUE_NOT_UPDATED)
+			onBidError("bid value not correct (update your market list).");
+		else if (response == net::MSG::BID_TURN_ERROR)
+			onBidError("you did not bid last turn.");
+		else if (response == net::MSG::BID_ENDED)
+			onBidError("player not on market any more (update your market list).");
+		else if (response == net::MSG::CANNOT_BID_ON_YOUR_PLAYER)
+			onBidError("cannot bid on your player.");
+		else if (response == net::MSG::LAST_BIDDER)
+			onBidError("you are currently winning this sale. Cannot bid on your own bid.");
+		else if (response == net::MSG::TOO_MANY_PLAYERS)
+			onBidError("you have too many players to be able to place a bid.");
+		else if (response == net::MSG::INSUFFICIENT_FUNDS)
+			onBidError("not enough money (GET MORE $$$$$).");
+		else
+			onBidOK();
 	}
-	else if (type == net::MSG::BID_ON_PLAYER_QUERY)
-	{
-		onPlayerBid(STR(data).value());
-	}
-	else if (type == net::MSG::ADD_PLAYER_ON_MARKET_QUERY)
-	{
-		onAddPlayerOnMarket(STR(data).value());
+	else if (type == net::MSG::ADD_PLAYER_ON_MARKET_QUERY){
+		std::string const & response = STR(data);
+		if (response == net::MSG::PLAYER_ALREADY_ON_MARKET)
+			onAddPlayerError("you are already selling this player.");
+		else if (response == net::MSG::NOT_ENOUGH_PLAYERS)
+			onAddPlayerError("Not enough players in your team to put a player on sale.");
+		else
+			onAddPlayerOK();
 	}
 }
 
