@@ -45,7 +45,7 @@ public:
 		if(_turn==1){return gameconfig::SALE_FIRST_TURN_TIME;}
 		else{return gameconfig::SALE_TURN_TIME;}
 	}
-	Player& getPlayer(){return _player;}
+	Player const & getPlayer() const {return _player;}
 	int getBidValue() const {return _bidValue;}
 	bool isOver() const {return _ended;}
 	bool isSaler(std::string username) const;
