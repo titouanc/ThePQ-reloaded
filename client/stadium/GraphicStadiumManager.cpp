@@ -36,11 +36,10 @@ void GraphicStadiumManager::displayInstallations()
 
 	_canvas.clear();
 
-	TableView installations = _canvas.addTableView(2, 10);
+	TableView & installations = _canvas.addTableView(2, 10);
 
 	for (size_t i = 0; i < user().installations.size(); ++i){
-		cout << "wut" << endl;
-		TableCell current = installations.addTableCell(300, 300, sf::Color(0xee, 0xee, 0xee, 0xff));
+		TableCell & current = installations.addTableCell(300, 300, sf::Color(0xee, 0xee, 0xee, 0xff));
 		current.addLabel(user().installations[i]->getName()).setPosition(10, 10);	
 	}
 
