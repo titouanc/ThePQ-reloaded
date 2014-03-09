@@ -146,6 +146,7 @@ void GraphicUserManager::onLoginOK()
 
 void GraphicUserManager::onLoginError(std::string const & err)
 {
+	displayChoice();
 	std::cout << err << std::endl;
 	_wait = false;
 }
