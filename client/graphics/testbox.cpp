@@ -17,7 +17,7 @@ public:
 		myTextbox = _canvas.addTextbox("wow");
 		myTextbox->setPosition(10, 60);
 
-		Button<TestBoxManager> *myButton = _canvas.addButton<TestBoxManager>(&TestBoxManager::printWowTextBox, this, "Cout Wow Box");
+		Button<TestBoxManager> myButton = _canvas.addButton<TestBoxManager>(&TestBoxManager::printWowTextBox, this, "Cout Wow Box");
 		myButton->setPosition(270, 60);
 
 		hideButton = _canvas.addButton<TestBoxManager>(&TestBoxManager::hideTextbox, this, "Hide Textbox");
@@ -32,7 +32,7 @@ public:
 		TableView *myTableView = _canvas.addTableView(2);
 		for (int i = 0; i < 5; ++i)
 		{
-			TableCell* myTableCell = new TableCell(100, 100, sf::Color(0xee,0xee,0xee,0xff));
+			TableCell* myTableCell = myTableView->addTableCell(100, 100, sf::Color(0xee,0xee,0xee,0xff));
 			switch (i){
 				case 0:
 					myTableCell->addLabel("Wow");
@@ -52,7 +52,6 @@ public:
 			}
 			Button<TestBoxManager>* b = myTableCell->addButton<TestBoxManager>(&TestBoxManager::printWow, this, "Wow");
 			b->setPosition(10, 40);
-			myTableView->append(myTableCell);
 		}
 
 		myTableView->setPosition(10, 400);
@@ -62,7 +61,7 @@ public:
 	}
 
 	void printWow(){
-		cout << "wow"<< endl;
+		cout << "wow such wow"<< endl;
 	}
 
 	void printWowTextBox(){
