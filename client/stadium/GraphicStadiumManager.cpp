@@ -6,6 +6,7 @@ using namespace GUI;
 
 GraphicStadiumManager::GraphicStadiumManager(ClientManager const & parent, GUI::MainController &controller) 
 			: StadiumManager(parent), GraphicManager(controller){
+	loadInstallations();
 	displayCanvas();
 	displayMainMenu();
 	readMessages();
@@ -20,7 +21,7 @@ void GraphicStadiumManager::displayMainMenu()
 	).setPosition(900, 350);
 
 	_canvas.addButton<GraphicStadiumManager>(
-		&GraphicStadiumManager::doNothing, this, "Installations management"
+		&GraphicStadiumManager::displayInstallations, this, "Installations management"
 	).setPosition(900, 410);
 
 	backButton().setPosition(900, 470);
@@ -46,6 +47,26 @@ void GraphicStadiumManager::displayPlayers()
 	}
 
 	backButton().setPosition(900, 650);
+
+	redrawCanvas();
+}
+
+void GraphicStadiumManager::displayInstallations()
+{
+	readMessages();
+
+	_canvas.clear();
+
+	TableView & installations = _canvas.addTableView(2, 10);
+	installations.setPosition(100, 100);
+
+	for (size_t i = 0; i < user().installations.size(); ++i){
+		TableCell & current = installations.addTableCell(250, 250, sf::Color(0xee, 0xee, 0xee, 0xff));
+		current.addLabel(user().installations[i]->getName()).setPosition(10, 10);
+		Label &levelLabel = current.addLabel(user().installations[i]->getLevel());	
+		levelLabel.setPosition(250-15-levelLabel.getWidth(), 10);
+		levelLabel.setColor(BLUE_TEXT_COLOR);
+	}
 
 	redrawCanvas();
 }

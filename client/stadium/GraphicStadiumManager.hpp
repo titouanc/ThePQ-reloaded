@@ -13,6 +13,7 @@ public:
 private:
 	void displayMainMenu();
 	void displayPlayers();
+	void displayInstallations();
 	void doNothing();
 };
 

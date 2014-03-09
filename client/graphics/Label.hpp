@@ -20,6 +20,18 @@ namespace GUI {
 			_w = _text.getLocalBounds().width;
 			_h = _text.getLocalBounds().height;
 		}
+		Label(int number, sf::Color color=BODY_TEXT_COLOR){
+			if (!_font.loadFromFile(fontPath(BODY_FONT_PATH)))
+				throw "Could not load font!";
+			_text.setFont(_font);
+			char casted[512];
+			sprintf(casted, "%d", number);
+			_text.setString(casted);
+			_text.setCharacterSize(BODY_TEXT_SIZE);
+			_text.setColor(color);
+			_w = _text.getLocalBounds().width;
+			_h = _text.getLocalBounds().height;
+		}
 
 		void renderTo(sf::RenderTarget & dest){
 			_text.setPosition(_x, _y);
