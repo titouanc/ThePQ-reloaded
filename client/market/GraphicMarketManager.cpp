@@ -1,4 +1,5 @@
 #include "GraphicMarketManager.hpp"
+#include <Constants.hpp>
 
 using namespace std;
 using namespace GUI;
@@ -24,7 +25,6 @@ void GraphicMarketManager::updateSales()
 
 void GraphicMarketManager::onSalesUpdate()
 {
-	cout << "SALES UPDATE !" << endl;
 	_wait = false;
 	_canvas.clear();
 
@@ -40,7 +40,10 @@ void GraphicMarketManager::onSalesUpdate()
 	/* Content */
 	for (Sale const & sale : getSales()){
 		playerList.addTableCell().addLabel(sale.getPlayer().getName());
-		playerList.addTableCell().addLabel(sale.getOwner());
+		if (sale.getOwner() == net::MSG::GENERATED_BY_MARKET)
+			playerList.addTableCell().addLabel("World");
+		else
+			playerList.addTableCell().addLabel(sale.getOwner());
 		playerList.addTableCell().addLabel(sale.getCurrentBidder());
 		playerList.addTableCell().addLabel(sale.getNextBidValue());
 		playerList.addTableCell().addLabel(sale.getTimeLeft());
@@ -55,6 +58,3 @@ void GraphicMarketManager::onSalesUpdate()
 
 	redrawCanvas();
 }
-
-void GraphicMarketManager::doNothing()
-{} 
