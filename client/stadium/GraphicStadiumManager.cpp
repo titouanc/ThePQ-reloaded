@@ -8,6 +8,7 @@ GraphicStadiumManager::GraphicStadiumManager(ClientManager const & parent, GUI::
 			: StadiumManager(parent), GraphicManager(controller){
 	displayCanvas();
 	displayMainMenu();
+	readMessages();
 }
 
 void GraphicStadiumManager::displayMainMenu()
@@ -15,7 +16,7 @@ void GraphicStadiumManager::displayMainMenu()
 	_canvas.clear();
 	
 	_canvas.addButton<GraphicStadiumManager>(
-		&GraphicStadiumManager::doNothing, this, "Players management"
+		&GraphicStadiumManager::displayPlayers, this, "Players management"
 	).setPosition(900, 350);
 
 	_canvas.addButton<GraphicStadiumManager>(
@@ -23,9 +24,30 @@ void GraphicStadiumManager::displayMainMenu()
 	).setPosition(900, 410);
 
 	_canvas.addButton<GraphicStadiumManager>(
-		&GraphicManager::stop, this, "Exit"
+		&GraphicManager::stop, this, "Back"
 	).setPosition(900, 470);
 	
+	redrawCanvas();
+}
+
+void GraphicStadiumManager::displayPlayers()
+{
+	_canvas.clear();
+
+	TableView & playerList = _canvas.addTableView(3);
+	playerList.addTableCell(300, 50).addLabel("Name");
+	playerList.addTableCell(100, 50).addLabel("Life");
+	playerList.addTableCell(100, 50).addLabel("Mana");
+	for (Player & player : user().players){
+		playerList.addTableCell(300, 30).addLabel(player.getName());
+		playerList.addTableCell(100, 30).addLabel(player.getRemainingLife());
+		playerList.addTableCell(100, 30).addLabel(player.getRemainingMana());
+	}
+
+	_canvas.addButton<GraphicStadiumManager>(
+		&GraphicStadiumManager::displayMainMenu, this, "Back"
+	).setPosition(900, 650);
+
 	redrawCanvas();
 }
 

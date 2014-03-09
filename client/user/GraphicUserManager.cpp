@@ -141,6 +141,7 @@ void GraphicUserManager::goToStadium()
 void GraphicUserManager::onLoginOK()
 {
 	displayMainMenu();
+	loadPlayers();
 	_wait = false;
 }
 

@@ -12,6 +12,7 @@ public:
 	~GraphicStadiumManager(){}
 private:
 	void displayMainMenu();
+	void displayPlayers();
 	void doNothing();
 };
 
