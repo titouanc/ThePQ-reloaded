@@ -49,6 +49,7 @@ public:
 					myTableCell.addLabel("Magic");
 					break;
 			}
+			// cette ligne déconne.
 			Button<TestBoxManager, int>& b = myTableCell.addButton<TestBoxManager, int>(&TestBoxManager::printWow, i, this, "Wow");
 			b.setPosition(10, 40);
 		}
