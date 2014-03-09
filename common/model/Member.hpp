@@ -40,10 +40,14 @@ public:
 	int getMemberID() const { return _memberID; }
 	string getOwner() const { return _owner; }
 
-	void setOwner(string owner)	{_owner=owner; }
+    void setName (string name)  { _name = name;     }
+    void setSalary (int salary) { _salary = salary; }
+    void setPrice (int price)   { _price = price;   }
+	void setOwner(string owner)	{ _owner=owner;     }
 	//Team getOwner () 	{ return _owner; } // TODO
 	//void setOwner (Team aTeam) { _owner = aTeam; } // TODO
 	void setMemberID() { _memberID = Member::getNextMemberID(); }
+    void setMemberID(int id) {_memberID = id;}
 	
 	
 protected://modif

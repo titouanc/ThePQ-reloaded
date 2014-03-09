@@ -1,4 +1,5 @@
 #include "Team.hpp"
+#include <cmath>
 
 Team::Team(std::string owner, std::string teamname, int funds, int fame) : _name(teamname), _owner(owner), _funds(funds), _fame(fame), _players(), _installations()
 {}
@@ -129,4 +130,11 @@ void Team::timeUpdate()
 		_funds += _fame*_installations[j]->getIncome(); // fame dependant income
 	}
 	saveInfos();
+}
+
+int Team::level () const {
+    int sum(0);
+    for (Player it : _players)
+        sum += it.level();
+    return static_cast<int>(pow(sum, 1.0/_players.size()));
 }
