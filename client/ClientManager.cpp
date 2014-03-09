@@ -29,6 +29,22 @@ void ClientManager::say(std::string const & type, JSON::Value const & data)
 	_connection.send(msg);
 }
 
+void ClientManager::readMessage()
+{
+	JSON::Value * msg = _connection.popMessage();
+    JSON::Dict const & dict = DICT(msg);
+    std::string messageType = STR(dict.get("type"));
+    ClientManager::treatMessage(messageType, dict.get("data"));
+    this->treatMessage(messageType, dict.get("data")); /* virtuelle */
+    delete msg;
+}
+
+void ClientManager::readMessages() 
+{
+    while (_connection.hasMessage())
+    	readMessage();
+}
+
 void ClientManager::treatMessage(std::string const & type, JSON::Value const * data)
 {
 	if (type == net::MSG::TEAM_INFOS)
@@ -47,37 +63,14 @@ void ClientManager::treatMessage(std::string const & type, JSON::Value const * d
 	//Notifications, wait for user to handle
 	else if (	type == net::MSG::MARKET_MESSAGE || 
 				type == net::MSG::FRIENDLY_GAME_INVITATION ||
-			 	type == net::MSG::CHAMPIONSHIP_MATCH_CAN_START )
+			 	type == net::MSG::CHAMPIONSHIP_MATCH_PENDING ||
+			 	type == net::MSG::CHAMPIONSHIP_MATCH_STATUS_CHANGE)
 	{
 		JSON::Dict notif;
 		notif.set("type",JSON::String(type));
 		notif.set("data",*data);
 		_notifications.push(notif);
 	}
-}
-
-void ClientManager::loadPlayers()
-{
-	JSON::Dict data = {
-		{ net::MSG::USERNAME, JSON::String(user().username) }
-	};
-	say(net::MSG::PLAYERS_LIST, data);
-}
-
-void ClientManager::readMessage()
-{
-	JSON::Value * msg = _connection.popMessage();
-    JSON::Dict const & dict = DICT(msg);
-    std::string messageType = STR(dict.get("type"));
-    ClientManager::treatMessage(messageType, dict.get("data"));
-    this->treatMessage(messageType, dict.get("data")); /* virtuelle */
-    delete msg;
-}
-
-void ClientManager::readMessages() 
-{
-    while (_connection.hasMessage())
-    	readMessage();
 }
 
 void ClientManager::handleNotification(){
@@ -89,6 +82,9 @@ void ClientManager::handleNotification(){
 			onInvite(STR(popped.get("data")).value());
 		else if(type == net::MSG::MARKET_MESSAGE)
 			onMessage(onEndOfSale(DICT(popped.get("data"))));
+		else if(type == net::MSG::CHAMPIONSHIP_MATCH_PENDING){
+			//onMatchPending();
+		}
 	}
 }
 
@@ -117,6 +113,14 @@ std::string ClientManager::onEndOfSale(JSON::Dict const & json)
 	return res.str();
 }
 
+void ClientManager::readyForMatch(){
+	say(net::MSG::CHAMPIONSHIP_MATCH_PENDING_RESPONSE,JSON::String(net::MSG::CHAMPIONSHIP_MATCH_READY));
+}
+
+void ClientManager::withdrawFromMatch(){
+	say(net::MSG::CHAMPIONSHIP_MATCH_PENDING_RESPONSE,JSON::String(net::MSG::CHAMPIONSHIP_MATCH_WITHDRAW));
+}
+
 void ClientManager::acceptInvitationFromUser(string username){
 	JSON::Dict data = {
 		{ "username", JSON::String(username) },
@@ -131,6 +135,14 @@ void ClientManager::denyInvitationFromUser(string username){
 		{ "answer", JSON::String(net::MSG::FRIENDLY_GAME_INVITATION_DENY) }
 	};
 	say(net::MSG::FRIENDLY_GAME_INVITATION_RESPONSE, data);
+}
+
+void ClientManager::loadPlayers()
+{
+	JSON::Dict data = {
+		{ net::MSG::USERNAME, JSON::String(user().username) }
+	};
+	say(net::MSG::PLAYERS_LIST, data);
 }
 
 void ClientManager::onPlayersLoad(JSON::List const & players)

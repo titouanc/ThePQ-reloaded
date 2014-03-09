@@ -50,10 +50,13 @@ class ClientManager {
 		/* handle message for end of player sale */
 		std::string onEndOfSale(JSON::Dict const & json);
 
+		/* Reponse to a pending match notification */
+		void readyForMatch();
+		void withdrawFromMatch();
+
 		/* response to invitation */
 		void acceptInvitationFromUser(std::string);
 		void denyInvitationFromUser(std::string);
-
 
 		/* Hooks */
 		/* Displays a message */
