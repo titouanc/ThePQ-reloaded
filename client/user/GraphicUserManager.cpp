@@ -80,11 +80,11 @@ void GraphicUserManager::displayMainMenu()
 	
 	_canvas.addButton<GraphicUserManager>(
 		&GraphicUserManager::goToStadium, this, "Stadium management"
-	).setPosition(900, 350);
+	).setPosition(100, 350);
 
 	_canvas.addButton<GraphicUserManager>(
 		&GraphicUserManager::goToMarket, this, "Player market"
-	).setPosition(900, 400);
+	).setPosition(100, 400);
 	
 	redrawCanvas();
 }

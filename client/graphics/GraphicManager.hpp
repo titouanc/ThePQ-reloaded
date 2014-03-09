@@ -22,6 +22,10 @@ namespace GUI {
 		virtual bool treatEvent(sf::Event const & event);
 		/* non blocking event pop+treat. If no event popped, return false; */
 		bool readEvent();
+
+		/* Create and add a button bound to stop() then return it */
+		GUI::Button<GraphicManager> & backButton(std::string const & caption="Back");
+
 		sf::RenderWindow & window(){return _controller.window;}
 		MainController &_controller;
 		Layer _canvas;

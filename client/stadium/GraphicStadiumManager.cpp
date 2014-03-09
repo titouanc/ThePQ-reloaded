@@ -23,9 +23,7 @@ void GraphicStadiumManager::displayMainMenu()
 		&GraphicStadiumManager::doNothing, this, "Installations management"
 	).setPosition(900, 410);
 
-	_canvas.addButton<GraphicStadiumManager>(
-		&GraphicManager::stop, this, "Back"
-	).setPosition(900, 470);
+	backButton().setPosition(900, 470);
 	
 	redrawCanvas();
 }
@@ -47,9 +45,7 @@ void GraphicStadiumManager::displayPlayers()
 		playerList.addTableCell().addLabel(player.getRemainingMana());
 	}
 
-	_canvas.addButton<GraphicStadiumManager>(
-		&GraphicStadiumManager::displayMainMenu, this, "Back"
-	).setPosition(900, 650);
+	backButton().setPosition(900, 650);
 
 	redrawCanvas();
 }

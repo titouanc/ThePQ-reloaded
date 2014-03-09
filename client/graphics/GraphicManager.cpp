@@ -1,6 +1,7 @@
 #include "GraphicManager.hpp"
 
-void GUI::GraphicManager::run(){
+void GUI::GraphicManager::run()
+{
 	while(_controller.window.isOpen() && _isRunning){
 		sf::Event event;
 		if (_controller.window.waitEvent(event))
@@ -39,16 +40,26 @@ bool GUI::GraphicManager::treatEvent(sf::Event const & event)
 	return true;
 }
 
-void GUI::GraphicManager::deleteCanvas() {
+void GUI::GraphicManager::deleteCanvas()
+{
 	//_isRunning = false;
 	_controller.deleteTopLayer();
 }
 
-void GUI::GraphicManager::displayCanvas() {
+void GUI::GraphicManager::displayCanvas()
+{
 	_controller.addLayer(_canvas);
 }
 
-void GUI::GraphicManager::redrawCanvas(){
+void GUI::GraphicManager::redrawCanvas()
+{
 	_canvas.renderTo(_controller.window);
 	window().display();
+}
+
+GUI::Button<GUI::GraphicManager> & GUI::GraphicManager::backButton(std::string const & caption)
+{
+	return _canvas.addButton<GUI::GraphicManager>(
+		&GUI::GraphicManager::stop, this, caption
+	);
 }
