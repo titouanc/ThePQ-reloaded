@@ -1,5 +1,8 @@
 PKGCONFIG = pkg-config
-OBJS = cli/Menu.o Client.o GraphicClient.o user/UserManager.o stadium/StadiumManager.o team/TeamManager.o market/MarketManager.o user/GraphicUserManager.o stadium/GraphicStadiumManager.o match/GraphicMatchManager.o match/MatchManager.o user/CLIUserManager.o stadium/CLIStadiumManager.o team/CLITeamManager.o market/CLIMarketManager.o match/CLIMatchManager.o ClientManager.o cli/CLI.o fgame/FGameManager.o fgame/CLIFGameManager.o
+OBJS_GUI = user/GraphicUserManager.o stadium/GraphicStadiumManager.o match/GraphicMatchManager.o market/GraphicMarketManager.o
+OBJS_CLI = cli/CLI.o cli/Menu.o user/CLIUserManager.o stadium/CLIStadiumManager.o team/CLITeamManager.o market/CLIMarketManager.o match/CLIMatchManager.o fgame/CLIFGameManager.o
+OBJS_CONTROLLER = user/UserManager.o stadium/StadiumManager.o team/TeamManager.o market/MarketManager.o match/MatchManager.o fgame/FGameManager.o ClientManager.o
+
 LIBS = ../common/json/libjson.a ../common/network/libnetwork.a ../common/model/libmodel.a graphics/libgraphics.a
 CPPFLAGS = -I../common -I.
 
@@ -13,10 +16,10 @@ endif
 
 all: client.app graphicClient.app
 
-client.app: main.o ${OBJS} ${LIBS}
+client.app: main.o Client.o ${OBJS_CONTROLLER} ${OBJS_CLI} ${LIBS}
 	${CXX} ${LDFLAGS} -o $@ $^
 
-graphicClient.app: GraphicMain.o ${OBJS} ${LIBS}
+graphicClient.app: GraphicMain.o GraphicClient.o ${OBJS_CONTROLLER} ${OBJS_GUI} ${LIBS}
 	${CXX} ${LDFLAGS} -o $@ $^
 
 graphics/libgraphics.a:
