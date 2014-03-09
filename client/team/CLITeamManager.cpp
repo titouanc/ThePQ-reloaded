@@ -1,4 +1,5 @@
 #include "CLITeamManager.hpp"
+#include <match/CLIMatchManager.hpp>
 
 CLITeamManager::CLITeamManager(ClientManager const & parent) : TeamManager(parent)
 {}
@@ -44,4 +45,9 @@ void CLITeamManager::onPlayersLoad(JSON::List const & players)
 {
 	TeamManager::onPlayersLoad(players);
 	_pending--;
+}
+
+void CLITeamManager::onMatchStart(){
+	CLIMatchManager match(*this); 
+	match.run();
 }

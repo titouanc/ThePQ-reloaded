@@ -253,8 +253,7 @@ void CLIUserManager::onInvite(std::string const & user)
 			ok = true;
 			
 			acceptInvitationFromUser(user);
-			CLIMatchManager match(*this); 
-			match.run();
+			onMatchStart();
 			
 			//startGUIMatch(*this);
 
@@ -273,4 +272,9 @@ void CLIUserManager::onInvite(std::string const & user)
 
 void CLIUserManager::onMessage(std::string const & message){
 	cout << message << endl;;
+}
+
+void CLIUserManager::onMatchStart(){
+	CLIMatchManager match(*this); 
+	match.run();
 }

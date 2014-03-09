@@ -83,7 +83,7 @@ void CLIFGameManager::onOtherAccept(std::string const & name)
 	_pending--;
 	/*CLIMatchManager match(*this);
 	match.run();*/
-	startGUIMatch(*this);
+	onMatchStart();
 }
 
 void CLIFGameManager::onOtherDeny(std::string const & name)
@@ -100,3 +100,7 @@ void CLIFGameManager::onUserNotFound(std::string const & name)
 	_pending--;
 }
 
+void CLIFGameManager::onMatchStart(){
+	CLIMatchManager match(*this); 
+	match.run();
+}

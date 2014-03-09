@@ -1,5 +1,5 @@
 #include "CLIStadiumManager.hpp"
-
+#include <match/CLIMatchManager.hpp>
 CLIStadiumManager::CLIStadiumManager(ClientManager const & parent) : 
 StadiumManager(parent)
 {}
@@ -97,4 +97,9 @@ void CLIStadiumManager::treatMessage(std::string const & type, JSON::Value const
 		_pending++;
 	}
 	_pending--;
+}
+
+void CLIStadiumManager::onMatchStart(){
+	CLIMatchManager match(*this); 
+	match.run();
 }

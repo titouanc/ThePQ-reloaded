@@ -12,6 +12,7 @@ public:
 	void run();
 	virtual void showPlayers();
 	virtual void onPlayersLoad(JSON::List const & players);
+	virtual void onMatchStart();
 };
 
 #endif // __CLI_TEAM_MANAGER_HPP

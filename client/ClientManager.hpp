@@ -62,6 +62,9 @@ class ClientManager {
 		/* Triggered when we receive a match invitation */
 		virtual void onInvite(std::string const & otherUser) {}
 
+		/* Triggered when a match is ready to be played */
+		virtual void onMatchStart(){}
+
 		/* Load players in user().players */
 		virtual void onPlayersLoad(JSON::List const & players);
 

@@ -39,9 +39,15 @@ void ClientManager::treatMessage(std::string const & type, JSON::Value const * d
 	{
 		onPlayersLoad(LIST(data));
 	}
+	else if( type == net::MSG::CHAMPIONSHIP_MATCH_READY)
+	{
+		this->onMatchStart();
+	}
 
 	//Notifications, wait for user to handle
-	else if (type == net::MSG::MARKET_MESSAGE || type == net::MSG::FRIENDLY_GAME_INVITATION)
+	else if (	type == net::MSG::MARKET_MESSAGE || 
+				type == net::MSG::FRIENDLY_GAME_INVITATION ||
+			 	type == net::MSG::CHAMPIONSHIP_MATCH_CAN_START )
 	{
 		JSON::Dict notif;
 		notif.set("type",JSON::String(type));
