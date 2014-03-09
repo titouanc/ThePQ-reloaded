@@ -5,6 +5,7 @@
 
 struct MatchResult
 {
+	MatchResult(): winner(), loser(), score(){}
 	MatchResult(JSON::Dict const & json)
 	{
 		if (ISSTR(json.get("winner"))) { winner = STR(json.get("winner")).value(); }

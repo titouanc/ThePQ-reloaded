@@ -10,6 +10,7 @@
 #include <Config.hpp>
 #include "MatchManager.hpp"
 #include "PlayerMarket.hpp"
+#include "AdminManager.hpp"
 #include <model/Championship.hpp>
 
 using namespace std;
@@ -59,25 +60,39 @@ public:
     void placeBidOnPlayer(const JSON::Dict &bid, int peer_id);
     string getRandomName();
     void collectFinishedMatches(void);
-    void startMatch(int client_idA, int client_idB);
+    void startMatch(int client_idA, int client_idB, bool champMatch);
     void sendPlayersList(int peer_id);
     void sendMarketMessage(const std::string&, const JSON::Dict&);
+    void sendChampionshipNotification(std::string, const JSON::Dict&);
+    void sendNotification(std::string, const JSON::Dict&);
     int getPeerID(const std::string&);
     void timeLoop();
     void timeUpdateStadium();
     void timeUpdateChampionship();
+    void addChampionship(const Championship&);
         /* Return a pointer to the user object with given username,
        or NULL if not connected */
     User *getUserByName(std::string username);
+    Championship* getChampionshipByName(std::string champName);
+    Championship* getChampionshipByUsername(std::string username);
     size_t nbrUsersConnected(){return _users.size();}
+    void leaveChampionship(int);
+    void joinChampionship(std::string,int);
+    void sendChampionshipsList(int);
+    void notifyPendingChampMatch(std::string);
+    void responsePendingChampMatch(std::string,int);
+    Schedule* getPendingMatchByUsername(std::string);
 private:
 	SharedQueue<net::Message> _inbox, _outbox;
 	map<int, User*> _users;
 	net::ConnectionManager _connectionManager;
-    PlayerMarket *market;
+    PlayerMarket *_market;
     std::deque<MatchManager*> _matches;
+    AdminManager _adminManager;
     std::deque<Championship*> _championships;
+    std::deque<Schedule*> _pendingChampMatches;
 
+    pthread_mutex_t _champsMutex; //_championships used by 3 threads
 	pthread_t _timeThread;
 };
 

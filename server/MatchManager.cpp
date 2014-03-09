@@ -6,12 +6,14 @@
 
 MatchManager::MatchManager(
 	BaseConnectionManager & connections, 
-	Squad const & squadA, Squad const & squadB
+	Squad const & squadA, Squad const & squadB,
+	bool champMatch
 ) : SubConnectionManager(_inbox, _outbox, connections), 
     _strokes(), _pitch(100, 36)
 {
 	_score[0] = 0;
 	_score[1] = 0;
+	_champMatch = champMatch;
 
 	_quaffle.setID(101);
 	_snitch.setID(102);
@@ -146,6 +148,14 @@ void MatchManager::_mainloop_out()
 	stop();
 	for (int i=0; i<2; i++)
 		releaseClient(_squads[i].client_id);
+}
+
+bool MatchManager::isChampMatch(){
+	return _champMatch;
+}
+
+MatchResult& MatchManager::getResult(){
+	return _matchRes;
 }
 
 void MatchManager::sendToAll(JSON::Value const & data)
@@ -406,6 +416,11 @@ void MatchManager::endMatch(void)
 
 	releaseClient(_squads[0].client_id);
 	releaseClient(_squads[1].client_id);
+
+	_matchRes.winner = _squads[winner].squad_owner;
+	_matchRes.loser = _squads[looser].squad_owner;
+	_matchRes.score[0] = _score[winner];
+	_matchRes.score[1] = _score[looser];
 }
 
 void MatchManager::onCollision(

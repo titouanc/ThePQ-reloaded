@@ -2,6 +2,9 @@
 #include <cli/CLI.hpp>
 #include <match/CLIMatchManager.hpp>
 
+#include "graphics/MainController.hpp"
+#include <match/GraphicMatchManager.hpp>
+
 #include <iostream>
 
 using namespace std;
@@ -103,8 +106,9 @@ void CLIFGameManager::onInvite(std::string const & user)
 			ok = true;
 			
 			acceptInvitationFromUser(user);
-			CLIMatchManager match(*this);
+			CLIMatchManager match(*this); 
 			match.run();
+
 			break;
 		} else if (option == 2){
 			ok = true;

@@ -25,6 +25,8 @@ namespace net {
 			pthread_t   _in_thread, _out_thread;
 			/* isRunning() mutex , fd set manipulation mutex */
 			pthread_mutex_t _mutex, _fdset_mutex;
+			/* fd_set condtionnal wait */
+			pthread_cond_t _fdset_cond;
 			/* Is IO thread running ? */
 			bool _running;
 			/* Currently connected clients */
@@ -82,6 +84,11 @@ namespace net {
 			unsigned long long int txBytes(void) const {return _tx_bytes;}
 			/* How many bytes were received over network */
 			unsigned long long int rxBytes(void) const {return _rx_bytes;}
+
+			/* Manually feed incoming box */
+			void transmit(Message const & msg);
+
+			bool hasClient(int client_id);
 
 			/* Main in loop: feed incoming queue */
 			virtual void _mainloop_in(void);

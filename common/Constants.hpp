@@ -96,6 +96,37 @@ namespace net
 		static const std::string MATCH_DELTA     = "MDELTA";
 		static const std::string MATCH_SCORES    = "MSCORES";
 		static const std::string MATCH_STATUS    = "MSTATUS";
+		
+		//Admin------------------
+		static const std::string ADMIN_CLIENT = "ADMIN";
+		static const std::string ADMIN_LOGIN = "ALI";
+		static const std::string CHAMPIONSHIP_CREATION = "ACSHIPC";
+		static const std::string CHAMPIONSHIP_ALREADY_EXISTS = "C_name_E";
+		static const std::string CHAMPIONSHIP_CREATED = "C_CREATED";
+
+		//Championship------------------
+		static const std::string CHAMPIONSHIP_NOTIFICATION = "CHAMP_NOTIF";
+		static const std::string TEAMS_NUMBER = "nbOfUsers";
+		static const std::string CHAMPIONSHIP_NAME = "name";
+		static const std::string CHAMPIONSHIPS_LIST = "C_LIST";
+		static const std::string ALREADY_IN_CHAMPIONSHIP = "C_AIC";
+		static const std::string CHAMPIONSHIP_FULL = "C_FULL";
+		static const std::string CHAMPIONSHIP_STARTED = "C_START";
+		static const std::string NOT_IN_CHAMPIONSHIP = "C_NIC";
+		static const std::string LEAVE_CHAMPIONSHIP = "C_LEAVE";
+		static const std::string REMOVED_FROM_CHAMPIONSHIP = "C_REMOVED";
+		static const std::string JOIN_CHAMPIONSHIP = "C_JOIN";
+		static const std::string ADDED_TO_CHAMPIONSHIP = "C_ADDED";
+		static const std::string CHAMPIONSHIP_NOT_FOUND = "C_NOTFOUND";
+
+		static const std::string CHAMPIONSHIP_MATCH_STATUS = "CMATCH_STATUS";
+		static const std::string CHAMPIONSHIP_MATCH_NOT_FOUND = "CMATCH_NFOUND";
+		static const std::string CHAMPIONSHIP_MATCH_CAN_START = "CMATCH_OK";
+		static const std::string CHAMPIONSHIP_MATCH_READY = "CMATCH_USER_RDY";
+		static const std::string CHAMPIONSHIP_MATCH_OPPONENT_READY = "CMATCH_OPP_RDY";
+		static const std::string CHAMPIONSHIP_MATCH_OPPONENT_WITHDRAW = "CMATCH_OPP_WD";
+		static const std::string CHAMPIONSHIP_MATCH_WITHDRAW = "CMATCH_USER_WD";
+		static const std::string CHAMPIONSHIP_MATCH_WAIT = "CMATCH_WAIT";
 	}
 }
 
@@ -110,6 +141,8 @@ namespace gameconfig
 	static const int SALE_FIRST_TURN_TIME = 30;
 	static const int SALE_TURN_TIME = 30;
 	static const float BID_RATIO = 0.05;
+	static const int MAX_CHAMPIONSHIP_TURNS = 5; //32 teams
+	static const int MAX_CHAMP_MATCH_OFFSET = 3600;
 }
 
 namespace memory
@@ -121,6 +154,7 @@ namespace memory
 	static const std::string PLAYERS_DIR = "Players/";
 	static const std::string INSTALLATIONS_DIR = "Installations/";
 	static const std::string MARKET_PATH = "data/PlayerMarket/";
+	static const std::string CHAMPIONSHIPS_DIR = "data/championships/";
 	// Files
 	static const std::string FILE_FORMAT = ".json";
 	static const std::string USER_FILE = "user";
@@ -146,6 +180,8 @@ namespace memory
 	static const std::string ALL_TEAM_NAMES = "A_T_N";
 	static const std::string ALL_USER_NAMES = "A_U_N";
 
+	static const std::string ADMIN_DIR = "data/admins/";
+	static const std::string ADMIN_FILE = "admin";
 }
 
 #endif

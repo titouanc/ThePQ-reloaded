@@ -6,6 +6,7 @@
 #include <Constants.hpp>
 #include "Server.hpp"
 #include <sys/stat.h>
+#include <unistd.h>
 #include <model/MemoryAccess.hpp>
 
 using namespace std;
@@ -17,7 +18,7 @@ std::string humanExcName(const char *name)
 	char *str = abi::__cxa_demangle(name, 0, 0, &status);
 	std::string res(str);
 	free(str);
-	return res;
+	return res;	
 }
 
 static void* runTimeLoop(void* args)
@@ -30,8 +31,9 @@ static void* runTimeLoop(void* args)
 Server::Server(NetConfig const & config) : 
 	_inbox(), _outbox(), _users(),
 	_connectionManager(_inbox, _outbox, config.ip.c_str(), config.port, config.maxClients),
-	market(new PlayerMarket(this)),_matches()
+	_market(new PlayerMarket(this)),_matches(),_adminManager(_connectionManager,this)
 {
+	MemoryAccess::load(_championships);
 	_connectionManager.start();
 	cout << "Launched server on " << _connectionManager.ip() << ":" << _connectionManager.port() << endl;
 }
@@ -43,7 +45,7 @@ Server::~Server()
 		(*it)->stop();
 		delete *it;
 	}
-	delete market;
+	delete _market;
 	_matches.clear();
 }
 
@@ -85,6 +87,13 @@ void Server::collectFinishedMatches(void)
 		next = it;
 		next++;
 		if(! (*it)->isRunning()){
+			if( (*it)->isChampMatch()){
+				struct MatchResult & result = (*it)->getResult();
+				Championship* champ = getChampionshipByUsername(result.winner);
+				if (champ != NULL){
+					champ->endMatch(result);
+				}
+			}
 			delete *it;
 			_matches.erase(it);
 		}
@@ -92,9 +101,28 @@ void Server::collectFinishedMatches(void)
 	}
 }
 
-void Server::startMatch(int client_idA, int client_idB)
+Championship* Server::getChampionshipByUsername(std::string username){
+	std::deque<Championship*>::iterator it;
+	for(it=_championships.begin();it<_championships.end();it++){
+		if( (*it)->isUserIn(username) == true){
+			return *it;
+		}
+	}
+	return NULL;
+}
+
+Championship* Server::getChampionshipByName(std::string champName){
+	std::deque<Championship*>::iterator it;
+	for(it=_championships.begin();it<_championships.end();it++){
+		if( (*it)->getName() == champName){
+			return *it;
+		}
+	}
+	return NULL;
+}
+
+void Server::startMatch(int client_idA, int client_idB, bool champMatch)
 {
-	collectFinishedMatches();
 	if (_users.find(client_idA) == _users.end() || 
 		_users.find(client_idB) == _users.end()){
 		return;
@@ -116,7 +144,7 @@ void Server::startMatch(int client_idA, int client_idB)
 	delete json;
 
 	while (_outbox.available()); /* Clear outbox (do not lose msgs) */
-	MatchManager *match = new MatchManager(_connectionManager, squad1, squad2);
+	MatchManager *match = new MatchManager(_connectionManager, squad1, squad2, champMatch);
 	match->start();
 	_matches.push_back(match);
 }
@@ -134,7 +162,15 @@ void Server::treatMessage(const Message &message)
 					delete it->second;
 					_users.erase(it);
 				}
-			} else if (ISDICT(received.get("data"))){
+			}
+			else if(messageType == MSG::ADMIN_LOGIN){
+				_adminManager.acquireClient(message.peer_id);
+				_adminManager.start();
+				_adminManager.transmit(Message(
+					message.peer_id, message.data->clone()
+				));
+			}
+			else if (ISDICT(received.get("data"))){
 				if (messageType == MSG::LOGIN){
 					User *loggedIn = logUserIn(DICT(received.get("data")), message.peer_id);
 					/* If someone successfully logged in; send his offline 
@@ -178,7 +214,13 @@ void Server::treatMessage(const Message &message)
 						sendPlayersOnMarketList(message.peer_id);
 				} else if(messageType == MSG::FRIENDLY_GAME_USERNAME) {
 						sendInvitationToPlayer(data, message.peer_id);
-				} 
+				} else if(messageType == MSG::CHAMPIONSHIPS_LIST) {
+						sendChampionshipsList(message.peer_id);
+				} else if(messageType == MSG::JOIN_CHAMPIONSHIP) {
+						joinChampionship(data, message.peer_id);
+				} else if(messageType == MSG::LEAVE_CHAMPIONSHIP) {
+						leaveChampionship(message.peer_id);
+				}
 			} else if (ISINT(received.get("data"))) {
 				int data = INT(received.get("data"));
 				if (messageType == MSG::INSTALLATION_UPGRADE) {
@@ -419,24 +461,24 @@ void Server::sendInvitationResponseToPlayer(const JSON::Dict &response, int peer
 			Message status(it->first, toSend.clone());
 			_outbox.push(status);
 			if (answer == MSG::FRIENDLY_GAME_INVITATION_ACCEPT){
-				startMatch(peer_id, it->first);
+				startMatch(peer_id, it->first, false);
 			}
 		}
 	}
 }
 
 void Server::addPlayerOnMarket(const JSON::Dict &sale, int peer_id){
-	Message status(peer_id, market->addPlayer(sale).clone());
+	Message status(peer_id, _market->addPlayer(sale).clone());
 	_outbox.push(status);
 }
 
 void Server::sendPlayersOnMarketList(int peer_id){
-	Message status(peer_id, market->allSales().clone());
+	Message status(peer_id, _market->allSales().clone());
 	_outbox.push(status);
 }
 
 void Server::placeBidOnPlayer(const JSON::Dict &bid, int peer_id){
-	Message status(peer_id, market->bid(bid).clone());
+	Message status(peer_id, _market->bid(bid).clone());
 	_outbox.push(status);
 }
 
@@ -506,6 +548,7 @@ void Server::timeLoop()
 			while (timeNow - timePrev < 10);
 			cout << "It is  : " << ctime(&timeNow);
 			timePrev = timeNow;
+			collectFinishedMatches();
 			timeUpdateStadium();
 			timeUpdateChampionship();
 		}
@@ -530,6 +573,59 @@ void Server::timeUpdateStadium()
 	}
 }
 
+void Server::responsePendingChampMatch(std::string response, int peer_id){
+	std::string sender = _users[peer_id]->getUsername();
+	std::string opponent;
+	JSON::Dict toSender, toOtherUser;
+	toSender.set("type",net::MSG::CHAMPIONSHIP_MATCH_STATUS);
+	toOtherUser.set("type",net::MSG::CHAMPIONSHIP_MATCH_STATUS);
+	Schedule* pending = getPendingMatchByUsername(sender);
+	if(pending == NULL){
+		toSender.set("data",net::MSG::CHAMPIONSHIP_MATCH_NOT_FOUND);
+		Message status(peer_id, toSender.clone());
+		_outbox.push(status);
+		return;
+	}
+	else{
+		opponent = (pending->user1 == sender) ? pending->user2 : pending->user1;
+		if(response == net::MSG::CHAMPIONSHIP_MATCH_READY){
+			(pending->user1 == sender) ? pending->statusUser1 = net::MSG::CHAMPIONSHIP_MATCH_READY : pending->statusUser2 = net::MSG::CHAMPIONSHIP_MATCH_READY;
+			toSender.set("data",net::MSG::CHAMPIONSHIP_MATCH_WAIT);
+			toOtherUser.set("data",net::MSG::CHAMPIONSHIP_MATCH_OPPONENT_READY);
+		}
+		else if(response == net::MSG::CHAMPIONSHIP_MATCH_WITHDRAW){
+			(pending->user1 == sender) ? pending->statusUser1 = net::MSG::CHAMPIONSHIP_MATCH_WITHDRAW : pending->statusUser2 = net::MSG::CHAMPIONSHIP_MATCH_WITHDRAW;
+			//TODO : notify championship
+			toSender.set("data",net::MSG::CHAMPIONSHIP_MATCH_WITHDRAW);
+			toOtherUser.set("data",net::MSG::CHAMPIONSHIP_MATCH_OPPONENT_WITHDRAW);
+		}
+		if(pending->statusUser1 == net::MSG::CHAMPIONSHIP_MATCH_READY && pending->statusUser2 == net::MSG::CHAMPIONSHIP_MATCH_READY){
+			//TODO : an user dc'ed after saying "ready"
+			toSender.set("data",net::MSG::CHAMPIONSHIP_MATCH_READY);
+			toOtherUser.set("data",net::MSG::CHAMPIONSHIP_MATCH_READY);
+			startMatch(getPeerID(pending->user1),getPeerID(pending->user2),true);
+		}
+	}
+	Message status(peer_id, toSender.clone());
+	_outbox.push(status); 
+	sendChampionshipNotification(opponent,toOtherUser);
+}
+
+void Server::sendNotification(std::string username, const JSON::Dict & toSend){
+	int to_peer = getPeerID(username);
+	if (to_peer >= 0){
+		/* User currently connected to server */
+		Message status(to_peer, toSend.clone());
+		_outbox.push(status); 
+	} else {
+		User *user = User::load(username);
+		if (user != NULL){
+			user->sendOfflineMsg(toSend);
+			delete user;
+		}
+	}
+}
+
 void Server::timeUpdateChampionship()
 {
 	for (size_t i = 0; i < _championships.size(); ++i)
@@ -538,22 +634,135 @@ void Server::timeUpdateChampionship()
 		while (next != NULL)
 		{
 			next->isHappening = true;
-			int clientIDA, clientIDB;
-			map<int, User*>::iterator it = _users.begin();
-			while (it != _users.end())
-			{
-				if (it->second->getUsername() == next->user1)
-				{
-					clientIDA = it->first;
-				}
-				else if (it->second->getUsername() == next->user2)
-				{
-					clientIDB = it->first;
-				}
-				it++;
-			}
-			startMatch(clientIDA, clientIDB);
+			_pendingChampMatches.push_back(next);
+			notifyPendingChampMatch(next->user1);
+			notifyPendingChampMatch(next->user2);
 			next = _championships[i]->nextMatch();
 		}
+		if(_championships[i]->isEnded()){
+			pthread_mutex_lock(&_champsMutex);
+			delete _championships[i]; 
+			_championships.erase(_championships.begin()+i);
+			--i;
+			pthread_mutex_unlock(&_champsMutex);
+		}
 	}
+	//Check in waiting matches if offset is over
+	time_t now = time(NULL);
+	for (size_t i = 0; i < _pendingChampMatches.size(); ++i)
+	{
+		if(abs(difftime(now, _pendingChampMatches[i]->date)) > gameconfig::MAX_CHAMP_MATCH_OFFSET){
+			//Time range over, resolve match
+			Schedule & pending = *(_pendingChampMatches[i]);
+			MatchResult res;
+			//Both users will never be ready here, because it means match has started.
+			if (pending.statusUser1 == net::MSG::CHAMPIONSHIP_MATCH_READY){
+				res.winner = pending.user1;
+				res.loser = pending.user2;
+			}
+			else if (pending.statusUser2 == net::MSG::CHAMPIONSHIP_MATCH_READY){
+				res.winner = pending.user2;
+				res.loser = pending.user1;
+			}
+			//Else none user responded to notification : random the winner...
+			else{
+				int randWinner = rand() % 2 + 1;
+				std::string winner = (randWinner == 1) ? pending.user1 : pending.user2;
+				std::string loser = (winner == pending.user1) ? pending.user2 : pending.user1;
+				res.winner = winner;
+				res.loser = loser;
+			}
+			Championship* champ = getChampionshipByUsername(res.winner);
+			if (champ != NULL) 
+				champ->endMatch(res);
+		}
+	}
+}
+
+void Server::sendChampionshipNotification(std::string username, const JSON::Dict& data){
+	JSON::Dict toSend;
+	toSend.set("type",net::MSG::CHAMPIONSHIP_NOTIFICATION);
+	toSend.set("data",data);
+	sendNotification(username,toSend);
+}
+
+Schedule* Server::getPendingMatchByUsername(std::string username){
+	std::deque<Schedule*>::iterator it;
+	for(it=_pendingChampMatches.begin();it<_pendingChampMatches.end();++it){
+		if((*it)->user1 == username || (*it)->user2 == username)
+			return (*it);
+	}
+	return NULL;
+}
+
+void Server::notifyPendingChampMatch(std::string username){
+	JSON::Dict toSend;
+	toSend.set("type",net::MSG::CHAMPIONSHIP_MATCH_CAN_START);
+	toSend.set("data","");
+	sendChampionshipNotification(username,toSend);
+}
+
+void Server::addChampionship(const Championship& champ){
+	pthread_mutex_lock(&_champsMutex);
+	Championship* newChamp = new Championship(champ);
+	_championships.push_back(newChamp);
+	MemoryAccess::save(*newChamp);
+	pthread_mutex_unlock(&_champsMutex);
+}
+
+void Server::sendChampionshipsList(int peer_id){
+	JSON::Dict toSend;
+	toSend.set("type",net::MSG::CHAMPIONSHIPS_LIST);
+	JSON::List champs;
+	std::deque<Championship*>::iterator it;
+	pthread_mutex_lock(&_champsMutex);
+	for(it = _championships.begin();it < _championships.end();++it){
+		if(!(*it)->isStarted())
+			champs.append(JSON::Dict(*(*it)));
+	}
+	pthread_mutex_unlock(&_champsMutex);
+	toSend.set("data",champs);
+	Message status(peer_id, toSend.clone());
+	_outbox.push(status);
+}
+
+void Server::leaveChampionship(int peer_id){
+	JSON::Dict toSend;
+	toSend.set("type",net::MSG::LEAVE_CHAMPIONSHIP);
+	std::string username = _users[peer_id]->getUsername();
+	pthread_mutex_lock(&_champsMutex);
+	Championship* champ = getChampionshipByUsername(username);
+	if (champ == NULL)
+		toSend.set("data",net::MSG::NOT_IN_CHAMPIONSHIP);
+	else if(champ->isStarted())
+		toSend.set("data",net::MSG::CHAMPIONSHIP_STARTED);
+	else{
+		champ->removeUser(*(_users[peer_id]));
+		toSend.set("data",net::MSG::REMOVED_FROM_CHAMPIONSHIP);
+	}
+	pthread_mutex_unlock(&_champsMutex);
+	Message status(peer_id, toSend.clone());
+	_outbox.push(status);
+}
+
+void Server::joinChampionship(std::string champName, int peer_id){
+	JSON::Dict toSend;
+	toSend.set("type",net::MSG::JOIN_CHAMPIONSHIP);
+	pthread_mutex_lock(&_champsMutex);
+	Championship* champ = getChampionshipByName(champName);
+	if(champ == NULL)
+		toSend.set("data",net::MSG::CHAMPIONSHIP_NOT_FOUND);
+	else if(champ->isFull())
+		toSend.set("data",net::MSG::CHAMPIONSHIP_FULL);
+	else if(getChampionshipByUsername(_users[peer_id]->getUsername()) != NULL)
+		toSend.set("data",net::MSG::ALREADY_IN_CHAMPIONSHIP);
+	else if(champ->isStarted())
+		toSend.set("data",net::MSG::CHAMPIONSHIP_STARTED);
+	else{
+		champ->addUser(*(_users[peer_id]));
+		toSend.set("data",net::MSG::ADDED_TO_CHAMPIONSHIP);
+	}
+	pthread_mutex_unlock(&_champsMutex);
+	Message status(peer_id, toSend.clone());
+	_outbox.push(status);
 }

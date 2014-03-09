@@ -8,12 +8,14 @@
 #include "MatchResult.hpp"
 #include "User.hpp"
 
+
 struct Schedule
 {
 	std::string user1;
 	std::string user2;
 	time_t date;
 	bool isHappening;
+	std::string statusUser1, statusUser2;
 	Schedule(std::string u1, std::string u2, clock_t d) : user1(u1), user2(u2), date(d), isHappening(false) {}
 	Schedule(JSON::Dict const & json)
 	{
@@ -35,29 +37,38 @@ struct Schedule
 
 class Championship
 {
+	friend std::ostream& operator<< (std::ostream&, const Championship&);
 public:
-	Championship(size_t nbOfTurns = 3);
+	Championship(size_t nbOfTurns = 3,std::string name="");
 	~Championship();
 	Championship(JSON::Dict const & json);
 	operator JSON::Dict();
+
 
 	void addUser(User & user);
 	void removeUser(User & user);
 	Schedule* nextMatch();
 	void endMatch(MatchResult & result);
 
-	bool isStarted() { return _isStarted; }
+	bool isFull() const { return _users.size() == _nbOfUsers; }
+	bool isEnded() const { return _isEnded; }
+	bool isStarted() const { return _isStarted; }
+	std::string getName() const { return _name; }
 	size_t getNbOfUsers() { return _nbOfUsers; }
 	std::vector<std::string>& getUsers() { return _users; }
+	bool isUserIn(std::string username);
 
 private:
 	bool _isStarted;
+	bool _isEnded;
+	std::string _name;
+	int _turn;
 	size_t _nbOfUsers;
 	std::vector<std::string> _users;
 	std::vector<Schedule> _schedules;
 
 	void start();
-	bool isUserIn(User & user);
+	
 };
 
 #endif // __CHAMPIONSHIP_HPP

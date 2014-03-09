@@ -6,6 +6,7 @@
 #include <model/Installation.hpp>
 #include <model/Sale.hpp>
 #include <model/Player.hpp>
+#include <model/Championship.hpp>
 
 struct UserData
 {
@@ -41,6 +42,7 @@ struct UserData
 	// Cache
 	std::vector<Installation*> installations;
 	std::vector<Player> players;
+	Championship joinedChamp;
 	std::string username;
 	std::string teamname;
 	int funds;

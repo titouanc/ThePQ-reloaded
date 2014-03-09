@@ -20,6 +20,8 @@ class AlreadyLoggedInException : public std::runtime_error {
 public:
 	AlreadyLoggedInException():runtime_error("Already logged in"){};
 };
+
+//-----Team name--------
 class TeamNameNotAvailableException : public std::runtime_error {
 public:
 	TeamNameNotAvailableException():runtime_error("Teamname not available"){};
@@ -91,6 +93,12 @@ public:
 class UserDeniedException : public std::runtime_error{
 public:
 	UserDeniedException():runtime_error("Player denied your invitation"){};
+};
+
+// ----------Champ creation-----------
+class ChampionshipNameError : public std::runtime_error {
+public:
+	ChampionshipNameError():runtime_error("Champ name exists"){};
 };
 
 #endif // __EXCEPTION_HPP

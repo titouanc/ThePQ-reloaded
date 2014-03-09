@@ -5,6 +5,7 @@
 #include <cstring>
 #include <sstream>
 #include <cstdint>
+#include <toolbox.hpp>
 
 extern "C" {
     #include <errno.h>
@@ -33,6 +34,7 @@ BaseConnectionManager::BaseConnectionManager(
 {
     pthread_mutex_init(&_mutex, NULL);
     pthread_mutex_init(&_fdset_mutex, NULL);
+    pthread_cond_init(&_fdset_cond, NULL);
 }
 
 BaseConnectionManager::~BaseConnectionManager()
@@ -48,6 +50,7 @@ BaseConnectionManager::~BaseConnectionManager()
     }
     pthread_mutex_destroy(&_mutex);
     pthread_mutex_destroy(&_fdset_mutex);
+    pthread_cond_destroy(&_fdset_cond);
 }
 
 bool BaseConnectionManager::_doWrite(int fd, const JSON::Value *obj)
@@ -106,8 +109,9 @@ bool BaseConnectionManager::_doRead(int fd)
     }
     if (r < 0 || i == 0)
         return false;
-
+    std::cout<<"GLOBALBUF : "<<globalBuf.str()<<std::endl;
     JSON::Value *res = JSON::parse(globalBuf.str().c_str());
+    std::cout<<"AFTER PARSE : "<<*res <<std::endl;
     if (res != NULL){
         if (ISDICT(res) && 
             ISSTR(DICT(res).get("type")) &&
@@ -116,7 +120,6 @@ bool BaseConnectionManager::_doRead(int fd)
             if (_logger)
                 std::cout << "[" << this << "] "<< "\033[1m" << fd 
                           << " \033[33m>>\033[0m " << *res << std::endl;
-
             _incoming.push(Message(fd, res));
         } else {
             delete res;
@@ -158,6 +161,8 @@ int BaseConnectionManager::_doSelect(int fdmax, fd_set *readable)
      * of the client
      */
     pthread_mutex_lock(&_fdset_mutex);
+    while (fdmax == 0 && _clients.empty())
+        pthread_cond_wait(&_fdset_cond, &_fdset_mutex);
     std::set<int>::iterator it;
     for (it=_clients.begin(); it!=_clients.end(); it++){
         FD_SET(*it, readable);
@@ -211,12 +216,18 @@ size_t BaseConnectionManager::nClients(void)
     return _clients.size();
 }
 
+bool BaseConnectionManager::hasClient(int client_id)
+{
+    return _clients.find(client_id) != _clients.end();
+}
+
 void BaseConnectionManager::addClient(int fd)
 {
     /*Method allowing the addition of a client to the server*/
     pthread_mutex_lock(&_fdset_mutex);
     _clients.insert(fd);
     pthread_mutex_unlock(&_fdset_mutex);
+    pthread_cond_signal(&_fdset_cond);
 }
 
 bool BaseConnectionManager::removeClient(int fd)
@@ -295,4 +306,9 @@ bool BaseConnectionManager::isRunning(void)
         pthread_mutex_unlock(&_mutex);
     }
     return res;
+}
+
+void BaseConnectionManager::transmit(Message const & msg)
+{
+    _incoming.push(msg);
 }

@@ -15,6 +15,7 @@
 #include <network/ConnectionManager.hpp>
 #include <model/Player.hpp>
 #include <model/Squad.hpp>
+#include <model/MatchResult.hpp>
 #include <Constants.hpp>
 #include <network/SubConnectionManager.hpp>
 
@@ -39,7 +40,8 @@ class MatchManager : public SubConnectionManager {
 		Pitch  _pitch;
 		SharedQueue<Message> _inbox, _outbox;
 		unsigned int _score[2];
-
+		bool _champMatch;
+		struct MatchResult _matchRes;
 		/* Current match deltas */
 		JSON::List _turnDeltas;
 
@@ -98,11 +100,14 @@ class MatchManager : public SubConnectionManager {
 	public:
 		MatchManager(
 			BaseConnectionManager & connections, 
-			Squad const & squadA, Squad const & squadB
+			Squad const & squadA, Squad const & squadB,
+			bool champMatch
 		);
 		virtual ~MatchManager();
 		/* Run dat shit */
 		void _mainloop_out();
+		bool isChampMatch();
+		MatchResult& getResult();
 };
 
 #endif
