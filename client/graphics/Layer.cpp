@@ -1,6 +1,7 @@
 #include "Layer.hpp"
 #include "TableView.hpp"
 #include "SFML/Window.hpp"
+#include <stdlib.h> // itoa
 
 using namespace std;
 using namespace GUI;
@@ -119,6 +120,12 @@ GUI::Textbox & GUI::Layer::addTextbox(string id){
 
 GUI::Label & GUI::Layer::addLabel(std::string text, sf::Color color){
 	Label* res = new Label(text, color);
+	_labels.push_back(res);
+	return *res;
+}
+
+GUI::Label & GUI::Layer::addLabel(int number, sf::Color color){
+	Label* res = new Label(number, color);
 	_labels.push_back(res);
 	return *res;
 }

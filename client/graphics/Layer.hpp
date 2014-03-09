@@ -37,6 +37,7 @@ namespace GUI {
 								T* target, std::string text="Button");
 		GUI::Textbox & addTextbox(std::string id);
 		GUI::Label & addLabel(std::string text, sf::Color color=BODY_TEXT_COLOR);
+		GUI::Label & addLabel(int number, sf::Color color=BODY_TEXT_COLOR);
 		GUI::TableCell & addTableCell();
 		GUI::TableView & addTableView(int columns=1, int padding=5);
 

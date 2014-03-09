@@ -37,10 +37,13 @@ void GraphicStadiumManager::displayInstallations()
 	_canvas.clear();
 
 	TableView & installations = _canvas.addTableView(2, 10);
+	installations.setPosition(100, 100);
 
 	for (size_t i = 0; i < user().installations.size(); ++i){
-		TableCell & current = installations.addTableCell(300, 300, sf::Color(0xee, 0xee, 0xee, 0xff));
-		current.addLabel(user().installations[i]->getName()).setPosition(10, 10);	
+		TableCell & current = installations.addTableCell(250, 250, sf::Color(0xee, 0xee, 0xee, 0xff));
+		current.addLabel(user().installations[i]->getName()).setPosition(10, 10);
+		Label &levelLabel = current.addLabel(user().installations[i]->getLevel());	
+		levelLabel.setPosition(250-10-levelLabel.getWidth(), 10);
 	}
 
 	redrawCanvas();
