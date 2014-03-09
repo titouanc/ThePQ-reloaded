@@ -11,7 +11,7 @@ class ClientManager {
 	private:
 		net::ClientConnectionManager & _connection;
 		UserData & _user;
-		std::queue<std::string> & _notifications;
+		std::queue<JSON::Dict> & _notifications;
 
 	protected:
 		/* Return connection object */
@@ -20,8 +20,11 @@ class ClientManager {
 		/* Return logged in user */
 		UserData & user() const;
 
+		/* Return nb notifications */
+		int getNbNotifications() const;
+
 		/* Return notifications queue */
-		std::queue<std::string> & notifications() const;
+		std::queue<JSON::Dict> & notifications() const;
 
 		/* Shortcut to send {"type": "<type>", "data": <data>} */
 		void say(std::string const & type, JSON::Value const & data);
@@ -39,10 +42,23 @@ class ClientManager {
 		/* Send methods */
 		void loadPlayers();
 
+
+		/* Notifications handlers */
+		/* pop() a notification and handles it */
+		void handleNotification();
+
 		/* handle message for end of player sale */
-		void onEndOfSale(JSON::Dict const & json);
+		std::string onEndOfSale(JSON::Dict const & json);
+
+		/* response to invitation */
+		void acceptInvitationFromUser(std::string);
+		void denyInvitationFromUser(std::string);
+
 
 		/* Hooks */
+		/* Displays a message */
+		virtual void onMessage(std::string const & message) {}
+
 		/* Triggered when we receive a match invitation */
 		virtual void onInvite(std::string const & otherUser) {}
 
@@ -59,7 +75,7 @@ class ClientManager {
 		ClientManager(
 			net::ClientConnectionManager & connection, 
 			UserData & user, 
-			std::queue<std::string> & notifications
+			std::queue<JSON::Dict> & notifications
 		);
 
 		/* Copy constructor: init userdata and connection from parent */

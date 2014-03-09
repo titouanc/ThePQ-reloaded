@@ -7,30 +7,7 @@ void CLI::prompt() const
 	cout << " > ";
 }
 
-bool CLI::askForNotificationHandling() const
-{
-	Menu _menu;
-	_menu.addToDisplay("   - handle this notification\n");
-	_menu.addToDisplay("   - see next notification\n");
-	int option;
-	do
-	{
-		option = _menu.run();
-		switch(option)
-		{
-			case 1:
-				return true;
-				break;
-			case 2:
-				return false;
-				break;
-			default:
-				cout << "Wrong option entered" << endl;
-				break;
-		}
-	}
-	while (true);
-}
+
 
 void CLI::splashScreen() const
 {

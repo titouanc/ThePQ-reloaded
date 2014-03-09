@@ -19,6 +19,10 @@ public:
 	void onRegisterUser(std::string const & data);
 	void onTeamName(std::string const & teamname);
 
+	void askForNotificationHandling();
+	void onInvite(std::string const & username);
+	void onMessage(std::string const & message);
+
 private:
 };
 

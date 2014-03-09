@@ -10,7 +10,12 @@ UserData & ClientManager::user() const
 	return _user;
 }
 
-std::queue<std::string> & ClientManager::notifications() const
+int ClientManager::getNbNotifications() const
+{
+	return (int)_notifications.size();
+}
+
+std::queue<JSON::Dict> & ClientManager::notifications() const
 {
 	return _notifications;
 }
@@ -30,17 +35,18 @@ void ClientManager::treatMessage(std::string const & type, JSON::Value const * d
 	{
 		onTeamInfo(DICT(data));
 	}
-	else if (type == net::MSG::MARKET_MESSAGE)
-	{
-		onEndOfSale(DICT(data));
-	}
 	else if (type == net::MSG::PLAYERS_LIST)
 	{
 		onPlayersLoad(LIST(data));
 	}
-	else if (type == net::MSG::FRIENDLY_GAME_INVITATION)
+
+	//Notifications, wait for user to handle
+	else if (type == net::MSG::MARKET_MESSAGE || type == net::MSG::FRIENDLY_GAME_INVITATION)
 	{
-		onInvite(STR(data).value());
+		JSON::Dict notif;
+		notif.set("type",JSON::String(type));
+		notif.set("data",*data);
+		_notifications.push(notif);
 	}
 }
 
@@ -68,7 +74,19 @@ void ClientManager::readMessages()
     	readMessage();
 }
 
-void ClientManager::onEndOfSale(JSON::Dict const & json)
+void ClientManager::handleNotification(){
+	if(! _notifications.empty()){
+		JSON::Dict popped = _notifications.front();
+		_notifications.pop();
+		std::string type = STR(popped.get("type")).value();
+		if(type == net::MSG::FRIENDLY_GAME_INVITATION)
+			onInvite(STR(popped.get("data")).value());
+		else if(type == net::MSG::MARKET_MESSAGE)
+			onMessage(onEndOfSale(DICT(popped.get("data"))));
+	}
+}
+
+std::string ClientManager::onEndOfSale(JSON::Dict const & json)
 {
 	std::stringstream res;
 	res << "\n\033[36mMessage : a sale has ended.\033[0m" << endl;
@@ -90,7 +108,23 @@ void ClientManager::onEndOfSale(JSON::Dict const & json)
 			res << "This player comes from " << owner << "'s team." << endl;
 	}
 	res<<endl;
-	_notifications.push(res.str());
+	return res.str();
+}
+
+void ClientManager::acceptInvitationFromUser(string username){
+	JSON::Dict data = {
+		{ "username", JSON::String(username) },
+		{ "answer", JSON::String(net::MSG::FRIENDLY_GAME_INVITATION_ACCEPT) }
+	};
+	say (net::MSG::FRIENDLY_GAME_INVITATION_RESPONSE, data);
+}
+
+void ClientManager::denyInvitationFromUser(string username){
+	JSON::Dict data {
+		{ "username", JSON::String(username) },
+		{ "answer", JSON::String(net::MSG::FRIENDLY_GAME_INVITATION_DENY) }
+	};
+	say(net::MSG::FRIENDLY_GAME_INVITATION_RESPONSE, data);
 }
 
 void ClientManager::onPlayersLoad(JSON::List const & players)
@@ -102,7 +136,6 @@ void ClientManager::onPlayersLoad(JSON::List const & players)
 	}
 }
 
-
 void ClientManager::onTeamInfo(UserData const & user)
 {
 	_user.username = user.username;
@@ -113,7 +146,7 @@ void ClientManager::onTeamInfo(UserData const & user)
 ClientManager::ClientManager(
 	net::ClientConnectionManager & connection, 
 	UserData & user,
-	std::queue<std::string> & notifications
+	std::queue<JSON::Dict> & notifications
 ) : 
 _connection(connection), _user(user), _notifications(notifications)
 {}

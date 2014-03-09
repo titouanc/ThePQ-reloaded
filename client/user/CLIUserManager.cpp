@@ -5,6 +5,7 @@
 #include <market/CLIMarketManager.hpp>
 #include <fgame/CLIFGameManager.hpp>
 #include <championship/CLIChampionshipManager.hpp>
+#include <match/CLIMatchManager.hpp>
 #include <iostream>
 using namespace std;
 
@@ -92,6 +93,7 @@ void CLIUserManager::showMainMenu()
 	_menu.addToDisplay("   - access market\n");
 	_menu.addToDisplay("   - play a friendly game\n");
 	_menu.addToDisplay("   - access championships\n");
+	_menu.addToDisplay("   - handle notifications\n");
 	_menu.addToDisplay("   - quit\n");
 	int option;
 	do
@@ -112,12 +114,15 @@ void CLIUserManager::showMainMenu()
 				champManager.run();
 				break;
 			case 5:
+				askForNotificationHandling();
+				break;
+			case 6:
 				logoutUser();
 			default:
 				break;
 		}
 	}
-	while (option != 5);
+	while (option != 6);
 }
 
 /* Management menu */
@@ -203,4 +208,69 @@ void CLIUserManager::onTeamName(std::string const & data)
 	{
 		cout << "That teamname is \033[31mnot\033[0m available, pick up another one." << endl;
 	}
+}
+
+void CLIUserManager::askForNotificationHandling()
+{
+	readMessages();
+	Menu _menu;
+	_menu.addToDisplay("   - handle this notification\n");
+	_menu.addToDisplay("   - update list\n");
+	_menu.addToDisplay("   - quit to main menu\n");
+	int option;
+	do
+	{
+		cout << "You have \033[34m" << getNbNotifications() << "\033[0m notifications." << endl; 
+		option = _menu.run();
+		switch(option)
+		{
+			case 1:
+				handleNotification();
+				break;
+			case 2:
+				readMessages();
+				break;
+			default:
+				cout << "Wrong option entered" << endl;
+				break;
+		}
+	}
+	while (option!=3);
+}
+
+void CLIUserManager::onInvite(std::string const & user)
+{
+	cout << user << " invited you to a game" << endl;
+	Menu _menu;
+	_menu.addToDisplay("   - accept\n");
+	_menu.addToDisplay("   - deny\n");
+	int option;
+	bool ok = false;
+	do
+	{
+		option = _menu.run();
+		if (option == 1){
+			ok = true;
+			
+			acceptInvitationFromUser(user);
+			CLIMatchManager match(*this); 
+			match.run();
+			
+			//startGUIMatch(*this);
+
+			break;
+		} else if (option == 2){
+			ok = true;
+			denyInvitationFromUser(user);
+			break;
+		} else {
+			cout << "Wrong option entered" << endl;
+			break;
+		}
+	}
+	while(! ok);
+}
+
+void CLIUserManager::onMessage(std::string const & message){
+	cout << message << endl;;
 }

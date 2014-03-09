@@ -100,35 +100,3 @@ void CLIFGameManager::onUserNotFound(std::string const & name)
 	_pending--;
 }
 
-void CLIFGameManager::onInvite(std::string const & user)
-{
-	cout << user << " invited you to a game" << endl;
-	Menu _menu;
-	_menu.addToDisplay("   - accept\n");
-	_menu.addToDisplay("   - deny\n");
-	int option;
-	bool ok = false;
-	do
-	{
-		option = _menu.run();
-		if (option == 1){
-			ok = true;
-			
-			acceptInvitationFromUser(user);
-			//CLIMatchManager match(*this); 
-			//match.run();
-			
-			startGUIMatch(*this);
-
-			break;
-		} else if (option == 2){
-			ok = true;
-			denyInvitationFromUser(user);
-			break;
-		} else {
-			cout << "Wrong option entered" << endl;
-			break;
-		}
-	}
-	while(! ok);
-}

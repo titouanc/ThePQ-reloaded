@@ -30,7 +30,7 @@ public:
 private:
     UserData _user;
     net::ClientConnectionManager _connection;
-    std::queue<std::string> _notifications;
+    std::queue<JSON::Dict> _notifications;
     GUI::MainController _controller;
     GraphicUserManager _gUserManager;
 };
