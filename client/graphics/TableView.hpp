@@ -66,6 +66,16 @@ namespace GUI {
 					Widget(MARGIN, MARGIN, 400, 600, false), _columnsNbr(columns), 
 					_padding(padding) {
 		}
+		~TableView(){
+			for (unsigned int i = 0; i < _elements.size(); ++i) 
+				delete _elements[i];
+			_elements.clear();
+		}
+		TableCell * addTableCell(int w=400, int h=100, sf::Color backgroundColor=sf::Color(0xff, 0xff, 0xff, 0xff)){
+			TableCell *res = new TableCell(w, h, backgroundColor);
+			append(res);
+			return res;
+		}
 		void append(TableCell* toAppend){ 
 			_elements.push_back(toAppend); 
 		}
