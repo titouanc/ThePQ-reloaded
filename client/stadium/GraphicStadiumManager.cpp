@@ -34,14 +34,17 @@ void GraphicStadiumManager::displayPlayers()
 {
 	_canvas.clear();
 
-	TableView & playerList = _canvas.addTableView(3);
+	TableView & playerList = _canvas.addTableView(3, 0);
+	/* Header line */
 	playerList.addTableCell(300, 50).addLabel("Name");
 	playerList.addTableCell(100, 50).addLabel("Life");
 	playerList.addTableCell(100, 50).addLabel("Mana");
+
+	/* Content */
 	for (Player & player : user().players){
-		playerList.addTableCell(300, 30).addLabel(player.getName());
-		playerList.addTableCell(100, 30).addLabel(player.getRemainingLife());
-		playerList.addTableCell(100, 30).addLabel(player.getRemainingMana());
+		playerList.addTableCell().addLabel(player.getName());
+		playerList.addTableCell().addLabel(player.getRemainingLife());
+		playerList.addTableCell().addLabel(player.getRemainingMana());
 	}
 
 	_canvas.addButton<GraphicStadiumManager>(

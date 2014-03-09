@@ -80,16 +80,17 @@ namespace GUI {
 			_elements.push_back(toAppend); 
 		}
 		void renderTo(sf::RenderTarget & dest){
-			if (_elements.size() > 0){
-				for (unsigned int i = 0; i < _elements.size(); ++i)
-				{
-					int x = _x + (i%_columnsNbr)*(_elements[0]->getWidth())+ (i%_columnsNbr)*_padding;
-					int y = _y + (i/_columnsNbr)*(_elements[0]->getHeight()) + (i/_columnsNbr)*_padding;
-					_elements[i]->setPosition(x, y);
-					_elements[i]->renderTo(dest);
-				}
+			int x, y;
+			for (unsigned int i=0; i<_elements.size(); ++i){
+				int col=i%_columnsNbr, row=i/_columnsNbr;
+				if (col == 0)
+					x = _x;
+				else
+					x += _elements[col-1]->getWidth() + _padding;
+				y = _y + row*(_elements[0]->getHeight()) + row*_padding;
+				_elements[i]->setPosition(x, y);
+				_elements[i]->renderTo(dest);
 			}
-			
 		}
 
 		void handleClick(int x, int y){
