@@ -47,7 +47,10 @@ void GraphicMarketManager::onSalesUpdate()
 		playerList.addTableCell().addLabel(sale.getCurrentBidder());
 		playerList.addTableCell().addLabel(sale.getNextBidValue());
 		playerList.addTableCell().addLabel(sale.getTimeLeft());
-		playerList.addTableCell().addLabel("BID");
+		playerList.addTableCell().addButton<GraphicMarketManager, int>(
+			&GraphicMarketManager::test, sale.getPlayer().getMemberID(),
+			this, "BID"
+		);
 	}
 
 	_canvas.addButton<GraphicMarketManager>(
@@ -57,4 +60,14 @@ void GraphicMarketManager::onSalesUpdate()
 	backButton().setPosition(1050, 650);
 
 	redrawCanvas();
+}
+
+void GraphicMarketManager::onBidOK()
+{
+	updateSales();
+}
+
+void GraphicMarketManager::onBidError(std::string const & err)
+{
+	updateSales();
 }

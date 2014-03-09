@@ -9,11 +9,18 @@ class GraphicMarketManager : public MarketManager, public GUI::GraphicManager
 public:
 	GraphicMarketManager(ClientManager const & parent, GUI::MainController &controller);
 	~GraphicMarketManager(){}
+
+	void test(int data){
+		std::cout << "DATA: " << data << std::endl;
+	}
 private:
 	void updateSales();
-	void onSalesUpdate();
 
-	void doNothing();
+	/* HOOKS */
+	void onSalesUpdate();
+	void onBidOK();
+	void onBidError(std::string const & err);
+
 	bool _wait;
 };
 
