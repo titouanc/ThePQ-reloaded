@@ -71,10 +71,10 @@ namespace GUI {
 				delete _elements[i];
 			_elements.clear();
 		}
-		TableCell * addTableCell(int w=400, int h=100, sf::Color backgroundColor=sf::Color(0xff, 0xff, 0xff, 0xff)){
+		TableCell & addTableCell(int w=400, int h=100, sf::Color backgroundColor=sf::Color(0xff, 0xff, 0xff, 0xff)){
 			TableCell *res = new TableCell(w, h, backgroundColor);
 			append(res);
-			return res;
+			return *res;
 		}
 		void append(TableCell* toAppend){ 
 			_elements.push_back(toAppend); 
