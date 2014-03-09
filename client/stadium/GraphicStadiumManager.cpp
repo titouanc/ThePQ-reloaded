@@ -68,6 +68,8 @@ void GraphicStadiumManager::displayInstallations()
 		levelLabel.setColor(BLUE_TEXT_COLOR);
 	}
 
+	backButton().setPosition(900, 650);
+
 	redrawCanvas();
 }
 
