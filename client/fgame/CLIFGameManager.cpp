@@ -73,8 +73,7 @@ void CLIFGameManager::onOtherAccept(std::string const & name)
 	cout << "\033[1m" << name 
 		 << " \033[32mhas accepted to play a friendly game !\033[0m" << endl;
 	_pending--;
-	CLIMatchManager match(*this);
-	match.run();
+	onMatchStart();
 }
 
 void CLIFGameManager::onOtherDeny(std::string const & name)
@@ -91,33 +90,7 @@ void CLIFGameManager::onUserNotFound(std::string const & name)
 	_pending--;
 }
 
-void CLIFGameManager::onInvite(std::string const & user)
-{
-	cout << user << " invited you to a game" << endl;
-	Menu _menu;
-	_menu.addToDisplay("   - accept\n");
-	_menu.addToDisplay("   - deny\n");
-	int option;
-	bool ok = false;
-	do
-	{
-		option = _menu.run();
-		if (option == 1){
-			ok = true;
-			
-			acceptInvitationFromUser(user);
-			CLIMatchManager match(*this); 
-			match.run();
-
-			break;
-		} else if (option == 2){
-			ok = true;
-			denyInvitationFromUser(user);
-			break;
-		} else {
-			cout << "Wrong option entered" << endl;
-			break;
-		}
-	}
-	while(! ok);
+void CLIFGameManager::onMatchStart(){
+	CLIMatchManager match(*this); 
+	match.run();
 }

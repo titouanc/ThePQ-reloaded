@@ -13,7 +13,7 @@
 #include <queue>
 #include "user/CLIUserManager.hpp"
 #include "UserData.hpp"
-
+#include <json/json.hpp>
 
 struct NetConfig : public Config {
     std::string host;
@@ -44,7 +44,7 @@ public:
 private:
 	// Cache
 	UserData _user;
-	std::queue<std::string> _notifications;
+	std::queue<JSON::Dict> _notifications;
 	
 	// Managers
 	net::ClientConnectionManager _connection;

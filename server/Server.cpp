@@ -580,13 +580,7 @@ void Server::responsePendingChampMatch(std::string response, int peer_id){
 	toSender.set("type",net::MSG::CHAMPIONSHIP_MATCH_STATUS);
 	toOtherUser.set("type",net::MSG::CHAMPIONSHIP_MATCH_STATUS);
 	Schedule* pending = getPendingMatchByUsername(sender);
-	if(pending == NULL){
-		toSender.set("data",net::MSG::CHAMPIONSHIP_MATCH_NOT_FOUND);
-		Message status(peer_id, toSender.clone());
-		_outbox.push(status);
-		return;
-	}
-	else{
+	if(pending != NULL){
 		opponent = (pending->user1 == sender) ? pending->user2 : pending->user1;
 		if(response == net::MSG::CHAMPIONSHIP_MATCH_READY){
 			(pending->user1 == sender) ? pending->statusUser1 = net::MSG::CHAMPIONSHIP_MATCH_READY : pending->statusUser2 = net::MSG::CHAMPIONSHIP_MATCH_READY;
@@ -595,14 +589,19 @@ void Server::responsePendingChampMatch(std::string response, int peer_id){
 		}
 		else if(response == net::MSG::CHAMPIONSHIP_MATCH_WITHDRAW){
 			(pending->user1 == sender) ? pending->statusUser1 = net::MSG::CHAMPIONSHIP_MATCH_WITHDRAW : pending->statusUser2 = net::MSG::CHAMPIONSHIP_MATCH_WITHDRAW;
-			//TODO : notify championship
+			MatchResult res;
+			res.winner = opponent;
+			res.loser = sender;
+			Championship* champ = getChampionshipByUsername(sender);
+			if(champ != NULL)
+				champ->endMatch(res);
 			toSender.set("data",net::MSG::CHAMPIONSHIP_MATCH_WITHDRAW);
 			toOtherUser.set("data",net::MSG::CHAMPIONSHIP_MATCH_OPPONENT_WITHDRAW);
 		}
 		if(pending->statusUser1 == net::MSG::CHAMPIONSHIP_MATCH_READY && pending->statusUser2 == net::MSG::CHAMPIONSHIP_MATCH_READY){
 			//TODO : an user dc'ed after saying "ready"
-			toSender.set("data",net::MSG::CHAMPIONSHIP_MATCH_READY);
-			toOtherUser.set("data",net::MSG::CHAMPIONSHIP_MATCH_READY);
+			toSender.set("data",net::MSG::CHAMPIONSHIP_MATCH_START);
+			toOtherUser.set("data",net::MSG::CHAMPIONSHIP_MATCH_START);
 			startMatch(getPeerID(pending->user1),getPeerID(pending->user2),true);
 		}
 	}

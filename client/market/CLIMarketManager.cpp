@@ -1,5 +1,5 @@
 #include "CLIMarketManager.hpp"
-
+#include <match/CLIMatchManager.hpp>
 CLIMarketManager::CLIMarketManager(ClientManager const & parent) :
 MarketManager(parent), _waitForSales(false), _waitForBid(false)
 {}
@@ -161,4 +161,9 @@ void CLIMarketManager::onAddPlayerError(std::string const & reason)
 void CLIMarketManager::onSalesUpdate()
 {
 	_waitForSales = false;
+}
+
+void CLIMarketManager::onMatchStart(){
+	CLIMatchManager match(*this); 
+	match.run();
 }

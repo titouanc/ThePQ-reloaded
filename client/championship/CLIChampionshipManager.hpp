@@ -19,6 +19,7 @@ private:
 	void displayChampionships();
 	void displayCurrentChampionship();
 
+	virtual void onMatchStart();
 	virtual void onJoinChampionship(std::string data);
 	virtual void onLeaveChampionship(std::string data);
 	virtual void onChampionshipsLoad(JSON::List const & list);

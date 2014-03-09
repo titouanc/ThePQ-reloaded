@@ -25,6 +25,7 @@ private:
 	virtual void onBidError(std::string const & err);
 	virtual void onAddPlayerOK();
 	virtual void onAddPlayerError(std::string const & err);
+	virtual void onMatchStart();
 };
 
 #endif // __CLI_MARKET_MANAGER_HPP

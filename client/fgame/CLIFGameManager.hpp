@@ -16,11 +16,11 @@ class CLIFGameManager : public FGameManager, public CLI {
 
 		void run();
 
+		void onMatchStart();
 		void onUserList(JSON::List const & list);
 		void onOtherAccept(std::string const & name);
 		void onOtherDeny(std::string const & name);
 		void onUserNotFound(std::string const & name);
-		void onInvite(std::string const & username);
 };
 
 #endif
