@@ -40,7 +40,7 @@ bool GUI::GraphicManager::treatEvent(sf::Event const & event)
 }
 
 void GUI::GraphicManager::deleteCanvas() {
-	_isRunning = false;
+	//_isRunning = false;
 	_controller.deleteTopLayer();
 }
 
