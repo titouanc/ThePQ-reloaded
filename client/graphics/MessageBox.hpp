@@ -13,7 +13,7 @@ public:
 		_canvas.setBackgroundColor(sf::Color(0x00, 0x00, 0x00, 0x99));
 		displayCanvas();
 	}
-	void drawBox(){
+	int showBox(){
 		int hCenter = window().getSize().x/2;
 		int vCenter = window().getSize().y/2;
 		GUI::Label & textLabel = _canvas.addLabel(_text);
@@ -28,13 +28,19 @@ public:
 		_canvas.renderAllAttributesTo(window());
 		window().display();
 		run();
+		return _chosenOption;
 	}
 	void discard(){
 		deleteCanvas();
 		stop();
 	}
+	void chooseOption(int option){
+		_chosenOption = option;
+		discard();
+	}
 private:
 	std::string _text;
+	int _chosenOption;
 };
 
 

@@ -65,7 +65,7 @@ public:
 
 	void showMessage(){
 		MessageBox m(_controller, "Hello!");
-		m.drawBox();
+		m.showBox();
 	}
 
 	void printWow(int number){
