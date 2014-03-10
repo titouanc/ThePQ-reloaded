@@ -64,8 +64,8 @@ public:
 	}
 
 	void showMessage(){
-		MessageBox m(_controller, "Hello!");
-		m.showBox();
+		MessageBox m(_controller, "Hello!", {"1", "2", "3"});
+		cout << "You have chosen : " << m.showBox() << endl;
 	}
 
 	void printWow(int number){
