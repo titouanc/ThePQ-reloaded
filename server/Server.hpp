@@ -80,6 +80,7 @@ public:
     void sendChampionshipsList(int);
     void notifyPendingChampMatch(std::string);
     void responsePendingChampMatch(std::string,int);
+    void resolveUnplayedChampMatch(Schedule&);
     Schedule* getPendingMatchByUsername(std::string);
 private:
 	SharedQueue<net::Message> _inbox, _outbox;

@@ -27,7 +27,7 @@ void ClientManager::say(std::string const & type, JSON::Value const & data)
 		{"data", data}
 	};
 	_connection.send(msg);
-}
+}à
 
 void ClientManager::treatMessage(std::string const & type, JSON::Value const * data)
 {
@@ -49,7 +49,7 @@ void ClientManager::treatMessage(std::string const & type, JSON::Value const * d
 		else if(response == net::MSG::CHAMPIONSHIP_MATCH_WAIT)
 			this->onNotificationResponse(true,response,"You are \033[32mready\033[0m for your match.\nThe match will start when your opponent is ready.\nPlease wait...");
 		else if(response == net::MSG::CHAMPIONSHIP_MATCH_START){
-			this->onNotificationResponse(true,response,"Your opponent is ready too. Match is starting.");
+			this->onNotificationResponse(true,response,"Your opponent is \033[32mready\033[0m too. Match is starting.");
 			this->onMatchStart();
 		}
 		else if(response == net::MSG::CHAMPIONSHIP_MATCH_NOT_FOUND){

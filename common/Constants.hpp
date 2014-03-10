@@ -133,6 +133,9 @@ namespace net
 		
 		static const std::string CHAMPIONSHIP_MATCH_START = "CMATCH_START";
 		static const std::string CHAMPIONSHIP_MATCH_NOT_FOUND = "CMATCH_NFOUND";
+
+		static const std::string CHAMPIONSHIP_UNPLAYED_MATCH_WON = "CMATCH_UPLAYED_W";
+		static const std::string CHAMPIONSHIP_UNPLAYED_MATCH_LOST = "CMATCH_UPLAYED_L";
 		
 		
 

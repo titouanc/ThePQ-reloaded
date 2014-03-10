@@ -676,40 +676,50 @@ void Server::timeUpdateChampionship()
 			pthread_mutex_unlock(&_champsMutex);
 		}
 	}
-	//Check in waiting matches if offset is over //TODO: NOTIFY USERS
+	//Check in waiting matches if offset is over
 	time_t now = time(NULL);
 	for (size_t i = 0; i < _pendingChampMatches.size(); ++i)
 	{
 		if(abs(difftime(now, _pendingChampMatches[i]->date)) > gameconfig::MAX_CHAMP_MATCH_OFFSET){
-			pthread_mutex_lock(&_champsMutex);
 			//Time range over, resolve match
-			Schedule & pending = *(_pendingChampMatches[i]);
-			MatchResult res;
-			//Both users will never be ready here, because it means match has started.
-			if (pending.statusUser1 == net::MSG::CHAMPIONSHIP_MATCH_READY){
-				res.winner = pending.user1;
-				res.loser = pending.user2;
-			}
-			else if (pending.statusUser2 == net::MSG::CHAMPIONSHIP_MATCH_READY){
-				res.winner = pending.user2;
-				res.loser = pending.user1;
-			}
-			//Else none user responded to notification : random the winner...
-			else{
-				int randWinner = rand() % 2 + 1;
-				res.winner = (randWinner == 1) ? pending.user1 : pending.user2;
-				res.loser = (winner == pending.user1) ? pending.user2 : pending.user1;
-			}
-			Championship* champ = getChampionshipByUsername(res.winner);
-			if (champ != NULL) 
-				champ->endMatch(res);
-			endOfPending(_pendingChampMatches[i]);
+			pthread_mutex_lock(&_champsMutex);
+			resolveUnplayedChampMatch(*(_pendingChampMatches[i]));
 			pthread_mutex_unlock(&_champsMutex);
 		}
 	}
 }
 
-void endOfPending(Schedule* sche){
+void Server::resolveUnplayedChampMatch(Schedule & pending){
+	MatchResult res;
+	JSON::Dict toWinner, toLoser;
+	//One user at least didn't answer to the pending match notification
+	if (pending.statusUser1 == net::MSG::CHAMPIONSHIP_MATCH_READY){
+		res.winner = pending.user1;
+		res.loser = pending.user2;
+	}
+	else if (pending.statusUser2 == net::MSG::CHAMPIONSHIP_MATCH_READY){
+		res.winner = pending.user2;
+		res.loser = pending.user1;
+	}
+	//Else none user responded to notification : random the winner...
+	else{
+		int randWinner = rand() % 2 + 1;
+		res.winner = (randWinner == 1) ? pending.user1 : pending.user2;
+		res.loser = (winner == pending.user1) ? pending.user2 : pending.user1;
+	}
+	Championship* champ = getChampionshipByUsername(res.winner);
+	if (champ != NULL) 
+		champ->endMatch(res);
+	endOfPending(_pendingChampMatches[i]);
+	toWinner.set("type",net::MSG::CHAMPIONSHIP_MATCH_STATUS_CHANGE);
+	toWinner.set("data",net::MSG::CHAMPIONSHIP_UNPLAYED_MATCH_WON);
+	toLoser.set("type",net::MSG::CHAMPIONSHIP_MATCH_STATUS_CHANGE);
+	toLoser.set("data",net::MSG::CHAMPIONSHIP_UNPLAYED_MATCH_LOST);
+	sendNotification(res.winner,toWinner);
+	sendNotification(res.loser,toLoser);
+}
+
+void Server::endOfPending(Schedule* sche){
 	for(size_t i = 0; i < _pendingChampMatches.size(); ++i){
 		if(_pendingChampMatches[i]->user1 == sche->user1){
 			_pendingChampMatches.erase(_pendingChampMatches.begin()+i);
