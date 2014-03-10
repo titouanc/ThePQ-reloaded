@@ -11,6 +11,8 @@
  *    + 2014-02-19: (Titou)
  *         * Various additions merged in master
  *         * _writeTo() privatised in all subclasses
+ *    + 2014-03-10: (Titou)
+ *         * Convert convenience cast macros to inline functions with typecheck
  */
 
 #include <iostream>
@@ -19,14 +21,6 @@
 #include <vector>
 #include <unordered_map>
 #include <initializer_list>
-
-/* Convenience cast macros */
-#define INT(obj)   (*((JSON::Integer *)(obj)))
-#define FLOAT(obj) (*((JSON::Float *)(obj)))
-#define STR(obj)   (*((JSON::String *)(obj)))
-#define DICT(obj)  (*((JSON::Dict *)(obj)))
-#define LIST(obj)  (*((JSON::List *)(obj)))
-#define BOOL(obj)  (*((JSON::Bool *)(obj)))
 
 /* Convenience typecheck macros */
 #define ISINT(ptr)   ((ptr) != NULL && (ptr)->type() == JSON::Integer_t)
@@ -170,13 +164,59 @@ namespace JSON {
             const_iterator end(void) const;
     };
 
+    /* Attempt to read a JSON object from given char buffer.
+       Return a newly allocated object (must be freed), or throw
+       a JSON::Error */
     Value *parse(const char *str, char **eptr=NULL);
 
+    /* Attempt to read a JSON object from given file.
+       Return a newly allocated object (must be freed), or throw
+       a JSON::Error */
     Value *load(const char *filename);
     Value *load(std::string filename);
 
+    /* Attempt to read a JSON object from given file descriptor.
+       Return a newly allocated object (must be freed), or throw
+       a JSON::Error */
     Value *readFD(int fd);
+
+    /* Write a JSON object to given file descriptor. Might raise a 
+       JSON::Error */
     void writeFD(int fd, JSON::Value const & json);
+}
+
+/* Convenience cast functions with typecheck, especially useful when
+   retrieving elements from lists and dictionaries.
+   Outside namespace to avoid extra "JSON::" everywhere in the code */
+
+static inline JSON::Bool & BOOL(const JSON::Value *obj){
+    if (! ISBOOL(obj)) throw JSON::TypeError("Not a boolean");
+    return *((JSON::Bool *) obj);
+}
+
+static inline JSON::Integer & INT(const JSON::Value *obj){
+    if (! ISINT(obj)) throw JSON::TypeError("Not an integer");
+    return *((JSON::Integer *) obj);
+}
+
+static inline JSON::Float & FLOAT(const JSON::Value *obj){
+    if (! ISFLOAT(obj)) throw JSON::TypeError("Not a float");
+    return *((JSON::Float *) obj);
+}
+
+static inline JSON::String & STR(const JSON::Value *obj){
+    if (! ISSTR(obj)) throw JSON::TypeError("Not a string");
+    return *((JSON::String *) obj);
+}
+
+static inline JSON::List & LIST(const JSON::Value *obj){
+    if (! ISLIST(obj)) throw JSON::TypeError("Not a list");
+    return *((JSON::List *) obj);
+}
+
+static inline JSON::Dict & DICT(const JSON::Value *obj){
+    if (! ISDICT(obj)) throw JSON::TypeError("Not a dictionary");
+    return *((JSON::Dict *) obj);
 }
 
 #endif
