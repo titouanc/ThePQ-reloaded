@@ -166,7 +166,7 @@ void GraphicUserManager::onLoginOK()
 void GraphicUserManager::onLoginError(std::string const & err)
 {
 	displayChoice();
-	std::cout << err << std::endl;
+	displayError(err);
 	_wait = false;
 }
 
@@ -177,7 +177,7 @@ void GraphicUserManager::onTeamNameOK()
 
 void GraphicUserManager::onTeamNameError(std::string const & err)
 {
-	std::cout << err << std::endl;
+	displayError(err);
 	_wait = false;
 }
 
@@ -189,7 +189,7 @@ void GraphicUserManager::onRegisterUserOK()
 
 void GraphicUserManager::onRegisterUserError(std::string const & err)
 {
-	std::cout << err << std::endl;
+	displayError(err);
 	_wait = false;
 }
 

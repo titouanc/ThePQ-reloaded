@@ -17,6 +17,8 @@ namespace GUI {
 		void displayCanvas();
 		void redrawCanvas();
 		void stop(){_isRunning = false;}
+
+		void displayError(std::string errorMessage);
 	protected:
 		/* Standard event processing; always return true */
 		virtual bool treatEvent(sf::Event const & event);
