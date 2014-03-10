@@ -146,6 +146,8 @@ namespace gameconfig
 	static const float BID_RATIO = 0.05;
 	static const int MAX_CHAMPIONSHIP_TURNS = 5; //32 teams
 	static const int MAX_CHAMP_MATCH_OFFSET = 3600;
+	static const float FAME_MULTIPLIER_INSTALLATION=0.25;
+	static const float FAME_MULTIPLIER_GAME=0.23;//will determine the fame gained after a victory based on the other teams
 }
 
 namespace memory
