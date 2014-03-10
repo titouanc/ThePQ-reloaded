@@ -31,7 +31,7 @@ public:
 	void onMessage(std::string const & message);
 	void onMatchStart();
 	void onMatchPending();
-	void onNotificationResponse(bool,std::string const&);
+	void onNotificationResponse(bool,std::string const&,std::string const &);
 
 private:
 	bool _waitForNotificationResponse;

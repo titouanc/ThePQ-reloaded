@@ -72,13 +72,14 @@ class ClientManager {
 		virtual void onMatchPending(){}
 
 		/* Called when : handled notification -> responded to it -> response from server */
-		virtual void onNotificationResponse(bool,std::string const &){}
+		virtual void onNotificationResponse(bool,std::string const &,std::string const &){}
 
 		/* Load players in user().players */
 		virtual void onPlayersLoad(JSON::List const & players);
 
 		/* Triggered when user's team informations are updated */
 		virtual void onTeamInfo(UserData const & user);
+
 	public:
 		/* Create a new client manager with a connection to server, a user 
 		   object (might be not initialised), and a queue to put all 

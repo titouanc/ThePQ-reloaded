@@ -7,6 +7,7 @@
 #include <championship/CLIChampionshipManager.hpp>
 #include <match/CLIMatchManager.hpp>
 #include <iostream>
+#include <Constants.hpp>
 using namespace std;
 
 CLIUserManager::CLIUserManager(ClientManager const & parent) : 
@@ -282,9 +283,10 @@ void CLIUserManager::onMatchPending(){
 		readMessage();
 }
 
-void CLIUserManager::onNotificationResponse(bool success, std::string const & response){
-	_waitForNotificationResponse = false;
-	(success) ? okMsg(response) : errorMsg(response);
+void CLIUserManager::onNotificationResponse(bool success, std::string const & response,std::string const & msg){
+	if(response != net::MSG::CHAMPIONSHIP_MATCH_WAIT)
+		_waitForNotificationResponse = false;
+	(success) ? okMsg(msg) : errorMsg(msg);
 }
 
 void CLIUserManager::onMessage(std::string const & message){

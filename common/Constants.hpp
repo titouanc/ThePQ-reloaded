@@ -121,9 +121,7 @@ namespace net
 
 		static const std::string CHAMPIONSHIP_MATCH_PENDING = "CMATCH_PENDING";
 		static const std::string CHAMPIONSHIP_MATCH_STATUS_CHANGE = "CMATCH_SCHANGE";
-
-		static const std::string CHAMPIONSHIP_MATCH_OPPONENT_READY = "CMATCH_OPP_RDY";
-		static const std::string CHAMPIONSHIP_MATCH_OPPONENT_WITHDRAW = "CMATCH_OPP_WD";
+		static const std::string CHAMPIONSHIP_MATCH_OFFSET_OVER = "CMATCH_OO";
 
 		static const std::string CHAMPIONSHIP_MATCH_STATUS = "CMATCH_STATUS";
 		
@@ -133,9 +131,8 @@ namespace net
 		static const std::string CHAMPIONSHIP_MATCH_PENDING_RESPONSE = "CMATCH_P_RES";
 		static const std::string CHAMPIONSHIP_MATCH_READY = "CMATCH_USER_RDY";
 		
-		
 		static const std::string CHAMPIONSHIP_MATCH_START = "CMATCH_START";
-		
+		static const std::string CHAMPIONSHIP_MATCH_NOT_FOUND = "CMATCH_NFOUND";
 		
 		
 

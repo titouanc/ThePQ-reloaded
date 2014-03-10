@@ -82,7 +82,7 @@ void net::ClientConnectionManager::loop()
 			JSON::Dict const & dict = DICT(json);
 			if (dict.hasKey("type") && dict.hasKey("data") && ISSTR(dict.get("type")))
 			{
-				_messages.push(json);
+				pushMessage(json);
 			}
 		}
 	}
@@ -108,6 +108,11 @@ void net::ClientConnectionManager::send(JSON::Value const & json)
 JSON::Value* net::ClientConnectionManager::popMessage()
 {
 	return _messages.pop();
+}
+
+void net::ClientConnectionManager::pushMessage(JSON::Value* toPush)
+{
+	_messages.push(toPush);
 }
 
 bool net::ClientConnectionManager::hasMessage()

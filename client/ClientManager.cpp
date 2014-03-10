@@ -55,21 +55,22 @@ void ClientManager::treatMessage(std::string const & type, JSON::Value const * d
 	{
 		onPlayersLoad(LIST(data));
 	}
-	else if( type == net::MSG::CHAMPIONSHIP_MATCH_START)
-	{
-		this->onMatchStart();
-	}
+	
 	//Server response from a net::MSG::CHAMPIONSHIP_MATCH_PENDING notification response (subtle...)
 	else if( type == net::MSG::CHAMPIONSHIP_MATCH_STATUS)
 	{
 		std::string response = STR(data).value();
 		if (response == net::MSG::CHAMPIONSHIP_MATCH_WITHDRAW)
-			this->onNotificationResponse(true,"You \033[32mwithdrawed\033[0m from your match.\n\033[31mEvicted\033[0m from championship.");
+			this->onNotificationResponse(true,response,"You \033[32mwithdrawed\033[0m from your match.\n\033[31mEvicted\033[0m from championship.");
 		else if(response == net::MSG::CHAMPIONSHIP_MATCH_WAIT)
-			this->onNotificationResponse(true,"You are \033[32mready\033[0m for your match.\nThe match will start when your opponent is ready.");
-		else if(response == net::MSG::CHAMPIONSHIP_MATCH_START)
-			this->onNotificationResponse(true,"Your opponent is ready too. Match is starting.");
+			this->onNotificationResponse(true,response,"You are \033[32mready\033[0m for your match.\nThe match will start when your opponent is ready.\nPlease wait...");
+		else if(response == net::MSG::CHAMPIONSHIP_MATCH_START){
+			this->onNotificationResponse(true,response,"Your opponent is ready too. Match is starting.");
 			this->onMatchStart();
+		}
+		else if(response == net::MSG::CHAMPIONSHIP_MATCH_NOT_FOUND){
+			this->onNotificationResponse(false,response,"Match not found.");
+		}
 	}
 	//Notifications, wait for user to handle
 	else if (	type == net::MSG::MARKET_MESSAGE || 
@@ -95,6 +96,11 @@ void ClientManager::handleNotification(){
 			onMessage(onEndOfSale(DICT(popped.get("data"))));
 		else if(type == net::MSG::CHAMPIONSHIP_MATCH_PENDING){
 			onMatchPending();
+		}
+		else if(type == net::MSG::CHAMPIONSHIP_MATCH_STATUS_CHANGE){
+			if(ISSTR((popped.get("data")))) {
+				std::string data = STR(popped.get("data")).value();
+			}
 		}
 	}
 }

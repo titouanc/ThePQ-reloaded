@@ -5,6 +5,7 @@
 #include <cli/Menu.hpp>
 #include <Exception.hpp>
 #include <ClientManager.hpp>
+#include <pthread.h>
 
 class UserManager : public ClientManager
 {
