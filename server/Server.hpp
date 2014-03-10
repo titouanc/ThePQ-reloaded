@@ -44,6 +44,9 @@ public:
 	void run();
 	void treatMessage(const net::Message &message);
 
+    /* Create default user accounts if there is no registred user */
+    void initDefaultAccounts();
+
 	void registerUser(const JSON::Dict &credentials, int peer_id);
 	User *logUserIn(const JSON::Dict &credentials, int peer_id);
     void checkTeamName(const JSON::Dict &data, int peer_id);

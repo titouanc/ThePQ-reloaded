@@ -49,8 +49,26 @@ Server::~Server()
 	_matches.clear();
 }
 
+void Server::initDefaultAccounts()
+{
+	std::vector<User> users;
+	MemoryAccess::load(users);
+	if (users.size() == 0){
+		JSON::Value *defaults = JSON::load("defaultAccounts.json");
+		JSON::Dict const & toCreate = DICT(defaults);
+		JSON::Dict::const_iterator it;
+		for (it=toCreate.begin(); it!=toCreate.end(); it++){
+			User newUser(it->first, STR(it->second));
+			newUser.createUser();
+			cout << "[" << this << "] Creating user " << it->first << endl;
+		}
+		delete defaults;
+	}
+}
+
 void Server::run()
 {
+	initDefaultAccounts();
 	time_t tstart = time(NULL);
 	unsigned long long int tick = 0;
 	srand(time(NULL));	// rand() is used throughout some modules
