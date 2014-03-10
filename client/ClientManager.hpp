@@ -39,6 +39,8 @@ class ClientManager {
 		/* Send methods */
 		void loadPlayers();
 
+		void showFinancialStatus();
+		void showTeamStatus();
 		/* handle message for end of player sale */
 		void onEndOfSale(JSON::Dict const & json);
 

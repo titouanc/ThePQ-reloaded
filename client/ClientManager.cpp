@@ -59,24 +59,24 @@ void ClientManager::treatMessage(std::string const & type, JSON::Value const * d
 	void ClientManager::showFinancialStatus()
 	{
 		cout<<"###############################################################";
-		cout<<_user.getUsername()<<": here are the details of your account:"<<endl;
-		cout<<"#	Your team name is: "<<_team.getName()<<endl;
-		cout<<"#	Available money: "<<_team.getFunds()<<endl;
-		cout<<"#	Available Activity Points: "<<_team.getAcPoints()<<endl;
+		cout<<_user.username<<": here are the details of your account:"<<endl;
+		cout<<"#	Your team name is: "<<_user.teamname<<endl;
+		cout<<"#	Available money: "<<_user.funds<<endl;
+		cout<<"#	Available Activity Points: "<<_user.acPoints<<endl;
 		cout<<"###############################################################";
 }	
 	void ClientManager::showTeamStatus()
 	{
 		cout<<"###############################################################";
-		cout<<"#	Hello "<<_user.getUsername()<<endl;
+		cout<<"#	Hello "<<_user.username<<endl;
 		cout<<"#	Your players and theyr market values are listed below:"<<endl;
-		for(int i(0);i<_players.size();++i){
-			cout<<_players[i].getName()<<" estimated at: "<<_players[i].estimatedValue()<<endl;
+		for(int i(0);i<_user.players.size();++i){
+			cout<<_user.players[i].getName()<<" estimated at: "<<_user.players[i].estimatedValue()<<endl;
 		}
 		cout<<"#	Your team has the following installations:"<<endl;
-		for(int i(0);i<_installations.size();++i){
-			cout<<_installations[i]->getName()<<" level: "<<_installations[i]->getLevel()<<\
-				"worth: "<<_installations[i]->getCurrentValue()<<endl;
+		for(int i(0);i<_user.installations.size();++i){
+			cout<<_user.installations[i]->getName()<<" level: "<<_user.installations[i]->getLevel()<<\
+				"worth: "<<_user.installations[i]->getCurrentValue()<<endl;
 		}
 }
 
@@ -144,7 +144,7 @@ void ClientManager::onTeamInfo(UserData const & user)
 	_user.username = user.username;
 	_user.funds = user.funds;
 	_user.teamname = user.teamname;
-	_user.acPoints = user.acPoints
+	_user.acPoints = user.acPoints;
 }
 
 ClientManager::ClientManager(
