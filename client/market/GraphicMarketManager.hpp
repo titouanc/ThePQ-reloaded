@@ -15,13 +15,14 @@ public:
 	}
 private:
 	void updateSales();
+	void placeBid(int playerID);
 
 	/* HOOKS */
 	void onSalesUpdate();
 	void onBidOK();
 	void onBidError(std::string const & err);
 
-	bool _wait;
+	bool _wait, _waitForBid;
 };
 
 

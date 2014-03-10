@@ -23,6 +23,14 @@ void GraphicMarketManager::updateSales()
 	}
 }
 
+void GraphicMarketManager::placeBid(int playerID)
+{
+	_wait=true;
+	bidOnPlayer(playerID);
+	while (_wait)
+		readMessage();
+}
+
 void GraphicMarketManager::onSalesUpdate()
 {
 	_wait = false;
@@ -49,7 +57,7 @@ void GraphicMarketManager::onSalesUpdate()
 		player.addLabel(sale.getNextBidValue()).setPosition(550, 10);
 		player.addLabel(sale.getTimeLeft()).setPosition(650, 10);
 		player.addButton<GraphicMarketManager, int>(
-			&GraphicMarketManager::test, sale.getPlayer().getMemberID(),
+			&GraphicMarketManager::placeBid, sale.getPlayer().getMemberID(),
 			this, "BID"
 		).setPosition(700, 0);
 	}
@@ -65,10 +73,12 @@ void GraphicMarketManager::onSalesUpdate()
 
 void GraphicMarketManager::onBidOK()
 {
+	_wait = false;
 	updateSales();
 }
 
 void GraphicMarketManager::onBidError(std::string const & err)
 {
+	_wait = false;
 	updateSales();
 }
