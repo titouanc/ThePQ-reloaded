@@ -17,10 +17,12 @@ private:
     std::string _owner;
     int _funds;
     int _fame;
+    int _acpoints;//<-activity points
 	std::vector<Player> _players;
 	std::vector<Installation*> _installations;
 public:
-	Team(std::string owner = "", std::string teamname=gameconfig::UNNAMED_TEAM, int funds = gameconfig::STARTING_FUNDS, int fame = gameconfig::STARTING_FAME);
+	Team(std::string owner = "", std::string teamname=gameconfig::UNNAMED_TEAM, int funds = gameconfig::STARTING_FUNDS, int fame = gameconfig::STARTING_FAME, 
+		int acPoints=gameconfig::STARTING_AC_POINTS);
 	Team(const Team& other);
 	Team(const JSON::Dict &json);
 	~Team();

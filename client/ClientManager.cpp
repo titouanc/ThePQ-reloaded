@@ -42,6 +42,17 @@ void ClientManager::treatMessage(std::string const & type, JSON::Value const * d
 	{
 		onInvite(STR(data).value());
 	}
+	else if(type == net::MSG::SHOW_TEAM_STATUS)
+	{
+		/*add method for team status handling
+		team name;team funds; team fame; team acpoints
+		*/
+	}
+	else if (type == net::MSG::SHOW_FINANCIAL_STATUS)
+	{
+
+	}
+
 }
 
 void ClientManager::loadPlayers()
@@ -108,6 +119,7 @@ void ClientManager::onTeamInfo(UserData const & user)
 	_user.username = user.username;
 	_user.funds = user.funds;
 	_user.teamname = user.teamname;
+	_user.acPoints = user.acPoints
 }
 
 ClientManager::ClientManager(
