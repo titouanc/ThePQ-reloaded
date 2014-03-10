@@ -12,7 +12,6 @@ public:
 		GraphicManager(controller), _text(text){
 		_canvas.setBackgroundColor(sf::Color(0x00, 0x00, 0x00, 0x99));
 		displayCanvas();
-		drawBox();
 	}
 	void drawBox(){
 		int hCenter = window().getSize().x/2;
@@ -27,10 +26,12 @@ public:
 		okButton.setPosition(hCenter-okButton.getWidth()/2, vCenter+box.getSize().y/2-30);
 		
 		_canvas.renderAllAttributesTo(window());
+		window().display();
+		run();
 	}
 	void discard(){
 		deleteCanvas();
-		_isRunning = false;
+		stop();
 	}
 private:
 	std::string _text;
