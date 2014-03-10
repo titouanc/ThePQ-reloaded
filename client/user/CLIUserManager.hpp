@@ -26,6 +26,11 @@ public:
 	void onRegisterUserOK();
 	void onRegisterUserError(std::string const & data);
 
+	void askForNotificationHandling();
+	void onInvite(std::string const & username);
+	void onMessage(std::string const & message);
+	void onMatchStart();
+
 private:
 };
 

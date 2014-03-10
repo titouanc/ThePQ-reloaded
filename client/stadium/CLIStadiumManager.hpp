@@ -4,6 +4,7 @@
 #include "StadiumManager.hpp"
 #include <cli/CLI.hpp>
 
+
 class CLIStadiumManager : public StadiumManager, public CLI {
 public:
 	using StadiumManager::StadiumManager;
@@ -14,6 +15,7 @@ private:
 	void printInstallationsList();
 	void showUpgradeInstallation();
 	void showDowngradeInstallation();
+	virtual void onMatchStart();
 	virtual void treatMessage(std::string const & type, JSON::Value const * data);
 };
 

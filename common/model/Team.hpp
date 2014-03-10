@@ -57,6 +57,8 @@ public:
 	void generateStartingTeam();
 	
 	void timeUpdate();
+
+    int level() const;
 private:
 	void generateBaseSquad();
 	void generateBaseInstallations();

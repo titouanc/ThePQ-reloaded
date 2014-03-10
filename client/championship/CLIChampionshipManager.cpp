@@ -1,4 +1,5 @@
 #include "CLIChampionshipManager.hpp"
+#include <match/CLIMatchManager.hpp>
 
 CLIChampionshipManager::CLIChampionshipManager(ClientManager const & parent) : 
 ChampionshipManager(parent), _waitForChamps(false), _waitForJoin(false)
@@ -132,4 +133,9 @@ void CLIChampionshipManager::onLeaveChampionship(std::string data){
 void CLIChampionshipManager::onChampionshipsLoad(JSON::List const & list){
 	_waitForChamps = false;
 	ChampionshipManager::onChampionshipsLoad(list);
+}
+
+void CLIChampionshipManager::onMatchStart(){
+	CLIMatchManager match(*this); 
+	match.run();
 }

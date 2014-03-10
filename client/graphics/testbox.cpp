@@ -3,6 +3,8 @@
 #include <stdlib.h> // itoa
 
 #include "GraphicManager.hpp"
+#include "MessageBox.hpp"
+
 
 using namespace std;
 using namespace GUI;
@@ -12,6 +14,7 @@ public:
 	TestBoxManager(MainController &mc):GraphicManager(mc){
 		//Textbox myTextbox;
 		//myTextbox.renderTo(_controller.window);
+		_canvas.addPanel(450, 350, sf::Color(0x33, 0x33, 0x33, 0xff)).setPosition(5, 5);
 		_canvas.addTextbox("such");
 		myTextbox = &_canvas.addTextbox("wow");
 		myTextbox->setPosition(10, 60);
@@ -55,8 +58,15 @@ public:
 
 		myTableView.setPosition(10, 400);
 
+		_canvas.addButton<TestBoxManager>(&TestBoxManager::showMessage, this, "Click me!").setPosition(500, 500);
+
 		displayCanvas();
 		run();
+	}
+
+	void showMessage(){
+		MessageBox m(_controller, "Hello!");
+		m.drawBox();
 	}
 
 	void printWow(int number){

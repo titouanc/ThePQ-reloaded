@@ -12,8 +12,14 @@ using namespace GUI;
 #define NEW_PASSWORD_CONFIRMATION_TEXTBOX_ID "Confirm Password"
 #define TEAM_NAME_TEXTBOX_ID "Team Name"
 
-GraphicUserManager::GraphicUserManager(net::ClientConnectionManager& connection, UserData& user, std::queue<std::string> & notifications, GUI::MainController &controller) : 
-	UserManager(connection, user, notifications), GraphicManager(controller)
+GraphicUserManager::GraphicUserManager(
+    net::ClientConnectionManager& connection, 
+    UserData& user, 
+    std::queue<JSON::Dict> & notifications, 
+    GUI::MainController &controller
+) : 
+    UserManager(connection, user, notifications), 
+    GraphicManager(controller)
 {
 	displayCanvas();
 	displayChoice();

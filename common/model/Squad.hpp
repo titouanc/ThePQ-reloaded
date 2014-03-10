@@ -1,8 +1,11 @@
 #ifndef DEFINE_SQUAD_HEADER
 #define DEFINE_SQUAD_HEADER
 
+#include <cstdlib>
+#include <string>
 #include "Player.hpp"
 #include <json/json.hpp>
+#include "MemoryAccess.hpp"
 
 struct Squad {
 	int squad_id;
@@ -22,6 +25,30 @@ struct Squad {
 		players[5] = &seeker;
 		players[6] = &keeper;
 	}
+
+    Squad(std::string name, int listID[7], Jersey& jersey, Broomstick& broom, Bat& bat){
+        squad_owner = name;
+        size_t i(0);
+        for (i;i<7;++i){
+            Player toLoad(listID[i], squad_owner);
+            MemoryAccess::load(toLoad);
+            switch (i){
+                case 0: ;
+                case 1: ;
+                case 2: chasers[i] = convertToChaser(toLoad, jersey, broom);
+                        break;
+                case 3: ;
+                case 4: beaters[i] = convertToBeater(toLoad, jersey, broom, bat);
+                        break;
+                case 5: seeker = convertToSeeker(toLoad, jersey, broom);
+                        break;
+                case 6: keeper = convertToKeeper(toLoad, jersey, broom);
+                        break;
+            }
+        }
+        Squad();
+    }
+
 	Squad(JSON::Dict const & json) :  Squad() {
 		if (ISINT(json.get("squad_id")))
 			squad_id = INT(json.get("squad_id"));
@@ -71,6 +98,71 @@ struct Squad {
 		res.set("chasers", c);
 		return res;
 	}
+
+    Chaser convertToChaser(Player& player, Jersey& jersey, Broomstick& broom){
+        Chaser chaser;
+        chaser.setStrength(player.getStrength());
+        chaser.setVelocity(player.getVelocity());
+        chaser.setPrecision(player.getPrecision());
+        chaser.setChance(player.getChance());
+        chaser.equipBroomstick(broom);
+        chaser.equipJersey(jersey);
+        chaser.setName(player.getName());
+        chaser.setSalary(player.getSalary());
+        chaser.setPrice(player.getSalary());
+        chaser.setMemberID(player.getMemberID());
+        chaser.setOwner(player.getOwner());
+        return chaser;
+    }
+
+    Keeper convertToKeeper(Player& player, Jersey& jersey, Broomstick& broom){
+        Keeper keeper;
+        keeper.setStrength(player.getStrength());
+        keeper.setVelocity(player.getVelocity());
+        keeper.setPrecision(player.getPrecision());
+        keeper.setChance(player.getChance());
+        keeper.equipBroomstick(broom);
+        keeper.equipJersey(jersey);
+        keeper.setName(player.getName());
+        keeper.setSalary(player.getSalary());
+        keeper.setPrice(player.getSalary());
+        keeper.setMemberID(player.getMemberID());
+        keeper.setOwner(player.getOwner());
+        return keeper;
+    }
+
+    Seeker convertToSeeker(Player& player, Jersey& jersey, Broomstick& broom){
+        Seeker seeker;
+        seeker.setStrength(player.getStrength());
+        seeker.setVelocity(player.getVelocity());
+        seeker.setPrecision(player.getPrecision());
+        seeker.setChance(player.getChance());
+        seeker.equipBroomstick(broom);
+        seeker.equipJersey(jersey);
+        seeker.setName(player.getName());
+        seeker.setSalary(player.getSalary());
+        seeker.setPrice(player.getSalary());
+        seeker.setMemberID(player.getMemberID());
+        seeker.setOwner(player.getOwner());
+        return seeker;
+    }
+
+    Beater convertToBeater(Player& player, Jersey& jersey, Broomstick& broom, Bat& bat){
+        Beater beater;
+        beater.setStrength(player.getStrength());
+        beater.setVelocity(player.getVelocity());
+        beater.setPrecision(player.getPrecision());
+        beater.setChance(player.getChance());
+        beater.equipBroomstick(broom);
+        beater.equipJersey(jersey);
+        beater.equipBat(bat);
+        beater.setName(player.getName());
+        beater.setSalary(player.getSalary());
+        beater.setPrice(player.getSalary());
+        beater.setMemberID(player.getMemberID());
+        beater.setOwner(player.getOwner());
+        return beater;
+    }
 };
 
 #endif

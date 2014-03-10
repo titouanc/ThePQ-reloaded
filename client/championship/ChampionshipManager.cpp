@@ -50,3 +50,4 @@ void ChampionshipManager::onChampionshipsLoad(JSON::List const & champs){
 		_champs.push_back(Championship(DICT(champs[i])));
 	}
 }
+
