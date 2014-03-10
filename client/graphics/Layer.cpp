@@ -12,6 +12,8 @@ GUI::Layer::~Layer(){
 }
 
 void GUI::Layer::clear(){
+	for (size_t i=0; i<_panels.size(); ++i)
+		delete _panels[i];
 	std::map<std::string, GUI::Textbox*>::iterator it;
 	for (it=_textboxes.begin(); it!=_textboxes.end(); it++)
 		delete it->second;
@@ -23,6 +25,7 @@ void GUI::Layer::clear(){
 		delete _tableCells[i];
 	for (size_t i=0; i<_tableViews.size(); i++)
 		delete _tableViews[i];
+	_panels.clear();
 	_clickables.clear();
 	_textboxes.clear();
 	_labels.clear();
@@ -42,6 +45,8 @@ void GUI::Layer::renderTo(sf::RenderTarget & dest){
 }
 
 void GUI::Layer::renderAllAttributesTo(sf::RenderTarget &dest){
+	for (size_t i=0; i<_panels.size(); ++i)
+		dest.draw(*(_panels[i]));
 	// rendering clickables
 	for(unsigned int i=0; i<_clickables.size(); ++i)
 		if (!_clickables[i]->isHidden())
@@ -148,6 +153,13 @@ GUI::TableCell & GUI::Layer::addTableCell(){
 GUI::TableView & GUI::Layer::addTableView(int columns, int padding){
 	TableView* res = new TableView(columns, padding);
 	_tableViews.push_back(res);
+	return *res;
+}
+
+sf::RectangleShape & GUI::Layer::addPanel(int w, int h, sf::Color color){
+	sf::RectangleShape* res = new sf::RectangleShape(sf::Vector2f(w, h));
+	res->setFillColor(color);
+	_panels.push_back(res);
 	return *res;
 }
 

@@ -12,6 +12,7 @@ public:
 	TestBoxManager(MainController &mc):GraphicManager(mc){
 		//Textbox myTextbox;
 		//myTextbox.renderTo(_controller.window);
+		_canvas.addPanel(450, 350, sf::Color(0x33, 0x33, 0x33, 0xff)).setPosition(5, 5);
 		_canvas.addTextbox("such");
 		myTextbox = &_canvas.addTextbox("wow");
 		myTextbox->setPosition(10, 60);
