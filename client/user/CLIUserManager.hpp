@@ -30,8 +30,11 @@ public:
 	void onInvite(std::string const & username);
 	void onMessage(std::string const & message);
 	void onMatchStart();
+	void onMatchPending();
+	void onNotificationResponse(bool,std::string const&);
 
 private:
+	bool _waitForNotificationResponse;
 };
 
 #endif // __CLI_USER_MANAGER_HPP

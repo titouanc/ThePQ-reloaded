@@ -65,8 +65,14 @@ class ClientManager {
 		/* Triggered when we receive a match invitation */
 		virtual void onInvite(std::string const & otherUser) {}
 
-		/* Triggered when a match is ready to be played */
+		/* Triggered to start a match */
 		virtual void onMatchStart(){}
+
+		/* Triggered when a championship match is ready to be played; answer has to be ready or withdraw */
+		virtual void onMatchPending(){}
+
+		/* Called when : handled notification -> responded to it -> response from server */
+		virtual void onNotificationResponse(bool,std::string const &){}
 
 		/* Load players in user().players */
 		virtual void onPlayersLoad(JSON::List const & players);

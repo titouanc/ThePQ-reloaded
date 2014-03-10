@@ -10,7 +10,7 @@
 using namespace std;
 
 CLIUserManager::CLIUserManager(ClientManager const & parent) : 
-UserManager(parent)
+UserManager(parent), _waitForNotificationResponse(false)
 {}
 
 void CLIUserManager::run()
@@ -254,6 +254,37 @@ void CLIUserManager::onInvite(std::string const & user)
 		}
 	}
 	while(! ok);
+}
+
+void CLIUserManager::onMatchPending(){
+	cout << "Your next championship match is close. What do you want to do ?" << endl;
+	Menu _menu;
+	_menu.addToDisplay("   - ready to play !\n");
+	_menu.addToDisplay("   - withdraw from match (you will be \033[31msend off\033[0m championship)\n");
+	int option;
+	bool ok = false;
+	do{
+		option = _menu.run();
+		if(option == 1){
+			ok = true;
+			readyForMatch();
+		}
+		else if(option == 2){
+			ok = true;
+			withdrawFromMatch();
+		}
+		else
+			cout << "Wrong option entered"<<endl;
+	}
+	while(!ok);
+	_waitForNotificationResponse = true;
+	while(_waitForNotificationResponse)
+		readMessage();
+}
+
+void CLIUserManager::onNotificationResponse(bool success, std::string const & response){
+	_waitForNotificationResponse = false;
+	(success) ? okMsg(response) : errorMsg(response);
 }
 
 void CLIUserManager::onMessage(std::string const & message){

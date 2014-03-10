@@ -59,7 +59,18 @@ void ClientManager::treatMessage(std::string const & type, JSON::Value const * d
 	{
 		this->onMatchStart();
 	}
-
+	//Server response from a net::MSG::CHAMPIONSHIP_MATCH_PENDING notification response (subtle...)
+	else if( type == net::MSG::CHAMPIONSHIP_MATCH_STATUS)
+	{
+		std::string response = STR(data).value();
+		if (response == net::MSG::CHAMPIONSHIP_MATCH_WITHDRAW)
+			this->onNotificationResponse(true,"You \033[32mwithdrawed\033[0m from your match.\n\033[31mEvicted\033[0m from championship.");
+		else if(response == net::MSG::CHAMPIONSHIP_MATCH_WAIT)
+			this->onNotificationResponse(true,"You are \033[32mready\033[0m for your match.\nThe match will start when your opponent is ready.");
+		else if(response == net::MSG::CHAMPIONSHIP_MATCH_START)
+			this->onNotificationResponse(true,"Your opponent is ready too. Match is starting.");
+			this->onMatchStart();
+	}
 	//Notifications, wait for user to handle
 	else if (	type == net::MSG::MARKET_MESSAGE || 
 				type == net::MSG::FRIENDLY_GAME_INVITATION ||
@@ -83,7 +94,7 @@ void ClientManager::handleNotification(){
 		else if(type == net::MSG::MARKET_MESSAGE)
 			onMessage(onEndOfSale(DICT(popped.get("data"))));
 		else if(type == net::MSG::CHAMPIONSHIP_MATCH_PENDING){
-			//onMatchPending();
+			onMatchPending();
 		}
 	}
 }
