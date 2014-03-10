@@ -1,22 +1,41 @@
 #include "Team.hpp"
 
-Team::Team(std::string owner, std::string teamname, int funds, int fame,int acPoints) : _name(teamname), _owner(owner), _funds(funds), _fame(fame), 
-	_players(), _installations(),_acpoints(gameconfig::STARTING_AC_POINTS) {}
+Team::Team(std::string owner, std::string teamname, int funds, int fame,int acPoints) : 
+	_name(teamname), 
+	_owner(owner), 
+	_funds(funds),
+	_fame(fame), 
+	_acpoints(gameconfig::STARTING_AC_POINTS),
+	_players(), 
+	_installations()
+{}
 
-Team::Team(const Team& other) : _name(other._name), _owner(other._owner), _funds(other._funds),
-	_fame(other._fame), _players(other._players), _installations(other._installations), _acpoints(other._acpoints) {}
+Team::Team(const Team& other) : 
+	_name(other._name), 
+	_owner(other._owner), 
+	_funds(other._funds),
+	_fame(other._fame), 
+	_acpoints(other._acpoints),
+	_players(other._players), 
+	_installations(other._installations)
+{}
 
 Team::Team(const JSON::Dict &json): Team() {
-	if(ISSTR(json.get(net::MSG::USERNAME)))		{_owner = STR(json.get(net::MSG::USERNAME)).value();}
-	if(ISINT(json.get(memory::FUNDS))) 			{_funds = INT(json.get(memory::FUNDS));}
-	if(ISINT(json.get(memory::AC_POINTS)))		{_acpoints = INT(json.get(memory::AC_POINTS));}
-	if(ISSTR(json.get(memory::TEAM_NAME)))			{_name = STR(json.get(memory::TEAM_NAME)).value();}
-	if(ISINT(json.get(memory::FAME)))				{_fame = INT(json.get(memory::FAME));}
+	if(ISSTR(json.get(net::MSG::USERNAME)))
+		_owner = STR(json.get(net::MSG::USERNAME)).value();
+	if(ISINT(json.get(memory::FUNDS)))
+		_funds = INT(json.get(memory::FUNDS));
+	if(ISINT(json.get(memory::AC_POINTS)))
+		_acpoints = INT(json.get(memory::AC_POINTS));
+	if(ISSTR(json.get(memory::TEAM_NAME)))
+		_name = STR(json.get(memory::TEAM_NAME)).value();
+	if(ISINT(json.get(memory::FAME)))
+		_fame = INT(json.get(memory::FAME));
 }
+
 Team::~Team()
 {
-	for (size_t i = 0; i < _installations.size(); ++i)
-	{
+	for (size_t i = 0; i < _installations.size(); ++i){
 		if (_installations[i])
 			delete _installations[i];
 	}
