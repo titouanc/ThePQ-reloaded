@@ -10,6 +10,7 @@ namespace GUI {
 	class MainController {
 	public:
 		MainController();
+		~MainController();
 		void addLayer(Layer& layer);
 		void deleteTopLayer();
 		void handleClick(sf::Event e);

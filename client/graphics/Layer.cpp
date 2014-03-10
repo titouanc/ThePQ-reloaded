@@ -2,6 +2,7 @@
 #include "TableView.hpp"
 #include "SFML/Window.hpp"
 #include <sstream>
+#include <iostream>
 
 using namespace std;
 using namespace GUI;
@@ -14,7 +15,6 @@ void GUI::Layer::clear(){
 	std::map<std::string, GUI::Textbox*>::iterator it;
 	for (it=_textboxes.begin(); it!=_textboxes.end(); it++)
 		delete it->second;
-
 	for (size_t i=0; i<_clickables.size(); i++)
 		delete _clickables[i];
 	for (size_t i=0; i<_labels.size(); i++)

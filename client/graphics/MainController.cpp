@@ -8,6 +8,11 @@ GUI::MainController::MainController(): window(sf::VideoMode(WINDOW_WIDTH, WINDOW
 	window.clear(sf::Color(0xff, 0xff, 0xff, 0xff));
 }
 
+GUI::MainController::~MainController()
+{
+
+}
+
 void GUI::MainController::addLayer(Layer & layer)
 {
 	if (_layers.size() != 0){

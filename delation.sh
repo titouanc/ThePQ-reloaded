@@ -14,7 +14,7 @@ git shortlog -sn | cat
 
 echo "Calcul du nombre de lignes par personne..."
 
-for file in `find . -name *.[c,h]pp`; do
+for file in `find . -name "*.[c,h]pp"`; do
 	TITOUAN=$((TITOUAN + `git blame $file | grep -c "Titouan Christophe"`))
 	ANTOINE=$((ANTOINE + `git blame $file | grep -c "Antoine Carpentier"`))
 	FLORENTIN=$((FLORENTIN + `git blame $file | grep -c "Florentin Hennecker"`))

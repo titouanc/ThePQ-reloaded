@@ -72,10 +72,6 @@ namespace GUI {
 		std::vector<GUI::TableCell*> _tableCells;
 		std::vector<GUI::TableView*> _tableViews;
 		GUI::Textbox* _focusedTextbox;
-
-		std::vector<GUI::Button<Layer>*> _messageOptions;
-		sf::RectangleShape _messageWindow;
-		sf::Text _messageText;
 	};
 }
 
