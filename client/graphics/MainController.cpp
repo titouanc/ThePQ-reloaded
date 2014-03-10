@@ -8,6 +8,11 @@ GUI::MainController::MainController(): window(sf::VideoMode(WINDOW_WIDTH, WINDOW
 	window.clear(sf::Color(0xff, 0xff, 0xff, 0xff));
 }
 
+GUI::MainController::~MainController()
+{
+
+}
+
 void GUI::MainController::addLayer(Layer & layer)
 {
 	if (_layers.size() != 0){
@@ -34,18 +39,21 @@ void GUI::MainController::deleteTopLayer()
 	window.display();
 }
 
-void GUI::MainController::handleClick(sf::Event e)
+bool GUI::MainController::handleClick(sf::Event e)
 {
 	if (_layers.size() != 0)
-		_layers.top()->handleClick(e.mouseButton.x, e.mouseButton.y);
+		 return _layers.top()->handleClick(e.mouseButton.x, e.mouseButton.y);
+	return true;
 }
-void GUI::MainController::handleRightClick(sf::Event e)
+bool GUI::MainController::handleRightClick(sf::Event e)
 {
+	bool res = false;
 	if (_layers.size() != 0){
-		_layers.top()->handleRightClick(e.mouseButton.x, e.mouseButton.y);
+		res = _layers.top()->handleRightClick(e.mouseButton.x, e.mouseButton.y);
 		_layers.top()->renderTo(window);
 	}
 	window.display();
+	return res;
 }
 
 void GUI::MainController::handleTextEntered(sf::Event e)

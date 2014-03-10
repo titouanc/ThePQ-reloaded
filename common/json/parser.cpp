@@ -85,6 +85,8 @@ static std::string parseString(const char *str, char **endptr)
                     buffer << hex2byte(*endptr+1); 
                     (*endptr) += 2; 
                     break;
+                default:
+                    throw ParseError("Unexpected escape character");
             }
             escaped = false;
         }

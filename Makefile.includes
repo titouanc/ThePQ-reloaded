@@ -33,7 +33,7 @@ HEADERS = $(shell ${CXX} ${CXXFLAGS} ${CPPFLAGS} -MM *.cpp | sed -E 's/.+\.[^h]p
 	${CXX} ${CXXFLAGS} ${CPPFLAGS} -c -o $@ $<
 
 clean:
-	rm -f *.o *.ok
+	rm -f *.o *.ok ${OBJS}
 
 mrproper: clean
 	rm -f *.app

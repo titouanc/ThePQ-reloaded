@@ -16,7 +16,7 @@ namespace GUI {
 		void deleteCanvas();
 		void displayCanvas();
 		void redrawCanvas();
-		void stop(){_isRunning = false;};
+		void stop(){_isRunning = false;}
 	protected:
 		/* Standard event processing; always return true */
 		virtual bool treatEvent(sf::Event const & event);

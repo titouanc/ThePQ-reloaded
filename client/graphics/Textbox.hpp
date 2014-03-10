@@ -28,6 +28,7 @@ namespace GUI {
 			_selecter.setWidth(_w);
 			_selecter.setHeight(_h);
 		}
+		virtual ~Textbox(){}
 		void renderTo(sf::RenderTarget & dest){
 			_backgroundRect.setPosition(_x, _y);
 			dest.draw(_backgroundRect);
