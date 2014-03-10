@@ -100,7 +100,6 @@ namespace GUI {
 				int relativePosX = (x-_x)%(_elements[0]->getWidth()+_padding);
 				if (relativePosX <= _elements[0]->getWidth()){
 					int clickedRow = (y-_y)/(_elements[0]->getHeight()+_padding);
-
 					int relativePosY = (y-_y)%(_elements[0]->getHeight()+_padding);
 					if (relativePosY <= _elements[0]->getHeight()){
 						unsigned int index = clickedRow * _columnsNbr + clickedCol;
