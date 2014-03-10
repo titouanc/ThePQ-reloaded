@@ -27,8 +27,8 @@ namespace GUI {
 		void activate() 	{ _active = true; }
 		void deactivate() 	{ _active = false; }
 
-		void handleClick(int x, int y);
-		void handleRightClick(int x, int y);
+		bool handleClick(int x, int y);
+		bool handleRightClick(int x, int y);
 		virtual void renderTo(sf::RenderTarget & dest);
 		virtual void renderAllAttributesTo(sf::RenderTarget &dest);
 
