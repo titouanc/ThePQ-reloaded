@@ -25,12 +25,15 @@ void GUI::Layer::clear(){
 		delete _tableCells[i];
 	for (size_t i=0; i<_tableViews.size(); i++)
 		delete _tableViews[i];
+	for (size_t i=0; i<_overlayPanels.size(); i++)
+		delete _overlayPanels[i];
 	_panels.clear();
 	_clickables.clear();
 	_textboxes.clear();
 	_labels.clear();
 	_tableCells.clear(); // TODO delete
 	_tableViews.clear();
+	_overlayPanels.clear();
 }
 
 void GUI::Layer::renderTo(sf::RenderTarget & dest){
@@ -69,6 +72,8 @@ void GUI::Layer::renderAllAttributesTo(sf::RenderTarget &dest){
 		if(!_tableViews[i]->isHidden())
 			_tableViews[i]->renderTo(dest);
 	}
+	for(unsigned i=0; i<_overlayPanels.size(); ++i)
+		dest.draw(*(_overlayPanels[i]));
 
 }
 
@@ -160,6 +165,13 @@ sf::RectangleShape & GUI::Layer::addPanel(int w, int h, sf::Color color){
 	sf::RectangleShape* res = new sf::RectangleShape(sf::Vector2f(w, h));
 	res->setFillColor(color);
 	_panels.push_back(res);
+	return *res;
+}
+
+sf::RectangleShape & GUI::Layer::addOverlayPanel(int w, int h, sf::Color color){
+	sf::RectangleShape* res = new sf::RectangleShape(sf::Vector2f(w, h));
+	res->setFillColor(color);
+	_overlayPanels.push_back(res);
 	return *res;
 }
 
