@@ -33,13 +33,15 @@ class ClientManager {
 		virtual void treatMessage(std::string const & type, JSON::Value const * data);
 
 		/* Pop message from incoming queue and treat it (first with 
-		   ClientManager::treatMessage; then with <Subclass>::treatMessage;) */
+		   ClientManager::treatMessage; then with <Subclass>::treatMessage;) 
+		   BLOCKING METHOD !!! */
 		void readMessage();
 
-		/* readMessage() until incoming queue empty */
+		/* readMessage() until incoming queue empty 
+		   NON-BLOCKING !!! */
 		void readMessages();
 
-		/* Send methods */
+		/* Ask players list to server */
 		void loadPlayers();
 
 

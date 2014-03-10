@@ -15,18 +15,47 @@ namespace GUI{
 		virtual void renderTo(sf::RenderTarget& dest) = 0;
 	};
 
-	template <typename T> 
+	template <typename T, typename P=int> 
 	class Clickable : public ClickableInterface {
 	public:
 		typedef std::function<void(T*)> Callback;
-		Clickable(const Callback& callback, T* target) : _callback(callback), _target(target) {}
-		~Clickable(){}
-		void triggerAction(){ _callback(_target); }
+		typedef std::function<void(T*, P)> CallbackWithParam;
+		Clickable(
+			const Callback& callback, 
+			T* target
+		) : 
+			_callback(callback), 
+			_target(target), 
+			_hasParam(false) 
+		{}
+
+		Clickable(
+			const CallbackWithParam& callback,
+			T* target, 
+			P param
+		) : 
+			_callbackWithParam(callback),
+			_target(target), 
+			_param(param), 
+			_hasParam(true)
+		{}
+		
+		virtual ~Clickable(){}
+		
+		void triggerAction(){ 
+			if (_hasParam)
+				_callbackWithParam(_target, _param);
+			else
+				_callback(_target); 
+		}
 		virtual bool isInBounds(int x, int y) const = 0;
 		virtual void renderTo(sf::RenderTarget& dest) = 0;
 	private:
 		Callback _callback;
+		CallbackWithParam _callbackWithParam;
 		T* _target;
+		P _param;
+		bool _hasParam;
 	};
 }
 

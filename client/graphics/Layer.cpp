@@ -2,6 +2,7 @@
 #include "TableView.hpp"
 #include "SFML/Window.hpp"
 #include <sstream>
+#include <iostream>
 
 using namespace std;
 using namespace GUI;
@@ -11,10 +12,11 @@ GUI::Layer::~Layer(){
 }
 
 void GUI::Layer::clear(){
+	for (size_t i=0; i<_panels.size(); ++i)
+		delete _panels[i];
 	std::map<std::string, GUI::Textbox*>::iterator it;
 	for (it=_textboxes.begin(); it!=_textboxes.end(); it++)
 		delete it->second;
-
 	for (size_t i=0; i<_clickables.size(); i++)
 		delete _clickables[i];
 	for (size_t i=0; i<_labels.size(); i++)
@@ -23,11 +25,15 @@ void GUI::Layer::clear(){
 		delete _tableCells[i];
 	for (size_t i=0; i<_tableViews.size(); i++)
 		delete _tableViews[i];
+	for (size_t i=0; i<_overlayPanels.size(); i++)
+		delete _overlayPanels[i];
+	_panels.clear();
 	_clickables.clear();
 	_textboxes.clear();
 	_labels.clear();
 	_tableCells.clear(); // TODO delete
 	_tableViews.clear();
+	_overlayPanels.clear();
 }
 
 void GUI::Layer::renderTo(sf::RenderTarget & dest){
@@ -42,6 +48,8 @@ void GUI::Layer::renderTo(sf::RenderTarget & dest){
 }
 
 void GUI::Layer::renderAllAttributesTo(sf::RenderTarget &dest){
+	for (size_t i=0; i<_panels.size(); ++i)
+		dest.draw(*(_panels[i]));
 	// rendering clickables
 	for(unsigned int i=0; i<_clickables.size(); ++i)
 		if (!_clickables[i]->isHidden())
@@ -64,13 +72,17 @@ void GUI::Layer::renderAllAttributesTo(sf::RenderTarget &dest){
 		if(!_tableViews[i]->isHidden())
 			_tableViews[i]->renderTo(dest);
 	}
+	for(unsigned i=0; i<_overlayPanels.size(); ++i)
+		dest.draw(*(_overlayPanels[i]));
 
 }
 
-void GUI::Layer::handleClick(int x, int y){
+bool GUI::Layer::handleClick(int x, int y){
 	for (unsigned int i=0; i<_clickables.size(); ++i){
-		if (_clickables[i]->isInBounds(x, y) && !_clickables[i]->isHidden())
+		if (_clickables[i]->isInBounds(x, y) && !_clickables[i]->isHidden()){
 			_clickables[i]->triggerAction();
+			return true;
+		}	
 	}
 	// checking for textboxes
 	bool hasTextboxBeenSelected = false;
@@ -80,17 +92,22 @@ void GUI::Layer::handleClick(int x, int y){
 			hasTextboxBeenSelected = true;
 			_focusedTextbox = it->second;
 			it->second->focus();
+			return true;
 		}
 	}
 	if (!hasTextboxBeenSelected)
 		_focusedTextbox = NULL;
 
-	for (unsigned int i=0; i<_tableViews.size(); ++i)
-		if (!_tableViews[i]->isHidden())
+	for (unsigned int i=0; i<_tableViews.size(); ++i){
+		if (!_tableViews[i]->isHidden()){
 			_tableViews[i]->handleClick(x,y);
+			return true;
+		}
+	}
+	return false;
 }
 
-void GUI::Layer::handleRightClick(int x, int y){
+bool GUI::Layer::handleRightClick(int x, int y){
 	// delete text in a textbox
 	bool hasTextboxBeenSelected = false;
 	map<string, Textbox*>::iterator it = _textboxes.begin();
@@ -100,10 +117,12 @@ void GUI::Layer::handleRightClick(int x, int y){
 			_focusedTextbox = it->second;
 			it->second->focus();
 			it->second->clearText();
+			return true;
 		}
 	}
 	if (!hasTextboxBeenSelected)
 		_focusedTextbox = NULL;
+	return false;
 }
 
 void GUI::Layer::handleTextEntered(sf::Event event){
@@ -139,6 +158,20 @@ GUI::TableCell & GUI::Layer::addTableCell(){
 GUI::TableView & GUI::Layer::addTableView(int columns, int padding){
 	TableView* res = new TableView(columns, padding);
 	_tableViews.push_back(res);
+	return *res;
+}
+
+sf::RectangleShape & GUI::Layer::addPanel(int w, int h, sf::Color color){
+	sf::RectangleShape* res = new sf::RectangleShape(sf::Vector2f(w, h));
+	res->setFillColor(color);
+	_panels.push_back(res);
+	return *res;
+}
+
+sf::RectangleShape & GUI::Layer::addOverlayPanel(int w, int h, sf::Color color){
+	sf::RectangleShape* res = new sf::RectangleShape(sf::Vector2f(w, h));
+	res->setFillColor(color);
+	_overlayPanels.push_back(res);
 	return *res;
 }
 

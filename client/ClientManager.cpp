@@ -58,6 +58,8 @@ void ClientManager::treatMessage(std::string const & type, JSON::Value const * d
 
 void ClientManager::loadPlayers()
 {
+	while (!user().isLogged())
+		readMessages();
 	JSON::Dict data = {
 		{ net::MSG::USERNAME, JSON::String(user().username) }
 	};

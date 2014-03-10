@@ -40,7 +40,9 @@ void CLIMatchManager::onStateChange()
 		case READY: cout << "READY"; break;
 		case PROMPT: cout << "PROMPT"; break;
 		case TIMEOUT: cout << "TIMEOUT"; break;
-		case FINISHED: cout << "FINISHED"; break;
+		case FINISHED: 
+		default:
+			cout << "FINISHED"; break;
 	}
 	cout << "\033[0m" << endl;
 }
