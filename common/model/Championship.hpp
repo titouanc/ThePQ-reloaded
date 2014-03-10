@@ -29,8 +29,8 @@ struct Schedule
 		JSON::Dict res;
 		res.set("user1", user1);
 		res.set("user2", user2);
-		res.set("date", INT(date));
-		res.set("isHappening", BOOL(isHappening));
+		res.set("date", date);
+		res.set("isHappening", isHappening);
 		return res;
 	}
 };

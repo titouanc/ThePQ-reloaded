@@ -14,7 +14,10 @@ namespace GUI {
 			if (!_font.loadFromFile(fontPath(BODY_FONT_PATH)))
 				throw "Could not load font!";
 			_text.setFont(_font);
-			_text.setString(text);
+			if (text.length() != 0)
+				_text.setString(text);
+			else
+				_text.setString(" ");
 			_text.setCharacterSize(BODY_TEXT_SIZE);
 			_text.setColor(color);
 			_w = _text.getLocalBounds().width;
@@ -32,6 +35,7 @@ namespace GUI {
 			_w = _text.getLocalBounds().width;
 			_h = _text.getLocalBounds().height;
 		}
+		virtual ~Label(){}
 
 		void renderTo(sf::RenderTarget & dest){
 			_text.setPosition(_x, _y);
@@ -39,7 +43,10 @@ namespace GUI {
 		}
 
 		void setText(std::string text) { 
-			_text.setString(text); 
+			if (text.length() != 0)
+				_text.setString(text);
+			else
+				_text.setString(" ");
 			_w = _text.getLocalBounds().width;
 			_h = _text.getLocalBounds().height;
 		}

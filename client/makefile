@@ -6,6 +6,8 @@ OBJS_CLI = cli/CLI.o cli/Menu.o user/CLIUserManager.o stadium/CLIStadiumManager.
 
 OBJS_CONTROLLER = user/UserManager.o stadium/StadiumManager.o team/TeamManager.o market/MarketManager.o match/MatchManager.o fgame/FGameManager.o ClientManager.o championship/ChampionshipManager.o
 
+OBJS = ${OBJS_CONTROLLER} ${OBJS_GUI} ${OBJS_CLI}
+
 LIBS = ../common/json/libjson.a ../common/network/libnetwork.a ../common/model/libmodel.a graphics/libgraphics.a
 
 CPPFLAGS = -I../common -I.

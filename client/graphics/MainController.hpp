@@ -10,10 +10,11 @@ namespace GUI {
 	class MainController {
 	public:
 		MainController();
+		~MainController();
 		void addLayer(Layer& layer);
 		void deleteTopLayer();
-		void handleClick(sf::Event e);
-		void handleRightClick(sf::Event e);
+		bool handleClick(sf::Event e);
+		bool handleRightClick(sf::Event e);
 		void handleTextEntered(sf::Event e);
 		sf::RenderWindow window;
 	private:

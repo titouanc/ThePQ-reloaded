@@ -64,6 +64,7 @@ void * saleGenerator(void * p){
 		generated.setMemberID();
 		market->createSale(generated.getMemberID(), generated.estimatedValue(), generated, net::MSG::GENERATED_BY_MARKET);
 	}
+	return NULL;
 }
 
 void PlayerMarket::startManager(){

@@ -121,6 +121,8 @@ void GraphicMatchManager::onStateChange()
 		case CREATED:  cout << "created" << endl; break;
 		case PROMPT:   cout << "waiting for moves" << endl; break;
 		case TIMEOUT:  cout << "processing moves" << endl; break;
-		case FINISHED: cout << "finished" << endl; break;
+		case FINISHED: 
+		default:
+			cout << "finished" << endl; break;
 	}
 }

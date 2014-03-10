@@ -2,6 +2,7 @@
 #include "TableView.hpp"
 #include "SFML/Window.hpp"
 #include <sstream>
+#include <iostream>
 
 using namespace std;
 using namespace GUI;
@@ -14,7 +15,6 @@ void GUI::Layer::clear(){
 	std::map<std::string, GUI::Textbox*>::iterator it;
 	for (it=_textboxes.begin(); it!=_textboxes.end(); it++)
 		delete it->second;
-
 	for (size_t i=0; i<_clickables.size(); i++)
 		delete _clickables[i];
 	for (size_t i=0; i<_labels.size(); i++)
@@ -67,10 +67,12 @@ void GUI::Layer::renderAllAttributesTo(sf::RenderTarget &dest){
 
 }
 
-void GUI::Layer::handleClick(int x, int y){
+bool GUI::Layer::handleClick(int x, int y){
 	for (unsigned int i=0; i<_clickables.size(); ++i){
-		if (_clickables[i]->isInBounds(x, y) && !_clickables[i]->isHidden())
+		if (_clickables[i]->isInBounds(x, y) && !_clickables[i]->isHidden()){
 			_clickables[i]->triggerAction();
+			return true;
+		}	
 	}
 	// checking for textboxes
 	bool hasTextboxBeenSelected = false;
@@ -80,17 +82,22 @@ void GUI::Layer::handleClick(int x, int y){
 			hasTextboxBeenSelected = true;
 			_focusedTextbox = it->second;
 			it->second->focus();
+			return true;
 		}
 	}
 	if (!hasTextboxBeenSelected)
 		_focusedTextbox = NULL;
 
-	for (unsigned int i=0; i<_tableViews.size(); ++i)
-		if (!_tableViews[i]->isHidden())
+	for (unsigned int i=0; i<_tableViews.size(); ++i){
+		if (!_tableViews[i]->isHidden()){
 			_tableViews[i]->handleClick(x,y);
+			return true;
+		}
+	}
+	return false;
 }
 
-void GUI::Layer::handleRightClick(int x, int y){
+bool GUI::Layer::handleRightClick(int x, int y){
 	// delete text in a textbox
 	bool hasTextboxBeenSelected = false;
 	map<string, Textbox*>::iterator it = _textboxes.begin();
@@ -100,10 +107,12 @@ void GUI::Layer::handleRightClick(int x, int y){
 			_focusedTextbox = it->second;
 			it->second->focus();
 			it->second->clearText();
+			return true;
 		}
 	}
 	if (!hasTextboxBeenSelected)
 		_focusedTextbox = NULL;
+	return false;
 }
 
 void GUI::Layer::handleTextEntered(sf::Event event){
