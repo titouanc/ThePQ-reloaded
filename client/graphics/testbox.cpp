@@ -64,7 +64,7 @@ public:
 	}
 
 	void showMessage(){
-		MessageBox m(_controller, "Hello!", {"1", "2", "3"});
+		MessageBox m(_controller, "Hello, I am message box!\nChoose an option!", {"Option 1", "2", "Number 3"});
 		cout << "You have chosen : " << m.showBox() << endl;
 	}
 

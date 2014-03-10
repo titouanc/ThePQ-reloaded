@@ -19,10 +19,10 @@ public:
 		GUI::Label & textLabel = _canvas.addLabel(_text);
 		sf::RectangleShape & box = _canvas.addPanel(textLabel.getWidth()+100, textLabel.getHeight()+100, sf::Color(0xff, 0xff, 0xff, 0xff));
 
-		textLabel.setPosition(hCenter-textLabel.getWidth()/2, vCenter-box.getSize().y/2+30);
+		textLabel.setPosition(hCenter-textLabel.getWidth()/2, vCenter-textLabel.getHeight()/2-5);
 		box.setPosition(hCenter-box.getSize().x/2, vCenter-box.getSize().y/2);
 
-		displayOptions(vCenter+box.getSize().y/2-50);
+		displayOptions(vCenter+box.getSize().y/2+GUI::MARGIN);
 
 		_canvas.renderAllAttributesTo(window());
 		window().display();
