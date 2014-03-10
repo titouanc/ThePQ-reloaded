@@ -190,7 +190,7 @@ namespace JSON {
    Outside namespace to avoid extra "JSON::" everywhere in the code */
 
 static inline JSON::Bool & BOOL(const JSON::Value *obj){
-    if (! ISBOOL(obj)) throw JSON::TypeError("Not a boolean");
+    if (! ISBOOL(obj) && ! ISINT(obj)) throw JSON::TypeError("Not a boolean");
     return *((JSON::Bool *) obj);
 }
 
