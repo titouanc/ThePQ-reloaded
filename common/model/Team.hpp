@@ -41,6 +41,7 @@ public:
 	std::string getName() const {return _name;}
 	void setName(std::string name){_name=name;}
 	int getFunds(){return _funds;}
+	int getAcPoints(){return _acpoints;}
 	void getPayed(int amount){_funds+=amount;}
 	void buy(int amount){_funds-=amount;}
 	std::vector<Player>& getPlayers(){return _players;}
