@@ -25,7 +25,10 @@ namespace GUI {
 			if (!_font.loadFromFile(fontPath(BODY_FONT_PATH)))
 				throw "Could not load font!";
 			_text.setFont(_font);
-			_text.setString(text);
+			if (text.length() != 0)
+				_text.setString(text);
+			else
+				_text.setString(" ");
 			_text.setCharacterSize(BUTTON_TEXT_SIZE);
 			_text.setColor(BUTTON_TEXT_COLOR);
 			this->_w = (int)_text.getLocalBounds().width + 2*BUTTON_SIDE_PADDING;
@@ -47,7 +50,10 @@ namespace GUI {
 			if (!_font.loadFromFile(fontPath(BODY_FONT_PATH)))
 				throw "Could not load font!";
 			_text.setFont(_font);
-			_text.setString(text);
+			if (text.length() != 0)
+				_text.setString(text);
+			else
+				_text.setString(" ");
 			_text.setCharacterSize(BUTTON_TEXT_SIZE);
 			_text.setColor(BUTTON_TEXT_COLOR);
 			this->_w = (int)_text.getLocalBounds().width + 2*BUTTON_SIDE_PADDING;
@@ -81,7 +87,10 @@ namespace GUI {
 		}
 
 		void setText(std::string text) { 
-			_text.setString(text); 
+			if (text.length() != 0)
+				_text.setString(text);
+			else
+				_text.setString(" ");
 			this->_w = (int)_text.getLocalBounds().width + 2*BUTTON_SIDE_PADDING;
 			_backgroundRect.setSize(sf::Vector2f(this->_w, this->_h));
 		} 

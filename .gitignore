@@ -1,6 +1,7 @@
 client/netconfig.json
 server/netconfig.json
 *.ok
+*.psd
 
 # Compiled Object files
 *.slo
