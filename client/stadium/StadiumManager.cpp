@@ -30,7 +30,11 @@ void StadiumManager::treatMessage(std::string const & type, JSON::Value const * 
 	}
 	else if (type == net::MSG::INSTALLATIONS_LIST)
 	{
-		onInstallationsLoad(LIST(data));
+		JSON::List const & installs = LIST(data);
+		user().installations.clear();
+		for (size_t i = 0; i < installs.len(); ++i)
+			user().installations.push_back(Installation::CAST(DICT(installs[i])));
+		onInstallationsLoad();
 	}
 }
 
@@ -42,14 +46,5 @@ void StadiumManager::onUpgradeInstallation()
 void StadiumManager::onDowngradeInstallation()
 {
 	loadInstallations();
-}
-
-void StadiumManager::onInstallationsLoad(JSON::List const & installs)
-{
-	user().installations.clear();
-	for (size_t i = 0; i < installs.len(); ++i)
-	{
-		user().installations.push_back(Installation::CAST(DICT(installs[i])));
-	}
 }
 

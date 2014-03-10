@@ -11,10 +11,9 @@ public:
 	GraphicStadiumManager(ClientManager const & parent, GUI::MainController &controller);
 	~GraphicStadiumManager(){}
 private:
-	void displayMainMenu();
-	void displayPlayers();
 	void displayInstallations();
-	void doNothing();
+	void onInstallationsLoad();
+	bool _wait;
 };
 
 
