@@ -33,17 +33,23 @@ void GraphicStadiumManager::displayPlayers()
 {
 	_canvas.clear();
 
-	TableView & playerList = _canvas.addTableView(3, 0);
+	TableView & playerList = _canvas.addTableView();
 	/* Header line */
-	playerList.addTableCell(300, 50).addLabel("Name");
-	playerList.addTableCell(100, 50).addLabel("Life");
-	playerList.addTableCell(100, 50).addLabel("Mana");
+	TableCell & header = playerList.addTableCell(515, 47);
+	header.addLabel("Name").setPosition(15, 10);
+	header.addLabel("Life").setPosition(355, 10);
+	header.addLabel("Mana").setPosition(435, 10);
 
 	/* Content */
 	for (Player & player : user().players){
-		playerList.addTableCell().addLabel(player.getName());
-		playerList.addTableCell().addLabel(player.getRemainingLife());
-		playerList.addTableCell().addLabel(player.getRemainingMana());
+		TableCell & playerCell = playerList.addTableCell(500, 47, sf::Color(0xee, 0xee, 0xee, 0xff));
+		playerCell.addLabel(player.getName()).setPosition(15, 10);;
+		Label & lifeLabel = playerCell.addLabel(player.getRemainingLife());
+		lifeLabel.setPosition(355, 10);
+		lifeLabel.setColor(GREEN_TEXT_COLOR);
+		Label & manaLabel = playerCell.addLabel(player.getRemainingMana());
+		manaLabel.setPosition(435, 10);
+		manaLabel.setColor(BLUE_TEXT_COLOR);
 	}
 
 	backButton().setPosition(900, 650);

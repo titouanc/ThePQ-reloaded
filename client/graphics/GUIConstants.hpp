@@ -17,6 +17,7 @@ namespace GUI{
 	static const sf::Color BODY_TEXT_COLOR = sf::Color(0x33, 0x33, 0x33, 0xff);	
 	static const int BODY_TEXT_SIZE = 20;	
 	static const sf::Color BLUE_TEXT_COLOR = sf::Color(0x00, 0xae, 0xef, 0xff);
+	static const sf::Color GREEN_TEXT_COLOR = sf::Color(0x8b, 0xbb, 0x25, 0xff);
 
 	// Buttons
 	static const int BUTTON_HEIGHT = 40;
