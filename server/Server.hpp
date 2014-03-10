@@ -81,6 +81,7 @@ public:
     void notifyPendingChampMatch(std::string);
     void responsePendingChampMatch(std::string,int);
     void resolveUnplayedChampMatch(Schedule&);
+    void endOfPending(Schedule&);
     Schedule* getPendingMatchByUsername(std::string);
 private:
 	SharedQueue<net::Message> _inbox, _outbox;
@@ -90,7 +91,7 @@ private:
     std::deque<MatchManager*> _matches;
     AdminManager _adminManager;
     std::deque<Championship*> _championships;
-    std::deque<Schedule*> _pendingChampMatches;
+    std::deque<Schedule> _pendingChampMatches;
 
     pthread_mutex_t _champsMutex; //_championships used by 3 threads
 	pthread_t _timeThread;

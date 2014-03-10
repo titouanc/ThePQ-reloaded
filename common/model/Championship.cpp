@@ -4,6 +4,16 @@
 #include <Constants.hpp>
 
 using namespace std;
+std::ostream& operator<< (std::ostream& out, const Schedule& sche)
+    {
+        out << "User1(\033[32m" << sche.user1
+            << " - " << sche.statusUser1
+            << "\033[0m) User2(\033[32m" << sche.user2
+            << " - " << sche.statusUser2
+            << "\033[0m) Date(\033[32m" << sche.date << "\033[0m)";
+        return out;
+
+    }
 
 std::ostream& operator<< (std::ostream& out, const Championship& champ){
 	out << champ._name << " : \033[1m" << champ._users.size() << "/" << champ._nbOfUsers << "\033[0m" << std::endl;

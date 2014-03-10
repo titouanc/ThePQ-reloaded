@@ -576,53 +576,59 @@ void Server::timeUpdateStadium()
 }
 
 void Server::responsePendingChampMatch(std::string response, int peer_id){
-	bool startM = false;
 	std::string sender = _users[peer_id]->getUsername();
 	std::string opponent;
 	JSON::Dict toSender, toOtherUser;
 	toSender.set("type",net::MSG::CHAMPIONSHIP_MATCH_STATUS);		//Normal message
 	toOtherUser.set("type",net::MSG::CHAMPIONSHIP_MATCH_STATUS);	//Notification
-	Schedule* pending = getPendingMatchByUsername(sender);
+	Schedule * pending = getPendingMatchByUsername(sender);
 	if(pending == NULL){
 		toSender.set("data",net::MSG::CHAMPIONSHIP_MATCH_NOT_FOUND);
+		Message status(peer_id, toSender.clone());
+		_outbox.push(status);
 		return;
 	}
 	else{
 		opponent = (pending->user1 == sender) ? pending->user2 : pending->user1;
+		std::string & senderStatus  = (pending->user1 == sender) ? pending->statusUser1 : pending->statusUser2;
+		std::string & opponentStatus = (pending->user1 == opponent) ? pending->statusUser1 : pending->statusUser2;
 		//Update statuses in Schedule
 		//User is ready to play match
 		if(response == net::MSG::CHAMPIONSHIP_MATCH_READY){
-			(pending->user1 == sender) ? pending->statusUser1 = net::MSG::CHAMPIONSHIP_MATCH_READY : 
-			pending->statusUser2 = net::MSG::CHAMPIONSHIP_MATCH_READY;
+			senderStatus = net::MSG::CHAMPIONSHIP_MATCH_READY;
 		}
 		//User withdrawed from match
 		else if(response == net::MSG::CHAMPIONSHIP_MATCH_WITHDRAW){
-			(pending->user1 == sender) ? pending->statusUser1 = net::MSG::CHAMPIONSHIP_MATCH_WITHDRAW : 
-			pending->statusUser2 = net::MSG::CHAMPIONSHIP_MATCH_WITHDRAW;
-			
+			senderStatus = net::MSG::CHAMPIONSHIP_MATCH_WITHDRAW;
 		}
 		//Compare statuses
 		//Case 1 : both users are ready, which means opponent was waiting for sender to say 'ready'
-		if(pending->statusUser1 == net::MSG::CHAMPIONSHIP_MATCH_READY && pending->statusUser2 == net::MSG::CHAMPIONSHIP_MATCH_READY){
+		if(senderStatus == net::MSG::CHAMPIONSHIP_MATCH_READY && opponentStatus == net::MSG::CHAMPIONSHIP_MATCH_READY){
 			toSender.set("data",net::MSG::CHAMPIONSHIP_MATCH_START);
 			toOtherUser.set("data",net::MSG::CHAMPIONSHIP_MATCH_START);
 			Message toS(peer_id, toSender.clone());
 			_outbox.push(toS);
 			Message toO(getPeerID(opponent), toOtherUser.clone());
 			_outbox.push(toO); 
-			endOfPending(pending);
+			endOfPending(*pending);
 			startMatch(peer_id,getPeerID(opponent),true);
 		}
 		//Case 2 : sender withdrawed from match
 		else if(response == net::MSG::CHAMPIONSHIP_MATCH_WITHDRAW){
 			toSender.set("data",net::MSG::CHAMPIONSHIP_MATCH_WITHDRAW);
-			toOtherUser.set("type",net::MSG::CHAMPIONSHIP_MATCH_STATUS_CHANGE);
-			toOtherUser.set("data",net::MSG::CHAMPIONSHIP_MATCH_WITHDRAW);
+			if(opponentStatus == net::MSG::CHAMPIONSHIP_MATCH_READY){
+				toOtherUser.set("type",net::MSG::CHAMPIONSHIP_MATCH_STATUS);
+				toOtherUser.set("data",net::MSG::CHAMPIONSHIP_MATCH_OPPONENT_WITHDRAW);
+			}
+			else{
+				toOtherUser.set("type",net::MSG::CHAMPIONSHIP_MATCH_STATUS_CHANGE);
+				toOtherUser.set("data",net::MSG::CHAMPIONSHIP_MATCH_WITHDRAW);
+			}
 			Message toS(peer_id, toSender.clone());
 			_outbox.push(toS);
 			sendNotification(opponent,toOtherUser);
 			//Resolve end of match
-			endOfPending(pending);
+			endOfPending(*pending);
 			MatchResult res;
 			res.winner = opponent;
 			res.loser = sender;
@@ -663,7 +669,7 @@ void Server::timeUpdateChampionship()
 		while (next != NULL)
 		{
 			next->isHappening = true;
-			_pendingChampMatches.push_back(next);
+			_pendingChampMatches.push_back(*next);
 			notifyPendingChampMatch(next->user1);
 			notifyPendingChampMatch(next->user2);
 			next = _championships[i]->nextMatch();
@@ -680,10 +686,12 @@ void Server::timeUpdateChampionship()
 	time_t now = time(NULL);
 	for (size_t i = 0; i < _pendingChampMatches.size(); ++i)
 	{
-		if(abs(difftime(now, _pendingChampMatches[i]->date)) > gameconfig::MAX_CHAMP_MATCH_OFFSET){
+		std::cout << _pendingChampMatches[i] << std::endl; 
+		if(abs(difftime(now, _pendingChampMatches[i].date)) > gameconfig::MAX_CHAMP_MATCH_OFFSET){
+			std::cout << "\nRESOLVING UNREADY CHAMPIONSHIP\n"<<endl;
 			//Time range over, resolve match
 			pthread_mutex_lock(&_champsMutex);
-			resolveUnplayedChampMatch(*(_pendingChampMatches[i]));
+			resolveUnplayedChampMatch(_pendingChampMatches[i]);
 			pthread_mutex_unlock(&_champsMutex);
 		}
 	}
@@ -705,12 +713,12 @@ void Server::resolveUnplayedChampMatch(Schedule & pending){
 	else{
 		int randWinner = rand() % 2 + 1;
 		res.winner = (randWinner == 1) ? pending.user1 : pending.user2;
-		res.loser = (winner == pending.user1) ? pending.user2 : pending.user1;
+		res.loser = (res.winner == pending.user1) ? pending.user2 : pending.user1;
 	}
 	Championship* champ = getChampionshipByUsername(res.winner);
 	if (champ != NULL) 
 		champ->endMatch(res);
-	endOfPending(_pendingChampMatches[i]);
+	endOfPending(pending);
 	toWinner.set("type",net::MSG::CHAMPIONSHIP_MATCH_STATUS_CHANGE);
 	toWinner.set("data",net::MSG::CHAMPIONSHIP_UNPLAYED_MATCH_WON);
 	toLoser.set("type",net::MSG::CHAMPIONSHIP_MATCH_STATUS_CHANGE);
@@ -719,19 +727,19 @@ void Server::resolveUnplayedChampMatch(Schedule & pending){
 	sendNotification(res.loser,toLoser);
 }
 
-void Server::endOfPending(Schedule* sche){
+void Server::endOfPending(Schedule & sche){
 	for(size_t i = 0; i < _pendingChampMatches.size(); ++i){
-		if(_pendingChampMatches[i]->user1 == sche->user1){
+		if(_pendingChampMatches[i].user1 == sche.user1){
 			_pendingChampMatches.erase(_pendingChampMatches.begin()+i);
 		}
 	}
 }
 
 Schedule* Server::getPendingMatchByUsername(std::string username){
-	std::deque<Schedule*>::iterator it;
+	std::deque<Schedule>::iterator it;
 	for(it=_pendingChampMatches.begin();it<_pendingChampMatches.end();++it){
-		if((*it)->user1 == username || (*it)->user2 == username)
-			return (*it);
+		if((*it).user1 == username || (*it).user2 == username)
+			return &(*it);
 	}
 	return NULL;
 }

@@ -3,7 +3,7 @@
 #include <stdlib.h> // itoa
 
 #include "GraphicManager.hpp"
-#include "MessageBox.hpp"
+//#include "MessageBox.hpp"
 
 using namespace std;
 using namespace GUI;
@@ -64,8 +64,8 @@ public:
 	}
 
 	void showMessage(){
-		MessageBox m(_controller, "Hello!");
-		m.drawBox();
+		// MessageBox m(_controller, "Hello!");
+		// m.drawBox();
 	}
 
 	void printWow(int number){

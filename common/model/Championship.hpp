@@ -11,12 +11,21 @@
 
 struct Schedule
 {
+	friend std::ostream& operator<< (std::ostream&, const Schedule&);
 	std::string user1;
 	std::string user2;
 	time_t date;
 	bool isHappening;
 	std::string statusUser1, statusUser2;
-	Schedule(std::string u1, std::string u2, clock_t d) : user1(u1), user2(u2), date(d), isHappening(false) {}
+	Schedule(std::string u1, std::string u2, clock_t d) : user1(u1), user2(u2), date(d), isHappening(false), statusUser1("pending"), statusUser2("pending") {}
+	Schedule(Schedule const & other){
+		user1 = other.user1;
+		user2 = other.user2;
+		date = other.date;
+		isHappening = other.isHappening;
+		statusUser1 = other.statusUser1;
+		statusUser2 = other.statusUser2;
+	}
 	Schedule(JSON::Dict const & json)
 	{
 		if (ISSTR(json.get("user1")))		{ user1 = STR(json.get("user1")).value(); }
@@ -34,6 +43,8 @@ struct Schedule
 		return res;
 	}
 };
+
+
 
 class Championship
 {

@@ -124,7 +124,7 @@ namespace net
 		static const std::string CHAMPIONSHIP_MATCH_OFFSET_OVER = "CMATCH_OO";
 
 		static const std::string CHAMPIONSHIP_MATCH_STATUS = "CMATCH_STATUS";
-		
+		static const std::string CHAMPIONSHIP_MATCH_OPPONENT_WITHDRAW = "CMATCH_USER_OWD";
 		static const std::string CHAMPIONSHIP_MATCH_WITHDRAW = "CMATCH_USER_WD";
 		static const std::string CHAMPIONSHIP_MATCH_WAIT = "CMATCH_WAIT";
 

@@ -27,7 +27,7 @@ void ClientManager::say(std::string const & type, JSON::Value const & data)
 		{"data", data}
 	};
 	_connection.send(msg);
-}à
+}
 
 void ClientManager::treatMessage(std::string const & type, JSON::Value const * data)
 {
@@ -46,6 +46,8 @@ void ClientManager::treatMessage(std::string const & type, JSON::Value const * d
 		std::string response = STR(data).value();
 		if (response == net::MSG::CHAMPIONSHIP_MATCH_WITHDRAW)
 			this->onNotificationResponse(true,response,"You \033[32mwithdrawed\033[0m from your match.\n\033[31mEvicted\033[0m from championship.");
+		else if (response == net::MSG::CHAMPIONSHIP_MATCH_OPPONENT_WITHDRAW)
+			this->onNotificationResponse(true,response,"Your opponent \033[32mwithdrawed\033[0m from your match, you are \n\033[32mmoving to next turn\033[0m.");
 		else if(response == net::MSG::CHAMPIONSHIP_MATCH_WAIT)
 			this->onNotificationResponse(true,response,"You are \033[32mready\033[0m for your match.\nThe match will start when your opponent is ready.\nPlease wait...");
 		else if(response == net::MSG::CHAMPIONSHIP_MATCH_START){
@@ -109,7 +111,7 @@ void ClientManager::handleNotification(){
 		}
 		else if(type == net::MSG::CHAMPIONSHIP_MATCH_STATUS_CHANGE){
 			if(ISSTR((popped.get("data")))) {
-				std::string data = STR(popped.get("data")).value();
+				onMessage(onUnplayedMatch(STR(popped.get("data")).value()));
 			}
 		}
 	}
@@ -136,6 +138,24 @@ std::string ClientManager::onEndOfSale(JSON::Dict const & json)
 		else
 			res << "This player comes from " << owner << "'s team." << endl;
 	}
+	res<<endl;
+	return res.str();
+}
+
+std::string ClientManager::onUnplayedMatch(std::string const & msg){
+	std::stringstream res;
+	res << "\n\033[36mMessage : championship match has ended.\033[0m" << endl;
+	if(msg == net::MSG::CHAMPIONSHIP_UNPLAYED_MATCH_WON){
+		res << "Your opponent failed to be ready in time for your championship match, you are \033[32mmoving to the next turn \033[0m." << endl;
+	}
+	else if(msg == net::MSG::CHAMPIONSHIP_UNPLAYED_MATCH_LOST){
+		res << "You failed to be ready in time for your championship match. You have been \033[31mevicted\033[0m from the championship." << endl;
+	}
+	else if(msg == net::MSG::CHAMPIONSHIP_MATCH_WITHDRAW){
+		res << "Your opponent withdrawed from the championship match, you are \033[32mmoving to the next turn \033[0m." << endl;
+	}
+	else
+		res << "Unknown message type." << endl;
 	res<<endl;
 	return res.str();
 }

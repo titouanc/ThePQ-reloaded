@@ -284,6 +284,7 @@ void CLIUserManager::onMatchPending(){
 }
 
 void CLIUserManager::onNotificationResponse(bool success, std::string const & response,std::string const & msg){
+	//If opponent hasn't responded yet, wait until he does
 	if(response != net::MSG::CHAMPIONSHIP_MATCH_WAIT)
 		_waitForNotificationResponse = false;
 	(success) ? okMsg(msg) : errorMsg(msg);
