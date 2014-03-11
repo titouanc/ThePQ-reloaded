@@ -68,7 +68,7 @@ class ClientManager {
 		virtual void onMatchStart(){}
 
 		/* Load players in user().players */
-		virtual void onPlayersLoad(JSON::List const & players);
+		virtual void onPlayersLoad(){}
 
 		/* Triggered when user's team informations are updated */
 		virtual void onTeamInfo(UserData const & user);
