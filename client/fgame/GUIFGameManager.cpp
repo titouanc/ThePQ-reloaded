@@ -25,9 +25,10 @@ void GUIFGameManager::onUserList(JSON::List const & list){
 		Label & nameLabel = current.addLabel(STR(list[i]).value());
 		nameLabel.setPosition(15, 7);
 		nameLabel.setColor(sf::Color(0xee, 0xee, 0xee, 0xff));
-		current.addButton<GUIFGameManager, string>(
-			&GUIFGameManager::invitePlayer, STR(list[i]).value(), this, "Invite"
-		).setPosition(275, 0);
+		Button<GUIFGameManager, string> & inviteButton = current.addButton<GUIFGameManager, string>(
+			&GUIFGameManager::invitePlayer, STR(list[i]).value(), this, "Invite");
+		inviteButton.setPosition(350-inviteButton.getWidth(), 0);
+		inviteButtons.insert(pair<string, GUI::Button<GUIFGameManager, string>*>(STR(list[i]).value(), &inviteButton));
 	}
 
 	backButton().setPosition(900, 470);
@@ -38,4 +39,10 @@ void GUIFGameManager::onUserList(JSON::List const & list){
 
 void GUIFGameManager::invitePlayer(string playername){
 	cout << playername << endl;
+	Button<GUIFGameManager, string> * inviteButton = inviteButtons[playername];
+	inviteButton->disable();
+	inviteButton->setBackgroundColor(sf::Color(0xcc, 0xcc, 0xcc, 0xff));
+	inviteButton->setText("Invited");
+	inviteButton->setPosition(350-inviteButton->getWidth(), 0);
+	redrawCanvas();
 }
