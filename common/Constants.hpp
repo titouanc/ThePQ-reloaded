@@ -119,10 +119,11 @@ namespace net
 		static const std::string JOIN_CHAMPIONSHIP = "C_JOIN";
 		static const std::string ADDED_TO_CHAMPIONSHIP = "C_ADDED";
 		static const std::string CHAMPIONSHIP_NOT_FOUND = "C_NOTFOUND";
-
+		static const std::string CHAMPIONSHIP_WON = "C_WON";
 		static const std::string CHAMPIONSHIP_MATCH_PENDING = "CMATCH_PENDING";
 		static const std::string CHAMPIONSHIP_MATCH_STATUS_CHANGE = "CMATCH_SCHANGE";
 		static const std::string CHAMPIONSHIP_MATCH_OFFSET_OVER = "CMATCH_OO";
+		static const std::string CHAMPIONSHIP_STATUS_CHANGE = "C_SCHANGE";
 
 		static const std::string CHAMPIONSHIP_MATCH_STATUS = "CMATCH_STATUS";
 		static const std::string CHAMPIONSHIP_MATCH_OPPONENT_WITHDRAW = "CMATCH_USER_OWD";

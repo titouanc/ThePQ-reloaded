@@ -21,7 +21,7 @@ std::ostream& operator<< (std::ostream& out, const Championship& champ){
 	return out;
 }
 
-Championship::Championship(size_t nbOfTurns,std::string name) : _isStarted(false), _isEnded(false), _name(name), _turn(1), _nbOfUsers(2<<(nbOfTurns-1))
+Championship::Championship(size_t nbOfTurns,std::string name) : _isStarted(false), _isEnded(false), _usersNotified(false), _name(name), _turn(1), _nbOfUsers(2<<(nbOfTurns-1))
 {
 	if (_nbOfUsers < 2 || _nbOfUsers > 32) //Should never happen (AdminClient verifying it)
 	{
@@ -37,6 +37,7 @@ Championship::Championship(JSON::Dict const & json) : Championship()
 	if (ISINT(json.get("nbOfUsers")))	{ _nbOfUsers = INT(json.get("nbOfUsers")); }
 	if (ISBOOL(json.get("isStarted")))	{ _isStarted = BOOL(json.get("isStarted")); }
 	if (ISBOOL(json.get("isEnded")))	{ _isEnded = BOOL(json.get("isEnded")); }
+	if (ISBOOL(json.get("notified")))	{ _usersNotified = BOOL(json.get("notified"));}
 	if (ISSTR(json.get("name")))		{ _name = STR(json.get("name")).value(); }
 	if (ISINT(json.get("turn")))		{ _turn = INT(json.get("turn")); }
 	if (ISLIST(json.get("users")))
@@ -65,6 +66,7 @@ Championship::operator JSON::Dict()
 	res.set("nbOfUsers", _nbOfUsers);
 	res.set("isStarted", _isStarted);
 	res.set("isEnded", _isEnded);
+	res.set("notified",_usersNotified);
 	res.set("name", _name);
 	res.set("turn", _turn);
 	JSON::List users;

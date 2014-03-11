@@ -64,7 +64,8 @@ void ClientManager::treatMessage(std::string const & type, JSON::Value const * d
 	else if (	type == net::MSG::MARKET_MESSAGE || 
 				type == net::MSG::FRIENDLY_GAME_INVITATION ||
 			 	type == net::MSG::CHAMPIONSHIP_MATCH_PENDING ||
-			 	type == net::MSG::CHAMPIONSHIP_MATCH_STATUS_CHANGE)
+			 	type == net::MSG::CHAMPIONSHIP_MATCH_STATUS_CHANGE ||
+				type == net::MSG::CHAMPIONSHIP_STATUS_CHANGE)
 	{
 		JSON::Dict notif;
 		notif.set("type",JSON::String(type));
@@ -116,6 +117,9 @@ void ClientManager::handleNotification(){
 				onMessage(onUnplayedMatch(STR(popped.get("data")).value()));
 			}
 		}
+		else if(type == net::MSG::CHAMPIONSHIP_STATUS_CHANGE){
+			onMessage(onChampionshipStatusChange(STR(popped.get("data")).value()));
+		}
 	}
 }
 
@@ -159,6 +163,21 @@ std::string ClientManager::onUnplayedMatch(std::string const & msg){
 	else
 		res << "Unknown message type." << endl;
 	res<<endl;
+	return res.str();
+}
+
+std::string ClientManager::onChampionshipStatusChange(std::string const & msg){
+	std::stringstream res;
+	if (msg == net::MSG::CHAMPIONSHIP_STARTED){
+		res << "\n\033[36mMessage : the championship you joined has started.\033[0m" << endl;
+		res << "You can check the infos about your next championship match in the \033[1mcurrent championship\033[0m tab."
+			<< "\nYou will receive a notification when it is ready to be played." << endl;
+	}
+	else if(msg == net::MSG::CHAMPIONSHIP_WON){
+		res << "\n\033[36mMessage : you have won the championship !\033[0m"<<endl;
+		res << "Such much very wow." << endl;
+	}
+	res << endl;
 	return res.str();
 }
 

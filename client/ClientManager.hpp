@@ -55,6 +55,9 @@ class ClientManager {
 		/* handle message when a championship match has been automatically resolved */
 		std::string onUnplayedMatch(std::string const &);
 
+		/* Handles begin championship/won championship notifications */
+		std::string onChampionshipStatusChange(std::string const &);
+
 		/* Reponse to a pending match notification */
 		void readyForMatch();
 		void withdrawFromMatch();

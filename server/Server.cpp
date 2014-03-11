@@ -590,6 +590,7 @@ void Server::responsePendingChampMatch(std::string response, int peer_id){
 		return;
 	}
 	else{
+		pthread_mutex_lock(&_champsMutex);
 		opponent = (pending->user1 == sender) ? pending->user2 : pending->user1;
 		std::string & senderStatus  = (pending->user1 == sender) ? pending->statusUser1 : pending->statusUser2;
 		std::string & opponentStatus = (pending->user1 == opponent) ? pending->statusUser1 : pending->statusUser2;
@@ -644,6 +645,7 @@ void Server::responsePendingChampMatch(std::string response, int peer_id){
 			Message toS(peer_id, toSender.clone());
 			_outbox.push(toS);
 		}
+		pthread_mutex_unlock(&_champsMutex);
 	}
 }
 
@@ -666,6 +668,10 @@ void Server::timeUpdateChampionship()
 {
 	for (size_t i = 0; i < _championships.size(); ++i)
 	{
+		if(_championships[i]->isStarted() && !(_championships[i]->areUsersNotified())){
+			notifyStartingChampionship(*(_championships[i]));
+			_championships[i]->usersNotified();
+		}
 		Schedule* next = _championships[i]->nextMatch();
 		while (next != NULL)
 		{
@@ -676,6 +682,10 @@ void Server::timeUpdateChampionship()
 			next = _championships[i]->nextMatch();
 		}
 		if(_championships[i]->isEnded()){
+			JSON::Dict toSend;
+			toSend.set("type",net::MSG::CHAMPIONSHIP_STATUS_CHANGE);
+			toSend.set("data",net::MSG::CHAMPIONSHIP_WON);
+			sendNotification(_championships[i]->getWinner(),toSend);
 			pthread_mutex_lock(&_champsMutex);
 			delete _championships[i]; 
 			_championships.erase(_championships.begin()+i);
@@ -685,17 +695,17 @@ void Server::timeUpdateChampionship()
 	}
 	//Check in waiting matches if offset is over
 	time_t now = time(NULL);
+	pthread_mutex_lock(&_champsMutex);
 	for (size_t i = 0; i < _pendingChampMatches.size(); ++i)
 	{
 		std::cout << _pendingChampMatches[i] << std::endl; 
 		if(abs(difftime(now, _pendingChampMatches[i].date)) > gameconfig::MAX_CHAMP_MATCH_OFFSET){
-			std::cout << "\nRESOLVING UNREADY CHAMPIONSHIP\n"<<endl;
+			std::cout << "\nRESOLVING UNREADY CHAMPIONSHIP MATCH\n"<<endl;
 			//Time range over, resolve match
-			pthread_mutex_lock(&_champsMutex);
 			resolveUnplayedChampMatch(_pendingChampMatches[i]);
-			pthread_mutex_unlock(&_champsMutex);
 		}
 	}
+	pthread_mutex_unlock(&_champsMutex);
 }
 
 void Server::resolveUnplayedChampMatch(Schedule & pending){
@@ -762,6 +772,16 @@ void Server::notifyPendingChampMatch(std::string username){
 	sendNotification(username,toSend);
 }
 
+void Server::notifyStartingChampionship(Championship & champ){
+	JSON::Dict toSend;
+	toSend.set("type",net::MSG::CHAMPIONSHIP_STATUS_CHANGE);
+	toSend.set("data",net::MSG::CHAMPIONSHIP_STARTED);
+	std::vector<std::string> & users = champ.getUsers();
+	for(size_t i = 0; i < users.size(); ++i){
+		sendNotification(users[i],toSend);
+	}
+}
+
 void Server::addChampionship(const Championship& champ){
 	pthread_mutex_lock(&_champsMutex);
 	Championship* newChamp = new Championship(champ);
@@ -789,7 +809,9 @@ void Server::sendChampionshipsList(int peer_id){
 void Server::sendJoinedChampionship(int peer_id){
 	JSON::Dict toSend;
 	toSend.set("type",net::MSG::JOINED_CHAMPIONSHIP);
+	pthread_mutex_lock(&_champsMutex);
 	Championship* champ = getChampionshipByUsername(_users[peer_id]->getUsername());
+	pthread_mutex_unlock(&_champsMutex);
 	(champ == NULL) ? toSend.set("data",net::MSG::CHAMPIONSHIP_NOT_FOUND) : toSend.set("data",JSON::Dict(*champ));
 	Message status(peer_id,toSend.clone());
 	_outbox.push(status);

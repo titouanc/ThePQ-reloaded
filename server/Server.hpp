@@ -80,6 +80,7 @@ public:
     void sendChampionshipsList(int);
     void sendJoinedChampionship(int);
     void notifyPendingChampMatch(std::string);
+    void notifyStartingChampionship(Championship&);
     void responsePendingChampMatch(std::string,int);
     void resolveUnplayedChampMatch(Schedule&);
     void endOfPending(Schedule&);

@@ -64,7 +64,10 @@ public:
 	bool isFull() const { return _users.size() == _nbOfUsers; }
 	bool isEnded() const { return _isEnded; }
 	bool isStarted() const { return _isStarted; }
+	bool areUsersNotified() const { return _usersNotified; }
+	void usersNotified() { _usersNotified = true; }
 	std::string getName() const { return _name; }
+	std::string getWinner() const { return (_isEnded) ? _users[0] : ""; }
 	size_t getNbOfUsers() { return _nbOfUsers; }
 	std::vector<std::string>& getUsers() { return _users; }
 	bool isUserIn(std::string username);
@@ -72,6 +75,7 @@ public:
 private:
 	bool _isStarted;
 	bool _isEnded;
+	bool _usersNotified;
 	std::string _name;
 	int _turn;
 	size_t _nbOfUsers;
