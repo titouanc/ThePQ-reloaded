@@ -18,13 +18,16 @@ void GUIFGameManager::onUserList(JSON::List const & list){
 	_canvas.clear();
 
 	TableView & playersTV = _canvas.addTableView(2);
+	playersTV.setPosition(50, 50);
 	for (size_t i=0; i<list.len(); i++){
-		TableCell & current = playersTV.addTableCell(300, 47);
-		current.setBackgroundColor(sf::Color(0x00, 0x00, 0x00, 0x99));
-		current.addLabel(STR(list[i]).value()).setPosition(15, 10);
+		TableCell & current = playersTV.addTableCell(350, BUTTON_HEIGHT);
+		current.setBackgroundColor(sf::Color(0x00, 0x00, 0x00, 0x77));
+		Label & nameLabel = current.addLabel(STR(list[i]).value());
+		nameLabel.setPosition(15, 7);
+		nameLabel.setColor(sf::Color(0xee, 0xee, 0xee, 0xff));
 		current.addButton<GUIFGameManager, string>(
 			&GUIFGameManager::invitePlayer, STR(list[i]).value(), this, "Invite"
-		).setPosition(240, 2);
+		).setPosition(275, 0);
 	}
 
 	backButton().setPosition(900, 470);
