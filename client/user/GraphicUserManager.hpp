@@ -24,6 +24,7 @@ private:
 	void submitTeamNameForm();
 	void goToStadium();
 	void goToMarket();
+	void goToPlayers();
 
 	/* Hooks */
 	void onAskTeamName();

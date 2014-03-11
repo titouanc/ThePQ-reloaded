@@ -1,6 +1,7 @@
 #include "GraphicUserManager.hpp"
 #include <stadium/GraphicStadiumManager.hpp>
 #include <market/GraphicMarketManager.hpp>
+#include <team/GraphicTeamManager.hpp>
 
 using namespace std;
 using namespace GUI;
@@ -85,6 +86,10 @@ void GraphicUserManager::displayMainMenu()
 	_canvas.clear();
 	
 	_canvas.addButton<GraphicUserManager>(
+		&GraphicUserManager::goToPlayers, this, "Team management"
+	).setPosition(100, 300);
+
+	_canvas.addButton<GraphicUserManager>(
 		&GraphicUserManager::goToStadium, this, "Stadium management"
 	).setPosition(100, 350);
 
@@ -149,6 +154,14 @@ void GraphicUserManager::goToStadium()
 void GraphicUserManager::goToMarket()
 {
 	GraphicMarketManager market(*this, _controller);
+	market.run();
+	deleteCanvas();
+	displayMainMenu();
+}
+
+void GraphicUserManager::goToPlayers()
+{
+	GraphicTeamManager market(*this, _controller);
 	market.run();
 	deleteCanvas();
 	displayMainMenu();
