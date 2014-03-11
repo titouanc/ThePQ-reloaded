@@ -419,7 +419,6 @@ void MatchManager::endMatch(void)
 
 	_matchRes.setTeams(_squads[winner].squad_owner, _squads[looser].squad_owner);
 	_matchRes.setScore(_score[winner], _score[looser]);
-	_matchRes.compute();
 }
 
 void MatchManager::onCollision(

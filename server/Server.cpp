@@ -111,6 +111,8 @@ void Server::collectFinishedMatches(void)
 				if (champ != NULL){
 					champ->endMatch(result);
 				}
+				result.compute();
+				result.save();
 			}
 			delete *it;
 			_matches.erase(it);
@@ -608,8 +610,7 @@ void Server::responsePendingChampMatch(std::string response, int peer_id){
 		else if(response == net::MSG::CHAMPIONSHIP_MATCH_WITHDRAW){
 			(pending->user1 == sender) ? pending->statusUser1 = net::MSG::CHAMPIONSHIP_MATCH_WITHDRAW : pending->statusUser2 = net::MSG::CHAMPIONSHIP_MATCH_WITHDRAW;
 			MatchResult res;
-			res.winner = opponent;
-			res.loser = sender;
+			res.setTeams(opponent, sender);
 			Championship* champ = getChampionshipByUsername(sender);
 			if(champ != NULL)
 				champ->endMatch(res);
@@ -674,24 +675,25 @@ void Server::timeUpdateChampionship()
 			MatchResult res;
 			//Both users will never be ready here, because it means match has started.
 			if (pending.statusUser1 == net::MSG::CHAMPIONSHIP_MATCH_READY){
-				res.winner = pending.user1;
-				res.loser = pending.user2;
+				res.setTeams(pending.user1, pending.user2);
 			}
 			else if (pending.statusUser2 == net::MSG::CHAMPIONSHIP_MATCH_READY){
-				res.winner = pending.user2;
-				res.loser = pending.user1;
+				res.setTeams(pending.user2, pending.user1);
 			}
 			//Else none user responded to notification : random the winner...
 			else{
 				int randWinner = rand() % 2 + 1;
 				std::string winner = (randWinner == 1) ? pending.user1 : pending.user2;
 				std::string loser = (winner == pending.user1) ? pending.user2 : pending.user1;
-				res.winner = winner;
-				res.loser = loser;
+				res.setTeams(winner, loser);
 			}
-			Championship* champ = getChampionshipByUsername(res.winner);
-			if (champ != NULL) 
+			Championship* champ = getChampionshipByUsername(res.getWinner());
+			if (champ != NULL)
+			{
 				champ->endMatch(res);
+			}
+			res.compute();
+			res.save();
 		}
 	}
 }
