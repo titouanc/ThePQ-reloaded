@@ -50,7 +50,7 @@ class Championship
 {
 	friend std::ostream& operator<< (std::ostream&, const Championship&);
 public:
-	Championship(size_t nbOfTurns = 3,std::string name="");
+	Championship(size_t nbOfTurns = 3,std::string name="",int cashprize = 0, int fame = 0);
 	~Championship();
 	Championship(JSON::Dict const & json);
 	operator JSON::Dict();
@@ -77,8 +77,11 @@ private:
 	bool _isEnded;
 	bool _usersNotified;
 	std::string _name;
+	int _cashPrize;
+	int _fame;
 	int _turn;
 	size_t _nbOfUsers;
+
 	std::vector<std::string> _users;
 	std::vector<Schedule> _schedules;
 

@@ -108,6 +108,8 @@ namespace net
 		static const std::string CHAMPIONSHIP_NOTIFICATION = "CHAMP_NOTIF";
 		static const std::string TEAMS_NUMBER = "nbOfUsers";
 		static const std::string CHAMPIONSHIP_NAME = "name";
+		static const std::string CHAMPIONSHIP_CASHPRIZE = "cashprize";
+		static const std::string CHAMPIONSHIP_FAME = "fame";
 		static const std::string JOINABLE_CHAMPIONSHIPS_LIST = "C_LIST";
 		static const std::string JOINED_CHAMPIONSHIP = "C_JOINED";
 		static const std::string ALREADY_IN_CHAMPIONSHIP = "C_AIC";

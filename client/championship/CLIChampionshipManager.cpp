@@ -95,7 +95,7 @@ void CLIChampionshipManager::displayChampionships(){
 		readMessage();
 	std::cout << "================ CHAMPIONSHIPS ================" << std::endl;
 	for(size_t i=0;i<getChamps().size();++i){
-		std::cout<< getChamps()[i];
+		std::cout<< getChamps()[i] << endl;
 	}
 	std::cout << "===============================================" << std::endl;
 }
