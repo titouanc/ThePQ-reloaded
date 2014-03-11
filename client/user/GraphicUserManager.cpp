@@ -96,6 +96,8 @@ void GraphicUserManager::displayMainMenu()
 	_canvas.addButton<GraphicUserManager>(
 		&GraphicUserManager::goToMarket, this, "Player market"
 	).setPosition(100, 400);
+
+	backButton("Exit").setPosition(100, 500);
 	
 	redrawCanvas();
 }
