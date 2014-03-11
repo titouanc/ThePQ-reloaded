@@ -5,8 +5,9 @@ void GUI::GraphicManager::run()
 {
 	while(_controller.window.isOpen() && _isRunning){
 		sf::Event event;
-		if (_controller.window.waitEvent(event))
+		if (_controller.window.pollEvent(event))
 			treatEvent(event);
+		loop();
 	}
 }
 
