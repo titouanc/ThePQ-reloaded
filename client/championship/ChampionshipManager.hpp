@@ -15,8 +15,8 @@ protected:
 	void joinChampionship(std::string champName);
 	/* ask for championships list */
 	void loadChampionships();
-	/* set joinedChamp to the championship the user joined if any, "" else */
-	void updateCurrentChampionship();
+	/* ask for current joined championship */
+	void joinedChampionship();
 	/* leave championship if any */
 	void leaveCurrentChampionship();
 	/* treat Championship specific messages */
@@ -28,6 +28,8 @@ protected:
 	virtual void onLeaveChampionship(std::string data){}
 	/* received championships list : put it in _champs */
 	virtual void onChampionshipsLoad(JSON::List const & json);
+	/* received current joined champ, put in joinedChamp if !NULL */
+	virtual void onJoinedChampionship(JSON::Value const *);
 public:
 	using ClientManager::ClientManager;
 	ChampionshipManager(ClientManager const & parent);

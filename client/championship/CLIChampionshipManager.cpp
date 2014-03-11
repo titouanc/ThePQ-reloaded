@@ -78,10 +78,9 @@ void CLIChampionshipManager::currentChampionshipMenu(){
 
 void CLIChampionshipManager::displayCurrentChampionship(){
 	_waitForChamps = true;
-	loadChampionships();
+	joinedChampionship();
 	while (_waitForChamps)
 		readMessage();
-	updateCurrentChampionship();
 	if(user().joinedChamp.getName().empty()){
 		std::cout << "You are currently not taking part in any championship." << std::endl;
 	}
@@ -133,6 +132,11 @@ void CLIChampionshipManager::onLeaveChampionship(std::string data){
 void CLIChampionshipManager::onChampionshipsLoad(JSON::List const & list){
 	_waitForChamps = false;
 	ChampionshipManager::onChampionshipsLoad(list);
+}
+
+void CLIChampionshipManager::onJoinedChampionship(JSON::Value const * data){
+	_waitForChamps = false;
+	ChampionshipManager::onJoinedChampionship(data);
 }
 
 void CLIChampionshipManager::onMatchStart(){

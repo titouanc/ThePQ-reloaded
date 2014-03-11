@@ -108,7 +108,8 @@ namespace net
 		static const std::string CHAMPIONSHIP_NOTIFICATION = "CHAMP_NOTIF";
 		static const std::string TEAMS_NUMBER = "nbOfUsers";
 		static const std::string CHAMPIONSHIP_NAME = "name";
-		static const std::string CHAMPIONSHIPS_LIST = "C_LIST";
+		static const std::string JOINABLE_CHAMPIONSHIPS_LIST = "C_LIST";
+		static const std::string JOINED_CHAMPIONSHIP = "C_JOINED";
 		static const std::string ALREADY_IN_CHAMPIONSHIP = "C_AIC";
 		static const std::string CHAMPIONSHIP_FULL = "C_FULL";
 		static const std::string CHAMPIONSHIP_STARTED = "C_START";
@@ -154,7 +155,7 @@ namespace gameconfig
 	static const int SALE_TURN_TIME = 30;
 	static const float BID_RATIO = 0.05;
 	static const int MAX_CHAMPIONSHIP_TURNS = 5; //32 teams
-	static const int MAX_CHAMP_MATCH_OFFSET = 3600;
+	static const int MAX_CHAMP_MATCH_OFFSET = 61;
 }
 
 namespace memory

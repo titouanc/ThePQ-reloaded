@@ -3,6 +3,7 @@
 #include <model/MemoryAccess.hpp>
 #include <Constants.hpp>
 
+
 using namespace std;
 std::ostream& operator<< (std::ostream& out, const Schedule& sche)
     {
@@ -10,7 +11,7 @@ std::ostream& operator<< (std::ostream& out, const Schedule& sche)
             << " - " << sche.statusUser1
             << "\033[0m) User2(\033[32m" << sche.user2
             << " - " << sche.statusUser2
-            << "\033[0m) Date(\033[32m" << sche.date << "\033[0m)";
+            << "\033[0m) Date(\033[32m" << ctime(&sche.date) << "\033[0m)";
         return out;
 
     }

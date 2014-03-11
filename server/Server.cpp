@@ -214,7 +214,7 @@ void Server::treatMessage(const Message &message)
 						sendPlayersOnMarketList(message.peer_id);
 				} else if(messageType == MSG::FRIENDLY_GAME_USERNAME) {
 						sendInvitationToPlayer(data, message.peer_id);
-				} else if(messageType == MSG::CHAMPIONSHIPS_LIST) {
+				} else if(messageType == MSG::JOINABLE_CHAMPIONSHIPS_LIST) {
 						sendChampionshipsList(message.peer_id);
 				} else if(messageType == MSG::JOIN_CHAMPIONSHIP) {
 						joinChampionship(data, message.peer_id);
@@ -222,7 +222,8 @@ void Server::treatMessage(const Message &message)
 						leaveChampionship(message.peer_id);
 				} else if(messageType == MSG::CHAMPIONSHIP_MATCH_PENDING_RESPONSE){
 						responsePendingChampMatch(data,message.peer_id);
-				}
+				} else if(messageType == MSG::JOINED_CHAMPIONSHIP)
+						sendJoinedChampionship(message.peer_id);
 			} else if (ISINT(received.get("data"))) {
 				int data = INT(received.get("data"));
 				if (messageType == MSG::INSTALLATION_UPGRADE) {
@@ -701,30 +702,40 @@ void Server::resolveUnplayedChampMatch(Schedule & pending){
 	MatchResult res;
 	JSON::Dict toWinner, toLoser;
 	//One user at least didn't answer to the pending match notification
-	if (pending.statusUser1 == net::MSG::CHAMPIONSHIP_MATCH_READY){
-		res.winner = pending.user1;
-		res.loser = pending.user2;
-	}
-	else if (pending.statusUser2 == net::MSG::CHAMPIONSHIP_MATCH_READY){
-		res.winner = pending.user2;
-		res.loser = pending.user1;
+	if(	pending.statusUser1 == net::MSG::CHAMPIONSHIP_MATCH_READY || 
+		pending.statusUser2 == net::MSG::CHAMPIONSHIP_MATCH_READY){
+		if (pending.statusUser1 == net::MSG::CHAMPIONSHIP_MATCH_READY){
+			res.winner = pending.user1;
+			res.loser = pending.user2;
+		}
+		else if (pending.statusUser2 == net::MSG::CHAMPIONSHIP_MATCH_READY){
+			res.winner = pending.user2;
+			res.loser = pending.user1;
+		}
+		toWinner.set("type",net::MSG::CHAMPIONSHIP_MATCH_STATUS);
+		toWinner.set("data",net::MSG::CHAMPIONSHIP_UNPLAYED_MATCH_WON);
+		toLoser.set("type",net::MSG::CHAMPIONSHIP_MATCH_STATUS_CHANGE);
+		toLoser.set("type",net::MSG::CHAMPIONSHIP_UNPLAYED_MATCH_LOST);
+		Message status(getPeerID(res.winner),toWinner.clone());
+		_outbox.push(status);
+		sendNotification(res.loser,toLoser);
 	}
 	//Else none user responded to notification : random the winner...
 	else{
 		int randWinner = rand() % 2 + 1;
 		res.winner = (randWinner == 1) ? pending.user1 : pending.user2;
 		res.loser = (res.winner == pending.user1) ? pending.user2 : pending.user1;
+		toWinner.set("type",net::MSG::CHAMPIONSHIP_MATCH_STATUS_CHANGE);
+		toWinner.set("data",net::MSG::CHAMPIONSHIP_UNPLAYED_MATCH_WON);
+		toLoser.set("type",net::MSG::CHAMPIONSHIP_MATCH_STATUS_CHANGE);
+		toLoser.set("data",net::MSG::CHAMPIONSHIP_UNPLAYED_MATCH_LOST);
+		sendNotification(res.winner,toWinner);
+		sendNotification(res.loser,toLoser);
 	}
 	Championship* champ = getChampionshipByUsername(res.winner);
 	if (champ != NULL) 
 		champ->endMatch(res);
 	endOfPending(pending);
-	toWinner.set("type",net::MSG::CHAMPIONSHIP_MATCH_STATUS_CHANGE);
-	toWinner.set("data",net::MSG::CHAMPIONSHIP_UNPLAYED_MATCH_WON);
-	toLoser.set("type",net::MSG::CHAMPIONSHIP_MATCH_STATUS_CHANGE);
-	toLoser.set("data",net::MSG::CHAMPIONSHIP_UNPLAYED_MATCH_LOST);
-	sendNotification(res.winner,toWinner);
-	sendNotification(res.loser,toLoser);
 }
 
 void Server::endOfPending(Schedule & sche){
@@ -761,7 +772,7 @@ void Server::addChampionship(const Championship& champ){
 
 void Server::sendChampionshipsList(int peer_id){
 	JSON::Dict toSend;
-	toSend.set("type",net::MSG::CHAMPIONSHIPS_LIST);
+	toSend.set("type",net::MSG::JOINABLE_CHAMPIONSHIPS_LIST);
 	JSON::List champs;
 	std::deque<Championship*>::iterator it;
 	pthread_mutex_lock(&_champsMutex);
@@ -772,6 +783,15 @@ void Server::sendChampionshipsList(int peer_id){
 	pthread_mutex_unlock(&_champsMutex);
 	toSend.set("data",champs);
 	Message status(peer_id, toSend.clone());
+	_outbox.push(status);
+}
+
+void Server::sendJoinedChampionship(int peer_id){
+	JSON::Dict toSend;
+	toSend.set("type",net::MSG::JOINED_CHAMPIONSHIP);
+	Championship* champ = getChampionshipByUsername(_users[peer_id]->getUsername());
+	(champ == NULL) ? toSend.set("data",net::MSG::CHAMPIONSHIP_NOT_FOUND) : toSend.set("data",JSON::Dict(*champ));
+	Message status(peer_id,toSend.clone());
 	_outbox.push(status);
 }
 

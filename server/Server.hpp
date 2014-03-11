@@ -78,6 +78,7 @@ public:
     void leaveChampionship(int);
     void joinChampionship(std::string,int);
     void sendChampionshipsList(int);
+    void sendJoinedChampionship(int);
     void notifyPendingChampMatch(std::string);
     void responsePendingChampMatch(std::string,int);
     void resolveUnplayedChampMatch(Schedule&);

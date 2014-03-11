@@ -210,7 +210,7 @@ void CLIUserManager::askForNotificationHandling()
 	int option;
 	do
 	{
-		cout << "You have \033[34m" << getNbNotifications() << "\033[0m notifications." << endl; 
+		cout << "You have \033[34m" << getNbNotifications() << "\033[0m notification(s)." << endl; 
 		option = _menu.run();
 		switch(option)
 		{
@@ -219,6 +219,8 @@ void CLIUserManager::askForNotificationHandling()
 				break;
 			case 2:
 				readMessages();
+				break;
+			case 3:
 				break;
 			default:
 				cout << "Wrong option entered" << endl;
