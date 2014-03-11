@@ -31,7 +31,8 @@ static void* runTimeLoop(void* args)
 Server::Server(NetConfig const & config) : 
 	_inbox(), _outbox(), _users(),
 	_connectionManager(_inbox, _outbox, config.ip.c_str(), config.port, config.maxClients),
-	_market(new PlayerMarket(this)),_matches(),_adminManager(_connectionManager,this)
+	_market(new PlayerMarket(this)),_matches(),_adminManager(_connectionManager,this),
+	_timeTicks(0)
 {
 	loadChampionships();
 	_connectionManager.start();
@@ -49,8 +50,26 @@ Server::~Server()
 	_matches.clear();
 }
 
+void Server::initDefaultAccounts()
+{
+	std::vector<User> users;
+	MemoryAccess::load(users);
+	if (users.size() == 0){
+		JSON::Value *defaults = JSON::load("defaultAccounts.json");
+		JSON::Dict const & toCreate = DICT(defaults);
+		JSON::Dict::const_iterator it;
+		for (it=toCreate.begin(); it!=toCreate.end(); it++){
+			User newUser(it->first, STR(it->second));
+			newUser.createUser();
+			cout << "[" << this << "] Creating user " << it->first << endl;
+		}
+		delete defaults;
+	}
+}
+
 void Server::run()
 {
+	initDefaultAccounts();
 	time_t tstart = time(NULL);
 	unsigned long long int tick = 0;
 	srand(time(NULL));	// rand() is used throughout some modules
@@ -97,11 +116,13 @@ void Server::collectFinishedMatches(void)
 		next++;
 		if(! (*it)->isRunning()){
 			if( (*it)->isChampMatch()){
-				struct MatchResult & result = (*it)->getResult();
-				Championship* champ = getChampionshipByUsername(result.winner);
+				MatchResult & result = (*it)->getResult();
+				Championship* champ = getChampionshipByUsername(result.getWinner());
 				if (champ != NULL){
 					champ->endMatch(result);
 				}
+				result.compute();
+				result.save();
 			}
 			delete *it;
 			_matches.erase(it);
@@ -554,15 +575,29 @@ void Server::timeLoop()
 		{
 			do
 			{
-				sleep(5);
+				sleep(gameconfig::SLEEP_TIME);
 				timeNow = time(NULL);
 			}
-			while (timeNow - timePrev < 10);
+			while (timeNow - timePrev < gameconfig::TICK_TIME);
+			++_timeTicks;
 			cout << "It is  : " << ctime(&timeNow);
 			timePrev = timeNow;
-			collectFinishedMatches();
-			timeUpdateStadium();
-			timeUpdateChampionship();
+			if (_timeTicks % gameconfig::TICKS_BEFORE_MATCH == 0)
+			{
+				collectFinishedMatches();
+			}
+			if (_timeTicks % gameconfig::TICKS_BEFORE_CHAMPIONSHIP == 0)
+			{
+				timeUpdateChampionship();
+			}
+			if (_timeTicks % gameconfig::TICKS_BEFORE_STADIUM == 0)
+			{
+				timeUpdateStadium();
+			}
+			if (_timeTicks == gameconfig::TICKS_BEFORE_RESET)
+			{
+				_timeTicks = 0;
+			}
 		}
 	}
 }
@@ -641,8 +676,7 @@ void Server::responsePendingChampMatch(std::string response, int peer_id){
 			//Resolve end of match
 			endOfPending(*pending);
 			MatchResult res;
-			res.winner = opponent;
-			res.loser = sender;
+			res.setTeams(opponent, sender);
 			Championship* champ = getChampionshipByUsername(sender);
 			if(champ != NULL){
 				champ->endMatch(res);
@@ -718,38 +752,42 @@ void Server::timeUpdateChampionship()
 void Server::resolveUnplayedChampMatch(Schedule & pending){
 	MatchResult res;
 	JSON::Dict toWinner, toLoser;
+	std::string winner, loser;
 	//One user at least didn't answer to the pending match notification
 	if(	pending.statusUser1 == net::MSG::CHAMPIONSHIP_MATCH_READY || 
 		pending.statusUser2 == net::MSG::CHAMPIONSHIP_MATCH_READY){
 		if (pending.statusUser1 == net::MSG::CHAMPIONSHIP_MATCH_READY){
-			res.winner = pending.user1;
-			res.loser = pending.user2;
+			winner = pending.user1;
+			loser = pending.user2;
 		}
 		else if (pending.statusUser2 == net::MSG::CHAMPIONSHIP_MATCH_READY){
-			res.winner = pending.user2;
-			res.loser = pending.user1;
+			winner = pending.user2;
+			loser = pending.user1;
 		}
 		toWinner.set("type",net::MSG::CHAMPIONSHIP_MATCH_STATUS);
 		toWinner.set("data",net::MSG::CHAMPIONSHIP_UNPLAYED_MATCH_WON);
 		toLoser.set("type",net::MSG::CHAMPIONSHIP_MATCH_STATUS_CHANGE);
 		toLoser.set("type",net::MSG::CHAMPIONSHIP_UNPLAYED_MATCH_LOST);
-		Message status(getPeerID(res.winner),toWinner.clone());
+		Message status(getPeerID(winner),toWinner.clone());
 		_outbox.push(status);
-		sendNotification(res.loser,toLoser);
+		sendNotification(loser,toLoser);
 	}
 	//Else none user responded to notification : random the winner...
 	else{
 		int randWinner = rand() % 2 + 1;
-		res.winner = (randWinner == 1) ? pending.user1 : pending.user2;
-		res.loser = (res.winner == pending.user1) ? pending.user2 : pending.user1;
+		winner = (randWinner == 1) ? pending.user1 : pending.user2;
+		loser = (winner == pending.user1) ? pending.user2 : pending.user1;
 		toWinner.set("type",net::MSG::CHAMPIONSHIP_MATCH_STATUS_CHANGE);
 		toWinner.set("data",net::MSG::CHAMPIONSHIP_UNPLAYED_MATCH_WON);
 		toLoser.set("type",net::MSG::CHAMPIONSHIP_MATCH_STATUS_CHANGE);
 		toLoser.set("data",net::MSG::CHAMPIONSHIP_UNPLAYED_MATCH_LOST);
-		sendNotification(res.winner,toWinner);
-		sendNotification(res.loser,toLoser);
+		sendNotification(winner,toWinner);
+		sendNotification(loser,toLoser);
 	}
-	Championship* champ = getChampionshipByUsername(res.winner);
+	res.setTeams(winner,loser);
+	res.compute();
+	res.save();
+	Championship* champ = getChampionshipByUsername(winner);
 	if (champ != NULL) 
 		champ->endMatch(res);
 	endOfPending(pending);

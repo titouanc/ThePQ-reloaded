@@ -188,13 +188,13 @@ void Championship::endMatch(MatchResult & result)
 {
 	// erase schedule
 	for(size_t i = 0;i<_schedules.size();++i){
-		if(_schedules[i].user1 == result.winner || _schedules[i].user2 == result.winner){
+		if(_schedules[i].user1 == result.getWinner() || _schedules[i].user2 == result.getWinner()){
 			_schedules.erase(_schedules.begin()+i);
 		}
 	}
 	// erase loser
 	for(size_t i =0;i<_users.size();++i){
-		if(_users[i] == result.loser){
+		if(_users[i] == result.getLoser()){
 			_users.erase(_users.begin()+i);
 		}
 	}
@@ -214,7 +214,6 @@ void Championship::endMatch(MatchResult & result)
 		}
 		MemoryAccess::save(*this);
 	}
-
 }
 
 bool Championship::isUserIn(std::string username)

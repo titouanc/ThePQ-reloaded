@@ -148,17 +148,29 @@ namespace net
 
 namespace gameconfig
 {
+	static const unsigned int SLEEP_TIME = 10;
+	static const unsigned int TICK_TIME = 20;
+	static const unsigned int TICKS_BEFORE_MATCH = 1;
+	static const unsigned int TICKS_BEFORE_STADIUM = 1;
+	static const unsigned int TICKS_BEFORE_CHAMPIONSHIP = 1;
+	static const unsigned int TICKS_BEFORE_RESET = 1440;
 	static const std::string UNNAMED_TEAM = "NO_NAME";
 	static const int MAX_COACHES = 5;
 	static const int MAX_PLAYERS = 100;
 	static const int MIN_PLAYERS = 7;
 	static const int STARTING_FUNDS = 100000;
 	static const int STARTING_FAME = 1000;
+	static const int STARTING_AP = 20;
 	static const int SALE_FIRST_TURN_TIME = 30;
 	static const int SALE_TURN_TIME = 30;
 	static const float BID_RATIO = 0.05;
 	static const int MAX_CHAMPIONSHIP_TURNS = 5; //32 teams
+
 	static const int MAX_CHAMP_MATCH_OFFSET = 61;
+	static const int WINNER_LOSER_GAIN_RATIO = 4;
+	static const int MONEY_GAIN_RATIO = 100;
+	static const int AP_GAIN_RATIO = 1;
+	static const int FAME_GAIN_RATIO = 10;
 }
 
 namespace memory

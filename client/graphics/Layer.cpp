@@ -11,7 +11,11 @@ GUI::Layer::~Layer(){
 	clear();
 }
 
-void GUI::Layer::clear(){
+void GUI::Layer::clear(bool clearBackground){
+	if (clearBackground && _backgroundImage != NULL){
+		delete _backgroundImage;
+		_backgroundImage = NULL;
+	}
 	for (size_t i=0; i<_panels.size(); ++i)
 		delete _panels[i];
 	std::map<std::string, GUI::Textbox*>::iterator it;
@@ -37,17 +41,22 @@ void GUI::Layer::clear(){
 }
 
 void GUI::Layer::renderTo(sf::RenderTarget & dest){
-	if (_backgroundColor.a != 0xff){
-		sf::RectangleShape background(sf::Vector2f(dest.getSize().x, dest.getSize().y));
-		background.setFillColor(_backgroundColor);
-		dest.draw(background);
+	if (_backgroundImage == NULL){
+		if (_backgroundColor.a != 0xff){
+			sf::RectangleShape background(sf::Vector2f(dest.getSize().x, dest.getSize().y));
+			background.setFillColor(_backgroundColor);
+			dest.draw(background);
+		}
+		else
+			dest.clear(_backgroundColor);
 	}
-	else
-		dest.clear(_backgroundColor);
+	else{
+ 		dest.draw(*_backgroundImage);
+	}
 	renderAllAttributesTo(dest);
 }
 
-void GUI::Layer::renderAllAttributesTo(sf::RenderTarget &dest){
+void GUI::Layer::renderAllAttributesTo(sf::RenderTarget &dest){		
 	for (size_t i=0; i<_panels.size(); ++i)
 		dest.draw(*(_panels[i]));
 	// rendering clickables
@@ -128,6 +137,21 @@ bool GUI::Layer::handleRightClick(int x, int y){
 void GUI::Layer::handleTextEntered(sf::Event event){
 	if (_focusedTextbox != NULL)
 		_focusedTextbox->updateText(event);
+}
+
+void GUI::Layer::setBackgroundImage(string path){
+	if (_backgroundImage != NULL)
+		delete _backgroundImage;
+	_backgroundImage = new sf::Sprite();
+	_backgroundImageTexture.loadFromFile(path);
+	_backgroundImage->setTexture(_backgroundImageTexture, true);
+}
+
+void GUI::Layer::deleteBackgroundImage(){
+	if (_backgroundImage != NULL){
+		delete _backgroundImage;
+		_backgroundImage = NULL;
+	}
 }
 
 GUI::Textbox & GUI::Layer::addTextbox(string id){

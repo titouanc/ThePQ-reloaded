@@ -35,6 +35,7 @@ namespace net
 	
 		void start();
 		void run();
+		bool isRunning();
 		
 		void send(JSON::Value const& json);
 		
@@ -56,6 +57,7 @@ namespace net
 		int _port;
 		struct sockaddr_in _servAddr;
 		struct sockaddr_in _cliAddr;
+		pthread_mutex_t _mutex;
 		
 		void loop();
 	};

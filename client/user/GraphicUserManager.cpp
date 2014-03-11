@@ -21,6 +21,7 @@ GraphicUserManager::GraphicUserManager(
     UserManager(connection, user, notifications), 
     GraphicManager(controller)
 {
+	_canvas.setBackgroundImage(texturePath("SplashScreenBG.png"));
 	displayCanvas();
 	displayChoice();
 }
@@ -28,14 +29,16 @@ GraphicUserManager::GraphicUserManager(
 void GraphicUserManager::displayChoice()
 {
 	_canvas.clear();
-	
-	_canvas.addButton<GraphicUserManager>(
-		&GraphicUserManager::displayLoginForm, this, "Login"
-	).setPosition(900, 350);
 
-	_canvas.addButton<GraphicUserManager>(
-		&GraphicUserManager::displayRegisterForm, this, "Register"
-	).setPosition(900, 410);
+	Button<GraphicUserManager> & loginButton = _canvas.addButton<GraphicUserManager>(
+		&GraphicUserManager::displayLoginForm, this, "Login");
+	loginButton.setPosition(900, 350);
+	loginButton.setBackgroundColor(DARK_BUTTON_BACKGROUND_COLOR);
+
+	Button<GraphicUserManager> & registerButton = _canvas.addButton<GraphicUserManager>(
+		&GraphicUserManager::displayRegisterForm, this, "Register");
+	registerButton.setPosition(900, 410);
+	registerButton.setBackgroundColor(DARK_BUTTON_BACKGROUND_COLOR);
 	
 	redrawCanvas();
 }
@@ -46,9 +49,10 @@ void GraphicUserManager::displayLoginForm()
 	
 	_canvas.addTextbox(USERNAME_TEXTBOX_ID).setPosition(900, 300);
 	_canvas.addTextbox(PASSWORD_TEXTBOX_ID).setPosition(900, 360);
-	_canvas.addButton<GraphicUserManager>(
-		&GraphicUserManager::submitLoginForm, this, "Login"
-	).setPosition(900, 420);
+	Button<GraphicUserManager> & loginButton = _canvas.addButton<GraphicUserManager>(
+		&GraphicUserManager::submitLoginForm, this, "Login");
+	loginButton.setPosition(900, 420);
+	loginButton.setBackgroundColor(DARK_BUTTON_BACKGROUND_COLOR);
 	
 	redrawCanvas();
 }
@@ -60,9 +64,10 @@ void GraphicUserManager::displayRegisterForm()
 	_canvas.addTextbox(USERNAME_TEXTBOX_ID).setPosition(900, 300);
 	_canvas.addTextbox(PASSWORD_TEXTBOX_ID).setPosition(900, 360);
 	_canvas.addTextbox(NEW_PASSWORD_CONFIRMATION_TEXTBOX_ID).setPosition(900, 420);
-	_canvas.addButton<GraphicUserManager>(
-		&GraphicUserManager::submitRegisterForm, this, "Register"
-	).setPosition(900, 480);
+	Button<GraphicUserManager> & registerButton = _canvas.addButton<GraphicUserManager>(
+		&GraphicUserManager::submitRegisterForm, this, "Register");
+	registerButton.setPosition(900, 480);
+	registerButton.setBackgroundColor(DARK_BUTTON_BACKGROUND_COLOR);
 	
 	redrawCanvas();
 }
@@ -70,12 +75,14 @@ void GraphicUserManager::displayRegisterForm()
 void GraphicUserManager::displayTeamNameForm()
 {
 	_canvas.clear();
+
+	_canvas.setBackgroundImage(texturePath("HexBack.png"));
 	
 	int center = _controller.window.getSize().x/2; 
-	_canvas.addTextbox(TEAM_NAME_TEXTBOX_ID).setPosition(center-100, 300);
+	_canvas.addTextbox(TEAM_NAME_TEXTBOX_ID).setPosition(center-185, 315);
 	_canvas.addButton<GraphicUserManager>(
 		&GraphicUserManager::submitTeamNameForm, this, "Register"
-	).setPosition(900, 480);
+	).setPosition(center+75, 315);
 	
 	redrawCanvas();
 }
@@ -83,6 +90,8 @@ void GraphicUserManager::displayTeamNameForm()
 void GraphicUserManager::displayMainMenu()
 {
 	_canvas.clear();
+
+	_canvas.setBackgroundImage(texturePath("HexBack.png"));
 	
 	_canvas.addButton<GraphicUserManager>(
 		&GraphicUserManager::goToStadium, this, "Stadium management"
@@ -166,7 +175,7 @@ void GraphicUserManager::onLoginOK()
 void GraphicUserManager::onLoginError(std::string const & err)
 {
 	displayChoice();
-	std::cout << err << std::endl;
+	displayError(err);
 	_wait = false;
 }
 
@@ -177,7 +186,7 @@ void GraphicUserManager::onTeamNameOK()
 
 void GraphicUserManager::onTeamNameError(std::string const & err)
 {
-	std::cout << err << std::endl;
+	displayError(err);
 	_wait = false;
 }
 
@@ -189,7 +198,7 @@ void GraphicUserManager::onRegisterUserOK()
 
 void GraphicUserManager::onRegisterUserError(std::string const & err)
 {
-	std::cout << err << std::endl;
+	displayError(err);
 	_wait = false;
 }
 

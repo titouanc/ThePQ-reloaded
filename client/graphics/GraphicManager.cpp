@@ -1,4 +1,5 @@
 #include "GraphicManager.hpp"
+#include "MessageBox.hpp"
 
 void GUI::GraphicManager::run()
 {
@@ -56,6 +57,17 @@ void GUI::GraphicManager::redrawCanvas()
 	_canvas.renderTo(_controller.window);
 	window().display();
 }
+
+void GUI::GraphicManager::displayError(std::string errorMessage){
+	MessageBox m(_controller, "Error : "+errorMessage, {"OK"});
+	m.showBox();
+}
+
+int GUI::GraphicManager::confirm(std::string message){
+	MessageBox m(_controller, message, {"No", "Yes"});
+	return m.showBox();
+}
+
 
 GUI::Button<GUI::GraphicManager> & GUI::GraphicManager::backButton(std::string const & caption)
 {
