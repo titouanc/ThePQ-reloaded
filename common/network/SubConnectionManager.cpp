@@ -1,4 +1,5 @@
 #include "SubConnectionManager.hpp"
+#include <Constants.hpp>
 
 using namespace net;
 
@@ -27,6 +28,17 @@ bool SubConnectionManager::releaseClient(int client_id)
         return true;
     }
     return false;
+}
+
+void SubConnectionManager::_doDisconnect(int fd)
+{
+    /* notify parent that we lost a client */
+    BaseConnectionManager::_doDisconnect(fd);
+    JSON::Dict payload = {
+        {"type", JSON::String(MSG::DISCONNECT)},
+        {"client_id", JSON::Integer(fd)}
+    };
+    _parent.transmit(Message(fd, payload.clone()));
 }
 
 SubConnectionManager::~SubConnectionManager()

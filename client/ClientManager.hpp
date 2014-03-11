@@ -83,7 +83,7 @@ class ClientManager {
 		virtual void onNotificationResponse(bool,std::string const &,std::string const &){}
 
 		/* Load players in user().players */
-		virtual void onPlayersLoad(JSON::List const & players);
+		virtual void onPlayersLoad(){}
 
 		/* Triggered when user's team informations are updated */
 		virtual void onTeamInfo(UserData const & user);

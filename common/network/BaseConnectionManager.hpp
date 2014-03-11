@@ -46,7 +46,7 @@ namespace net {
 			bool _doRead(int fd);
 			/* Close fd, remove client from managed clients and 
 			   emit DISCONNECT message */
-			void _doDisconnect(int fd);
+			virtual void _doDisconnect(int fd);
 			/* Add client to managed clients and emit CONNECT message */
 			void _doConnect(int fd);
 			

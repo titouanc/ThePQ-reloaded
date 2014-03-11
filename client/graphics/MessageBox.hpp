@@ -34,7 +34,7 @@ public:
 		int totalLength = -GUI::MARGIN; // this will be used to center all the buttons
 		std::vector<GUI::Button<MessageBox>*> buttons;
 
-		for (int i=0; i<_options.size(); ++i){
+		for (size_t i=0; i<_options.size(); ++i){
 			GUI::Button<MessageBox> &button = _canvas.addButton<MessageBox, int>(&MessageBox::chooseOption, i, this, _options[i]);	
 			totalLength += button.getWidth()+GUI::MARGIN;
 			buttons.push_back(&button);

@@ -37,7 +37,13 @@ void ClientManager::treatMessage(std::string const & type, JSON::Value const * d
 	}
 	else if (type == net::MSG::PLAYERS_LIST)
 	{
-		onPlayersLoad(LIST(data));
+		user().players.clear();
+		JSON::List const & players = LIST(data);
+		for(size_t i=0; i<players.len();++i){
+			Player player(DICT(players[i]));
+			user().players.push_back(player);
+		}
+		onPlayersLoad();
 	}
 	
 	//Server response from a net::MSG::CHAMPIONSHIP_MATCH_PENDING notification response (subtle...)
@@ -67,6 +73,13 @@ void ClientManager::treatMessage(std::string const & type, JSON::Value const * d
 			 	type == net::MSG::CHAMPIONSHIP_MATCH_STATUS_CHANGE ||
 				type == net::MSG::CHAMPIONSHIP_STATUS_CHANGE)
 	{
+		if (type == net::MSG::MARKET_MESSAGE){
+			JSON::Dict const & msg = DICT(data);
+			std::string const & msgtype = STR(msg.get("type"));
+			/* If we won a sale; reload players */
+			if (msgtype == net::MSG::WON_SALE_RAPPORT)
+				loadPlayers();
+		}
 		JSON::Dict notif;
 		notif.set("type",JSON::String(type));
 		notif.set("data",*data);
@@ -203,15 +216,6 @@ void ClientManager::denyInvitationFromUser(std::string const & username){
 		{ "answer", JSON::String(net::MSG::FRIENDLY_GAME_INVITATION_DENY) }
 	};
 	say(net::MSG::FRIENDLY_GAME_INVITATION_RESPONSE, data);
-}
-
-void ClientManager::onPlayersLoad(JSON::List const & players)
-{
-	user().players.clear();
-	for(size_t i=0; i<players.len();++i){
-		Player player(DICT(players[i]));
-		user().players.push_back(player);
-	}
 }
 
 void ClientManager::onTeamInfo(UserData const & user)
