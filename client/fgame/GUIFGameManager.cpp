@@ -1,4 +1,5 @@
 #include "GUIFGameManager.hpp"
+#include <match/GraphicMatchManager.hpp>
 
 using namespace std;
 using namespace GUI;
@@ -14,7 +15,8 @@ GUIFGameManager::GUIFGameManager(ClientManager const & parent, GUI::MainControll
 	readMessages();
 }
 
-void GUIFGameManager::invitePlayer(string playername){
+void GUIFGameManager::invitePlayer(string playername)
+{
 	sendInvitation(playername);
 	Button<GUIFGameManager, string> * inviteButton = inviteButtons[playername];
 	inviteButton->disable();
@@ -24,7 +26,14 @@ void GUIFGameManager::invitePlayer(string playername){
 	redrawCanvas();
 }
 
-void GUIFGameManager::onUserList(JSON::List const & list){
+void GUIFGameManager::loop()
+{
+	readMessages();
+	handleNotification();
+}
+
+void GUIFGameManager::onUserList(JSON::List const & list)
+{
 	_canvas.clear();
 
 	TableView & playersTV = _canvas.addTableView(2);
@@ -41,16 +50,32 @@ void GUIFGameManager::onUserList(JSON::List const & list){
 		inviteButtons.insert(pair<string, GUI::Button<GUIFGameManager, string>*>(STR(list[i]).value(), &inviteButton));
 	}
 
-	backButton().setPosition(900, 470);
-
 	redrawCanvas();
-
 }
 
-void GUIFGameManager::onInvite(std::string const & otherUser) {
-	if (confirm(otherUser + " has sent you an invitation.\nDo you want to play a game with this user?")){
-		cout << "start game" << endl;
+void GUIFGameManager::lauchMatch()
+{
+	GraphicMatchManager match(*this, _controller);
+	match.run();
+}
+
+void GUIFGameManager::onOtherAccept(std::string const & user)
+{
+	lauchMatch();
+}
+
+void GUIFGameManager::onOtherDeny(std::string const & user)
+{
+	displayError(user + " doesn't want to play with you");
+}
+
+void GUIFGameManager::onInvite(std::string const & otherUser)
+{
+	std::string question = otherUser + " has invited you to play a friendly game.\nAccept ?";
+	if (confirm(question)){
+		denyInvitationFromUser(otherUser);
+	} else {
+		acceptInvitationFromUser(otherUser);
+		lauchMatch();
 	}
-	else 
-		cout << "no start game" << endl;
 }

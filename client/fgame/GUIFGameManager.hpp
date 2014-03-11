@@ -16,6 +16,12 @@ private:
 	std::map<std::string, GUI::Button<GUIFGameManager, string>*> inviteButtons;
 	void invitePlayer(std::string playername);
 
+	void loop();
+
+	void lauchMatch();
+
+	void onOtherAccept(std::string const &);
+	void onOtherDeny(std::string const &);
 	void onUserList(JSON::List const & list);
 	void onInvite(std::string const & otherUser);
 };
