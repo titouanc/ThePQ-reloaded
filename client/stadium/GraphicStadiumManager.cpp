@@ -7,6 +7,9 @@ using namespace GUI;
 GraphicStadiumManager::GraphicStadiumManager(ClientManager const & parent, GUI::MainController &controller) 
 			: StadiumManager(parent), GraphicManager(controller){
 	loadInstallations();
+
+	_canvas.setBackgroundImage(texturePath("HexBack.png"));
+	
 	displayCanvas();
 	displayMainMenu();
 	readMessages();

@@ -9,10 +9,16 @@
 namespace GUI{
 	class ClickableInterface : public Widget{
 	public:
+		ClickableInterface(bool enabled=true):_enabled(enabled){}
 		virtual void triggerAction() = 0;
 		virtual bool isInBounds(int x, int y) const = 0;
 		virtual ~ClickableInterface() {};
 		virtual void renderTo(sf::RenderTarget& dest) = 0;
+		void enable() {_enabled = true;}
+		void disable() {_enabled = false;}
+		bool isEnabled() { return _enabled; }
+	private:
+		bool _enabled;
 	};
 
 	template <typename T, typename P=int> 
@@ -43,10 +49,12 @@ namespace GUI{
 		virtual ~Clickable(){}
 		
 		void triggerAction(){ 
-			if (_hasParam)
-				_callbackWithParam(_target, _param);
-			else
-				_callback(_target); 
+			if (isEnabled()){
+				if (_hasParam)
+					_callbackWithParam(_target, _param);
+				else
+					_callback(_target); 
+			}
 		}
 		virtual bool isInBounds(int x, int y) const = 0;
 		virtual void renderTo(sf::RenderTarget& dest) = 0;

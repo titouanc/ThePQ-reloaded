@@ -63,8 +63,8 @@ class ClientManager {
 		void withdrawFromMatch();
 
 		/* response to invitation */
-		void acceptInvitationFromUser(std::string);
-		void denyInvitationFromUser(std::string);
+		void acceptInvitationFromUser(std::string const & user);
+		void denyInvitationFromUser(std::string const & user);
 
 		/* Hooks */
 		/* Displays a message */
