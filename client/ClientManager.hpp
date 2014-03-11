@@ -53,8 +53,8 @@ class ClientManager {
 		std::string onEndOfSale(JSON::Dict const & json);
 
 		/* response to invitation */
-		void acceptInvitationFromUser(std::string);
-		void denyInvitationFromUser(std::string);
+		void acceptInvitationFromUser(std::string const & user);
+		void denyInvitationFromUser(std::string const & user);
 
 
 		/* Hooks */

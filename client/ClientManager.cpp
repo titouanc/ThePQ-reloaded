@@ -119,7 +119,7 @@ std::string ClientManager::onEndOfSale(JSON::Dict const & json)
 	return res.str();
 }
 
-void ClientManager::acceptInvitationFromUser(string username){
+void ClientManager::acceptInvitationFromUser(std::string const & username){
 	JSON::Dict data = {
 		{ "username", JSON::String(username) },
 		{ "answer", JSON::String(net::MSG::FRIENDLY_GAME_INVITATION_ACCEPT) }
@@ -127,7 +127,7 @@ void ClientManager::acceptInvitationFromUser(string username){
 	say (net::MSG::FRIENDLY_GAME_INVITATION_RESPONSE, data);
 }
 
-void ClientManager::denyInvitationFromUser(string username){
+void ClientManager::denyInvitationFromUser(std::string const & username){
 	JSON::Dict data {
 		{ "username", JSON::String(username) },
 		{ "answer", JSON::String(net::MSG::FRIENDLY_GAME_INVITATION_DENY) }
