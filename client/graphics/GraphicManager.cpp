@@ -63,6 +63,12 @@ void GUI::GraphicManager::displayError(std::string errorMessage){
 	m.showBox();
 }
 
+int GUI::GraphicManager::confirm(std::string message){
+	MessageBox m(_controller, message, {"No", "Yes"});
+	return m.showBox();
+}
+
+
 GUI::Button<GUI::GraphicManager> & GUI::GraphicManager::backButton(std::string const & caption)
 {
 	return _canvas.addButton<GUI::GraphicManager>(

@@ -41,7 +41,6 @@ public:
 		}
 
 		int hCenter = window().getSize().x/2;
-		int vCenter = window().getSize().y/2;
 		int xBegin = hCenter-totalLength/2; // the x coordinate where we have to start to center all buttons
 		int currentX = xBegin; // will be used to set the X position of the buttons
 

@@ -64,8 +64,12 @@ public:
 	}
 
 	void showMessage(){
-		MessageBox m(_controller, "Hello, I am message box!\nChoose an option!", {"Option 1", "2", "Number 3"});
-		cout << "You have chosen : " << m.showBox() << endl;
+		if (confirm("Do you really want to click me?")){
+			MessageBox m(_controller, "Hello, I am message box!\nChoose an option!", {"Option 1", "2", "Number 3"});
+			cout << "You have chosen : " << m.showBox() << endl;
+		}
+		else 
+			cout << "You didn't dare to click me, did you?" << endl;
 	}
 
 	void printWow(int number){
