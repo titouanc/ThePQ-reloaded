@@ -58,6 +58,7 @@ Team::operator JSON::Dict(){
 	ret.set(memory::FUNDS,_funds);
 	ret.set(memory::AC_POINTS,_acpoints);
 	ret.set(memory::TEAM_NAME,_name);
+	ret.set(memory::FAME, _fame);
 	return ret;
 }
 void Team::load(){
