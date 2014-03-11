@@ -421,8 +421,46 @@ void MatchManager::endMatch(void)
 	_matchRes.loser = _squads[looser].squad_owner;
 	_matchRes.score[0] = _score[winner];
 	_matchRes.score[1] = _score[looser];
+	resolveFame(_squads[winner].squad_owner,_squads[looser].squad_owner);
 }
+void MatchManager::resolveFame(std::string win,std::string los){
+	User winner; //= Team(JSON::Dict(JSON::load(win)));
+	User looser; //= Team(JSON::Dict(JSON::load(los)));
+	//MemoryAccess::load()
+	//MemoryAccess::load()
+	winner.load(win);
+	looser.load(los);
+	if (winner.getTeam().getFame()>looser.getTeam().getFame()){
+		if ((_matchRes.score[0] - _matchRes.score[1])>10){
+			winner.getTeam().earnFame(int((winner.getTeam().getFame()-looser.getTeam().getFame())*0.45));
+			looser.getTeam().loseFame(int((winner.getTeam().getFame()-looser.getTeam().getFame())*0.45));
+		}else{
+			winner.getTeam().earnFame(int((winner.getTeam().getFame()-looser.getTeam().getFame())*0.15));
+			looser.getTeam().loseFame(int((winner.getTeam().getFame()-looser.getTeam().getFame())*0.15));
+		}
+	}else if(winner.getTeam().getFame()<looser.getTeam().getFame()){
+		if ((_matchRes.score[0] - _matchRes.score[1])>10){
+			winner.getTeam().earnFame(int((looser.getTeam().getFame()-winner.getTeam().getFame())*0.75));
+			looser.getTeam().loseFame(int((looser.getTeam().getFame()-winner.getTeam().getFame())*0.75));
+		}else{
+			winner.getTeam().earnFame(int((looser.getTeam().getFame()-winner.getTeam().getFame())*0.60));
+			looser.getTeam().loseFame(int((looser.getTeam().getFame()-winner.getTeam().getFame())*0.60));
+		}
 
+	}else{
+		if ((_matchRes.score[0] - _matchRes.score[1])>10){
+			winner.getTeam().earnFame(int(looser.getTeam().getFame()*0.45));
+			looser.getTeam().loseFame(int(looser.getTeam().getFame()*0.45));
+		}else{
+			winner.getTeam().earnFame(int(looser.getTeam().getFame()*0.15));
+			looser.getTeam().loseFame(int(looser.getTeam().getFame()*0.15));
+		}		
+	}
+	/*remove after test*/
+	cout<<"new fame status team:"<<winner.getUsername()<<" "<<winner.getTeam().getFame()<<endl;
+	cout<<"new fame status team:"<<looser.getUsername()<<" "<<looser.getTeam().getFame()<<endl;
+
+}
 void MatchManager::onCollision(
 	Stroke & stroke,     /* Stroke that leads to conflict */
 	Position & conflict, /* Clonflicting pos */

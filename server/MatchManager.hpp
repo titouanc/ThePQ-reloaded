@@ -76,7 +76,7 @@ class MatchManager : public SubConnectionManager {
 		void sendMatchDeltas(void);
 		void stopStroke(Stroke & stroke, Position const & pos);
 		void addDelta(Moveable const & moveable, Position const & dest);
-
+		void resolveFame(std::string win,std::string los);
 		iter getStrokeForMoveable(Moveable *moveable);
 		/* Resolve strokes */
 		void playStrokes(void);

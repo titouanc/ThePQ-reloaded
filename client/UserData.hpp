@@ -18,6 +18,7 @@ struct UserData
 		teamname = "";
 		funds = -1;
 		acPoints = -1;//new addition
+		fame=-1;
 	}
 	bool isLogged() { return username != ""; }
 
@@ -48,6 +49,7 @@ struct UserData
 	std::string teamname;
 	int funds;
 	int acPoints;//new addition
+	int fame;
 };
 
 #endif // __USER_DATA_HPP

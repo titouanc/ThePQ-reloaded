@@ -1,12 +1,36 @@
 #include "Team.hpp"
 #include <cmath>
 
-Team::Team(std::string owner, std::string teamname, int funds, int fame,int acPoints) : 
-	_name(teamname), 
+Team::Team(std::string owner,std::string teamname):
+	_owner(owner),
+	_name(teamname),
+	_funds(gameconfig::STARTING_FUNDS),
+	_fame(gameconfig::STARTING_FAME),
+	_acpoints(gameconfig::STARTING_AC_POINTS)
+{
+	generateBaseSquad();
+	generateBaseInstallations();
+}
+
+
+
+Team::Team(std::string owner, std::string teamname, int funds): 
 	_owner(owner), 
+	_name(teamname), 
+	_funds(funds),
+	_fame(gameconfig::STARTING_FAME), 
+	_acpoints(gameconfig::STARTING_AC_POINTS),
+	_players(), 
+	_installations()
+{}
+
+
+Team::Team(std::string owner, std::string teamname, int funds, int fame,int acPoints) : 
+	_owner(owner),
+	_name(teamname), 
 	_funds(funds),
 	_fame(fame), 
-	_acpoints(gameconfig::STARTING_AC_POINTS),
+	_acpoints(acPoints),
 	_players(), 
 	_installations()
 {}
@@ -158,4 +182,12 @@ int Team::level () const {
     for (Player it : _players)
         sum += it.level();
     return static_cast<int>(pow(sum, 1.0/_players.size()));
+}
+
+void Team::loseFame(int amount){
+	if (amount>_fame){
+		_fame=0;
+	}else{
+		_fame-=amount;
+	}
 }
