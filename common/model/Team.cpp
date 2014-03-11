@@ -1,19 +1,6 @@
 #include "Team.hpp"
 #include <cmath>
 
-Team::Team(std::string owner,std::string teamname):
-	_owner(owner),
-	_name(teamname),
-	_funds(gameconfig::STARTING_FUNDS),
-	_fame(gameconfig::STARTING_FAME),
-	_acpoints(gameconfig::STARTING_AC_POINTS)
-{
-	generateBaseSquad();
-	generateBaseInstallations();
-}
-
-
-
 Team::Team(std::string owner, std::string teamname, int funds): 
 	_owner(owner), 
 	_name(teamname), 
@@ -157,19 +144,23 @@ void Team::generateBaseSquad(){
 		_players.push_back(p);
 	}
 }
+
 void Team::generateBaseInstallations(){
 	MemoryAccess::loadSkel(_installations);
 	for(size_t i = 0;i<_installations.size();++i){
 		_installations[i]->setOwner(getOwner());
 	}
 }
+
 void Team::generateStartingTeam(){
 	generateBaseSquad();
 	generateBaseInstallations();
 }
+
 void Team::initFame(){
 	_fame=gameconfig::STARTING_FAME;
 }
+
 void Team::timeUpdate()
 {
 	for (size_t j = 0; j < _installations.size(); ++j)

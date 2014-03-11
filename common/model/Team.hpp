@@ -21,6 +21,7 @@ private:
 	std::vector<Player> _players;
 	std::vector<Installation*> _installations;
 public:
+	//Team();
 	Team(std::string owner,std::string teamname);
 	Team(std::string owner, std::string teamname, int funds);
 	Team(std::string owner = "", std::string teamname=gameconfig::UNNAMED_TEAM, int funds = gameconfig::STARTING_FUNDS, int fame = gameconfig::STARTING_FAME, 

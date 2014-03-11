@@ -44,6 +44,7 @@ void CLIStadiumManager::run()
 void CLIStadiumManager::printInstallationsList()
 {
 	cout << "\033[2J\033[1;1H";//clear screen
+	cout << "Your username: "<< user().username << endl;
 	cout << "You have " << user().funds << " $$$$" << endl;
 	cout << "You have " << user().acPoints << " activity points" << endl;
 	cout << "Your fame is " << user().fame << endl;
