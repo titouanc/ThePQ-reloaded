@@ -94,6 +94,7 @@ private:
     AdminManager _adminManager;
     std::deque<Championship*> _championships;
     std::deque<Schedule*> _pendingChampMatches;
+    unsigned int _timeTicks;
 
     pthread_mutex_t _champsMutex; //_championships used by 3 threads
 	pthread_t _timeThread;

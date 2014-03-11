@@ -31,7 +31,8 @@ static void* runTimeLoop(void* args)
 Server::Server(NetConfig const & config) : 
 	_inbox(), _outbox(), _users(),
 	_connectionManager(_inbox, _outbox, config.ip.c_str(), config.port, config.maxClients),
-	_market(new PlayerMarket(this)),_matches(),_adminManager(_connectionManager,this)
+	_market(new PlayerMarket(this)),_matches(),_adminManager(_connectionManager,this),
+	_timeTicks(0)
 {
 	MemoryAccess::load(_championships);
 	_connectionManager.start();
@@ -562,15 +563,29 @@ void Server::timeLoop()
 		{
 			do
 			{
-				sleep(5);
+				sleep(gameconfig::SLEEP_TIME);
 				timeNow = time(NULL);
 			}
-			while (timeNow - timePrev < 10);
+			while (timeNow - timePrev < gameconfig::TICK_TIME);
+			++_timeTicks;
 			cout << "It is  : " << ctime(&timeNow);
 			timePrev = timeNow;
-			collectFinishedMatches();
-			timeUpdateStadium();
-			timeUpdateChampionship();
+			if (_timeTicks % gameconfig::TICKS_BEFORE_MATCH == 0)
+			{
+				collectFinishedMatches();
+			}
+			if (_timeTicks % gameconfig::TICKS_BEFORE_CHAMPIONSHIP == 0)
+			{
+				timeUpdateChampionship();
+			}
+			if (_timeTicks % gameconfig::TICKS_BEFORE_STADIUM == 0)
+			{
+				timeUpdateStadium();
+			}
+			if (_timeTicks == gameconfig::TICKS_BEFORE_RESET)
+			{
+				_timeTicks = 0;
+			}
 		}
 	}
 }

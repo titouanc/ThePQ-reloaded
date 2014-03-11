@@ -132,6 +132,12 @@ namespace net
 
 namespace gameconfig
 {
+	static const unsigned int SLEEP_TIME = 10;
+	static const unsigned int TICK_TIME = 20;
+	static const unsigned int TICKS_BEFORE_MATCH = 1;
+	static const unsigned int TICKS_BEFORE_STADIUM = 1;
+	static const unsigned int TICKS_BEFORE_CHAMPIONSHIP = 1;
+	static const unsigned int TICKS_BEFORE_RESET = 1440;
 	static const std::string UNNAMED_TEAM = "NO_NAME";
 	static const int MAX_COACHES = 5;
 	static const int MAX_PLAYERS = 100;
