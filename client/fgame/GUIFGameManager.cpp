@@ -7,6 +7,9 @@ GUIFGameManager::GUIFGameManager(ClientManager const & parent, GUI::MainControll
 		: FGameManager(parent), GraphicManager(controller)
 {
 	askConnectedList();
+
+	_canvas.setBackgroundImage(texturePath("HexBack.png"));
+
 	displayCanvas();
 	readMessages();
 }
@@ -23,6 +26,10 @@ void GUIFGameManager::onUserList(JSON::List const & list){
 			&GUIFGameManager::invitePlayer, STR(list[i]).value(), this, "Invite"
 		).setPosition(240, 2);
 	}
+
+	backButton().setPosition(900, 470);
+
+	redrawCanvas();
 
 }
 

@@ -101,6 +101,10 @@ void GraphicUserManager::displayMainMenu()
 	_canvas.addButton<GraphicUserManager>(
 		&GraphicUserManager::goToMarket, this, "Player market"
 	).setPosition(100, 400);
+
+	_canvas.addButton<GraphicUserManager>(
+		&GraphicUserManager::goToFriendlyGame, this, "Play a friendly game"
+	).setPosition(100, 450);
 	
 	redrawCanvas();
 }
