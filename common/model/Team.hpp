@@ -60,7 +60,8 @@ public:
 	Player getPlayer(int id);
 
 	void generateStartingTeam();
-	
+	void initFame();
+
 	void timeUpdate();
 
     int level() const;

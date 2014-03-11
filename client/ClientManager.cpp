@@ -54,42 +54,6 @@ void ClientManager::treatMessage(std::string const & type, JSON::Value const * d
 		notif.set("data",*data);
 		_notifications.push(notif);
 	}
-	else if(type == net::MSG::SHOW_TEAM_STATUS)
-	{
-		/*add method for team status handling
-		team name;team funds; team fame; team acpoints
-		*/
-		showTeamStatus();
-	}
-	else if (type == net::MSG::SHOW_FINANCIAL_STATUS)
-	{
-		showFinancialStatus();
-	}
-
-}
-
-	void ClientManager::showFinancialStatus()
-	{
-		cout<<"###############################################################";
-		cout<<_user.username<<": here are the details of your account:"<<endl;
-		cout<<"#	Your team name is: "<<_user.teamname<<endl;
-		cout<<"#	Available money: "<<_user.funds<<endl;
-		cout<<"#	Available Activity Points: "<<_user.acPoints<<endl;
-		cout<<"###############################################################";
-}	
-	void ClientManager::showTeamStatus()
-	{
-		cout<<"###############################################################";
-		cout<<"#	Hello "<<_user.username<<endl;
-		cout<<"#	Your players and theyr market values are listed below:"<<endl;
-		for(int i(0);i<_user.players.size();++i){
-			cout<<_user.players[i].getName()<<" estimated at: "<<_user.players[i].estimatedValue()<<endl;
-		}
-		cout<<"#	Your team has the following installations:"<<endl;
-		for(int i(0);i<_user.installations.size();++i){
-			cout<<_user.installations[i]->getName()<<" level: "<<_user.installations[i]->getLevel()<<\
-				"worth: "<<_user.installations[i]->getCurrentValue()<<endl;
-		}
 }
 
 void ClientManager::loadPlayers()

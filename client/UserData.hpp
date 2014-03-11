@@ -32,6 +32,12 @@ struct UserData
 		
 		if (ISINT(json.get("funds")))
 			funds = INT(json.get("funds"));
+
+		if (ISINT(json.get("acPoints")))
+			acPoints = INT(json.get("acPoints"));
+
+		if(ISINT(json.get("fame")))
+			fame = INT(json.get("fame"));
 	}
 	~UserData()
 	{

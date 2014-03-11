@@ -52,6 +52,7 @@ void User::createUser(){
 	MemoryAccess::save(users, memory::ALL_USER_NAMES);
 	_team.setOwner(_username);
 	_team.generateStartingTeam();
+	_team.initFame();
 	_team.save();
 }
 
