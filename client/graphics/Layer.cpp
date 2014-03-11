@@ -147,6 +147,13 @@ void GUI::Layer::setBackgroundImage(string path){
 	_backgroundImage->setTexture(_backgroundImageTexture, true);
 }
 
+void GUI::Layer::deleteBackgroundImage(){
+	if (_backgroundImage != NULL){
+		delete _backgroundImage;
+		_backgroundImage = NULL;
+	}
+}
+
 GUI::Textbox & GUI::Layer::addTextbox(string id){
 	Textbox* res = new Textbox(id);
 

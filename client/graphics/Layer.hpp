@@ -49,6 +49,7 @@ namespace GUI {
 		);
 
 		void setBackgroundImage(std::string path);
+		void deleteBackgroundImage();
 
 		GUI::Textbox & addTextbox(std::string id);
 		GUI::Label & addLabel(std::string text, sf::Color color=BODY_TEXT_COLOR);

@@ -71,6 +71,8 @@ void GraphicUserManager::displayRegisterForm()
 void GraphicUserManager::displayTeamNameForm()
 {
 	_canvas.clear();
+
+	_canvas.setBackgroundImage(texturePath("HexBack.png"));
 	
 	int center = _controller.window.getSize().x/2; 
 	_canvas.addTextbox(TEAM_NAME_TEXTBOX_ID).setPosition(center-100, 300);
@@ -84,6 +86,8 @@ void GraphicUserManager::displayTeamNameForm()
 void GraphicUserManager::displayMainMenu()
 {
 	_canvas.clear();
+
+	_canvas.setBackgroundImage(texturePath("HexBack.png"));
 	
 	_canvas.addButton<GraphicUserManager>(
 		&GraphicUserManager::goToStadium, this, "Stadium management"
