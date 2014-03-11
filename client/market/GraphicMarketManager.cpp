@@ -80,5 +80,6 @@ void GraphicMarketManager::onBidOK()
 void GraphicMarketManager::onBidError(std::string const & err)
 {
 	_wait = false;
+	displayError(err);
 	updateSales();
 }
