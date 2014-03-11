@@ -33,7 +33,7 @@ Server::Server(NetConfig const & config) :
 	_connectionManager(_inbox, _outbox, config.ip.c_str(), config.port, config.maxClients),
 	_market(new PlayerMarket(this)),_matches(),_adminManager(_connectionManager,this)
 {
-	MemoryAccess::load(_championships);
+	loadChampionships();
 	_connectionManager.start();
 	cout << "Launched server on " << _connectionManager.ip() << ":" << _connectionManager.port() << endl;
 }
@@ -77,6 +77,15 @@ void Server::run()
 				 << "received: " << rx << "kB " 
 				 << "(up " << uptime << " seconds)" << endl;
 		}
+	}
+}
+
+void Server::loadChampionships(){
+	MemoryAccess::load(_championships);
+	for(size_t i = 0; i < _championships.size(); ++i){
+		_championships[i]->clearSchedules();
+		_championships[i]->start();
+		std::cout<<*(_championships[i])<<std::endl;
 	}
 }
 
@@ -698,9 +707,7 @@ void Server::timeUpdateChampionship()
 	pthread_mutex_lock(&_champsMutex);
 	for (size_t i = 0; i < _pendingChampMatches.size(); ++i)
 	{
-		std::cout << _pendingChampMatches[i] << std::endl; 
 		if(abs(difftime(now, _pendingChampMatches[i].date)) > gameconfig::MAX_CHAMP_MATCH_OFFSET){
-			std::cout << "\nRESOLVING UNREADY CHAMPIONSHIP MATCH\n"<<endl;
 			//Time range over, resolve match
 			resolveUnplayedChampMatch(_pendingChampMatches[i]);
 		}
@@ -776,7 +783,7 @@ void Server::notifyStartingChampionship(Championship & champ){
 	JSON::Dict toSend;
 	toSend.set("type",net::MSG::CHAMPIONSHIP_STATUS_CHANGE);
 	toSend.set("data",net::MSG::CHAMPIONSHIP_STARTED);
-	std::vector<std::string> & users = champ.getUsers();
+	std::vector<std::string> users = champ.getUsers();
 	for(size_t i = 0; i < users.size(); ++i){
 		sendNotification(users[i],toSend);
 	}

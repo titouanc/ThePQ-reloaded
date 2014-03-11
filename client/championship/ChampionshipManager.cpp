@@ -58,7 +58,7 @@ void ChampionshipManager::onJoinedChampionship(JSON::Value const * data){
 		}
 	}
 	else if(ISDICT(data)){
-		std::cout << DICT(data) << std::endl;
 		user().joinedChamp = DICT(data);
 	}
+
 }

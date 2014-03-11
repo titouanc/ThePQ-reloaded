@@ -12,8 +12,14 @@ std::ostream& operator<< (std::ostream& out, const Schedule& sche)
     		if(sche.statusUser1 == net::MSG::CHAMPIONSHIP_MATCH_READY){
     			status1 = "ready";
     		}
+    		else{
+    			status1 = sche.statusUser1;
+    		}
     		if(sche.statusUser2 == net::MSG::CHAMPIONSHIP_MATCH_READY){
     			status2 = "ready";
+    		}
+    		else{
+    			status2 = sche.statusUser2;
     		}
     	}
     	else{
@@ -33,9 +39,9 @@ std::ostream& operator<< (std::ostream& out, const Championship& champ){
 	out << champ._name << " : \033[1m" << champ._users.size() << "/" << champ._nbOfUsers << "\033[0m" 
 		<< " Cashprize(\033[32m" << champ._cashPrize << "\033[0m) Fame(\033[32m" << champ._fame << "\033[0m)";
 	if(champ._isStarted){
-		out << endl;
+		out << '\n';
 		for(size_t i = 0; i < champ._schedules.size();++i){
-			out << champ._schedules[i] << endl;
+			out << champ._schedules[i] << '\n';
 		}
 	}
 	return out;
@@ -88,9 +94,9 @@ Championship::operator JSON::Dict()
 {
 	JSON::Dict res;
 	res.set("nbOfUsers", _nbOfUsers);
-	res.set("isStarted", _isStarted);
-	res.set("isEnded", _isEnded);
-	res.set("notified",_usersNotified);
+	res.set("isStarted", JSON::Bool(_isStarted));
+	res.set("isEnded", JSON::Bool(_isEnded));
+	res.set("notified",JSON::Bool(_usersNotified));
 	res.set("name", _name);
 	res.set("turn", _turn);
 	res.set("fame",_fame);
@@ -155,6 +161,10 @@ void Championship::start()
 		_schedules.push_back(Schedule(_users[i], _users[i+1], timeBeg));
 	}
 	_isStarted = true;
+}
+
+void Championship::clearSchedules(){
+	_schedules.clear();
 }
 
 Schedule* Championship::nextMatch()

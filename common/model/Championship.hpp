@@ -30,6 +30,8 @@ struct Schedule
 	{
 		if (ISSTR(json.get("user1")))		{ user1 = STR(json.get("user1")).value(); }
 		if (ISSTR(json.get("user2")))		{ user1 = STR(json.get("user2")).value(); }
+		if (ISSTR(json.get("statususer1")))	{ statusUser1 = STR(json.get("statususer1")).value();}
+		if (ISSTR(json.get("statususer2")))	{ statusUser2 = STR(json.get("statususer2")).value();}
 		if (ISINT(json.get("date")))		{ date = INT(json.get("date")); }
 		if (ISBOOL(json.get("isHappening"))){ isHappening = BOOL(json.get("isHappening")); }
 	}
@@ -39,7 +41,9 @@ struct Schedule
 		res.set("user1", user1);
 		res.set("user2", user2);
 		res.set("date", date);
-		res.set("isHappening", isHappening);
+		res.set("statususer1",statusUser1);
+		res.set("statususer2",statusUser2);
+		res.set("isHappening", JSON::Bool(isHappening));
 		return res;
 	}
 };
@@ -70,7 +74,10 @@ public:
 	std::string getWinner() const { return (_isEnded) ? _users[0] : ""; }
 	size_t getNbOfUsers() { return _nbOfUsers; }
 	std::vector<std::string>& getUsers() { return _users; }
+	std::vector<Schedule>& getSchedules() { return _schedules; }
 	bool isUserIn(std::string username);
+	void start();
+	void clearSchedules();
 
 private:
 	bool _isStarted;
@@ -85,7 +92,7 @@ private:
 	std::vector<std::string> _users;
 	std::vector<Schedule> _schedules;
 
-	void start();
+	
 	
 };
 

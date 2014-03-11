@@ -75,6 +75,7 @@ public:
     Championship* getChampionshipByName(std::string champName);
     Championship* getChampionshipByUsername(std::string username);
     size_t nbrUsersConnected(){return _users.size();}
+    void loadChampionships();
     void leaveChampionship(int);
     void joinChampionship(std::string,int);
     void sendChampionshipsList(int);
