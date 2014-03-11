@@ -17,10 +17,11 @@ private:
     std::string _owner;
     int _funds;
     int _fame;
+    int _AP;
 	std::vector<Player> _players;
 	std::vector<Installation*> _installations;
 public:
-	Team(std::string owner = "", std::string teamname=gameconfig::UNNAMED_TEAM, int funds = gameconfig::STARTING_FUNDS, int fame = gameconfig::STARTING_FAME);
+	Team(std::string owner = "", std::string teamname=gameconfig::UNNAMED_TEAM, int funds = gameconfig::STARTING_FUNDS, int fame = gameconfig::STARTING_FAME, int AP = gameconfig::STARTING_AP);
 	Team(const Team& other);
 	Team(const JSON::Dict &json);
 	~Team();
@@ -41,6 +42,11 @@ public:
 	int getFunds(){return _funds;}
 	void getPayed(int amount){_funds+=amount;}
 	void buy(int amount){_funds-=amount;}
+	void addFame(int amount) { _fame += amount; }
+	void substractFame(int amount) { _fame -= amount; }
+	int getFame() { return _fame; }
+	int getAP() { return _AP; }
+	void addAP(int ap) { _AP += ap; }
 	std::vector<Player>& getPlayers(){return _players;}
 	std::vector<Installation*>& getInstallations(){return _installations;}
 	

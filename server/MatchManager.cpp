@@ -417,10 +417,9 @@ void MatchManager::endMatch(void)
 	releaseClient(_squads[0].client_id);
 	releaseClient(_squads[1].client_id);
 
-	_matchRes.winner = _squads[winner].squad_owner;
-	_matchRes.loser = _squads[looser].squad_owner;
-	_matchRes.score[0] = _score[winner];
-	_matchRes.score[1] = _score[looser];
+	_matchRes.setTeams(_squads[winner].squad_owner, _squads[looser].squad_owner);
+	_matchRes.setScore(_score[winner], _score[looser]);
+	_matchRes.compute();
 }
 
 void MatchManager::onCollision(

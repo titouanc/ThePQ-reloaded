@@ -106,8 +106,8 @@ void Server::collectFinishedMatches(void)
 		next++;
 		if(! (*it)->isRunning()){
 			if( (*it)->isChampMatch()){
-				struct MatchResult & result = (*it)->getResult();
-				Championship* champ = getChampionshipByUsername(result.winner);
+				MatchResult & result = (*it)->getResult();
+				Championship* champ = getChampionshipByUsername(result.getWinner());
 				if (champ != NULL){
 					champ->endMatch(result);
 				}
