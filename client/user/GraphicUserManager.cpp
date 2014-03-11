@@ -21,6 +21,7 @@ GraphicUserManager::GraphicUserManager(
     UserManager(connection, user, notifications), 
     GraphicManager(controller)
 {
+	_canvas.setBackgroundImage(texturePath("SplashScreenBG.png"));
 	displayCanvas();
 	displayChoice();
 }
@@ -28,7 +29,7 @@ GraphicUserManager::GraphicUserManager(
 void GraphicUserManager::displayChoice()
 {
 	_canvas.clear();
-	
+
 	_canvas.addButton<GraphicUserManager>(
 		&GraphicUserManager::displayLoginForm, this, "Login"
 	).setPosition(900, 350);

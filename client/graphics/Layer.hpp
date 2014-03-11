@@ -18,10 +18,11 @@ namespace GUI {
 	class Layer {
 	public:
 		Layer(sf::Color backgroundColor=sf::Color(0xff, 0xff, 0xff, 0xff)): 
-				_active(false), _inMessage(false), _backgroundColor(backgroundColor), _focusedTextbox(NULL){}
+				_active(false), _inMessage(false), _backgroundColor(backgroundColor), 
+				_backgroundImage(NULL), _focusedTextbox(NULL){}
 		virtual ~Layer();
 
-		void clear();
+		void clear(bool clearBackground = false);
 
 		bool isActive() 	{ return _active; }
 		void activate() 	{ _active = true; }
@@ -47,6 +48,8 @@ namespace GUI {
 			std::string text="Button"
 		);
 
+		void setBackgroundImage(std::string path);
+
 		GUI::Textbox & addTextbox(std::string id);
 		GUI::Label & addLabel(std::string text, sf::Color color=BODY_TEXT_COLOR);
 		GUI::Label & addLabel(double val, sf::Color color=BODY_TEXT_COLOR);
@@ -68,6 +71,8 @@ namespace GUI {
 	protected:
 		bool _active, _inMessage;
 		sf::Color _backgroundColor;
+		sf::Sprite* _backgroundImage;
+		sf::Texture _backgroundImageTexture;
 		std::vector<GUI::ClickableInterface*> _clickables;
 		std::map<std::string, GUI::Textbox*> _textboxes;
 		std::vector<GUI::Label*> _labels;
