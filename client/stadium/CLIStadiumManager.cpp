@@ -43,8 +43,7 @@ void CLIStadiumManager::run()
 
 void CLIStadiumManager::printInstallationsList()
 {
-	cout << "\033[2J\033[1;1H";//clear screen
-	cout << "Your username: "<< user().username << endl;
+	clScreen();
 	cout << "You have " << user().funds << " $$$$" << endl;
 	cout << "You have " << user().acPoints << " activity points" << endl;
 	cout << "Your fame is " << user().fame << endl;
@@ -107,4 +106,9 @@ void CLIStadiumManager::treatMessage(std::string const & type, JSON::Value const
 void CLIStadiumManager::onMatchStart(){
 	CLIMatchManager match(*this); 
 	match.run();
+}
+
+void CLIStadiumManager::clScreen(){
+	/*Method*/
+	cout << "\033[2J\033[1;1H";
 }
