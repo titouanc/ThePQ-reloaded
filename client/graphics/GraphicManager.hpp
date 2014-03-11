@@ -19,6 +19,7 @@ namespace GUI {
 		void stop(){_isRunning = false;}
 
 		void displayError(std::string errorMessage);
+		int confirm(std::string message);
 	protected:
 		/* Standard event processing; always return true */
 		virtual bool treatEvent(sf::Event const & event);
