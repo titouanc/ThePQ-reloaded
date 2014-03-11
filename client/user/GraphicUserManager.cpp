@@ -1,6 +1,7 @@
 #include "GraphicUserManager.hpp"
 #include <stadium/GraphicStadiumManager.hpp>
 #include <market/GraphicMarketManager.hpp>
+#include <fgame/GUIFGameManager.hpp>
 
 using namespace std;
 using namespace GUI;
@@ -159,6 +160,14 @@ void GraphicUserManager::goToMarket()
 {
 	GraphicMarketManager market(*this, _controller);
 	market.run();
+	deleteCanvas();
+	displayMainMenu();
+}
+
+void GraphicUserManager::goToFriendlyGame()
+{
+	GUIFGameManager game(*this, _controller);
+	game.run();
 	deleteCanvas();
 	displayMainMenu();
 }
