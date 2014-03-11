@@ -17,6 +17,7 @@ private:
 	void invitePlayer(std::string playername);
 
 	void onUserList(JSON::List const & list);
+	void onInvite(std::string const & otherUser);
 };
 
 

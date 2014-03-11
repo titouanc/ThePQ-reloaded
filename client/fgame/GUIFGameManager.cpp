@@ -14,6 +14,16 @@ GUIFGameManager::GUIFGameManager(ClientManager const & parent, GUI::MainControll
 	readMessages();
 }
 
+void GUIFGameManager::invitePlayer(string playername){
+	sendInvitation(playername);
+	Button<GUIFGameManager, string> * inviteButton = inviteButtons[playername];
+	inviteButton->disable();
+	inviteButton->setBackgroundColor(sf::Color(0xcc, 0xcc, 0xcc, 0xff));
+	inviteButton->setText("Invited");
+	inviteButton->setPosition(350-inviteButton->getWidth(), 0);
+	redrawCanvas();
+}
+
 void GUIFGameManager::onUserList(JSON::List const & list){
 	_canvas.clear();
 
@@ -37,12 +47,10 @@ void GUIFGameManager::onUserList(JSON::List const & list){
 
 }
 
-void GUIFGameManager::invitePlayer(string playername){
-	cout << playername << endl;
-	Button<GUIFGameManager, string> * inviteButton = inviteButtons[playername];
-	inviteButton->disable();
-	inviteButton->setBackgroundColor(sf::Color(0xcc, 0xcc, 0xcc, 0xff));
-	inviteButton->setText("Invited");
-	inviteButton->setPosition(350-inviteButton->getWidth(), 0);
-	redrawCanvas();
+void GUIFGameManager::onInvite(std::string const & otherUser) {
+	if (confirm(otherUser + " has sent you an invitation.\nDo you want to play a game with this user?")){
+		cout << "start game" << endl;
+	}
+	else 
+		cout << "no start game" << endl;
 }
