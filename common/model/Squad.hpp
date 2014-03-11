@@ -43,6 +43,7 @@ struct Squad {
                         break;
                 case 6: keeper = convertToKeeper(toLoad, jersey, broom);
                         break;
+                default: break;
             }
         }
         Squad();
