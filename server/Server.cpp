@@ -104,7 +104,6 @@ void Server::loadChampionships(){
 	for(size_t i = 0; i < _championships.size(); ++i){
 		_championships[i]->clearSchedules();
 		_championships[i]->start();
-		std::cout<<*(_championships[i])<<std::endl;
 	}
 }
 

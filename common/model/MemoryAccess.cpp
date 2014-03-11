@@ -153,7 +153,8 @@ JSON::List MemoryAccess::loadFilesInVec(std::string directory){/*Check for memle
 				//checks if file is a .json file
 				if(str1.compare(str1.size()-str2.size(),str2.size(),str2) == 0){
 					JSON::Value* loaded = JSON::load((directory+file->d_name).c_str());
-					ret.append(DICT(loaded));
+					if(ISDICT(loaded))
+						ret.append(DICT(loaded));
 					delete loaded;
 				}
 			}
