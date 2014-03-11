@@ -30,7 +30,7 @@ public:
 		winner.load();
 		loser.load();
 		double fameRatio = loser.getFame()/winner.getFame();
-		_fameDiff = fameRatio*gameconfig::FAME_RATIO;
+		_fameDiff = fameRatio*gameconfig::FAME_GAIN_RATIO;
 		// TODO installations
 		_moneyGain[0] = fameRatio*gameconfig::MONEY_GAIN_RATIO;
 		_moneyGain[1] = fameRatio*gameconfig::MONEY_GAIN_RATIO/gameconfig::WINNER_LOSER_GAIN_RATIO;

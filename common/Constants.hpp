@@ -147,7 +147,7 @@ namespace gameconfig
 	static const int WINNER_LOSER_GAIN_RATIO = 4;
 	static const int MONEY_GAIN_RATIO = 100;
 	static const int AP_GAIN_RATIO = 1;
-	static const int FAME_RATIO = 10;
+	static const int FAME_GAIN_RATIO = 10;
 }
 
 namespace memory
