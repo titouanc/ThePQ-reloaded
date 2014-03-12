@@ -4,6 +4,7 @@
 #include <network/ClientConnectionManager.hpp>
 #include <graphics/GraphicManager.hpp>
 #include "UserManager.hpp"
+#include <GUINotifier.hpp>
 
 class GraphicUserManager : public UserManager, public GUI::GraphicManager 
 {
@@ -38,6 +39,8 @@ private:
 
 	void onRegisterUserOK();
 	void onRegisterUserError(std::string const & data);
+
+	NOTIFIABLE
 
 	bool _wait;
 };

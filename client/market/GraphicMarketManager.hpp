@@ -3,6 +3,7 @@
 
 #include <graphics/GraphicManager.hpp>
 #include "MarketManager.hpp"
+#include <GUINotifier.hpp>
 
 class GraphicMarketManager : public MarketManager, public GUI::GraphicManager 
 {
@@ -21,6 +22,8 @@ private:
 	void onSalesUpdate();
 	void onBidOK();
 	void onBidError(std::string const & err);
+
+	NOTIFIABLE
 
 	bool _wait, _waitForBid;
 };

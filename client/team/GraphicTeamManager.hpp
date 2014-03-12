@@ -3,6 +3,7 @@
 
 #include "TeamManager.hpp"
 #include <graphics/GraphicManager.hpp>
+#include <GUINotifier.hpp>
 
 class GraphicTeamManager : public TeamManager, public GUI::GraphicManager {
 public:
@@ -12,6 +13,8 @@ private:
 	void displayPlayers();
 	void onPlayersLoad();
 	bool _wait;
+
+	NOTIFIABLE
 };
 
 #endif

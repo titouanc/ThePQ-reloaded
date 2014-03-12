@@ -6,6 +6,7 @@
 #include "FGameManager.hpp"
 #include <string>
 #include <map>
+#include <GUINotifier.hpp>
 
 class GUIFGameManager : public FGameManager, public GUI::GraphicManager 
 {
@@ -15,15 +16,9 @@ public:
 private:
 	std::map<std::string, GUI::Button<GUIFGameManager, string>*> inviteButtons;
 	void invitePlayer(std::string playername);
-
-	void loop();
-
-	void launchMatch();
-
-	void onOtherAccept(std::string const &);
-	void onOtherDeny(std::string const &);
 	void onUserList(JSON::List const & list);
-	void onInvite(std::string const & otherUser);
+
+	NOTIFIABLE
 };
 
 

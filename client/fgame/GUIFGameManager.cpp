@@ -26,12 +26,6 @@ void GUIFGameManager::invitePlayer(string playername)
 	redrawCanvas();
 }
 
-void GUIFGameManager::loop()
-{
-	readMessages();
-	handleNotification();
-}
-
 void GUIFGameManager::onUserList(JSON::List const & list)
 {
 	_canvas.clear();
@@ -53,32 +47,4 @@ void GUIFGameManager::onUserList(JSON::List const & list)
 	backButton().setPosition(900, 450);
 
 	redrawCanvas();
-}
-
-void GUIFGameManager::launchMatch()
-{
-	GraphicMatchManager match(*this, _controller);
-	match.run();
-	redrawCanvas();
-}
-
-void GUIFGameManager::onOtherAccept(std::string const & user)
-{
-	launchMatch();
-}
-
-void GUIFGameManager::onOtherDeny(std::string const & user)
-{
-	displayError(user + " doesn't want to play with you");
-}
-
-void GUIFGameManager::onInvite(std::string const & otherUser)
-{
-	std::string question = otherUser + " has invited you to play a friendly game.\nAccept ?";
-	if (confirm(question)){
-		acceptInvitationFromUser(otherUser);
-		launchMatch();
-	} else {
-		denyInvitationFromUser(otherUser);
-	}
 }
