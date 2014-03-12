@@ -91,7 +91,7 @@ GUI::Button<GUI::GraphicManager> & GUI::GraphicManager::usernameButton(std::stri
 GUI::Button<GUI::GraphicManager> & GUI::GraphicManager::userBudgetButton(const int budget)
 {
 	char casted[512];
-	sprintf(casted, "%d", budget);
+	sprintf(casted, "%d $", budget);
 	GUI::Button<GUI::GraphicManager> &res = _canvas.addButton<GUI::GraphicManager>(
 		&GUI::GraphicManager::doNothing, this, casted
 	);

@@ -28,6 +28,9 @@ void GraphicStadiumManager::displayInstallations()
 
 	_canvas.clear();
 
+	usernameButton(user().username);
+	userBudgetButton(user().funds);
+
 	TableView & installations = _canvas.addTableView(2, 10);
 	installations.setPosition(100, 100);
 

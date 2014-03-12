@@ -39,6 +39,9 @@ void GraphicMarketManager::displaySellablePlayers()
 {
 	_canvas.clear();
 
+	usernameButton(user().username);
+	userBudgetButton(user().funds);
+
 	TableView & playerList = _canvas.addTableView(1, 5);
 	playerList.setPosition(100, 100);
 
@@ -118,6 +121,9 @@ void GraphicMarketManager::onSalesUpdate()
 {
 	_wait = false;
 	_canvas.clear();
+
+	usernameButton(user().username);
+	userBudgetButton(user().funds);
 
 	TableView & playerList = _canvas.addTableView(1, 5);
 	playerList.setPosition(100, 100);
