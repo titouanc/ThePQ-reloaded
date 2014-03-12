@@ -39,6 +39,12 @@ void GraphicStadiumManager::displayInstallations()
 		levelLabel.setColor(BLUE_TEXT_COLOR);
 	}
 
+	Label &titleLabel = _canvas.addLabel("Your\ninstallations");
+	titleLabel.setFont(HEADER_FONT_PATH);
+	titleLabel.setColor(sf::Color::White);
+	titleLabel.setFontSize(50);
+	titleLabel.setPosition(650, 100);
+
 	backButton();
 
 	redrawCanvas();
