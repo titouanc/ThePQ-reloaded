@@ -17,7 +17,7 @@
 		"Kevin", "Jean-Kevin", "Natasha", "Mohamed", "Yvon", "Ignace", "Gertrude",
 		"Bashar", "Jeroen", "Bob", "Jesus", "Clara", "Harry", "Ron", "Hermione",
 		"Tom", "Inge", "Dirk", "Wouter", "Peter", "Jean-Louis", "Jean-Jean", 
-		"Ermelinda", "Elie"
+		"Ermelinda", "Elie", "Linus"
 	],
 	"LastNames" : [
 		"Hennecker", "Hellinckx", "Caccia", "Christophe", "Carpentier", "Mudura",
@@ -38,6 +38,7 @@
 		"Duval", "Jedusor", "Potter", "Morgane", "Weasley", "Granger", "Moldu",
 		"de la Sainte-Klet", "Van de Klet", "Pikachu", "Durum", "Flan", "Frigidaire",
 		"Yaourt", "Vandervluurde", "de Kampioen", "Champion", "Mulet", "Haricot",
-		"Poireau", "Patate", "Petitpois", "Mergelover", "Muslli", "Copter"
+		"Poireau", "Patate", "Petitpois", "Mergelover", "Muslli", "Copter", "Jupiler",
+		"Duvel", "Maes", "Leffe", "Kriek", "Chimay", "Sartre", "Babbage", "Torvalds"
 	]
 }
