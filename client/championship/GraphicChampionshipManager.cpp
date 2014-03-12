@@ -72,7 +72,9 @@ void GraphicChampionshipManager::seeCurrentChampionship(){
 	usernameButton(user().username);
 	userBudgetButton(user().funds);
 
-	backButton();
+	Button<GraphicChampionshipManager> & backButton = _canvas.addButton<GraphicChampionshipManager>(
+		&GraphicChampionshipManager::onChampionshipsLoad, this, "Back");
+	backButton.setPosition(window().getSize().x-backButton.getWidth()-MARGIN, window().getSize().y-backButton.getHeight()-MARGIN);
 	redrawCanvas();	
 }
 
@@ -83,6 +85,7 @@ void GraphicChampionshipManager::onChampionshipsLoad(){
 	userBudgetButton(user().funds);
 	updateCurrentChampionship();
 	TableView & champsList = _canvas.addTableView();
+	champsList.setPosition(100,100);
 
 	/* Header line */
 	TableCell & header = champsList.addTableCell(850, 47);
