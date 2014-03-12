@@ -22,9 +22,9 @@ protected:
 	void treatMessage(std::string const & type, JSON::Value const * data);
 	/* HOOKS */
 	/* received a join championship response */
-	virtual void onJoinChampionship(bool,std::string){}
+	virtual void onJoinChampionship(bool,std::string const &){}
 	/* received a leave championship response */
-	virtual void onLeaveChampionship(bool,std::string){}
+	virtual void onLeaveChampionship(bool,std::string const &){}
 	/* received championships list : put it in _champs */
 	virtual void onChampionshipsLoad(){}
 	/* received current joined champ, put in joinedChamp if !NULL */

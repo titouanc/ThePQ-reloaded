@@ -100,13 +100,13 @@ void CLIChampionshipManager::displayChampionships(){
 	std::cout << "===============================================" << std::endl;
 }
 
-void CLIChampionshipManager::onJoinChampionship(bool success, std::string msg){
+void CLIChampionshipManager::onJoinChampionship(bool success, const std::string & msg){
 	_waitForJoin = false;
 	(success) ? okMsg(msg) : errorMsg(msg);
 	
 }
 
-void CLIChampionshipManager::onLeaveChampionship(bool success, std::string msg){
+void CLIChampionshipManager::onLeaveChampionship(bool success, const std::string & msg){
 	_waitForJoin = false;
 	(success) ? okMsg(msg) : errorMsg(msg);
 }

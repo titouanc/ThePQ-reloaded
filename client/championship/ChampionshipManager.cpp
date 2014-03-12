@@ -47,7 +47,7 @@ void ChampionshipManager::treatMessage(std::string const & type, JSON::Value con
 				message = "Added to championship.";
 				ok = true;
 			}
-			onJoinChampionship(ok, message);
+			this->onJoinChampionship(ok, message);
 		}
 	}
 	else if (type == net::MSG::JOINABLE_CHAMPIONSHIPS_LIST)
@@ -57,7 +57,7 @@ void ChampionshipManager::treatMessage(std::string const & type, JSON::Value con
 		for(size_t i = 0; i<champs.len();++i){
 			_champs.push_back(Championship(DICT(champs[i])));
 		}
-		onChampionshipsLoad();
+		this->onChampionshipsLoad();
 	}
 	else if(type == net::MSG::LEAVE_CHAMPIONSHIP)
 	{

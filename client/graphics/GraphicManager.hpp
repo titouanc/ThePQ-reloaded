@@ -25,6 +25,7 @@ namespace GUI {
 		void stop(){_isRunning = false;}
 
 		void displayError(std::string errorMessage);
+		void displayOk(std::string okMessage);
 		void displayMessage(std::string message);
 		int confirm(std::string message);
 		void doNothing(){}

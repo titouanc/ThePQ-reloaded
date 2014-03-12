@@ -64,8 +64,13 @@ void GUI::GraphicManager::displayError(std::string errorMessage){
 	m.showBox();
 }
 
+void GUI::GraphicManager::displayOk(std::string okMessage){
+	MessageBox m(_controller,"OK : "+okMessage, {"YAY !"});
+	m.showBox();
+}
+
 void GUI::GraphicManager::displayMessage(std::string message){
-	MessageBox m(_controller, "Message : "+message, {"OK"});
+	MessageBox m(_controller, message, {"OK"});
 	m.showBox();
 }
 

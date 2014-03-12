@@ -35,6 +35,16 @@ void GraphicChampionshipManager::updateCurrentChampionship(){
 void GraphicChampionshipManager::joinChampionship(std::string name){
 	_wait = true;
 	ChampionshipManager::joinChampionship(name);
+	while(_wait){
+		readEvent();
+		readMessages();
+	}
+}
+
+void GraphicChampionshipManager::onJoinChampionship(bool success, std::string const & message){
+	_wait = false;
+	(success) ? displayOk(message) : displayError(message);
+	updateChampionships();
 }
 
 void GraphicChampionshipManager::onJoinedChampionship(){
