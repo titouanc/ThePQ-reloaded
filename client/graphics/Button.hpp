@@ -86,6 +86,10 @@ namespace GUI {
 			_backgroundRect.setFillColor(color);
 		}
 
+		void setTextColor(sf::Color color){
+			_text.setColor(color);
+		}
+
 		void setText(std::string text) { 
 			if (text.length() != 0)
 				_text.setString(text);
