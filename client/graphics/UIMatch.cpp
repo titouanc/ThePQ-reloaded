@@ -33,16 +33,18 @@ UIMatch::UIMatch(Pitch & pitch, int hexagonSize) :
     _hexagon(circleSize(), 6), /* 6 sides regular polygon */
     _left(0), _top(0)
 {
-    sf::Texture *toLoad[10] = {
+    sf::Texture *toLoad[14] = {
         &_grass_texture, &_sand_texture, &_goal_texture, &_bludger_texture,
         &_quaffle_texture, &_snitch_texture,
         &_own_chaser_texture, &_own_seeker_texture, &_own_keeper_texture, &_own_beater_texture
+        &_other_chaser_texture, &_other_seeker_texture, &_other_keeper_texture, &_other_beater_texture
     };
-    const char *files[10] = {
+    const char *files[14] = {
         "grass1.png", "sand1.png", "goal2_50.png", "Bludger.png", "Quaffle.png",
-        "GoldenSnitch.png", "BluePlayer.png", "YellowPlayer.png", "GreenPlayer.png", "RedPlayer.png"
+        "GoldenSnitch.png", "BluePlayer.png", "YellowPlayer.png", "GreenPlayer.png", "RedPlayer.png",
+        "BlueStripedPlayer.png", "YellowStripedPlayer.png", "GreenStripedPlayer.png", "RedStripedPlayer.png"
     };
-    for (int i=0; i<10; i++){
+    for (int i=0; i<14; i++){
         if (! toLoad[i]->loadFromFile(texturePath(files[i])))
             throw TextureNotFound(files[i]);
     }
