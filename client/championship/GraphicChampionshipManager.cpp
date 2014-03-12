@@ -32,6 +32,10 @@ void GraphicChampionshipManager::updateCurrentChampionship(){
 	}
 }
 
+void GraphicChampionshipManager::onJoinedChampionship(){
+	_wait = false;
+}
+
 void GraphicChampionshipManager::leaveChampionship(){
 	_wait = true;
 	ChampionshipManager::leaveCurrentChampionship();
@@ -44,7 +48,7 @@ void GraphicChampionshipManager::leaveChampionship(){
 void GraphicChampionshipManager::onLeaveChampionship(bool success, std::string const & message){
 	_wait = false;
 	(success) ? displayOk(message) : displayError(message);
-	updateCurrentChampionship();
+	updateChampionships();
 }
 
 void GraphicChampionshipManager::joinChampionship(std::string name){
@@ -62,13 +66,10 @@ void GraphicChampionshipManager::onJoinChampionship(bool success, std::string co
 	updateChampionships();
 }
 
-void GraphicChampionshipManager::onJoinedChampionship(){
-	_wait = false;
-	_canvas.clear();
+void GraphicChampionshipManager::seeCurrentChampionship(){
 
-	_canvas.addButton<GraphicChampionshipManager>(
-		&GraphicChampionshipManager::leaveChampionship, this, "Leave championship"
-	).setPosition(1000, 300);
+	_canvas.clear();
+	
 
 	backButton();
 	redrawCanvas();	
@@ -77,7 +78,7 @@ void GraphicChampionshipManager::onJoinedChampionship(){
 void GraphicChampionshipManager::onChampionshipsLoad(){
 	_wait = false;
 	_canvas.clear();
-
+	updateCurrentChampionship();
 	TableView & champsList = _canvas.addTableView();
 
 	/* Header line */
@@ -130,11 +131,24 @@ void GraphicChampionshipManager::onChampionshipsLoad(){
 	_canvas.addButton<GraphicChampionshipManager>(
 		&GraphicChampionshipManager::updateChampionships, this, "Update"
 	).setPosition(1000, 300);
-	_canvas.addButton<GraphicChampionshipManager>(
-		&GraphicChampionshipManager::updateCurrentChampionship, this, "My championship"
-	).setPosition(1000, 350);
+	
+	Button<GraphicChampionshipManager> & myChampButton = _canvas.addButton<GraphicChampionshipManager>(
+		&GraphicChampionshipManager::seeCurrentChampionship, this, "My championship");
+	myChampButton.setPosition(1000, 350);
 
+	Button<GraphicChampionshipManager> & leaveChampButton = _canvas.addButton<GraphicChampionshipManager>(
+		&GraphicChampionshipManager::leaveChampionship, this, "Leave championship");
+	leaveChampButton.setPosition(1000, 400);
+
+	if(user().joinedChamp.getName().empty()){
+		myChampButton.disable();
+		myChampButton.setBackgroundColor(sf::Color(0xcc, 0xcc, 0xcc, 0xff));
+		leaveChampButton.disable();
+		leaveChampButton.setBackgroundColor(sf::Color(0xcc, 0xcc, 0xcc, 0xff));
+	}
+	
 	backButton();
+
 
 	redrawCanvas();
 }

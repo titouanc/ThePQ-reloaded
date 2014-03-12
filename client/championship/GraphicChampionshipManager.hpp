@@ -19,6 +19,7 @@ private:
 	void onJoinChampionship(bool,std::string const &);
 	void leaveChampionship();
 	void onLeaveChampionship(bool, std::string const &);
+	void seeCurrentChampionship();
 	NOTIFIABLE
 	bool _wait;
 };

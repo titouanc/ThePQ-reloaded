@@ -75,6 +75,7 @@ void ChampionshipManager::treatMessage(std::string const & type, JSON::Value con
 			}
 			else if(response == net::MSG::REMOVED_FROM_CHAMPIONSHIP){
 				message = "Removed from championship.";
+				user().joinedChamp = Championship();
 				ok = true;
 			}
 			onLeaveChampionship(ok,message);
