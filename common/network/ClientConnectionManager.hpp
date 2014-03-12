@@ -35,6 +35,7 @@ namespace net
 	
 		void start();
 		void run();
+		void stop();
 		bool isRunning();
 		
 		void send(JSON::Value const& json);
@@ -60,6 +61,7 @@ namespace net
 		pthread_mutex_t _mutex;
 		
 		void loop();
+		bool canRead() const;
 	};
 }
 
