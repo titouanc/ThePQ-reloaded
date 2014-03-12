@@ -16,6 +16,9 @@ public:
 private:
 	void updateSales();
 	void placeBid(int playerID);
+	void displaySellablePlayers();
+	void askPriceForPlayer(Player *player);
+	void sellPlayer(Player *player);
 
 	/* HOOKS */
 	void onSalesUpdate();

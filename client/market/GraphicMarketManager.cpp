@@ -1,5 +1,6 @@
 #include "GraphicMarketManager.hpp"
 #include <Constants.hpp>
+#include <stdlib.h> // stoi
 
 using namespace std;
 using namespace GUI;
@@ -32,6 +33,81 @@ void GraphicMarketManager::placeBid(int playerID)
 	bidOnPlayer(playerID);
 	while (_wait)
 		readMessage();
+}
+
+void GraphicMarketManager::displaySellablePlayers()
+{
+	_canvas.clear();
+
+	TableView & playerList = _canvas.addTableView(1, 5);
+	playerList.setPosition(100, 100);
+
+	/* Header line */
+	TableCell & header = playerList.addTableCell(600, BUTTON_HEIGHT);
+	header.setBackgroundColor(BUTTON_BACKGROUND_COLOR);
+
+	Label & nameHeader = header.addLabel("Player name");
+	nameHeader.setPosition(15, BUTTON_TOP_PADDING);
+	nameHeader.setColor(BUTTON_TEXT_COLOR);
+
+	Label & minPriceHeader = header.addLabel("Min price");
+	minPriceHeader.setPosition(300, BUTTON_TOP_PADDING);
+	minPriceHeader.setColor(BUTTON_TEXT_COLOR);
+
+	Label & maxPriceHeader = header.addLabel("Max price");
+	maxPriceHeader.setPosition(400, BUTTON_TOP_PADDING);
+	maxPriceHeader.setColor(BUTTON_TEXT_COLOR);
+
+	for(size_t i =0; i<user().players.size();++i){
+		TableCell & playerCell = playerList.addTableCell(600, BUTTON_HEIGHT);
+		playerCell.setBackgroundColor(sf::Color(0x00, 0x00, 0x00, 0x77));
+
+		Player * player = &user().players[i];
+		pair<int, int> range = getBidValueRange(player);
+
+		Label & nameLabel = playerCell.addLabel(player->getName());
+		nameLabel.setPosition(15, BUTTON_TOP_PADDING);
+		nameLabel.setColor(BUTTON_TEXT_COLOR);
+
+		Label & minPriceLabel = playerCell.addLabel(range.first);
+		minPriceLabel.setPosition(300, BUTTON_TOP_PADDING);
+		minPriceLabel.setColor(BUTTON_TEXT_COLOR);
+
+		Label & maxPriceLabel = playerCell.addLabel(range.second);
+		maxPriceLabel.setPosition(400, BUTTON_TOP_PADDING);
+		maxPriceLabel.setColor(BUTTON_TEXT_COLOR);
+		
+		Button<GraphicMarketManager, Player*> & sellButton = playerCell.addButton<GraphicMarketManager, Player*>(
+			&GraphicMarketManager::askPriceForPlayer, player, this, "Sell");
+		sellButton.setPosition(600-sellButton.getWidth(), 0);
+		
+	}
+
+	backButton().setPosition(1150, 650);
+
+	redrawCanvas();
+}
+
+void GraphicMarketManager::askPriceForPlayer(Player *player){
+	Textbox & priceTextbox = _canvas.addTextbox("Enter a price");
+	priceTextbox.setPosition(800, 350);
+
+	_canvas.addButton<GraphicMarketManager, Player*>(
+		&GraphicMarketManager::sellPlayer, player, this, "Confirm"
+	).setPosition(800, 400);
+
+	redrawCanvas();
+}
+
+void GraphicMarketManager::sellPlayer(Player *player){
+	int bidValue;
+	pair<int, int> range = getBidValueRange(player);
+	bidValue = stoi(_canvas.textboxWithID("Enter a price").getText());
+	if (bidValue<range.first or bidValue>range.second)
+		displayError("Please enter a price between the price range!");
+	else{
+		cout << "great!" << endl;
+	}
 }
 
 void GraphicMarketManager::onSalesUpdate()
@@ -105,7 +181,12 @@ void GraphicMarketManager::onSalesUpdate()
 
 	_canvas.addButton<GraphicMarketManager>(
 		&GraphicMarketManager::updateSales, this, "Update"
-	).setPosition(1000, 650);
+	).setPosition(1000, 300);
+
+	_canvas.addButton<GraphicMarketManager>(
+		&GraphicMarketManager::displaySellablePlayers, this, "Sell a player"
+	).setPosition(1000, 350);
+
 
 	backButton().setPosition(1150, 650);
 
