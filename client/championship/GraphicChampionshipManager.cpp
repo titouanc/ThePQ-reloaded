@@ -127,6 +127,10 @@ void GraphicChampionshipManager::onChampionshipsLoad(){
 			&GraphicChampionshipManager::joinChampionship, champ.getName(),
 			this, "JOIN");
 		joinButton.setPosition(850-joinButton.getWidth(), 0);
+		if(! user().joinedChamp.getName().empty()){
+			joinButton.disable();
+			joinButton.setBackgroundColor(sf::Color(0xcc, 0xcc, 0xcc, 0xff));
+		}
 	}
 	_canvas.addButton<GraphicChampionshipManager>(
 		&GraphicChampionshipManager::updateChampionships, this, "Update"
