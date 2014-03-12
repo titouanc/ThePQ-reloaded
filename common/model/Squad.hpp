@@ -69,6 +69,14 @@ struct Squad {
 		if (ISSTR(json.get("squad_owner")))
 			squad_owner = STR(json.get("squad_owner")).value();
 	}
+
+    bool hasPlayer(Moveable *moveable){
+        for (int i=0; i<7; i++)
+            if (players[i] == moveable)
+                return true;
+        return false;
+    }
+
 	Squad & operator=(Squad const & other){
 		squad_id = other.squad_id;
 		client_id = other.client_id;
