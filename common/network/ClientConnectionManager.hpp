@@ -35,12 +35,15 @@ namespace net
 	
 		void start();
 		void run();
+		bool isRunning();
 		
 		void send(JSON::Value const& json);
 		
 		/* Remove and return first message from incoming queue. 
 		   If empty, block until a message arrive */
 		JSON::Value* popMessage();
+
+		void pushMessage(JSON::Value*);
 
 		/* Return true if there is at least 1 message in the incoming queue */
 		bool hasMessage();
@@ -54,6 +57,7 @@ namespace net
 		int _port;
 		struct sockaddr_in _servAddr;
 		struct sockaddr_in _cliAddr;
+		pthread_mutex_t _mutex;
 		
 		void loop();
 	};

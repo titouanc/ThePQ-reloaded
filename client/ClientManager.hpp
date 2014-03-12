@@ -52,10 +52,19 @@ class ClientManager {
 		/*! handle message for end of player sale */
 		std::string onEndOfSale(JSON::Dict const & json);
 
-		/*! response to invitation */
-		void acceptInvitationFromUser(std::string);
-		void denyInvitationFromUser(std::string);
+		/* handle message when a championship match has been automatically resolved */
+		std::string onUnplayedMatch(std::string const &);
 
+		/* Handles begin championship/won championship notifications */
+		std::string onChampionshipStatusChange(std::string const &);
+
+		/* Reponse to a pending match notification */
+		void readyForMatch();
+		void withdrawFromMatch();
+
+		/* response to invitation */
+		void acceptInvitationFromUser(std::string const & user);
+		void denyInvitationFromUser(std::string const & user);
 
 		/* Hooks */
 		/*! Displays a message */
@@ -64,14 +73,21 @@ class ClientManager {
 		/*! Triggered when we receive a match invitation */
 		virtual void onInvite(std::string const & otherUser) {}
 
-		/*! Triggered when a match is ready to be played */
+		/* Triggered to start a match */
 		virtual void onMatchStart(){}
 
-		/*! Load players in user().players */
-		virtual void onPlayersLoad(JSON::List const & players);
+		/* Triggered when a championship match is ready to be played; answer has to be ready or withdraw */
+		virtual void onMatchPending(){}
+
+		/* Called when : handled notification -> responded to it -> response from server */
+		virtual void onNotificationResponse(bool,std::string const &,std::string const &){}
+
+		/* Load players in user().players */
+		virtual void onPlayersLoad(){}
 
 		/*! Triggered when user's team informations are updated */
 		virtual void onTeamInfo(UserData const & user);
+
 	public:
 		/*! Create a new client manager with a connection to server, a user 
 		   object (might be not initialised), and a queue to put all 

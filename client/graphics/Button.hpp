@@ -10,7 +10,7 @@
 #include "loadPath.hpp"
 
 namespace GUI {
-	template <typename T, typename P=int> class Button : public Clickable<T> {
+	template <typename T, typename P=int> class Button : public Clickable<T, P> {
 	public:
 		Button(
 			const typename Clickable<T>::Callback& callback, 

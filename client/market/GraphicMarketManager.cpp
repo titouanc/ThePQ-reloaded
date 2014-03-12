@@ -10,6 +10,9 @@ GraphicMarketManager::GraphicMarketManager(ClientManager const & parent, GUI::Ma
 	_wait(false)
 {
 	displayCanvas();
+
+	_canvas.setBackgroundImage(texturePath("HexBack.png"));
+
 	updateSales();
 }
 
@@ -80,5 +83,6 @@ void GraphicMarketManager::onBidOK()
 void GraphicMarketManager::onBidError(std::string const & err)
 {
 	_wait = false;
+	displayError(err);
 	updateSales();
 }

@@ -1,6 +1,6 @@
 PKGCONFIG = pkg-config
 
-OBJS_GUI = user/GraphicUserManager.o stadium/GraphicStadiumManager.o match/GraphicMatchManager.o market/GraphicMarketManager.o
+OBJS_GUI = user/GraphicUserManager.o stadium/GraphicStadiumManager.o match/GraphicMatchManager.o market/GraphicMarketManager.o fgame/GUIFGameManager.o team/GraphicTeamManager.o
 
 OBJS_CLI = cli/CLI.o cli/Menu.o user/CLIUserManager.o stadium/CLIStadiumManager.o team/CLITeamManager.o market/CLIMarketManager.o match/CLIMatchManager.o fgame/CLIFGameManager.o championship/CLIChampionshipManager.o
 

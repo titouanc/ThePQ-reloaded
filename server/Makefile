@@ -13,5 +13,6 @@ rmusers:
 	rm -rf data/users/*
 	rm -f data/global/userNames.json
 	rm -f data/global/teamNames.json
+	echo 1 > data/global/memberID.json
 
 include ../Makefile.includes

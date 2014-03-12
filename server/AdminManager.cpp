@@ -109,7 +109,8 @@ void AdminManager::createChampionship(const JSON::Dict& data, int peer_id){
 	}
 	else{
 		response.set("type",net::MSG::CHAMPIONSHIP_CREATION);
-		Championship champ(INT(data.get(net::MSG::TURN_NUMBER)),STR(data.get(net::MSG::CHAMPIONSHIP_NAME)).value());
+		Championship champ(INT(data.get(net::MSG::TURN_NUMBER)),STR(data.get(net::MSG::CHAMPIONSHIP_NAME)).value(),
+			INT(data.get(net::MSG::CHAMPIONSHIP_CASHPRIZE)), INT(data.get(net::MSG::CHAMPIONSHIP_FAME)));
 		try{
 			MemoryAccess::load(champ);
 			response.set("data",net::MSG::CHAMPIONSHIP_ALREADY_EXISTS);

@@ -1,7 +1,7 @@
 #include "Team.hpp"
 #include <cmath>
 
-Team::Team(std::string owner, std::string teamname, int funds, int fame) : _name(teamname), _owner(owner), _funds(funds), _fame(fame), _players(), _installations()
+Team::Team(std::string owner, std::string teamname, int funds, int fame, int AP) : _name(teamname), _owner(owner), _funds(funds), _fame(fame), _AP(AP), _players(), _installations()
 {}
 
 Team::Team(const Team& other) : _name(other._name), _owner(other._owner), _funds(other._funds),

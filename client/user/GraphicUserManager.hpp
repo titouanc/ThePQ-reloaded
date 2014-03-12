@@ -22,8 +22,10 @@ private:
 	void submitLoginForm();
 	void submitRegisterForm();
 	void submitTeamNameForm();
+	void goToFriendlyGame();
 	void goToStadium();
 	void goToMarket();
+	void goToPlayers();
 
 	/* Hooks */
 	void onAskTeamName();

@@ -3,14 +3,53 @@
 #include <model/MemoryAccess.hpp>
 #include <Constants.hpp>
 
+
 using namespace std;
+std::ostream& operator<< (std::ostream& out, const Schedule& sche)
+    {
+    	std::string status1, status2;
+    	if(sche.isHappening){
+    		if(sche.statusUser1 == net::MSG::CHAMPIONSHIP_MATCH_READY){
+    			status1 = "ready";
+    		}
+    		else{
+    			status1 = sche.statusUser1;
+    		}
+    		if(sche.statusUser2 == net::MSG::CHAMPIONSHIP_MATCH_READY){
+    			status2 = "ready";
+    		}
+    		else{
+    			status2 = sche.statusUser2;
+    		}
+    	}
+    	else{
+    		status1 = "match not happening yet";
+    		status2 = "match not happening yet";
+    	}
+        out << "User1(\033[32m" << sche.user1
+            << " - " << status1
+            << "\033[0m) User2(\033[32m" << sche.user2
+            << " - " << status2
+            << "\033[0m) Date(\033[32m" << ctime(&sche.date) << "\033[0m)";
+        return out;
+
+    }
 
 std::ostream& operator<< (std::ostream& out, const Championship& champ){
-	out << champ._name << " : \033[1m" << champ._users.size() << "/" << champ._nbOfUsers << "\033[0m" << std::endl;
+	out << champ._name << " : \033[1m" << champ._users.size() << "/" << champ._nbOfUsers << "\033[0m" 
+		<< " Cashprize(\033[32m" << champ._cashPrize << "\033[0m) Fame(\033[32m" << champ._fame << "\033[0m)";
+	if(champ._isStarted){
+		out << '\n';
+		for(size_t i = 0; i < champ._schedules.size();++i){
+			out << champ._schedules[i] << '\n';
+		}
+	}
 	return out;
 }
 
-Championship::Championship(size_t nbOfTurns,std::string name) : _isStarted(false), _isEnded(false), _name(name), _turn(1), _nbOfUsers(2<<(nbOfTurns-1))
+Championship::Championship(size_t nbOfTurns,std::string name,int cashprize, int fame) : 
+_isStarted(false), _isEnded(false), _usersNotified(false), _name(name), _turn(1), _nbOfUsers(2<<(nbOfTurns-1)),
+_cashPrize(cashprize), _fame(fame)
 {
 	if (_nbOfUsers < 2 || _nbOfUsers > 32) //Should never happen (AdminClient verifying it)
 	{
@@ -26,6 +65,9 @@ Championship::Championship(JSON::Dict const & json) : Championship()
 	if (ISINT(json.get("nbOfUsers")))	{ _nbOfUsers = INT(json.get("nbOfUsers")); }
 	if (ISBOOL(json.get("isStarted")))	{ _isStarted = BOOL(json.get("isStarted")); }
 	if (ISBOOL(json.get("isEnded")))	{ _isEnded = BOOL(json.get("isEnded")); }
+	if (ISBOOL(json.get("notified")))	{ _usersNotified = BOOL(json.get("notified"));}
+	if (ISINT(json.get("cashprize")))	{ _cashPrize = INT(json.get("cashprize"));}
+	if (ISINT(json.get("fame")))		{ _fame = INT(json.get("fame"));}
 	if (ISSTR(json.get("name")))		{ _name = STR(json.get("name")).value(); }
 	if (ISINT(json.get("turn")))		{ _turn = INT(json.get("turn")); }
 	if (ISLIST(json.get("users")))
@@ -52,10 +94,13 @@ Championship::operator JSON::Dict()
 {
 	JSON::Dict res;
 	res.set("nbOfUsers", _nbOfUsers);
-	res.set("isStarted", _isStarted);
-	res.set("isEnded", _isEnded);
+	res.set("isStarted", JSON::Bool(_isStarted));
+	res.set("isEnded", JSON::Bool(_isEnded));
+	res.set("notified",JSON::Bool(_usersNotified));
 	res.set("name", _name);
 	res.set("turn", _turn);
+	res.set("fame",_fame);
+	res.set("cashprize",_cashPrize);
 	JSON::List users;
 	for (size_t i = 0; i < _users.size(); ++i)
 	{
@@ -118,6 +163,10 @@ void Championship::start()
 	_isStarted = true;
 }
 
+void Championship::clearSchedules(){
+	_schedules.clear();
+}
+
 Schedule* Championship::nextMatch()
 {
 	if (_isStarted == true)
@@ -139,13 +188,13 @@ void Championship::endMatch(MatchResult & result)
 {
 	// erase schedule
 	for(size_t i = 0;i<_schedules.size();++i){
-		if(_schedules[i].user1 == result.winner || _schedules[i].user2 == result.winner){
+		if(_schedules[i].user1 == result.getWinner() || _schedules[i].user2 == result.getWinner()){
 			_schedules.erase(_schedules.begin()+i);
 		}
 	}
 	// erase loser
 	for(size_t i =0;i<_users.size();++i){
-		if(_users[i] == result.loser){
+		if(_users[i] == result.getLoser()){
 			_users.erase(_users.begin()+i);
 		}
 	}
@@ -165,7 +214,6 @@ void Championship::endMatch(MatchResult & result)
 		}
 		MemoryAccess::save(*this);
 	}
-
 }
 
 bool Championship::isUserIn(std::string username)

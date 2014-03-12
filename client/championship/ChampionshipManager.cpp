@@ -5,7 +5,7 @@ ChampionshipManager::ChampionshipManager(ClientManager const & parent) : ClientM
 
 void ChampionshipManager::loadChampionships()
 {
-	say(net::MSG::CHAMPIONSHIPS_LIST, JSON::String(""));
+	say(net::MSG::JOINABLE_CHAMPIONSHIPS_LIST, JSON::String(""));
 }
 
 void ChampionshipManager::joinChampionship(std::string champName)
@@ -13,14 +13,9 @@ void ChampionshipManager::joinChampionship(std::string champName)
 	say(net::MSG::JOIN_CHAMPIONSHIP, JSON::String(champName));
 }
 
-void ChampionshipManager::updateCurrentChampionship()
+void ChampionshipManager::joinedChampionship()
 {
-	user().joinedChamp = Championship();
-	for(size_t i = 0;i<_champs.size();++i){
-		if(_champs[i].isUserIn(user().username)){
-			user().joinedChamp = _champs[i];
-		}
-	}
+	say(net::MSG::JOINED_CHAMPIONSHIP, JSON::String(""));
 }
 
 void ChampionshipManager::leaveCurrentChampionship()
@@ -34,13 +29,17 @@ void ChampionshipManager::treatMessage(std::string const & type, JSON::Value con
 	{
 		onJoinChampionship(STR(data).value());
 	}
-	else if (type == net::MSG::CHAMPIONSHIPS_LIST)
+	else if (type == net::MSG::JOINABLE_CHAMPIONSHIPS_LIST)
 	{
 		onChampionshipsLoad(LIST(data));
 	}
 	else if(type == net::MSG::LEAVE_CHAMPIONSHIP)
 	{
 		onLeaveChampionship(STR(data).value());
+	}
+	else if(type == net::MSG::JOINED_CHAMPIONSHIP)
+	{
+		onJoinedChampionship(data);
 	}
 }
 
@@ -51,3 +50,15 @@ void ChampionshipManager::onChampionshipsLoad(JSON::List const & champs){
 	}
 }
 
+void ChampionshipManager::onJoinedChampionship(JSON::Value const * data){
+	user().joinedChamp = Championship();
+	if(ISSTR(data)){
+		if(STR(data).value() == net::MSG::CHAMPIONSHIP_NOT_FOUND){
+			return;
+		}
+	}
+	else if(ISDICT(data)){
+		user().joinedChamp = DICT(data);
+	}
+
+}

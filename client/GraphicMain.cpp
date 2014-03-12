@@ -2,7 +2,7 @@
 #include <unistd.h>
 #include <cstring>
 
-int main(int argc, char const *argv[])
+int protected_main(int argc, char const *argv[])
 {
 	bool has_chdir = false;
 	/* Allow relative path for config before chdir */
@@ -29,5 +29,18 @@ int main(int argc, char const *argv[])
 
 	gClient.run();
 	
-	return 0;
+	return EXIT_SUCCESS;
+}
+
+int main(int argc, const char **argv)
+{
+	int res = EXIT_FAILURE;
+	try {
+		res = protected_main(argc, argv);
+	} catch (std::runtime_error & err){
+		cerr << "ERROR: " << err.what() << endl;
+	} catch (...){
+		cerr << "UNKNOW ERROR" << endl;
+	}
+	return res;
 }

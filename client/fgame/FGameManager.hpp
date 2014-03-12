@@ -10,10 +10,6 @@ class FGameManager : public ClientManager {
 		void askConnectedList();
 		/* Send invitation to a friendly game to another user */
 		void sendInvitation(std::string const & name);
-		/* Accept invitation of another user to a friendly game */
-		void acceptInvitationFromUser(string username);
-		/* Deny invitation of another user to a friendly game */
-		void denyInvitationFromUser(string username);
 		/* Treat Friendly Game specfic messages from the server */
 		void treatMessage(std::string const & type, JSON::Value const * data);
 		

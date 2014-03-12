@@ -12,11 +12,20 @@ namespace GUI {
 	class GraphicManager {
 	public:
 		GraphicManager(MainController &uic) : _controller(uic), _isRunning(true){}
+		
+		/*! run the GraphicManager mainloop */
 		virtual void run();
+
+		/*! hook called at every mainloop iteration (same as event loop !!!) */
+		virtual void loop(){}
+
 		void deleteCanvas();
 		void displayCanvas();
 		void redrawCanvas();
 		void stop(){_isRunning = false;}
+
+		void displayError(std::string errorMessage);
+		int confirm(std::string message);
 	protected:
 		/* Standard event processing; always return true */
 		virtual bool treatEvent(sf::Event const & event);

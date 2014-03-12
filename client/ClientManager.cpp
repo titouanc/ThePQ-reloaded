@@ -37,18 +37,49 @@ void ClientManager::treatMessage(std::string const & type, JSON::Value const * d
 	}
 	else if (type == net::MSG::PLAYERS_LIST)
 	{
-		onPlayersLoad(LIST(data));
+		user().players.clear();
+		JSON::List const & players = LIST(data);
+		for(size_t i=0; i<players.len();++i){
+			Player player(DICT(players[i]));
+			user().players.push_back(player);
+		}
+		onPlayersLoad();
 	}
-	else if( type == net::MSG::CHAMPIONSHIP_MATCH_START)
+	
+	//Server response from a net::MSG::CHAMPIONSHIP_MATCH_PENDING notification response (subtle...)
+	else if( type == net::MSG::CHAMPIONSHIP_MATCH_STATUS)
 	{
-		this->onMatchStart();
+		std::string response = STR(data).value();
+		if (response == net::MSG::CHAMPIONSHIP_MATCH_WITHDRAW)
+			this->onNotificationResponse(true,response,"You \033[32mwithdrawed\033[0m from your match.\n\033[31mEvicted\033[0m from championship.");
+		else if (response == net::MSG::CHAMPIONSHIP_UNPLAYED_MATCH_WON)
+			this->onNotificationResponse(true,response,"Your opponent failed to be ready in time for your championship match, you have \033[32mwon\033[0m the match.");
+		else if (response == net::MSG::CHAMPIONSHIP_MATCH_OPPONENT_WITHDRAW)
+			this->onNotificationResponse(true,response,"Your opponent \033[32mwithdrawed\033[0m from your match, you have \033[32mwon\033[0m the match.");
+		else if(response == net::MSG::CHAMPIONSHIP_MATCH_WAIT)
+			this->onNotificationResponse(true,response,"You are \033[32mready\033[0m for your match.\nThe match will start when your opponent is ready.\nPlease wait...");
+		else if(response == net::MSG::CHAMPIONSHIP_MATCH_START){
+			this->onNotificationResponse(true,response,"Your opponent is \033[32mready\033[0m too. Match is starting.");
+			this->onMatchStart();
+		}
+		else if(response == net::MSG::CHAMPIONSHIP_MATCH_NOT_FOUND){
+			this->onNotificationResponse(false,response,"Match not found.");
+		}
 	}
-
 	//Notifications, wait for user to handle
 	else if (	type == net::MSG::MARKET_MESSAGE || 
 				type == net::MSG::FRIENDLY_GAME_INVITATION ||
-			 	type == net::MSG::CHAMPIONSHIP_MATCH_CAN_START )
+			 	type == net::MSG::CHAMPIONSHIP_MATCH_PENDING ||
+			 	type == net::MSG::CHAMPIONSHIP_MATCH_STATUS_CHANGE ||
+				type == net::MSG::CHAMPIONSHIP_STATUS_CHANGE)
 	{
+		if (type == net::MSG::MARKET_MESSAGE){
+			JSON::Dict const & msg = DICT(data);
+			std::string const & msgtype = STR(msg.get("type"));
+			/* If we won a sale; reload players */
+			if (msgtype == net::MSG::WON_SALE_RAPPORT)
+				loadPlayers();
+		}
 		JSON::Dict notif;
 		notif.set("type",JSON::String(type));
 		notif.set("data",*data);
@@ -91,6 +122,17 @@ void ClientManager::handleNotification(){
 			onInvite(STR(popped.get("data")).value());
 		else if(type == net::MSG::MARKET_MESSAGE)
 			onMessage(onEndOfSale(DICT(popped.get("data"))));
+		else if(type == net::MSG::CHAMPIONSHIP_MATCH_PENDING){
+			onMatchPending();
+		}
+		else if(type == net::MSG::CHAMPIONSHIP_MATCH_STATUS_CHANGE){
+			if(ISSTR((popped.get("data")))) {
+				onMessage(onUnplayedMatch(STR(popped.get("data")).value()));
+			}
+		}
+		else if(type == net::MSG::CHAMPIONSHIP_STATUS_CHANGE){
+			onMessage(onChampionshipStatusChange(STR(popped.get("data")).value()));
+		}
 	}
 }
 
@@ -119,7 +161,48 @@ std::string ClientManager::onEndOfSale(JSON::Dict const & json)
 	return res.str();
 }
 
-void ClientManager::acceptInvitationFromUser(string username){
+std::string ClientManager::onUnplayedMatch(std::string const & msg){
+	std::stringstream res;
+	res << "\n\033[36mMessage : championship match has ended.\033[0m" << endl;
+	if(msg == net::MSG::CHAMPIONSHIP_UNPLAYED_MATCH_WON){
+		res << "Your opponent failed to be ready in time for your championship match, you have \033[32mwon\033[0m the match." << endl;
+	}
+	else if(msg == net::MSG::CHAMPIONSHIP_UNPLAYED_MATCH_LOST){
+		res << "You failed to be ready in time for your championship match, you have been \033[31mevicted\033[0m from the championship." << endl;
+	}
+	else if(msg == net::MSG::CHAMPIONSHIP_MATCH_WITHDRAW){
+		res << "Your opponent withdrawed from the championship match, you have \033[32mwon\033[0m the match." << endl;
+	}
+	else
+		res << "Unknown message type." << endl;
+	res<<endl;
+	return res.str();
+}
+
+std::string ClientManager::onChampionshipStatusChange(std::string const & msg){
+	std::stringstream res;
+	if (msg == net::MSG::CHAMPIONSHIP_STARTED){
+		res << "\n\033[36mMessage : the championship you joined has started.\033[0m" << endl;
+		res << "You can check the infos about your next championship match in the \033[1mcurrent championship\033[0m tab."
+			<< "\nYou will receive a notification when it is ready to be played." << endl;
+	}
+	else if(msg == net::MSG::CHAMPIONSHIP_WON){
+		res << "\n\033[36mMessage : you have won the championship !\033[0m"<<endl;
+		res << "Such much very wow." << endl;
+	}
+	res << endl;
+	return res.str();
+}
+
+void ClientManager::readyForMatch(){
+	say(net::MSG::CHAMPIONSHIP_MATCH_PENDING_RESPONSE,JSON::String(net::MSG::CHAMPIONSHIP_MATCH_READY));
+}
+
+void ClientManager::withdrawFromMatch(){
+	say(net::MSG::CHAMPIONSHIP_MATCH_PENDING_RESPONSE,JSON::String(net::MSG::CHAMPIONSHIP_MATCH_WITHDRAW));
+}
+
+void ClientManager::acceptInvitationFromUser(std::string const & username){
 	JSON::Dict data = {
 		{ "username", JSON::String(username) },
 		{ "answer", JSON::String(net::MSG::FRIENDLY_GAME_INVITATION_ACCEPT) }
@@ -127,21 +210,12 @@ void ClientManager::acceptInvitationFromUser(string username){
 	say (net::MSG::FRIENDLY_GAME_INVITATION_RESPONSE, data);
 }
 
-void ClientManager::denyInvitationFromUser(string username){
+void ClientManager::denyInvitationFromUser(std::string const & username){
 	JSON::Dict data {
 		{ "username", JSON::String(username) },
 		{ "answer", JSON::String(net::MSG::FRIENDLY_GAME_INVITATION_DENY) }
 	};
 	say(net::MSG::FRIENDLY_GAME_INVITATION_RESPONSE, data);
-}
-
-void ClientManager::onPlayersLoad(JSON::List const & players)
-{
-	user().players.clear();
-	for(size_t i=0; i<players.len();++i){
-		Player player(DICT(players[i]));
-		user().players.push_back(player);
-	}
 }
 
 void ClientManager::onTeamInfo(UserData const & user)

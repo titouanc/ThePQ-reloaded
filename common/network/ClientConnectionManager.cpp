@@ -14,19 +14,31 @@ static void* runClientThread(void* arg)
 
 void net::ClientConnectionManager::start()
 {
-	_isRunning = true;
+	int lock = pthread_mutex_lock(&_mutex);
+	if (lock == 0)
+	{
+		_isRunning = true;
+		pthread_mutex_unlock(&_mutex);
+	}
 	loop();
 }
 
 net::ClientConnectionManager::ClientConnectionManager(const std::string hostname, int portno) : 
 	_isRunning(false), _sockfd(-1), _hostName(hostname), _port(portno)
 {
+	pthread_mutex_init(&_mutex, NULL);
 }
 
 net::ClientConnectionManager::~ClientConnectionManager()
 {
-	_isRunning = false;
+	int lock = pthread_mutex_lock(&_mutex);
+	if (lock == 0)
+	{
+		_isRunning = false;
+		pthread_mutex_unlock(&_mutex);
+	}
 	close(_sockfd);
+    pthread_mutex_destroy(&_mutex);
 }
 
 void net::ClientConnectionManager::run()
@@ -50,6 +62,18 @@ void net::ClientConnectionManager::run()
 		throw ConnectionFailedException();
 	}
 	pthread_create(&_thread, NULL, runClientThread, this);
+}
+
+bool net::ClientConnectionManager::isRunning()
+{
+	bool res = false;
+	int lock = pthread_mutex_lock(&_mutex);
+	if (lock == 0)
+	{
+		res = _isRunning;
+		pthread_mutex_unlock(&_mutex);
+	}
+	return res;
 }
 
 #define min(a,b) ((a) < (b)) ? (a) : (b)
@@ -82,7 +106,7 @@ void net::ClientConnectionManager::loop()
 			JSON::Dict const & dict = DICT(json);
 			if (dict.hasKey("type") && dict.hasKey("data") && ISSTR(dict.get("type")))
 			{
-				_messages.push(json);
+				pushMessage(json);
 			}
 		}
 	}
@@ -108,6 +132,11 @@ void net::ClientConnectionManager::send(JSON::Value const & json)
 JSON::Value* net::ClientConnectionManager::popMessage()
 {
 	return _messages.pop();
+}
+
+void net::ClientConnectionManager::pushMessage(JSON::Value* toPush)
+{
+	_messages.push(toPush);
 }
 
 bool net::ClientConnectionManager::hasMessage()
