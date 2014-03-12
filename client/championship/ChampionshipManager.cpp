@@ -84,9 +84,7 @@ void ChampionshipManager::treatMessage(std::string const & type, JSON::Value con
 	{
 		user().joinedChamp = Championship();
 		if(ISSTR(data)){
-			if(STR(data).value() == net::MSG::CHAMPIONSHIP_NOT_FOUND){
-				return;
-			}
+			if(STR(data).value() == net::MSG::CHAMPIONSHIP_NOT_FOUND){}
 		}
 		else if(ISDICT(data)){
 			user().joinedChamp = DICT(data);

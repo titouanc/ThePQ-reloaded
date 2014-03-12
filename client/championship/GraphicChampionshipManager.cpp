@@ -32,6 +32,21 @@ void GraphicChampionshipManager::updateCurrentChampionship(){
 	}
 }
 
+void GraphicChampionshipManager::leaveChampionship(){
+	_wait = true;
+	ChampionshipManager::leaveCurrentChampionship();
+	while(_wait){
+		readEvent();
+		readMessages();
+	}
+}
+
+void GraphicChampionshipManager::onLeaveChampionship(bool success, std::string const & message){
+	_wait = false;
+	(success) ? displayOk(message) : displayError(message);
+	updateCurrentChampionship();
+}
+
 void GraphicChampionshipManager::joinChampionship(std::string name){
 	_wait = true;
 	ChampionshipManager::joinChampionship(name);
@@ -51,8 +66,11 @@ void GraphicChampionshipManager::onJoinedChampionship(){
 	_wait = false;
 	_canvas.clear();
 
-	backButton();
+	_canvas.addButton<GraphicChampionshipManager>(
+		&GraphicChampionshipManager::leaveChampionship, this, "Leave championship"
+	).setPosition(1000, 300);
 
+	backButton();
 	redrawCanvas();	
 }
 
