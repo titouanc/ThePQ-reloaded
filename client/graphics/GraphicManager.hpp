@@ -25,6 +25,7 @@ namespace GUI {
 		void stop(){_isRunning = false;}
 
 		void displayError(std::string errorMessage);
+		void displayMessage(std::string message);
 		int confirm(std::string message);
 	protected:
 		/* Standard event processing; always return true */

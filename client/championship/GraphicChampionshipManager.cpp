@@ -32,6 +32,11 @@ void GraphicChampionshipManager::updateCurrentChampionship(){
 	}
 }
 
+void GraphicChampionshipManager::joinChampionship(std::string name){
+	_wait = true;
+	ChampionshipManager::joinChampionship(name);
+}
+
 void GraphicChampionshipManager::onJoinedChampionship(){
 	_wait = false;
 	_canvas.clear();

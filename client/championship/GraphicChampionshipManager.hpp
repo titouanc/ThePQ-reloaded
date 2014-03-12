@@ -15,7 +15,7 @@ private:
 	void onChampionshipsLoad();
 	void updateCurrentChampionship();
 	void onJoinedChampionship();
-	
+	void joinChampionship(std::string);
 	NOTIFIABLE
 	bool _wait;
 };

@@ -20,8 +20,8 @@ private:
 	void displayCurrentChampionship();
 
 	virtual void onMatchStart();
-	virtual void onJoinChampionship(std::string data);
-	virtual void onLeaveChampionship(std::string data);
+	virtual void onJoinChampionship(bool, std::string);
+	virtual void onLeaveChampionship(bool, std::string);
 	virtual void onChampionshipsLoad();
 	virtual void onJoinedChampionship();
 };
