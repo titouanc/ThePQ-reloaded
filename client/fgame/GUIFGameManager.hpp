@@ -18,7 +18,7 @@ private:
 
 	void loop();
 
-	void lauchMatch();
+	void launchMatch();
 
 	void onOtherAccept(std::string const &);
 	void onOtherDeny(std::string const &);

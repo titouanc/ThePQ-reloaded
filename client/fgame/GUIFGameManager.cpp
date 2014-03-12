@@ -55,10 +55,16 @@ void GUIFGameManager::onUserList(JSON::List const & list)
 	redrawCanvas();
 }
 
-void GUIFGameManager::onOtherAccept(std::string const & user)
+void GUIFGameManager::launchMatch()
 {
 	GraphicMatchManager match(*this, _controller);
 	match.run();
+	redrawCanvas();
+}
+
+void GUIFGameManager::onOtherAccept(std::string const & user)
+{
+	launchMatch();
 }
 
 void GUIFGameManager::onOtherDeny(std::string const & user)
@@ -71,8 +77,7 @@ void GUIFGameManager::onInvite(std::string const & otherUser)
 	std::string question = otherUser + " has invited you to play a friendly game.\nAccept ?";
 	if (confirm(question)){
 		acceptInvitationFromUser(otherUser);
-		GraphicMatchManager match(*this, _controller);
-		match.run();
+		launchMatch();
 	} else {
 		denyInvitationFromUser(otherUser);
 	}
