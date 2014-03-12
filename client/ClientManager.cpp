@@ -57,7 +57,7 @@ void ClientManager::treatMessage(std::string const & type, JSON::Value const * d
 		else if (response == net::MSG::CHAMPIONSHIP_MATCH_OPPONENT_WITHDRAW)
 			this->onNotificationResponse(true,response,"Your opponent withdrawed from your match, you have won the match.");
 		else if(response == net::MSG::CHAMPIONSHIP_MATCH_WAIT)
-			this->onNotificationResponse(true,response,"You are readyfor your match.\nThe match will start when your opponent is ready.\nPlease wait...");
+			this->onNotificationResponse(true,response,"You are readyfor your match.\nThe match will start when your opponent is ready.");
 		else if(response == net::MSG::CHAMPIONSHIP_MATCH_START){
 			this->onNotificationResponse(true,response,"Your opponent is ready too. Match is starting.");
 			this->onMatchStart();
@@ -171,7 +171,7 @@ std::string ClientManager::onUnplayedMatch(std::string const & msg){
 		res << "You failed to be ready in time for your championship match, you have been evicted from the championship." << endl;
 	}
 	else if(msg == net::MSG::CHAMPIONSHIP_MATCH_WITHDRAW){
-		res << "Your opponent withdrawed from the championship match, you have wonthe match." << endl;
+		res << "Your opponent withdrawed from the championship match, you have won the match." << endl;
 	}
 	else
 		res << "Unknown message type." << endl;
