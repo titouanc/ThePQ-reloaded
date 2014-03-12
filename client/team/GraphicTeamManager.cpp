@@ -48,7 +48,7 @@ void GraphicTeamManager::displayPlayers()
 		manaLabel.setColor(BLUE_TEXT_COLOR);
 	}
 
-	backButton().setPosition(900, 650);
+	backButton();
 
 	redrawCanvas();
 }

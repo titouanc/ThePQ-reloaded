@@ -72,7 +72,9 @@ int GUI::GraphicManager::confirm(std::string message){
 
 GUI::Button<GUI::GraphicManager> & GUI::GraphicManager::backButton(std::string const & caption)
 {
-	return _canvas.addButton<GUI::GraphicManager>(
+	GUI::Button<GUI::GraphicManager> &res = _canvas.addButton<GUI::GraphicManager>(
 		&GUI::GraphicManager::stop, this, caption
 	);
+	res.setPosition(window().getSize().x-res.getWidth()-MARGIN, window().getSize().y-res.getHeight()-MARGIN);
+	return res;
 }

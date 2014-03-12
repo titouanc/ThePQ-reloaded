@@ -83,7 +83,7 @@ void GraphicMarketManager::displaySellablePlayers()
 		
 	}
 
-	backButton().setPosition(1150, 650);
+	backButton();
 
 	redrawCanvas();
 }
@@ -192,7 +192,7 @@ void GraphicMarketManager::onSalesUpdate()
 	).setPosition(1000, 350);
 
 
-	backButton().setPosition(1150, 650);
+	backButton();
 
 	redrawCanvas();
 }
