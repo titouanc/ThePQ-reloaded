@@ -444,6 +444,7 @@ void MatchManager::resolveMoneyDisconnection(std::string win){
 	winner->loadTeam();
 	winner->getTeam().getPayed(gameconfig::FUNDS_EARN_DISCONNECT);
 	MemoryAccess::save(winner->getTeam());
+	delete winner;
 }
 void MatchManager::resolveFame(std::string win,std::string los){
 	/*Method calculating the fame to be attributed to each player
@@ -484,6 +485,8 @@ void MatchManager::resolveFame(std::string win,std::string los){
 	}
 	MemoryAccess::save(winner->getTeam());
 	MemoryAccess::save(looser->getTeam());
+	delete winner;
+	delete looser;
 	/*##########remove after test#########*/
 	cout<<"new fame status team:"<<winner->getUsername()<<" "<<winner->getTeam().getFame()<<endl;
 	cout<<"new fame status team:"<<looser->getUsername()<<" "<<looser->getTeam().getFame()<<endl;
@@ -503,6 +506,8 @@ void MatchManager::resolveMoney(std::string win,std::string los){
 	}
 	MemoryAccess::save(winner->getTeam());
 	MemoryAccess::save(looser->getTeam());
+	delete[] winner;
+	delete[] looser;
 }
 
 
