@@ -3,8 +3,8 @@
 
 #include <match/GraphicMatchManager.hpp>
 
-/*! Base graphical Manager that can spawn notifications */
-
+/*! Graphical module mixin that allows automatic handling of notifications and
+    incoming messages in main event loop */
 #define NOTIFIABLE \
 virtual void loop(){readMessages();handleNotification();}\
 virtual void launchMatch(){GraphicMatchManager match(*this, _controller);match.run();redrawCanvas();}\
