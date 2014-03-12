@@ -148,6 +148,7 @@ namespace gameconfig
 	static const int MAX_CHAMP_MATCH_OFFSET = 3600;
 	static const float FAME_MULTIPLIER_INSTALLATION=0.25;
 	static const float FAME_MULTIPLIER_GAME=0.23;//will determine the fame gained after a victory based on the other teams
+	static const int FAME_EARN_DISCONNECT=30;
 }
 
 namespace memory

@@ -434,7 +434,7 @@ void MatchManager::resolveFameDisconnection(std::string win){
 	User *winner=new User(win);
 	winner = winner->load(win);
 	winner->loadTeam();
-	winner->getTeam().earnFame(20);
+	winner->getTeam().earnFame(gameconfig::FAME_EARN_DISCONNECT);
 	MemoryAccess::save(winner->getTeam());
 }
 
@@ -443,7 +443,7 @@ void MatchManager::resolveFame(std::string win,std::string los){
 	 *based on the existing fame of the teams and the score difference
 	 */
 	User *winner = new User(win); 
-	User *looser new User(los); 
+	User *looser =  new User(los); 
 	winner = winner->load(win);
 	winner->loadTeam();
 	looser = looser->load(los);
