@@ -31,7 +31,12 @@ void ChampionshipManager::treatMessage(std::string const & type, JSON::Value con
 	}
 	else if (type == net::MSG::JOINABLE_CHAMPIONSHIPS_LIST)
 	{
-		onChampionshipsLoad(LIST(data));
+		JSON::List & champs = LIST(data);
+		_champs.clear();
+		for(size_t i = 0; i<champs.len();++i){
+			_champs.push_back(Championship(DICT(champs[i])));
+		}
+		onChampionshipsLoad();
 	}
 	else if(type == net::MSG::LEAVE_CHAMPIONSHIP)
 	{
@@ -39,26 +44,15 @@ void ChampionshipManager::treatMessage(std::string const & type, JSON::Value con
 	}
 	else if(type == net::MSG::JOINED_CHAMPIONSHIP)
 	{
-		onJoinedChampionship(data);
-	}
-}
-
-void ChampionshipManager::onChampionshipsLoad(JSON::List const & champs){
-	_champs.clear();
-	for(size_t i = 0; i<champs.len();++i){
-		_champs.push_back(Championship(DICT(champs[i])));
-	}
-}
-
-void ChampionshipManager::onJoinedChampionship(JSON::Value const * data){
-	user().joinedChamp = Championship();
-	if(ISSTR(data)){
-		if(STR(data).value() == net::MSG::CHAMPIONSHIP_NOT_FOUND){
-			return;
+		user().joinedChamp = Championship();
+		if(ISSTR(data)){
+			if(STR(data).value() == net::MSG::CHAMPIONSHIP_NOT_FOUND){
+				return;
+			}
 		}
+		else if(ISDICT(data)){
+			user().joinedChamp = DICT(data);
+		}
+		onJoinedChampionship();
 	}
-	else if(ISDICT(data)){
-		user().joinedChamp = DICT(data);
-	}
-
 }

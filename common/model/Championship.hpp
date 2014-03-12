@@ -69,6 +69,8 @@ public:
 	bool isEnded() const { return _isEnded; }
 	bool isStarted() const { return _isStarted; }
 	bool areUsersNotified() const { return _usersNotified; }
+	int getFame() const { return _fame; }
+	int getCashPrize() const { return _cashPrize; }
 	void usersNotified() { _usersNotified = true; }
 	std::string getName() const { return _name; }
 	std::string getWinner() const { return (_isEnded) ? _users[0] : ""; }

@@ -22,8 +22,8 @@ private:
 	virtual void onMatchStart();
 	virtual void onJoinChampionship(std::string data);
 	virtual void onLeaveChampionship(std::string data);
-	virtual void onChampionshipsLoad(JSON::List const & list);
-	virtual void onJoinedChampionship(JSON::Value const *);
+	virtual void onChampionshipsLoad();
+	virtual void onJoinedChampionship();
 };
 
 #endif

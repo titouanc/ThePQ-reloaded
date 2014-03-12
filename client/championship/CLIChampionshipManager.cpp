@@ -129,14 +129,12 @@ void CLIChampionshipManager::onLeaveChampionship(std::string data){
 	}
 }
 
-void CLIChampionshipManager::onChampionshipsLoad(JSON::List const & list){
+void CLIChampionshipManager::onChampionshipsLoad(){
 	_waitForChamps = false;
-	ChampionshipManager::onChampionshipsLoad(list);
 }
 
-void CLIChampionshipManager::onJoinedChampionship(JSON::Value const * data){
+void CLIChampionshipManager::onJoinedChampionship(){
 	_waitForChamps = false;
-	ChampionshipManager::onJoinedChampionship(data);
 }
 
 void CLIChampionshipManager::onMatchStart(){

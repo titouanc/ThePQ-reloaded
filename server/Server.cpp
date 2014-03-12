@@ -102,8 +102,10 @@ void Server::run()
 void Server::loadChampionships(){
 	MemoryAccess::load(_championships);
 	for(size_t i = 0; i < _championships.size(); ++i){
-		_championships[i]->clearSchedules();
-		_championships[i]->start();
+		if(_championships[i]->isStarted()){
+			_championships[i]->clearSchedules();
+			_championships[i]->start();
+		}
 	}
 }
 

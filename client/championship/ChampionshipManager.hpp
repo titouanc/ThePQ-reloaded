@@ -7,9 +7,8 @@
 
 class ChampionshipManager : public ClientManager
 {
-private:
-	std::vector<Championship> _champs;
 protected:
+	std::vector<Championship> _champs;
 	std::vector<Championship> const & getChamps() { return _champs; }
 	/* attempt to join a championship */
 	void joinChampionship(std::string champName);
@@ -27,9 +26,9 @@ protected:
 	/* received a leave championship response */
 	virtual void onLeaveChampionship(std::string data){}
 	/* received championships list : put it in _champs */
-	virtual void onChampionshipsLoad(JSON::List const & json);
+	virtual void onChampionshipsLoad(){}
 	/* received current joined champ, put in joinedChamp if !NULL */
-	virtual void onJoinedChampionship(JSON::Value const *);
+	virtual void onJoinedChampionship(){}
 public:
 	using ClientManager::ClientManager;
 	ChampionshipManager(ClientManager const & parent);
