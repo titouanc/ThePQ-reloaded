@@ -33,15 +33,16 @@ UIMatch::UIMatch(Pitch & pitch, int hexagonSize) :
     _hexagon(circleSize(), 6), /* 6 sides regular polygon */
     _left(0), _top(0)
 {
-    sf::Texture *toLoad[6] = {
+    sf::Texture *toLoad[10] = {
         &_grass_texture, &_sand_texture, &_goal_texture, &_bludger_texture,
-        &_quaffle_texture, &_snitch_texture
+        &_quaffle_texture, &_snitch_texture,
+        &_own_chaser_texture, &_own_seeker_texture, &_own_keeper_texture, &_own_beater_texture
     };
-    const char *files[6] = {
+    const char *files[10] = {
         "grass1.png", "sand1.png", "goal2_50.png", "Bludger.png", "Quaffle.png",
-        "GoldenSnitch.png"
+        "GoldenSnitch.png", "BluePlayer.png", "YellowPlayer.png", "GreenPlayer.png", "RedPlayer.png"
     };
-    for (int i=0; i<6; i++){
+    for (int i=0; i<10; i++){
         if (! toLoad[i]->loadFromFile(texturePath(files[i])))
             throw TextureNotFound(files[i]);
     }
@@ -138,7 +139,7 @@ void UIMatch::drawMoveables(sf::RenderTarget & dest) const
 
     if (_pitch.size() > 0){
         Pitch::const_iterator it;
-        sf::CircleShape shape(circleSize());
+        sf::Sprite playerSprite;
 
         for (it=_pitch.begin(); it!=_pitch.end(); it++){
             Position const & destpos = pitch2GUI(it->first);
@@ -161,15 +162,19 @@ void UIMatch::drawMoveables(sf::RenderTarget & dest) const
             } else if (it->second->isPlayer()){
                 Player const & player = (Player const &) *(it->second);
                 if (player.isBeater())
-                    shape.setFillColor(sf::Color(0xff, 0x33, 0x33, 0xff));
+                    playerSprite.setTexture(_own_beater_texture);
                 else if (player.isSeeker())
-                    shape.setFillColor(sf::Color(0xff, 0xff, 0x33, 0xff));
+                    playerSprite.setTexture(_own_seeker_texture);
                 else if (player.isChaser())
-                    shape.setFillColor(sf::Color(0x33, 0, 0xff, 0xff));
+                    playerSprite.setTexture(_own_chaser_texture);
                 else if (player.isKeeper())
-                    shape.setFillColor(sf::Color(0, 0xff, 0x33, 0xff));
-                shape.setPosition(destpos.x(), destpos.y());
-                dest.draw(shape);
+                    playerSprite.setTexture(_own_keeper_texture);
+                s = _own_chaser_texture.getSize();
+                rx = (double)_size/s.x;
+                ry = (double)_size/s.y;
+                playerSprite.setScale(sf::Vector2f(rx, ry));
+                playerSprite.setPosition(destpos.x(), destpos.y());
+                dest.draw(playerSprite);
             }
         }
     }
