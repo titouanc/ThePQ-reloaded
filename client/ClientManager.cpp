@@ -139,7 +139,7 @@ void ClientManager::handleNotification(){
 std::string ClientManager::onEndOfSale(JSON::Dict const & json)
 {
 	std::stringstream res;
-	res << "\n\033[36mMessage : a sale has ended.\033[0m" << endl;
+	res << "\nMessage : a sale has ended." << endl;
 	if(STR(json.get("type")).value()==net::MSG::END_OF_OWNED_SALE_RAPPORT){
 		if(STR(json.get(net::MSG::RAPPORT_SALE_STATUS)).value() == net::MSG::PLAYER_NOT_SOLD){
 			res << "Your player " << INT(json.get(net::MSG::PLAYER_ID)) << " has not been sold." << endl; 
