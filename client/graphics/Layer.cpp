@@ -101,6 +101,8 @@ bool GUI::Layer::handleClick(int x, int y){
 			hasTextboxBeenSelected = true;
 			_focusedTextbox = it->second;
 			it->second->focus();
+			if (it->second->getText() == it->second->getID())
+				it->second->clearText();
 			return true;
 		}
 	}
