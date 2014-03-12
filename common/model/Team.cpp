@@ -196,3 +196,10 @@ void Team::loseFame(int amount){
 		_fame-=amount;
 	}
 }
+
+bool Team::fundsAvailble(int amount){
+	if (amount<_funds){
+		return false;
+	}
+	return true;
+}
