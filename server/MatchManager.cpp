@@ -118,7 +118,7 @@ void MatchManager::_mainloop_out()
 	time_t tick;
 	cout << "[" << this << "] \033[32mMatch started\033[0m" << endl;
 	sendSignal(net::MSG::MATCH_START);
-
+	cout<<"clients: !!!!"<<nClients()<<endl;
 	unsigned int n_ticks = 0;
 	while (nClients() == 2){
 		n_ticks++;
@@ -142,7 +142,14 @@ void MatchManager::_mainloop_out()
 		sendSignal(net::MSG::MATCH_TIMEOUT);
 		playStrokes();
 	}
-
+	if(hasClient(_squads[0].client_id)){
+		cout << "#######################"<<endl;
+		resolveFameDisconnection(_squads[0].squad_owner);
+	}
+	if(hasClient(_squads[1].client_id)){
+		cout << "!!!!!!!!!!!!!!!!!!!!!!!!!"<<endl;
+		resolveFameDisconnection(_squads[1].squad_owner);
+	}
 	sendSignal(net::MSG::MATCH_END);
 	cout << "[" << this << "] \033[32mMatch finished\033[0m" << endl;
 	stop();
@@ -423,42 +430,56 @@ void MatchManager::endMatch(void)
 	_matchRes.score[1] = _score[looser];
 	resolveFame(_squads[winner].squad_owner,_squads[looser].squad_owner);
 }
+void MatchManager::resolveFameDisconnection(std::string win){
+	User *winner=new User(win);
+	winner = winner->load(win);
+	winner->loadTeam();
+	winner->getTeam().earnFame(20);
+	MemoryAccess::save(winner->getTeam());
+}
+
 void MatchManager::resolveFame(std::string win,std::string los){
-	User winner; //load winner (contains Team)
-	User looser; 
-	winner.load(win);
-	looser.load(los);
-	if (winner.getTeam().getFame()>looser.getTeam().getFame()){//compare fame between teams
+	/*Method calculating the fame to be attributed to each player
+	 *based on the existing fame of the teams and the score difference
+	 */
+	User *winner = new User(win); 
+	User *looser new User(los); 
+	winner = winner->load(win);
+	winner->loadTeam();
+	looser = looser->load(los);
+	looser->loadTeam();
+
+	if (winner->getTeam().getFame()>looser->getTeam().getFame()){//compare fame between teams
 		if ((_matchRes.score[0] - _matchRes.score[1])>10){//big goal difference
-			winner.getTeam().earnFame(int((winner.getTeam().getFame()-looser.getTeam().getFame())*0.45));
-			looser.getTeam().loseFame(int((winner.getTeam().getFame()-looser.getTeam().getFame())*0.45));
+			winner->getTeam().earnFame(int((winner->getTeam().getFame()-looser->getTeam().getFame())*0.45));
+			looser->getTeam().loseFame(int((winner->getTeam().getFame()-looser->getTeam().getFame())*0.45));
 		}else{
-			winner.getTeam().earnFame(int((winner.getTeam().getFame()-looser.getTeam().getFame())*0.15));
-			looser.getTeam().loseFame(int((winner.getTeam().getFame()-looser.getTeam().getFame())*0.15));
+			winner->getTeam().earnFame(int((winner->getTeam().getFame()-looser->getTeam().getFame())*0.15));
+			looser->getTeam().loseFame(int((winner->getTeam().getFame()-looser->getTeam().getFame())*0.15));
 		}
-	}else if(winner.getTeam().getFame()<looser.getTeam().getFame()){
+	}else if(winner->getTeam().getFame()<looser->getTeam().getFame()){
 		if ((_matchRes.score[0] - _matchRes.score[1])>10){
-			winner.getTeam().earnFame(int((looser.getTeam().getFame()-winner.getTeam().getFame())*0.75));
-			looser.getTeam().loseFame(int((looser.getTeam().getFame()-winner.getTeam().getFame())*0.75));
+			winner->getTeam().earnFame(int((looser->getTeam().getFame()-winner->getTeam().getFame())*0.75));
+			looser->getTeam().loseFame(int((looser->getTeam().getFame()-winner->getTeam().getFame())*0.75));
 		}else{
-			winner.getTeam().earnFame(int((looser.getTeam().getFame()-winner.getTeam().getFame())*0.60));
-			looser.getTeam().loseFame(int((looser.getTeam().getFame()-winner.getTeam().getFame())*0.60));
+			winner->getTeam().earnFame(int((looser->getTeam().getFame()-winner->getTeam().getFame())*0.60));
+			looser->getTeam().loseFame(int((looser->getTeam().getFame()-winner->getTeam().getFame())*0.60));
 		}
 
 	}else{
 		if ((_matchRes.score[0] - _matchRes.score[1])>10){
-			winner.getTeam().earnFame(int(looser.getTeam().getFame()*0.45));
-			looser.getTeam().loseFame(int(looser.getTeam().getFame()*0.45));
+			winner->getTeam().earnFame(int(looser->getTeam().getFame()*0.45));
+			looser->getTeam().loseFame(int(looser->getTeam().getFame()*0.45));
 		}else{
-			winner.getTeam().earnFame(int(looser.getTeam().getFame()*0.15));
-			looser.getTeam().loseFame(int(looser.getTeam().getFame()*0.15));
+			winner->getTeam().earnFame(int(looser->getTeam().getFame()*0.15));
+			looser->getTeam().loseFame(int(looser->getTeam().getFame()*0.15));
 		}		
 	}
-	MemoryAccess::save(winner.getTeam());
-	MemoryAccess::save(winner.getTeam());
-	/*remove after test*/
-	cout<<"new fame status team:"<<winner.getUsername()<<" "<<winner.getTeam().getFame()<<endl;
-	cout<<"new fame status team:"<<looser.getUsername()<<" "<<looser.getTeam().getFame()<<endl;
+	MemoryAccess::save(winner->getTeam());
+	MemoryAccess::save(looser->getTeam());
+	/*##########remove after test#########*/
+	cout<<"new fame status team:"<<winner->getUsername()<<" "<<winner->getTeam().getFame()<<endl;
+	cout<<"new fame status team:"<<looser->getUsername()<<" "<<looser->getTeam().getFame()<<endl;
 
 }
 void MatchManager::resolveMoney(std::string win,std::string los){
