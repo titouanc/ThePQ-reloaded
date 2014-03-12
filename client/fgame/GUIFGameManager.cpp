@@ -50,6 +50,8 @@ void GUIFGameManager::onUserList(JSON::List const & list)
 		inviteButtons.insert(pair<string, GUI::Button<GUIFGameManager, string>*>(STR(list[i]).value(), &inviteButton));
 	}
 
+	backButton().setPosition(900, 450);
+
 	redrawCanvas();
 }
 
