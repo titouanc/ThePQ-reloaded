@@ -424,14 +424,12 @@ void MatchManager::endMatch(void)
 	resolveFame(_squads[winner].squad_owner,_squads[looser].squad_owner);
 }
 void MatchManager::resolveFame(std::string win,std::string los){
-	User winner; //= Team(JSON::Dict(JSON::load(win)));
-	User looser; //= Team(JSON::Dict(JSON::load(los)));
-	//MemoryAccess::load()
-	//MemoryAccess::load()
+	User winner; //load winner (contains Team)
+	User looser; 
 	winner.load(win);
 	looser.load(los);
-	if (winner.getTeam().getFame()>looser.getTeam().getFame()){
-		if ((_matchRes.score[0] - _matchRes.score[1])>10){
+	if (winner.getTeam().getFame()>looser.getTeam().getFame()){//compare fame between teams
+		if ((_matchRes.score[0] - _matchRes.score[1])>10){//big goal difference
 			winner.getTeam().earnFame(int((winner.getTeam().getFame()-looser.getTeam().getFame())*0.45));
 			looser.getTeam().loseFame(int((winner.getTeam().getFame()-looser.getTeam().getFame())*0.45));
 		}else{
@@ -456,11 +454,18 @@ void MatchManager::resolveFame(std::string win,std::string los){
 			looser.getTeam().loseFame(int(looser.getTeam().getFame()*0.15));
 		}		
 	}
+	MemoryAccess::save(winner.getTeam());
+	MemoryAccess::save(winner.getTeam());
 	/*remove after test*/
 	cout<<"new fame status team:"<<winner.getUsername()<<" "<<winner.getTeam().getFame()<<endl;
 	cout<<"new fame status team:"<<looser.getUsername()<<" "<<looser.getTeam().getFame()<<endl;
 
 }
+void MatchManager::resolveMoney(std::string win,std::string los){
+
+}
+
+
 void MatchManager::onCollision(
 	Stroke & stroke,     /* Stroke that leads to conflict */
 	Position & conflict, /* Clonflicting pos */

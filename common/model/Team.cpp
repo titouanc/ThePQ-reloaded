@@ -23,8 +23,8 @@ Team::Team(std::string owner, std::string teamname, int funds, int fame,int acPo
 {}
 
 Team::Team(const Team& other) : 
-	_name(other._name), 
 	_owner(other._owner), 
+	_name(other._name), 
 	_funds(other._funds),
 	_fame(other._fame), 
 	_acpoints(other._acpoints),
