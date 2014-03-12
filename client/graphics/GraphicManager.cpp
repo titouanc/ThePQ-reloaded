@@ -78,3 +78,23 @@ GUI::Button<GUI::GraphicManager> & GUI::GraphicManager::backButton(std::string c
 	res.setPosition(window().getSize().x-res.getWidth()-MARGIN, window().getSize().y-res.getHeight()-MARGIN);
 	return res;
 }
+
+GUI::Button<GUI::GraphicManager> & GUI::GraphicManager::usernameButton(std::string const username)
+{
+	GUI::Button<GUI::GraphicManager> &res = _canvas.addButton<GUI::GraphicManager>(
+		&GUI::GraphicManager::doNothing, this, "Welcome, "+username+"!"
+	);
+	res.setPosition(MARGIN, MARGIN);
+	return res;
+}
+
+GUI::Button<GUI::GraphicManager> & GUI::GraphicManager::userBudgetButton(const int budget)
+{
+	char casted[512];
+	sprintf(casted, "%d", budget);
+	GUI::Button<GUI::GraphicManager> &res = _canvas.addButton<GUI::GraphicManager>(
+		&GUI::GraphicManager::doNothing, this, casted
+	);
+	res.setPosition(window().getSize().x-res.getWidth()-MARGIN, MARGIN);
+	return res;
+}
