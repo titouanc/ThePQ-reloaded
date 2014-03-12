@@ -69,7 +69,8 @@ void GraphicChampionshipManager::onJoinChampionship(bool success, std::string co
 void GraphicChampionshipManager::seeCurrentChampionship(){
 
 	_canvas.clear();
-	
+	usernameButton(user().username);
+	userBudgetButton(user().funds);
 
 	backButton();
 	redrawCanvas();	
@@ -78,6 +79,8 @@ void GraphicChampionshipManager::seeCurrentChampionship(){
 void GraphicChampionshipManager::onChampionshipsLoad(){
 	_wait = false;
 	_canvas.clear();
+	usernameButton(user().username);
+	userBudgetButton(user().funds);
 	updateCurrentChampionship();
 	TableView & champsList = _canvas.addTableView();
 
