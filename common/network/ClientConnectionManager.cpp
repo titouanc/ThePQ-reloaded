@@ -121,9 +121,10 @@ void net::ClientConnectionManager::loop()
 		if (json != NULL && ISDICT(json))
 		{
 			JSON::Dict const & dict = DICT(json);
-			if (dict.hasKey("type") && dict.hasKey("data") && ISSTR(dict.get("type")))
-			{
+			if (dict.hasKey("type") && dict.hasKey("data") && ISSTR(dict.get("type"))){
 				pushMessage(json);
+			} else {
+				delete json;
 			}
 		}
 	}
