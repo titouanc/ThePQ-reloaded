@@ -84,6 +84,8 @@ GUI::Button<GUI::GraphicManager> & GUI::GraphicManager::usernameButton(std::stri
 	GUI::Button<GUI::GraphicManager> &res = _canvas.addButton<GUI::GraphicManager>(
 		&GUI::GraphicManager::doNothing, this, "Welcome, "+username+"!"
 	);
+	res.setBackgroundColor(LIGHT_BUTTON_BACKGROUND_COLOR);
+	res.setTextColor(LIGHT_BUTTON_TEXT_COLOR);
 	res.setPosition(MARGIN, MARGIN);
 	return res;
 }
@@ -95,6 +97,8 @@ GUI::Button<GUI::GraphicManager> & GUI::GraphicManager::userBudgetButton(const i
 	GUI::Button<GUI::GraphicManager> &res = _canvas.addButton<GUI::GraphicManager>(
 		&GUI::GraphicManager::doNothing, this, casted
 	);
+	res.setBackgroundColor(LIGHT_BUTTON_BACKGROUND_COLOR);
+	res.setTextColor(LIGHT_BUTTON_TEXT_COLOR);
 	res.setPosition(window().getSize().x-res.getWidth()-MARGIN, MARGIN);
 	return res;
 }
