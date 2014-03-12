@@ -27,6 +27,7 @@ namespace GUI {
 		void displayError(std::string errorMessage);
 		void displayMessage(std::string message);
 		int confirm(std::string message);
+		void doNothing(){}
 	protected:
 		/* Standard event processing; always return true */
 		virtual bool treatEvent(sf::Event const & event);
@@ -35,6 +36,8 @@ namespace GUI {
 
 		/* Create and add a button bound to stop() then return it */
 		GUI::Button<GraphicManager> & backButton(std::string const & caption="Back");
+		GUI::Button<GraphicManager> & usernameButton(std::string const username);
+		GUI::Button<GraphicManager> & userBudgetButton(const int budget);		
 
 		sf::RenderWindow & window(){return _controller.window;}
 		MainController &_controller;

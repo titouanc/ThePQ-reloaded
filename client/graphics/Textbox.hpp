@@ -13,7 +13,7 @@ namespace GUI {
 	class Textbox : public Widget {
 	public:
 		Textbox(std::string id, int x=MARGIN, int y=MARGIN, int w=250, int h=BUTTON_HEIGHT):
-					Widget(x, y, w, h, false), _isFocused(false), 
+					Widget(x, y, w, h, false), _id(id), _isFocused(false), 
 					_selecter(Button<Textbox>(&Textbox::focus, this, "")){
 
 			if (!_font.loadFromFile(fontPath(BODY_FONT_PATH)))
@@ -85,7 +85,10 @@ namespace GUI {
 			clearedText.erase(0, clearedText.getSize());
 			_text.setString(clearedText); 
 		}
+
+		std::string getID() {return _id;}
 	private:
+		std::string _id;
 		sf::Text _text;
 		sf::Font _font;
 		sf::RectangleShape _backgroundRect;
