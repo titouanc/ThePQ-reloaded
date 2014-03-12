@@ -70,7 +70,7 @@ struct Squad {
 			squad_owner = STR(json.get("squad_owner")).value();
 	}
 
-    bool hasPlayer(Moveable *moveable){
+    bool hasPlayer(Moveable *moveable) const{
         for (int i=0; i<7; i++)
             if (players[i] == moveable)
                 return true;

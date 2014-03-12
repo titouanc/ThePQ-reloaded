@@ -4,7 +4,7 @@
 GraphicMatchManager::GraphicMatchManager(ClientManager const & parent, GUI::MainController & controller) :
 	MatchManager(parent),
 	GUI::GraphicManager(controller), 
-	_match(pitch()), 
+	_match(pitch(), mySquad()), 
 	_selectedPlayer(NULL)
 {}
 

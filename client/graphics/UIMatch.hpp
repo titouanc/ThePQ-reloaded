@@ -4,11 +4,14 @@
 #include <model/Pitch.hpp>
 #include <model/PosMatrix.hpp>
 #include <model/Displacement.hpp>
+#include <model/Squad.hpp>
 #include <SFML/Graphics.hpp>
 
 class UIMatch : public sf::Drawable {
     private:
         Pitch & _pitch;             /* Represented pitch */
+        const Squad & _ownSquad;    /* The squad of the player viewing the game */
+        bool _playsOnLeftSide;      /* Whether the player starts on the left side of the pitch or not */
         unsigned int _size;         /* Width of an hexagon */
         sf::CircleShape _hexagon;   /* hilight shape */
         /* Upperleft corner position */
@@ -36,7 +39,7 @@ class UIMatch : public sf::Drawable {
 
         /* Create a new UIMatch bound to pitch, where the distance between
            two borders of an hexagon is hexagonSize pixels */
-        UIMatch(Pitch & pitch, int hexagonSize=25);
+        UIMatch(Pitch & pitch, const Squad & viewerSquad, int hexagonSize=25);
 
         /* Return graphical pitch width, in pixels */
         unsigned int width(void) const;

@@ -26,9 +26,10 @@ const sf::Color UIMatch::hilightYellow(0xcc, 0xcc, 0x00, ALPHA);
 const sf::Color UIMatch::hilightRed(0xcc, 0x00, 0x00, ALPHA);
 const sf::Color UIMatch::hilightBlue(0x00, 0x00, 0xff, ALPHA);
 
-UIMatch::UIMatch(Pitch & pitch, int hexagonSize) : 
+UIMatch::UIMatch(Pitch & pitch, const Squad & viewerSquad, int hexagonSize) : 
     sf::Drawable(),
     _pitch(pitch), 
+    _ownSquad(viewerSquad),
     _size(hexagonSize), 
     _hexagon(circleSize(), 6), /* 6 sides regular polygon */
     _left(0), _top(0)
@@ -36,7 +37,7 @@ UIMatch::UIMatch(Pitch & pitch, int hexagonSize) :
     sf::Texture *toLoad[14] = {
         &_grass_texture, &_sand_texture, &_goal_texture, &_bludger_texture,
         &_quaffle_texture, &_snitch_texture,
-        &_own_chaser_texture, &_own_seeker_texture, &_own_keeper_texture, &_own_beater_texture
+        &_own_chaser_texture, &_own_seeker_texture, &_own_keeper_texture, &_own_beater_texture,
         &_other_chaser_texture, &_other_seeker_texture, &_other_keeper_texture, &_other_beater_texture
     };
     const char *files[14] = {
@@ -48,6 +49,10 @@ UIMatch::UIMatch(Pitch & pitch, int hexagonSize) :
         if (! toLoad[i]->loadFromFile(texturePath(files[i])))
             throw TextureNotFound(files[i]);
     }
+    if (_ownSquad.players[0]->getPosition().x() > 0)
+        _playsOnLeftSide = false;
+    else
+        _playsOnLeftSide = true;
 }
 
 unsigned int UIMatch::width(void) const
@@ -163,14 +168,30 @@ void UIMatch::drawMoveables(sf::RenderTarget & dest) const
 
             } else if (it->second->isPlayer()){
                 Player const & player = (Player const &) *(it->second);
-                if (player.isBeater())
-                    playerSprite.setTexture(_own_beater_texture);
-                else if (player.isSeeker())
-                    playerSprite.setTexture(_own_seeker_texture);
-                else if (player.isChaser())
-                    playerSprite.setTexture(_own_chaser_texture);
-                else if (player.isKeeper())
-                    playerSprite.setTexture(_own_keeper_texture);
+                if (player.isBeater()){
+                    if (_ownSquad.hasPlayer(&(Moveable &)player))
+                        playerSprite.setTexture(_own_beater_texture);
+                    else
+                        playerSprite.setTexture(_other_beater_texture);
+                }
+                else if (player.isSeeker()){
+                    if (_ownSquad.hasPlayer(&(Moveable &)player))
+                        playerSprite.setTexture(_own_seeker_texture);
+                    else
+                        playerSprite.setTexture(_other_seeker_texture);
+                }
+                else if (player.isChaser()){
+                    if (_ownSquad.hasPlayer(&(Moveable &)player))
+                        playerSprite.setTexture(_own_chaser_texture);
+                    else
+                        playerSprite.setTexture(_other_chaser_texture);
+                }
+                else if (player.isKeeper()){
+                    if (_ownSquad.hasPlayer(&(Moveable &)player))
+                        playerSprite.setTexture(_own_keeper_texture);
+                    else
+                        playerSprite.setTexture(_other_keeper_texture);
+                }
                 s = _own_chaser_texture.getSize();
                 rx = (double)_size/s.x;
                 ry = (double)_size/s.y;
