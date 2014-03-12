@@ -26,7 +26,9 @@ namespace GUI{
 	static const int BUTTON_TEXT_SIZE = 20;
 	static const sf::Color BUTTON_BACKGROUND_COLOR = sf::Color(0x00, 0xae, 0xef, 0xff);
 	static const sf::Color DARK_BUTTON_BACKGROUND_COLOR = sf::Color(0x33, 0x33, 0x33, 0xff);
+	static const sf::Color LIGHT_BUTTON_BACKGROUND_COLOR = sf::Color(0xcc, 0xcc, 0xcc, 0xff);
 	static const sf::Color BUTTON_TEXT_COLOR = sf::Color(0xff, 0xff, 0xff, 0xff);
+	static const sf::Color LIGHT_BUTTON_TEXT_COLOR = sf::Color(0x33, 0x33, 0x33, 0xff);
 
 	static const sf::Color TEXTBOX_BACKGROUND_COLOR = sf::Color(0xff, 0xff, 0xff, 0xff);
 	static const int TEXTBOX_SIDE_PADDING = 5;
