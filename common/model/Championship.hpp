@@ -93,6 +93,7 @@ private:
 
 	std::vector<std::string> _users;
 	std::vector<Schedule> _schedules;
+	std::vector<std::vector<std::string>> _turnsResult;
 
 	
 	

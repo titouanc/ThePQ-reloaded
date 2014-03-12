@@ -72,7 +72,7 @@ Championship::Championship(JSON::Dict const & json) : Championship()
 	if (ISINT(json.get("turn")))		{ _turn = INT(json.get("turn")); }
 	if (ISLIST(json.get("users")))
 	{
-		JSON::List users = LIST(json.get("users"));
+		JSON::List & users = LIST(json.get("users"));
 		for (size_t i = 0; i < users.len(); ++i)
 		{
 			if (ISSTR(users[i]))
@@ -81,11 +81,29 @@ Championship::Championship(JSON::Dict const & json) : Championship()
 	}
 	if (ISLIST(json.get("schedules")))
 	{
-		JSON::List schedules = LIST(json.get("schedules"));
+		JSON::List & schedules = LIST(json.get("schedules"));
 		for (size_t i = 0; i < schedules.len(); ++i)
 		{
 			if (ISDICT(schedules[i]))
 				_schedules.push_back(DICT(schedules[i]));
+		}
+	}
+	if(ISLIST(json.get("turnsResult")))
+	{
+		JSON::List & turnsRes = LIST(json.get("turnsResult"));
+		for(size_t i = 0; i < turnsRes.len();++i)
+		{
+			if(ISLIST(turnsRes[i]))
+			{
+				JSON::List & turn = LIST(turnsRes[i]);
+				std::vector<std::string> turnUsers;
+				for(size_t j = 0; j<turn.len();++j){
+					if(ISSTR(turn[j])){
+						turnUsers.push_back(STR(turn[j]).value());
+					}
+				}
+				_turnsResult.push_back(turnUsers);
+			}
 		}
 	}
 }
@@ -113,6 +131,17 @@ Championship::operator JSON::Dict()
 		schedules.append((JSON::Dict)_schedules[i]);
 	}
 	res.set("schedules", schedules);
+	JSON::List turnsRes;
+	for(size_t i = 0; i < _turnsResult.size(); ++i)
+	{
+		JSON::List turn;
+		for(size_t j = 0; j < _turnsResult[i].size(); ++j)
+		{
+			turn.append(_turnsResult[i][j]);
+		}
+		turnsRes.append(turn);
+	}
+	res.set("turnsResult",turnsRes);
 	return res;
 }
 
@@ -160,6 +189,7 @@ void Championship::start()
 	{
 		_schedules.push_back(Schedule(_users[i], _users[i+1], timeBeg));
 	}
+	_turnsResult.push_back(_users);
 	_isStarted = true;
 }
 
@@ -204,6 +234,7 @@ void Championship::endMatch(MatchResult & result)
 	}
 	// check if turn ended
 	else if(_users.size() == _nbOfUsers/(2<<(_turn-1))) { //or _schedules.empty() but less safe
+		_turnsResult.push_back(_users);
 		++_turn;
 		time_t currentTime = time(NULL);
 		struct tm* date = localtime(&currentTime);

@@ -30,7 +30,7 @@ void ChampionshipManager::treatMessage(std::string const & type, JSON::Value con
 		if(ISSTR(data)){
 			std::string response = STR(data).value();
 			std::string message;
-			bool ok;
+			bool ok = false;
 			if(response == net::MSG::ALREADY_IN_CHAMPIONSHIP){
 				message =  "Cannot take part in more than one championship at the same time.";
 				ok = false;
@@ -64,7 +64,7 @@ void ChampionshipManager::treatMessage(std::string const & type, JSON::Value con
 		if(ISSTR(data)){
 			std::string response = STR(data).value();
 			std::string message;
-			bool ok;
+			bool ok = false;
 			if(response == net::MSG::CHAMPIONSHIP_STARTED){
 				message = "Your championship started; cannot leave it.";
 				ok = false;
@@ -78,7 +78,7 @@ void ChampionshipManager::treatMessage(std::string const & type, JSON::Value con
 				user().joinedChamp = Championship();
 				ok = true;
 			}
-			onLeaveChampionship(ok,message);
+			this->onLeaveChampionship(ok,message);
 		}
 	}
 	else if(type == net::MSG::JOINED_CHAMPIONSHIP)

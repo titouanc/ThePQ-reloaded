@@ -73,7 +73,7 @@ void GraphicChampionshipManager::seeCurrentChampionship(){
 	userBudgetButton(user().funds);
 
 	Button<GraphicChampionshipManager> & backButton = _canvas.addButton<GraphicChampionshipManager>(
-		&GraphicChampionshipManager::onChampionshipsLoad, this, "Back");
+		&GraphicChampionshipManager::updateChampionships, this, "Back");
 	backButton.setPosition(window().getSize().x-backButton.getWidth()-MARGIN, window().getSize().y-backButton.getHeight()-MARGIN);
 	redrawCanvas();	
 }
