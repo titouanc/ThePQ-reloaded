@@ -24,6 +24,8 @@ private:
 	void onSalesUpdate();
 	void onBidOK();
 	void onBidError(std::string const & err);
+	void onAddPlayerOK();
+	void onAddPlayerError(std::string const & reason);
 
 	bool _wait, _waitForBid;
 };

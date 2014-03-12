@@ -106,7 +106,11 @@ void GraphicMarketManager::sellPlayer(Player *player){
 	if (bidValue<range.first or bidValue>range.second)
 		displayError("Please enter a price between the price range!");
 	else{
-		cout << "great!" << endl;
+		_wait = true;
+		addPlayerOnMarket(player->getMemberID(), bidValue);
+		while (_wait)
+			readMessage();
+		// onSalesUpdate will redraw the canvas
 	}
 }
 
@@ -205,3 +209,17 @@ void GraphicMarketManager::onBidError(std::string const & err)
 	displayError(err);
 	updateSales();
 }
+
+void GraphicMarketManager::onAddPlayerOK()
+{
+	updateSales();
+	while (_wait)
+		readMessage();
+}
+
+void GraphicMarketManager::onAddPlayerError(std::string const & reason)
+{
+	_wait = false;
+	displayError(reason);
+}
+
