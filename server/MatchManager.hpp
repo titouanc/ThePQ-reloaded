@@ -78,6 +78,7 @@ class MatchManager : public SubConnectionManager {
 		void addDelta(Moveable const & moveable, Position const & dest);
 		void resolveFame(std::string win,std::string los);
 		void resolveFameDisconnection(std::string win);
+		void resolveMoneyDisconnection(std::string win);
 		void resolveMoney(std::string win,std::string los);
 		iter getStrokeForMoveable(Moveable *moveable);
 		/* Resolve strokes */

@@ -179,6 +179,16 @@ int Team::level () const {
     return static_cast<int>(pow(sum, 1.0/_players.size()));
 }
 
+int Team::loseFunds(int amount){
+	if(amount>_funds){
+		amount=_funds;
+		_funds=0;
+	}else{
+		_funds-=amount;
+	}
+	return amount;
+}
+
 void Team::loseFame(int amount){
 	if (amount>_fame){
 		_fame=0;

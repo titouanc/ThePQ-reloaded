@@ -143,12 +143,12 @@ void MatchManager::_mainloop_out()
 		playStrokes();
 	}
 	if(hasClient(_squads[0].client_id)){
-		cout << "#######################"<<endl;
 		resolveFameDisconnection(_squads[0].squad_owner);
+		resolveMoneyDisconnection(_squads[0].squad_owner);
 	}
 	if(hasClient(_squads[1].client_id)){
-		cout << "!!!!!!!!!!!!!!!!!!!!!!!!!"<<endl;
 		resolveFameDisconnection(_squads[1].squad_owner);
+		resolveMoneyDisconnection(_squads[1].squad_owner);
 	}
 	sendSignal(net::MSG::MATCH_END);
 	cout << "[" << this << "] \033[32mMatch finished\033[0m" << endl;
@@ -429,6 +429,7 @@ void MatchManager::endMatch(void)
 	_matchRes.score[0] = _score[winner];
 	_matchRes.score[1] = _score[looser];
 	resolveFame(_squads[winner].squad_owner,_squads[looser].squad_owner);
+	resolveMoney(_squads[winner].squad_owner,_squads[looser].squad_owner);
 }
 void MatchManager::resolveFameDisconnection(std::string win){
 	User *winner=new User(win);
@@ -437,7 +438,13 @@ void MatchManager::resolveFameDisconnection(std::string win){
 	winner->getTeam().earnFame(gameconfig::FAME_EARN_DISCONNECT);
 	MemoryAccess::save(winner->getTeam());
 }
-
+void MatchManager::resolveMoneyDisconnection(std::string win){
+	User *winner=new User(win);
+	winner = winner->load(win);
+	winner->loadTeam();
+	winner->getTeam().getPayed(gameconfig::FUNDS_EARN_DISCONNECT);
+	MemoryAccess::save(winner->getTeam());
+}
 void MatchManager::resolveFame(std::string win,std::string los){
 	/*Method calculating the fame to be attributed to each player
 	 *based on the existing fame of the teams and the score difference
@@ -483,7 +490,19 @@ void MatchManager::resolveFame(std::string win,std::string los){
 
 }
 void MatchManager::resolveMoney(std::string win,std::string los){
-
+	User *winner = new User(win);
+	winner = winner->load(win);
+	User *looser = new User(los);
+	looser = looser->load(los);
+	winner->loadTeam();
+	looser->loadTeam();
+	if(!isChampMatch()){
+		winner->getTeam().getPayed(looser->getTeam().loseFunds(int(gameconfig::FUNDS_EARN_GAME*gameconfig::FUNDS_GAME_RATIO*looser->getTeam().getFame())));
+	}else{
+		winner->getTeam().getPayed(looser->getTeam().loseFunds(int(gameconfig::FUNDS_EARN_GAME*gameconfig::FUNDS_CHAMP_RATIO*looser->getTeam().getFame())));
+	}
+	MemoryAccess::save(winner->getTeam());
+	MemoryAccess::save(looser->getTeam());
 }
 
 

@@ -149,6 +149,10 @@ namespace gameconfig
 	static const float FAME_MULTIPLIER_INSTALLATION=0.25;
 	static const float FAME_MULTIPLIER_GAME=0.23;//will determine the fame gained after a victory based on the other teams
 	static const int FAME_EARN_DISCONNECT=30;
+	static const int FUNDS_EARN_DISCONNECT=1000;
+	static const int FUNDS_EARN_GAME=500;
+	static const float FUNDS_GAME_RATIO=0.05;
+	static const float FUNDS_CHAMP_RATIO=0.12;
 }
 
 namespace memory

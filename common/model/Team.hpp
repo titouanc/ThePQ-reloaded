@@ -48,6 +48,7 @@ public:
 	int getAcPoints(){return _acpoints;}
 	void getPayed(int amount){_funds+=amount;}
 	void loseFame(int amount);
+	int loseFunds(int amount);
 	void earnFame(int amount){ _fame+=amount;}
 	void buy(int amount){_funds-=amount;}
 	std::vector<Player>& getPlayers(){return _players;}
