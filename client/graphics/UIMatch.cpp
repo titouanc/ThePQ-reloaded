@@ -49,6 +49,9 @@ UIMatch::UIMatch(Pitch & pitch, const Squad & viewerSquad, int hexagonSize) :
         if (! toLoad[i]->loadFromFile(texturePath(files[i])))
             throw TextureNotFound(files[i]);
     }
+}
+
+void UIMatch::setOwnSquadDirection(){
     if (_ownSquad.players[0]->getPosition().x() > 0)
         _playsOnLeftSide = false;
     else

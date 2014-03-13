@@ -109,6 +109,11 @@ void GraphicMatchManager::run()
 	cout << "LEAVE GraphicMatchManager::run" << endl;
 }
 
+void GraphicMatchManager::onSquadsInitialized()
+{
+	_match.setOwnSquadDirection();
+}
+
 void GraphicMatchManager::onPitchChange()
 {
 	redraw();

@@ -31,6 +31,8 @@ class MatchManager : public ClientManager {
 		/* HOOKS */
 		/* Called after pitch gets updated */
 		virtual void onPitchChange(){}
+		/* Called when the Squads are initialized at the beginning. */
+		virtual void onSquadsInitialized(){}
 		/* Called after state gets updated */
 		virtual void onStateChange(){}
 		/* Called when there is an error */
