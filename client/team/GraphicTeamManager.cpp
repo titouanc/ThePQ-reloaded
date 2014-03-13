@@ -37,20 +37,20 @@ void GraphicTeamManager::displayPlayers()
 	playerList.setPosition(100, 100);
 	/* Header line */
 	TableCell & header = playerList.addTableCell(515, 47);
-	header.addLabel("Name").setPosition(15, 10);
-	header.addLabel("Life").setPosition(355, 10);
-	header.addLabel("Mana").setPosition(435, 10);
+	header.addLabel("Name", sf::Color::White).setPosition(15, 10);
+	header.addLabel("Life", sf::Color::White).setPosition(355, 10);
+	header.addLabel("Mana", sf::Color::White).setPosition(435, 10);
+	header.setBackgroundColor(BUTTON_BACKGROUND_COLOR);
 
 	/* Content */
 	for (Player & player : user().players){
-		TableCell & playerCell = playerList.addTableCell(500, 47, sf::Color(0xee, 0xee, 0xee, 0xff));
-		playerCell.addLabel(player.getName()).setPosition(15, 10);;
-		Label & lifeLabel = playerCell.addLabel(player.getRemainingLife());
-		lifeLabel.setPosition(355, 10);
-		lifeLabel.setColor(GREEN_TEXT_COLOR);
-		Label & manaLabel = playerCell.addLabel(player.getRemainingMana());
-		manaLabel.setPosition(435, 10);
-		manaLabel.setColor(BLUE_TEXT_COLOR);
+		TableCell & playerCell = playerList.addTableCell(515, 47, sf::Color(0xee, 0xee, 0xee, 0xff));
+		playerCell.setBackgroundColor(sf::Color(0x00, 0x00, 0x00, 0x77));
+		playerCell.addLabel(player.getName(), sf::Color::White).setPosition(15, 10);;
+		playerCell.addLabel(player.getRemainingLife(), GREEN_TEXT_COLOR
+			).setPosition(355, 10);
+		playerCell.addLabel(player.getRemainingMana(), BLUE_TEXT_COLOR
+			).setPosition(435, 10);
 	}
 
 	backButton();
