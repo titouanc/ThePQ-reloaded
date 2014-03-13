@@ -4,6 +4,7 @@
 #include <json/json.hpp>
 #include <model/Player.hpp>
 #include <model/Installation.hpp>
+#include <model/Squad.hpp>
 #include <string>
 #include <vector>
 #include <model/MemoryAccess.hpp>
@@ -20,6 +21,7 @@ private:
     int _AP;
 	std::vector<Player> _players;
 	std::vector<Installation*> _installations;
+	Squad _squad;
 public:
 	Team(std::string owner = "", std::string teamname=gameconfig::UNNAMED_TEAM, int funds = gameconfig::STARTING_FUNDS, int fame = gameconfig::STARTING_FAME, int AP = gameconfig::STARTING_AP);
 	Team(const Team& other);
@@ -34,6 +36,8 @@ public:
 	}
 	void load();
 	void save();
+
+	Squad & getSquad(){return _squad;}
 
 	std::string getOwner(){return _owner;}
 	void setOwner(std::string owner){_owner=owner;}

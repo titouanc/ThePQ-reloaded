@@ -188,6 +188,7 @@ void Server::treatMessage(const Message &message)
 				/* Disconnect user */
 				map<int, User*>::iterator it = _users.find(message.peer_id);
 				if (it != _users.end()){
+					it->second->getTeam().save();
 					delete it->second;
 					_users.erase(it);
 				}

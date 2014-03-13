@@ -8,10 +8,16 @@ Team::Team(const Team& other) : _name(other._name), _owner(other._owner), _funds
 	_fame(other._fame), _players(other._players), _installations(other._installations) {}
 
 Team::Team(const JSON::Dict &json): Team() {
-	if(ISSTR(json.get(net::MSG::USERNAME)))		{_owner = STR(json.get(net::MSG::USERNAME)).value();}
-	if(ISINT(json.get(memory::FUNDS))) 			{_funds = INT(json.get(memory::FUNDS));}
-	if(ISSTR(json.get(memory::TEAM_NAME)))			{_name = STR(json.get(memory::TEAM_NAME)).value();}
-	if(ISINT(json.get(memory::FAME)))				{_fame = INT(json.get(memory::FAME));}
+	if(ISSTR(json.get(net::MSG::USERNAME)))
+		_owner = STR(json.get(net::MSG::USERNAME)).value();
+	if(ISINT(json.get(memory::FUNDS))) 
+		_funds = INT(json.get(memory::FUNDS));
+	if(ISSTR(json.get(memory::TEAM_NAME)))
+		_name = STR(json.get(memory::TEAM_NAME)).value();
+	if(ISINT(json.get(memory::FAME)))
+		_fame = INT(json.get(memory::FAME));
+	if(ISDICT(json.get(memory::SQUAD)))
+		_squad = DICT(json.get(memory::SQUAD));
 }
 Team::~Team()
 {
@@ -26,6 +32,7 @@ Team::operator JSON::Dict(){
 	ret.set(net::MSG::USERNAME,_owner);
 	ret.set(memory::FUNDS,_funds);
 	ret.set(memory::TEAM_NAME,_name);
+	ret.set(memory::SQUAD, JSON::Dict(_squad));
 	return ret;
 }
 void Team::load(){
