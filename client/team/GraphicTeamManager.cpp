@@ -2,6 +2,7 @@
 
 using namespace std;
 using namespace GUI;
+using namespace SQUAD;
 
 GraphicTeamManager::GraphicTeamManager(
 	ClientManager const & parent, 
@@ -85,27 +86,27 @@ void GraphicTeamManager::displaySquadLabels(){
 
 void GraphicTeamManager::displayChangeButtons(){
 	_canvas.addButton<GraphicTeamManager, int>(
-		&GraphicTeamManager::changePlayerAt, 0, this, "todo"
+		&GraphicTeamManager::changePlayerAt, LEFT_CHASER, this, "todo"
 	).centerOn(755, 210);
 	_canvas.addButton<GraphicTeamManager, int>(
-		&GraphicTeamManager::changePlayerAt, 1, this, "todo"
+		&GraphicTeamManager::changePlayerAt, CENTER_CHASER, this, "todo"
 	).centerOn(900, 210);
 	_canvas.addButton<GraphicTeamManager, int>(
-		&GraphicTeamManager::changePlayerAt, 2, this, "todo"
+		&GraphicTeamManager::changePlayerAt, RIGHT_CHASER, this, "todo"
 	).centerOn(1045, 210);
 
 	_canvas.addButton<GraphicTeamManager, int>(
-		&GraphicTeamManager::changePlayerAt, 3, this, "todo"
+		&GraphicTeamManager::changePlayerAt, LEFT_BEATER, this, "todo"
 	).centerOn(816, 315);
 	_canvas.addButton<GraphicTeamManager, int>(
-		&GraphicTeamManager::changePlayerAt, 4, this, "todo"
+		&GraphicTeamManager::changePlayerAt, RIGHT_BEATER, this, "todo"
 	).centerOn(983, 315);
 
 	_canvas.addButton<GraphicTeamManager, int>(
-		&GraphicTeamManager::changePlayerAt, 5, this, "todo"
+		&GraphicTeamManager::changePlayerAt, SEEKER, this, "todo"
 	).centerOn(900, 420);
 	_canvas.addButton<GraphicTeamManager, int>(
-		&GraphicTeamManager::changePlayerAt, 6, this, "todo"
+		&GraphicTeamManager::changePlayerAt, KEEPER, this, "todo"
 	).centerOn(900, 535);
 }
 
@@ -114,7 +115,7 @@ void GraphicTeamManager::changePlayerAt(int position){
 }
 
 void GraphicTeamManager::displaySwapWith(int position){
-	
+
 }
 
 void GraphicTeamManager::onPlayersLoad()
