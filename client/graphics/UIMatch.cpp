@@ -195,8 +195,14 @@ void UIMatch::drawMoveables(sf::RenderTarget & dest) const
                 s = _own_chaser_texture.getSize();
                 rx = (double)_size/s.x;
                 ry = (double)_size/s.y;
+                if ((_ownSquad.hasPlayer(&(Moveable &)player) && (!_playsOnLeftSide))
+                    || ((!_ownSquad.hasPlayer(&(Moveable &)player)) && (_playsOnLeftSide)))
+                    rx = -rx;
                 playerSprite.setScale(sf::Vector2f(rx, ry));
-                playerSprite.setPosition(destpos.x(), destpos.y());
+                if (rx<0)
+                    playerSprite.setPosition(destpos.x()+_size, destpos.y());
+                else
+                    playerSprite.setPosition(destpos.x(), destpos.y());
                 dest.draw(playerSprite);
             }
         }
