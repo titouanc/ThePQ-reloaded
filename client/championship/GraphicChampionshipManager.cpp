@@ -101,7 +101,9 @@ void GraphicChampionshipManager::seeCurrentChampionship(){
 		Label & statusLabel = champCell.addLabel(status.str());
 		statusLabel.setPosition(255, 10);
 		statusLabel.setColor(BUTTON_TEXT_COLOR);
-		Label & cashLabel = champCell.addLabel(champ.getCashPrize());
+		std::stringstream cashprize;
+		cashprize << champ.getCashPrize() << " $";
+		Label & cashLabel = champCell.addLabel(cashprize.str());
 		cashLabel.setPosition(435, 10);
 		cashLabel.setColor(GREEN_TEXT_COLOR);
 		Label & fameLabel = champCell.addLabel(champ.getFame());
@@ -111,9 +113,9 @@ void GraphicChampionshipManager::seeCurrentChampionship(){
 		int cellWidth = 200;
 		TableView & users = _canvas.addTableView();
 		users.setPosition((window().getSize().x - cellWidth) / 2, (4*BUTTON_HEIGHT) + (3*MARGIN));
-		TableCell & header = users.addTableCell(cellWidth,47);
-		header.setBackgroundColor(BUTTON_BACKGROUND_COLOR);
-		Label & stringHeader = header.addLabel("Users");
+		TableCell & usersHeader = users.addTableCell(cellWidth,47);
+		usersHeader.setBackgroundColor(BUTTON_BACKGROUND_COLOR);
+		Label & stringHeader = usersHeader.addLabel("Users");
 		stringHeader.setPosition((cellWidth - stringHeader.getWidth())/2,10);
 		stringHeader.setColor(BUTTON_TEXT_COLOR);
 		for(std::string & name : user().joinedChamp.getUsers()){
@@ -124,21 +126,31 @@ void GraphicChampionshipManager::seeCurrentChampionship(){
 			nameLabel.setColor(BUTTON_TEXT_COLOR);
 		}
 		if(user().joinedChamp.isStarted()){
-			int schedulesWidth = cellWidth*3;
-			users.setPosition((window().getSize().x - cellWidth) / 4, (4*BUTTON_HEIGHT) + (3*MARGIN));
+			int schedulesWidth = cellWidth*3 + 100;
+			users.setPosition((window().getSize().x - cellWidth) / 8, (4*BUTTON_HEIGHT) + (3*MARGIN));
 			TableView & schedules = _canvas.addTableView();
-			schedules.setPosition((window().getSize().x - schedulesWidth) / 4, (4*BUTTON_HEIGHT) + (3*MARGIN));
-			TableCell & header = schedules.addTableCell(schedulesWidth,47);
-			header.setBackgroundColor(BUTTON_BACKGROUND_COLOR);
-			Label & scheduleHeader = header.addLabel("Schedules");
+			schedules.setPosition((window().getSize().x - schedulesWidth) - 200, (4*BUTTON_HEIGHT) + (3*MARGIN));
+			TableCell & title = schedules.addTableCell(schedulesWidth,47);
+			title.setBackgroundColor(BUTTON_BACKGROUND_COLOR);
+			Label & scheduleHeader = title.addLabel("Schedules");
 			scheduleHeader.setPosition((schedulesWidth - scheduleHeader.getWidth())/2,10);
 			scheduleHeader.setColor(BUTTON_TEXT_COLOR);
 			for(Schedule & schedule : user().joinedChamp.getSchedules()){
 				TableCell & scheduleCell = schedules.addTableCell(schedulesWidth,47);
 				scheduleCell.setBackgroundColor(sf::Color(0x00, 0x00, 0x00, 0x77));
+				Label & dateLabel = scheduleCell.addLabel(schedule.getReadableDate());
+				dateLabel.setPosition(15,10);
+				dateLabel.setColor(BUTTON_TEXT_COLOR);
+				Label & versusLabel = scheduleCell.addLabel("VERSUS");
+				versusLabel.setPosition((schedulesWidth-dateLabel.getWidth()-versusLabel.getWidth())/2 + dateLabel.getWidth(),10);
+				versusLabel.setColor(RED_TEXT_COLOR);
 				Label & name1Label = scheduleCell.addLabel(schedule.user1);
-				name1Label.setPosition(155, 10);
+				name1Label.setPosition((schedulesWidth-dateLabel.getWidth()-versusLabel.getWidth())/2 + dateLabel.getWidth() - name1Label.getWidth() - 15, 10);
 				name1Label.setColor(BUTTON_TEXT_COLOR);
+				Label & name2Label = scheduleCell.addLabel(schedule.user2);
+				name2Label.setPosition((schedulesWidth-dateLabel.getWidth()-versusLabel.getWidth())/2 + dateLabel.getWidth() + versusLabel.getWidth() + name2Label.getWidth() + 15, 10);
+				name2Label.setColor(BUTTON_TEXT_COLOR);
+
 			}
 		}
 		
@@ -192,7 +204,9 @@ void GraphicChampionshipManager::onChampionshipsLoad(){
 		statusLabel.setPosition(255, 10);
 		statusLabel.setColor(BUTTON_TEXT_COLOR);
 
-		Label & cashLabel = champCell.addLabel(champ.getCashPrize());
+		std::stringstream cash;
+		cash << champ.getCashPrize() << " $";
+		Label & cashLabel = champCell.addLabel(cash.str());
 		cashLabel.setPosition(435, 10);
 		cashLabel.setColor(GREEN_TEXT_COLOR);
 
