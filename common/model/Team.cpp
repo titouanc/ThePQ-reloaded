@@ -25,6 +25,7 @@ Team::Team(std::string owner, std::string teamname, int funds, int fame,int acPo
 Team::Team(const Team& other) : 
 	_owner(other._owner), 
 	_name(other._name), 
+	_squad(other._squad),
 	_funds(other._funds),
 	_fame(other._fame), 
 	_acpoints(other._acpoints),
@@ -146,6 +147,7 @@ void Team::generateBaseSquad(){
 		MemoryAccess::loadSkel(jers);
 		p.equipJersey(jers);
 		_players.push_back(p);
+		*(_squad.players[i]) = p;
 	}
 }
 
