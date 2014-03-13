@@ -81,11 +81,11 @@ void GraphicTeamManager::displaySquad(){
 	_canvas.addLabel("Keeper", sf::Color::White
 		).setPosition(865, 485);
 
+
 }
 
 void GraphicTeamManager::onPlayersLoad()
 {
 	displayPlayers();
 	_wait = false;
-	cout << "GOT HERE" << endl;
 }
