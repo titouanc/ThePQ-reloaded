@@ -211,8 +211,8 @@ void GraphicUserManager::goToChampionships()
 /* HOOKS */
 void GraphicUserManager::onLoginOK()
 {
-	displayMainMenu();
 	loadPlayers();
+	displayMainMenu();
 	_wait = false;
 }
 
