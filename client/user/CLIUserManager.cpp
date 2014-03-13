@@ -210,7 +210,12 @@ void CLIUserManager::askForNotificationHandling()
 	int option;
 	do
 	{
-		cout << "You have \033[34m" << getNbNotifications() << "\033[0m notification(s)." << endl; 
+		int i =getNbNotifications();
+		if (i>1){
+			cout << "You have \033[33m" << getNbNotifications() << "\033[0m new notifications." << endl; 
+		}else{
+			cout << "You have \033[33m" << getNbNotifications() << "\033[0m new notification." << endl; 
+		}
 		option = _menu.run();
 		switch(option)
 		{

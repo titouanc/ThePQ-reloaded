@@ -164,28 +164,28 @@ namespace JSON {
             const_iterator end(void) const;
     };
 
-    /* Attempt to read a JSON object from given char buffer.
+    /*! Attempt to read a JSON object from given char buffer.
        Return a newly allocated object (must be freed), or throw
        a JSON::Error */
     Value *parse(const char *str, char **eptr=NULL);
 
-    /* Attempt to read a JSON object from given file.
+    /*! Attempt to read a JSON object from given file.
        Return a newly allocated object (must be freed), or throw
        a JSON::Error */
     Value *load(const char *filename);
     Value *load(std::string filename);
 
-    /* Attempt to read a JSON object from given file descriptor.
+    /*! Attempt to read a JSON object from given file descriptor.
        Return a newly allocated object (must be freed), or throw
        a JSON::Error */
     Value *readFD(int fd);
 
-    /* Write a JSON object to given file descriptor. Might raise a 
+    /*! Write a JSON object to given file descriptor. Might raise a 
        JSON::Error */
     void writeFD(int fd, JSON::Value const & json);
 }
 
-/* Convenience cast functions with typecheck, especially useful when
+/*! Convenience cast functions with typecheck, especially useful when
    retrieving elements from lists and dictionaries.
    Outside namespace to avoid extra "JSON::" everywhere in the code */
 

@@ -25,6 +25,8 @@ namespace GUI {
 		void stop(){_isRunning = false;}
 
 		void displayError(std::string errorMessage);
+		void displayOk(std::string okMessage);
+		void displayMessage(std::string message);
 		int confirm(std::string message);
 		void doNothing(){}
 	protected:
@@ -36,8 +38,9 @@ namespace GUI {
 		/* Create and add a button bound to stop() then return it */
 		GUI::Button<GraphicManager> & backButton(std::string const & caption="Back");
 		GUI::Button<GraphicManager> & usernameButton(std::string const username);
-		GUI::Button<GraphicManager> & userBudgetButton(const int budget);		
-
+		GUI::Button<GraphicManager> & userBudgetButton(const int budget);	
+		GUI::Button<GUI::GraphicManager> & userAcPointsButton(const int acPoints);	
+		GUI::Button<GUI::GraphicManager> & userFameButton(const int fame);
 		sf::RenderWindow & window(){return _controller.window;}
 		MainController &_controller;
 		Layer _canvas;

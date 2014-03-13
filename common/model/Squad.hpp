@@ -27,8 +27,9 @@ struct Squad {
 	}
 
     Squad(std::string name, int listID[7], Jersey& jersey, Broomstick& broom, Bat& bat){
-        squad_owner = name;
-        for (int i;i<7;++i){
+        squad_owner = name;      
+        for (size_t i(0);i<7;++i){
+
             Player toLoad(listID[i], squad_owner);
             MemoryAccess::load(toLoad);
             switch (i){
@@ -69,6 +70,14 @@ struct Squad {
 		if (ISSTR(json.get("squad_owner")))
 			squad_owner = STR(json.get("squad_owner")).value();
 	}
+
+    bool hasPlayer(Moveable *moveable) const{
+        for (int i=0; i<7; i++)
+            if (players[i] == moveable)
+                return true;
+        return false;
+    }
+
 	Squad & operator=(Squad const & other){
 		squad_id = other.squad_id;
 		client_id = other.client_id;

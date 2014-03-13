@@ -64,6 +64,16 @@ void GUI::GraphicManager::displayError(std::string errorMessage){
 	m.showBox();
 }
 
+void GUI::GraphicManager::displayOk(std::string okMessage){
+	MessageBox m(_controller,"OK : "+okMessage, {"YAY !"});
+	m.showBox();
+}
+
+void GUI::GraphicManager::displayMessage(std::string message){
+	MessageBox m(_controller, message, {"OK"});
+	m.showBox();
+}
+
 int GUI::GraphicManager::confirm(std::string message){
 	MessageBox m(_controller, message, {"No", "Yes"});
 	return m.showBox();
@@ -100,5 +110,31 @@ GUI::Button<GUI::GraphicManager> & GUI::GraphicManager::userBudgetButton(const i
 	res.setBackgroundColor(LIGHT_BUTTON_BACKGROUND_COLOR);
 	res.setTextColor(LIGHT_BUTTON_TEXT_COLOR);
 	res.setPosition(window().getSize().x-res.getWidth()-MARGIN, MARGIN);
+	return res;
+}
+
+GUI::Button<GUI::GraphicManager> & GUI::GraphicManager::userAcPointsButton(const int acPoints)
+{
+	char casted[512];
+	sprintf(casted,"%d points",acPoints);
+	GUI::Button<GUI::GraphicManager> &res = _canvas.addButton<GUI::GraphicManager>(
+		&GUI::GraphicManager::doNothing,this,casted
+		);
+	res.setBackgroundColor(LIGHT_BUTTON_BACKGROUND_COLOR);
+	res.setTextColor(LIGHT_BUTTON_TEXT_COLOR);
+	res.setPosition(window().getSize().x-res.getWidth()*1.8-1.2*MARGIN,MARGIN);
+	return res;
+}
+
+GUI::Button<GUI::GraphicManager> & GUI::GraphicManager::userFameButton(const int fame)
+{
+	char casted[512];
+	sprintf(casted,"Fame: %d",fame);
+	GUI::Button<GUI::GraphicManager> &res = _canvas.addButton<GUI::GraphicManager>(
+		&GUI::GraphicManager::doNothing,this,casted
+		);
+	res.setBackgroundColor(LIGHT_BUTTON_BACKGROUND_COLOR);
+	res.setTextColor(LIGHT_BUTTON_TEXT_COLOR);
+	res.setPosition(window().getSize().x-res.getWidth()*2.8-3.5*MARGIN,MARGIN);
 	return res;
 }

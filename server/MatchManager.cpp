@@ -118,7 +118,7 @@ void MatchManager::_mainloop_out()
 	time_t tick;
 	cout << "[" << this << "] \033[32mMatch started\033[0m" << endl;
 	sendSignal(net::MSG::MATCH_START);
-
+	cout<<"clients: !!!!"<<nClients()<<endl;
 	unsigned int n_ticks = 0;
 	while (nClients() == 2){
 		n_ticks++;
@@ -142,7 +142,18 @@ void MatchManager::_mainloop_out()
 		sendSignal(net::MSG::MATCH_TIMEOUT);
 		playStrokes();
 	}
-
+	if(hasClient(_squads[0].client_id)){
+		_matchRes.setScore(100,0);
+		_matchRes.setTeams(_squads[0].squad_owner,_squads[1].squad_owner);
+		_matchRes.resolveFameDisconnection(_squads[0].squad_owner);
+		_matchRes.resolveMoneyDisconnection(_squads[0].squad_owner);
+	}
+	if(hasClient(_squads[1].client_id)){
+		_matchRes.setScore(100,0);
+		_matchRes.setTeams(_squads[1].squad_owner,_squads[0].squad_owner);
+		_matchRes.resolveFameDisconnection(_squads[1].squad_owner);
+		_matchRes.resolveMoneyDisconnection(_squads[1].squad_owner);
+	}
 	sendSignal(net::MSG::MATCH_END);
 	cout << "[" << this << "] \033[32mMatch finished\033[0m" << endl;
 	stop();
@@ -417,12 +428,11 @@ void MatchManager::endMatch(void)
 	releaseClient(_squads[0].client_id);
 	releaseClient(_squads[1].client_id);
 
-	_matchRes.setTeams(_squads[winner].squad_owner, _squads[looser].squad_owner);
-	_matchRes.setScore(_score[winner], _score[looser]);
+	_matchRes.setTeams(_squads[winner].squad_owner,_squads[looser].squad_owner);
+	_matchRes.compute(isChampMatch());
 }
 
-void MatchManager::onCollision(
-	Stroke & stroke,     /* Stroke that leads to conflict */
+void MatchManager::onCollision(	Stroke & stroke,     /* Stroke that leads to conflict */
 	Position & conflict, /* Clonflicting pos */
 	Position & fromPos  /* last pos occupied by moving */
 )
