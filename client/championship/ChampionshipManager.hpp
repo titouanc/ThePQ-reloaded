@@ -7,27 +7,28 @@
 
 class ChampionshipManager : public ClientManager
 {
-private:
-	std::vector<Championship> _champs;
 protected:
+	std::vector<Championship> _champs;
 	std::vector<Championship> const & getChamps() { return _champs; }
 	/* attempt to join a championship */
 	void joinChampionship(std::string champName);
 	/* ask for championships list */
 	void loadChampionships();
-	/* set joinedChamp to the championship the user joined if any, "" else */
-	void updateCurrentChampionship();
+	/* ask for current joined championship */
+	void joinedChampionship();
 	/* leave championship if any */
 	void leaveCurrentChampionship();
 	/* treat Championship specific messages */
 	void treatMessage(std::string const & type, JSON::Value const * data);
 	/* HOOKS */
 	/* received a join championship response */
-	virtual void onJoinChampionship(std::string data){}
+	virtual void onJoinChampionship(bool,std::string const &){}
 	/* received a leave championship response */
-	virtual void onLeaveChampionship(std::string data){}
+	virtual void onLeaveChampionship(bool,std::string const &){}
 	/* received championships list : put it in _champs */
-	virtual void onChampionshipsLoad(JSON::List const & json);
+	virtual void onChampionshipsLoad(){}
+	/* received current joined champ, put in joinedChamp if !NULL */
+	virtual void onJoinedChampionship(){}
 public:
 	using ClientManager::ClientManager;
 	ChampionshipManager(ClientManager const & parent);

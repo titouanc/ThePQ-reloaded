@@ -41,9 +41,8 @@ void CLITeamManager::showPlayers(){
 	cout << "==============================================" << endl;
 }
 
-void CLITeamManager::onPlayersLoad(JSON::List const & players)
+void CLITeamManager::onPlayersLoad()
 {
-	TeamManager::onPlayersLoad(players);
 	_pending--;
 }
 

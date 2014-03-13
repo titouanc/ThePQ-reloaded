@@ -44,6 +44,6 @@ public:
 	void loginAdmin(std::string,std::string); 
 	void logoutAdmin();
 
-    void createChampionship(std::string, int);
+    void createChampionship(std::string, int, int, int);
 };
 

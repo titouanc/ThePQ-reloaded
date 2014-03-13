@@ -42,7 +42,16 @@ public:
 	explicit Server(NetConfig const & config);
     ~Server();
 	void run();
-	void treatMessage(const net::Message &message);
+
+    /*! Main incoming messages dispatcher */
+	void treatMessage(
+        int peer_id,
+        std::string const & type, 
+        const JSON::Value * data
+    );
+
+    /*! Create default user accounts if there is no registered user */
+    void initDefaultAccounts();
 
 	void registerUser(const JSON::Dict &credentials, int peer_id);
 	User *logUserIn(const JSON::Dict &credentials, int peer_id);
@@ -63,7 +72,6 @@ public:
     void startMatch(int client_idA, int client_idB, bool champMatch);
     void sendPlayersList(int peer_id);
     void sendMarketMessage(const std::string&, const JSON::Dict&);
-    void sendChampionshipNotification(std::string, const JSON::Dict&);
     void sendNotification(std::string, const JSON::Dict&);
     int getPeerID(const std::string&);
     void timeLoop();
@@ -76,11 +84,16 @@ public:
     Championship* getChampionshipByName(std::string champName);
     Championship* getChampionshipByUsername(std::string username);
     size_t nbrUsersConnected(){return _users.size();}
+    void loadChampionships();
     void leaveChampionship(int);
     void joinChampionship(std::string,int);
     void sendChampionshipsList(int);
+    void sendJoinedChampionship(int);
     void notifyPendingChampMatch(std::string);
+    void notifyStartingChampionship(Championship&);
     void responsePendingChampMatch(std::string,int);
+    void resolveUnplayedChampMatch(Schedule&);
+    void endOfPending(Schedule&);
     Schedule* getPendingMatchByUsername(std::string);
 private:
 	SharedQueue<net::Message> _inbox, _outbox;
@@ -90,7 +103,8 @@ private:
     std::deque<MatchManager*> _matches;
     AdminManager _adminManager;
     std::deque<Championship*> _championships;
-    std::deque<Schedule*> _pendingChampMatches;
+    std::deque<Schedule> _pendingChampMatches;
+    unsigned int _timeTicks;
 
     pthread_mutex_t _champsMutex; //_championships used by 3 threads
 	pthread_t _timeThread;

@@ -11,7 +11,7 @@ public:
 	CLITeamManager(ClientManager const & parent);
 	void run();
 	virtual void showPlayers();
-	virtual void onPlayersLoad(JSON::List const & players);
+	virtual void onPlayersLoad();
 	virtual void onMatchStart();
 };
 

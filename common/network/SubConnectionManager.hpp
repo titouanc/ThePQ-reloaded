@@ -11,6 +11,7 @@ namespace net {
 	class SubConnectionManager : public BaseConnectionManager {
 		private:
 			BaseConnectionManager & _parent;
+			void _doDisconnect(int fd);
 		public:
 			/* ConnectionManager which takes its managed clients from a parent
 			   ConnectionManager. It cannot accept connections by itself. */

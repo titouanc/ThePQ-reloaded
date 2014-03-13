@@ -8,6 +8,11 @@ GUI::MainController::MainController(): window(sf::VideoMode(WINDOW_WIDTH, WINDOW
 	window.clear(sf::Color(0xff, 0xff, 0xff, 0xff));
 }
 
+GUI::MainController::~MainController()
+{
+
+}
+
 void GUI::MainController::addLayer(Layer & layer)
 {
 	if (_layers.size() != 0){
@@ -34,18 +39,36 @@ void GUI::MainController::deleteTopLayer()
 	window.display();
 }
 
-void GUI::MainController::handleClick(sf::Event e)
+void GUI::MainController::renderTopLayer()
 {
-	if (_layers.size() != 0)
-		_layers.top()->handleClick(e.mouseButton.x, e.mouseButton.y);
-}
-void GUI::MainController::handleRightClick(sf::Event e)
-{
+	// this methods allows for one (only one) semi-transparent layer on top of another one
 	if (_layers.size() != 0){
-		_layers.top()->handleRightClick(e.mouseButton.x, e.mouseButton.y);
+		window.clear();
+		Layer * topLayer = _layers.top();
+		_layers.pop();
+		if (_layers.size() != 0 && topLayer->getBackgroundColor().a != 0xff)
+			_layers.top()->renderTo(window);
+		_layers.push(topLayer);
 		_layers.top()->renderTo(window);
+		window.display();
 	}
-	window.display();
+}
+
+bool GUI::MainController::handleClick(sf::Event e)
+{
+	bool res = false;
+	if (_layers.size() != 0)
+		res = _layers.top()->handleClick(e.mouseButton.x, e.mouseButton.y);
+	renderTopLayer();
+	return res;
+}
+bool GUI::MainController::handleRightClick(sf::Event e)
+{
+	bool res = false;
+	if (_layers.size() != 0)
+		res = _layers.top()->handleRightClick(e.mouseButton.x, e.mouseButton.y);
+	renderTopLayer();
+	return res;
 }
 
 void GUI::MainController::handleTextEntered(sf::Event e)

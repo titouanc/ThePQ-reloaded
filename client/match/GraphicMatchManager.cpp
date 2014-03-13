@@ -4,7 +4,7 @@
 GraphicMatchManager::GraphicMatchManager(ClientManager const & parent, GUI::MainController & controller) :
 	MatchManager(parent),
 	GUI::GraphicManager(controller), 
-	_match(pitch()), 
+	_match(pitch(), mySquad()), 
 	_selectedPlayer(NULL)
 {}
 
@@ -109,6 +109,11 @@ void GraphicMatchManager::run()
 	cout << "LEAVE GraphicMatchManager::run" << endl;
 }
 
+void GraphicMatchManager::onSquadsInitialized()
+{
+	_match.setOwnSquadDirection();
+}
+
 void GraphicMatchManager::onPitchChange()
 {
 	redraw();
@@ -121,6 +126,8 @@ void GraphicMatchManager::onStateChange()
 		case CREATED:  cout << "created" << endl; break;
 		case PROMPT:   cout << "waiting for moves" << endl; break;
 		case TIMEOUT:  cout << "processing moves" << endl; break;
-		case FINISHED: cout << "finished" << endl; break;
+		case FINISHED: 
+		default:
+			cout << "finished" << endl; break;
 	}
 }

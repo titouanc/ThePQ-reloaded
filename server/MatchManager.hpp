@@ -41,7 +41,7 @@ class MatchManager : public SubConnectionManager {
 		SharedQueue<Message> _inbox, _outbox;
 		unsigned int _score[2];
 		bool _champMatch;
-		struct MatchResult _matchRes;
+		MatchResult _matchRes;
 		/* Current match deltas */
 		JSON::List _turnDeltas;
 
@@ -76,7 +76,10 @@ class MatchManager : public SubConnectionManager {
 		void sendMatchDeltas(void);
 		void stopStroke(Stroke & stroke, Position const & pos);
 		void addDelta(Moveable const & moveable, Position const & dest);
-
+		void resolveFame(std::string win,std::string los);
+		void resolveFameDisconnection(std::string win);
+		void resolveMoneyDisconnection(std::string win);
+		void resolveMoney(std::string win,std::string los);
 		iter getStrokeForMoveable(Moveable *moveable);
 		/* Resolve strokes */
 		void playStrokes(void);

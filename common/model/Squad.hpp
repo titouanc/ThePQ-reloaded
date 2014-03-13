@@ -26,25 +26,25 @@ struct Squad {
 		players[6] = &keeper;
 	}
 
-    Squad(std::string name, int listID[7]){
-        squad_owner = name;
-        Bat bat(0,0);
-        size_t i(0);
-        for (i;i<7;++i){
+    Squad(std::string name, int listID[7], Jersey& jersey, Broomstick& broom, Bat& bat){
+        squad_owner = name;      
+        for (size_t i(0);i<7;++i){
+
             Player toLoad(listID[i], squad_owner);
             MemoryAccess::load(toLoad);
             switch (i){
                 case 0: ;
                 case 1: ;
-                case 2: chasers[i] = convertToChaser(toLoad);
+                case 2: chasers[i] = convertToChaser(toLoad, jersey, broom);
                         break;
                 case 3: ;
-                case 4: beaters[i] = convertToBeater(toLoad,bat);
+                case 4: beaters[i] = convertToBeater(toLoad, jersey, broom, bat);
                         break;
-                case 5: seeker = convertToSeeker(toLoad);
+                case 5: seeker = convertToSeeker(toLoad, jersey, broom);
                         break;
-                case 6: keeper = convertToKeeper(toLoad);
+                case 6: keeper = convertToKeeper(toLoad, jersey, broom);
                         break;
+                default: break;
             }
         }
         Squad();
@@ -70,6 +70,14 @@ struct Squad {
 		if (ISSTR(json.get("squad_owner")))
 			squad_owner = STR(json.get("squad_owner")).value();
 	}
+
+    bool hasPlayer(Moveable *moveable) const{
+        for (int i=0; i<7; i++)
+            if (players[i] == moveable)
+                return true;
+        return false;
+    }
+
 	Squad & operator=(Squad const & other){
 		squad_id = other.squad_id;
 		client_id = other.client_id;
@@ -100,14 +108,14 @@ struct Squad {
 		return res;
 	}
 
-    Chaser convertToChaser(Player& player){
+    Chaser convertToChaser(Player& player, Jersey& jersey, Broomstick& broom){
         Chaser chaser;
         chaser.setStrength(player.getStrength());
         chaser.setVelocity(player.getVelocity());
         chaser.setPrecision(player.getPrecision());
         chaser.setChance(player.getChance());
-        chaser.equipBroomstick(player.getBroomstick());
-        chaser.equipJersey(player.getJersey());
+        chaser.equipBroomstick(broom);
+        chaser.equipJersey(jersey);
         chaser.setName(player.getName());
         chaser.setSalary(player.getSalary());
         chaser.setPrice(player.getSalary());
@@ -116,14 +124,14 @@ struct Squad {
         return chaser;
     }
 
-    Keeper convertToKeeper(Player& player){
+    Keeper convertToKeeper(Player& player, Jersey& jersey, Broomstick& broom){
         Keeper keeper;
         keeper.setStrength(player.getStrength());
         keeper.setVelocity(player.getVelocity());
         keeper.setPrecision(player.getPrecision());
         keeper.setChance(player.getChance());
-        keeper.equipBroomstick(player.getBroomstick());
-        keeper.equipJersey(player.getJersey());
+        keeper.equipBroomstick(broom);
+        keeper.equipJersey(jersey);
         keeper.setName(player.getName());
         keeper.setSalary(player.getSalary());
         keeper.setPrice(player.getSalary());
@@ -132,14 +140,14 @@ struct Squad {
         return keeper;
     }
 
-    Seeker convertToSeeker(Player& player){
+    Seeker convertToSeeker(Player& player, Jersey& jersey, Broomstick& broom){
         Seeker seeker;
         seeker.setStrength(player.getStrength());
         seeker.setVelocity(player.getVelocity());
         seeker.setPrecision(player.getPrecision());
         seeker.setChance(player.getChance());
-        seeker.equipBroomstick(player.getBroomstick());
-        seeker.equipJersey(player.getJersey());
+        seeker.equipBroomstick(broom);
+        seeker.equipJersey(jersey);
         seeker.setName(player.getName());
         seeker.setSalary(player.getSalary());
         seeker.setPrice(player.getSalary());
@@ -148,14 +156,14 @@ struct Squad {
         return seeker;
     }
 
-    Beater convertToBeater(Player& player, Bat bat){
+    Beater convertToBeater(Player& player, Jersey& jersey, Broomstick& broom, Bat& bat){
         Beater beater;
         beater.setStrength(player.getStrength());
         beater.setVelocity(player.getVelocity());
         beater.setPrecision(player.getPrecision());
         beater.setChance(player.getChance());
-        beater.equipBroomstick(player.getBroomstick());
-        beater.equipJersey(player.getJersey());
+        beater.equipBroomstick(broom);
+        beater.equipJersey(jersey);
         beater.equipBat(bat);
         beater.setName(player.getName());
         beater.setSalary(player.getSalary());

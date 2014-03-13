@@ -1,22 +1,53 @@
 #include "Team.hpp"
 #include <cmath>
 
-Team::Team(std::string owner, std::string teamname, int funds, int fame) : _name(teamname), _owner(owner), _funds(funds), _fame(fame), _players(), _installations()
+
+Team::Team(std::string owner, std::string teamname, int funds): 
+	_owner(owner), 
+	_name(teamname), 
+	_funds(funds),
+	_fame(gameconfig::STARTING_FAME), 
+	_acpoints(gameconfig::STARTING_AC_POINTS),
+	_players(), 
+	_installations()
 {}
 
-Team::Team(const Team& other) : _name(other._name), _owner(other._owner), _funds(other._funds),
-	_fame(other._fame), _players(other._players), _installations(other._installations) {}
+Team::Team(std::string owner, std::string teamname, int funds, int fame,int acPoints) : 
+	_owner(owner),
+	_name(teamname), 
+	_funds(funds),
+	_fame(fame), 
+	_acpoints(acPoints),
+	_players(), 
+	_installations()
+{}
+
+Team::Team(const Team& other) : 
+	_owner(other._owner), 
+	_name(other._name), 
+	_funds(other._funds),
+	_fame(other._fame), 
+	_acpoints(other._acpoints),
+	_players(other._players), 
+	_installations(other._installations)
+{}
 
 Team::Team(const JSON::Dict &json): Team() {
-	if(ISSTR(json.get(net::MSG::USERNAME)))		{_owner = STR(json.get(net::MSG::USERNAME)).value();}
-	if(ISINT(json.get(memory::FUNDS))) 			{_funds = INT(json.get(memory::FUNDS));}
-	if(ISSTR(json.get(memory::TEAM_NAME)))			{_name = STR(json.get(memory::TEAM_NAME)).value();}
-	if(ISINT(json.get(memory::FAME)))				{_fame = INT(json.get(memory::FAME));}
+	if(ISSTR(json.get(net::MSG::USERNAME)))
+		_owner = STR(json.get(net::MSG::USERNAME)).value();
+	if(ISINT(json.get(memory::FUNDS)))
+		_funds = INT(json.get(memory::FUNDS));
+	if(ISINT(json.get(memory::AC_POINTS)))
+		_acpoints = INT(json.get(memory::AC_POINTS));
+	if(ISSTR(json.get(memory::TEAM_NAME)))
+		_name = STR(json.get(memory::TEAM_NAME)).value();
+	if(ISINT(json.get(memory::FAME)))
+		_fame = INT(json.get(memory::FAME));
 }
+
 Team::~Team()
 {
-	for (size_t i = 0; i < _installations.size(); ++i)
-	{
+	for (size_t i = 0; i < _installations.size(); ++i){
 		if (_installations[i])
 			delete _installations[i];
 	}
@@ -25,7 +56,9 @@ Team::operator JSON::Dict(){
 	JSON::Dict ret;
 	ret.set(net::MSG::USERNAME,_owner);
 	ret.set(memory::FUNDS,_funds);
+	ret.set(memory::AC_POINTS,_acpoints);
 	ret.set(memory::TEAM_NAME,_name);
+	ret.set(memory::FAME, _fame);
 	return ret;
 }
 void Team::load(){
@@ -112,15 +145,24 @@ void Team::generateBaseSquad(){
 		_players.push_back(p);
 	}
 }
+
 void Team::generateBaseInstallations(){
 	MemoryAccess::loadSkel(_installations);
 	for(size_t i = 0;i<_installations.size();++i){
 		_installations[i]->setOwner(getOwner());
 	}
 }
+
 void Team::generateStartingTeam(){
 	generateBaseSquad();
 	generateBaseInstallations();
+}
+
+void Team::initFame(){
+	_fame=gameconfig::STARTING_FAME;
+}
+void Team::initAcPoints(){
+	_acpoints=gameconfig::STARTING_AC_POINTS;
 }
 void Team::timeUpdate()
 {
@@ -137,4 +179,29 @@ int Team::level () const {
     for (Player it : _players)
         sum += it.level();
     return static_cast<int>(pow(sum, 1.0/_players.size()));
+}
+
+int Team::loseFunds(int amount){
+	if(amount>_funds){
+		amount=_funds;
+		_funds=0;
+	}else{
+		_funds-=amount;
+	}
+	return amount;
+}
+
+void Team::loseFame(int amount){
+	if (amount>_fame){
+		_fame=0;
+	}else{
+		_fame-=amount;
+	}
+}
+
+bool Team::fundsAvailble(int amount){
+	if (amount<_funds){
+		return false;
+	}
+	return true;
 }

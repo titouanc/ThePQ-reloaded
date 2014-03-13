@@ -1,5 +1,6 @@
 #include "UserManager.hpp"
 #include <Constants.hpp>
+#include <unistd.h>
 
 UserManager::UserManager(ClientManager const & parent) : ClientManager(parent)
 {

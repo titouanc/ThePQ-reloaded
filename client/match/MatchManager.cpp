@@ -38,6 +38,7 @@ void MatchManager::treatSquads(JSON::List const & squads)
 		if (_otherSquad.players[i]->getSpeed() == 0)
 			_otherSquad.players[i]->setSpeed(5);
 	}
+	onSquadsInitialized();
 	onPitchChange();
 }
 

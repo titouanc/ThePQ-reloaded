@@ -25,6 +25,9 @@ public:
 	/* Run mainloop */
 	void run();
 
+	/* Triggered when the squads are initialized at the beginning of the game */
+	void onSquadsInitialized();
+
 	/* Triggered when the pitch changed */
 	void onPitchChange();
 

@@ -4,74 +4,101 @@
 using namespace std;
 using namespace GUI;
 
-GraphicStadiumManager::GraphicStadiumManager(ClientManager const & parent, GUI::MainController &controller) 
-			: StadiumManager(parent), GraphicManager(controller){
-	loadInstallations();
+GraphicStadiumManager::GraphicStadiumManager(
+	ClientManager const & parent, 
+	GUI::MainController &controller
+) : 
+	StadiumManager(parent), 
+	GraphicManager(controller)
+{
+	_canvas.setBackgroundImage(texturePath("HexBack.png"));
 	displayCanvas();
-	displayMainMenu();
-	readMessages();
-}
-
-void GraphicStadiumManager::displayMainMenu()
-{
-	_canvas.clear();
-	
-	_canvas.addButton<GraphicStadiumManager>(
-		&GraphicStadiumManager::displayPlayers, this, "Players management"
-	).setPosition(900, 350);
-
-	_canvas.addButton<GraphicStadiumManager>(
-		&GraphicStadiumManager::displayInstallations, this, "Installations management"
-	).setPosition(900, 410);
-
-	backButton().setPosition(900, 470);
-	
-	redrawCanvas();
-}
-
-void GraphicStadiumManager::displayPlayers()
-{
-	_canvas.clear();
-
-	TableView & playerList = _canvas.addTableView(3, 0);
-	/* Header line */
-	playerList.addTableCell(300, 50).addLabel("Name");
-	playerList.addTableCell(100, 50).addLabel("Life");
-	playerList.addTableCell(100, 50).addLabel("Mana");
-
-	/* Content */
-	for (Player & player : user().players){
-		playerList.addTableCell().addLabel(player.getName());
-		playerList.addTableCell().addLabel(player.getRemainingLife());
-		playerList.addTableCell().addLabel(player.getRemainingMana());
+	loadInstallations();
+	_wait = true;
+	while (_wait){
+		readMessages();
+		readEvent();
 	}
-
-	backButton().setPosition(900, 650);
-
-	redrawCanvas();
 }
 
 void GraphicStadiumManager::displayInstallations()
 {
+	
 	readMessages();
 
 	_canvas.clear();
 
+	usernameButton(user().username);
+	userBudgetButton(user().funds);
+
 	TableView & installations = _canvas.addTableView(2, 10);
-	installations.setPosition(100, 100);
+	installations.setPosition(85, 85);
 
 	for (size_t i = 0; i < user().installations.size(); ++i){
-		TableCell & current = installations.addTableCell(250, 250, sf::Color(0xee, 0xee, 0xee, 0xff));
-		current.addLabel(user().installations[i]->getName()).setPosition(10, 10);
+		TableCell & current = installations.addTableCell(270, 270, sf::Color(0x00, 0x00, 0x00, 0x77));
+		Label &nameLabel = current.addLabel(user().installations[i]->getName());
+		nameLabel.setPosition(10, 10);
+		//nameLabel.setFont(HEADER_FONT_PATH);
+		nameLabel.setColor(BLUE_TEXT_COLOR);
+		
 		Label &levelLabel = current.addLabel(user().installations[i]->getLevel());	
-		levelLabel.setPosition(250-15-levelLabel.getWidth(), 10);
+		levelLabel.setPosition(270-15-levelLabel.getWidth(), 10);
 		levelLabel.setColor(BLUE_TEXT_COLOR);
+		//levelLabel.setFont(HEADER_FONT_PATH);
+
+		current.addLabel("Upgrade cost : ", sf::Color::White).setPosition(10, 50);
+		Label &upgradeCostValue = current.addLabel(user().installations[i]->getUpgradeCost());	
+		upgradeCostValue.setPosition(270-15-upgradeCostValue.getWidth(), 50);
+		upgradeCostValue.setColor(BLUE_TEXT_COLOR);
+
+		current.addLabel("Downgrade refunds : ", sf::Color::White).setPosition(10, 90);
+		Label &downgradeRefundsValue = current.addLabel(user().installations[i]->getUpgradeCost());	
+		downgradeRefundsValue.setPosition(270-15-downgradeRefundsValue.getWidth(), 90);
+		downgradeRefundsValue.setColor(BLUE_TEXT_COLOR);
+
+		if (user().installations[i]->getLevel() == 0){
+			current.addButton<GraphicStadiumManager, int>(
+				&GraphicStadiumManager::doUpgrade, i, this, "Buy"
+			).setPosition(10, 220);
+		}
+		else{
+			current.addButton<GraphicStadiumManager, int>(
+				&GraphicStadiumManager::doUpgrade, i, this, "Upgrade"
+			).setPosition(10, 220);
+
+			Button<GraphicStadiumManager, int> &downButton = current.addButton<GraphicStadiumManager, int>(
+				&GraphicStadiumManager::doDowngrade, i, this, "Downgrade");
+			downButton.setPosition(270-10-downButton.getWidth(), 220);
+		}
 	}
 
-	backButton().setPosition(900, 650);
+	Label &titleLabel = _canvas.addLabel("Your\ninstallations");
+	titleLabel.setFont(HEADER_FONT_PATH);
+	titleLabel.setColor(sf::Color::White);
+	titleLabel.setFontSize(40);
+	titleLabel.setPosition(700, 300);
+
+	backButton();
 
 	redrawCanvas();
 }
 
-void GraphicStadiumManager::doNothing()
-{} 
+void GraphicStadiumManager::doUpgrade(int installation){
+	upgradeInstallation(installation);
+	_wait = true;
+	while (_wait) 
+		readMessage();
+}
+
+void GraphicStadiumManager::doDowngrade(int installation){
+	downgradeInstallation(installation);
+	_wait = true;
+	while (_wait)
+		readMessage();
+}
+
+void GraphicStadiumManager::onInstallationsLoad()
+{
+	_wait = false;
+	displayInstallations();
+}

@@ -7,10 +7,11 @@
 #include <championship/CLIChampionshipManager.hpp>
 #include <match/CLIMatchManager.hpp>
 #include <iostream>
+#include <Constants.hpp>
 using namespace std;
 
 CLIUserManager::CLIUserManager(ClientManager const & parent) : 
-UserManager(parent)
+UserManager(parent), _waitForNotificationResponse(false)
 {}
 
 void CLIUserManager::run()
@@ -209,7 +210,12 @@ void CLIUserManager::askForNotificationHandling()
 	int option;
 	do
 	{
-		cout << "You have \033[34m" << getNbNotifications() << "\033[0m notifications." << endl; 
+		int i =getNbNotifications();
+		if (i>1){
+			cout << "You have \033[33m" << getNbNotifications() << "\033[0m new notifications." << endl; 
+		}else{
+			cout << "You have \033[33m" << getNbNotifications() << "\033[0m new notification." << endl; 
+		}
 		option = _menu.run();
 		switch(option)
 		{
@@ -218,6 +224,8 @@ void CLIUserManager::askForNotificationHandling()
 				break;
 			case 2:
 				readMessages();
+				break;
+			case 3:
 				break;
 			default:
 				cout << "Wrong option entered" << endl;
@@ -254,6 +262,39 @@ void CLIUserManager::onInvite(std::string const & user)
 		}
 	}
 	while(! ok);
+}
+
+void CLIUserManager::onMatchPending(){
+	cout << "Your next championship match is close. What do you want to do ?" << endl;
+	Menu _menu;
+	_menu.addToDisplay("   - ready to play !\n");
+	_menu.addToDisplay("   - withdraw from match (you will be \033[31msend off\033[0m championship)\n");
+	int option;
+	bool ok = false;
+	do{
+		option = _menu.run();
+		if(option == 1){
+			ok = true;
+			readyForMatch();
+		}
+		else if(option == 2){
+			ok = true;
+			withdrawFromMatch();
+		}
+		else
+			cout << "Wrong option entered"<<endl;
+	}
+	while(!ok);
+	_waitForNotificationResponse = true;
+	while(_waitForNotificationResponse)
+		readMessage();
+}
+
+void CLIUserManager::onNotificationResponse(bool success, std::string const & response,std::string const & msg){
+	//If opponent hasn't responded yet, wait until he does
+	if(response != net::MSG::CHAMPIONSHIP_MATCH_WAIT)
+		_waitForNotificationResponse = false;
+	(success) ? okMsg(msg) : errorMsg(msg);
 }
 
 void CLIUserManager::onMessage(std::string const & message){
