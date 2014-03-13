@@ -12,6 +12,10 @@ public:
 	~GraphicStadiumManager(){}
 private:
 	void displayInstallations();
+
+	void doUpgrade(int installation);
+	void doDowngrade(int installation);
+	
 	void onInstallationsLoad();
 	bool _wait;
 };
