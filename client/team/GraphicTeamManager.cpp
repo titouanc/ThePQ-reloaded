@@ -86,27 +86,27 @@ void GraphicTeamManager::displaySquadLabels(){
 
 void GraphicTeamManager::displayChangeButtons(){
 	_canvas.addButton<GraphicTeamManager, int>(
-		&GraphicTeamManager::changePlayerAt, LEFT_CHASER, this, "todo"
+		&GraphicTeamManager::changePlayerAt, LEFT_CHASER, this, user().squad.players[LEFT_CHASER]->getName()
 	).centerOn(755, 210);
 	_canvas.addButton<GraphicTeamManager, int>(
-		&GraphicTeamManager::changePlayerAt, CENTER_CHASER, this, "todo"
+		&GraphicTeamManager::changePlayerAt, CENTER_CHASER, this, user().squad.players[CENTER_CHASER]->getName()
 	).centerOn(900, 210);
 	_canvas.addButton<GraphicTeamManager, int>(
-		&GraphicTeamManager::changePlayerAt, RIGHT_CHASER, this, "todo"
+		&GraphicTeamManager::changePlayerAt, RIGHT_CHASER, this, user().squad.players[RIGHT_CHASER]->getName()
 	).centerOn(1045, 210);
 
 	_canvas.addButton<GraphicTeamManager, int>(
-		&GraphicTeamManager::changePlayerAt, LEFT_BEATER, this, "todo"
+		&GraphicTeamManager::changePlayerAt, LEFT_BEATER, this, user().squad.players[LEFT_BEATER]->getName()
 	).centerOn(816, 315);
 	_canvas.addButton<GraphicTeamManager, int>(
-		&GraphicTeamManager::changePlayerAt, RIGHT_BEATER, this, "todo"
+		&GraphicTeamManager::changePlayerAt, RIGHT_BEATER, this, user().squad.players[RIGHT_BEATER]->getName()
 	).centerOn(983, 315);
 
 	_canvas.addButton<GraphicTeamManager, int>(
-		&GraphicTeamManager::changePlayerAt, SEEKER, this, "todo"
+		&GraphicTeamManager::changePlayerAt, SEEKER, this, user().squad.players[SEEKER]->getName()
 	).centerOn(900, 420);
 	_canvas.addButton<GraphicTeamManager, int>(
-		&GraphicTeamManager::changePlayerAt, KEEPER, this, "todo"
+		&GraphicTeamManager::changePlayerAt, KEEPER, this, user().squad.players[KEEPER]->getName()
 	).centerOn(900, 535);
 
 	redrawCanvas();
