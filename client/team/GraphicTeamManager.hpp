@@ -14,6 +14,7 @@ private:
 	void displaySquadLabels();
 	void displayChangeButtons();
 	void changePlayerAt(int position);
+	void displaySwapWith(int position);
 	void onPlayersLoad();
 	bool _wait;
 

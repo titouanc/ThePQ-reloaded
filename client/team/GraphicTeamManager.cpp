@@ -113,6 +113,10 @@ void GraphicTeamManager::changePlayerAt(int position){
 
 }
 
+void GraphicTeamManager::displaySwapWith(int position){
+	
+}
+
 void GraphicTeamManager::onPlayersLoad()
 {
 	displayPlayers();

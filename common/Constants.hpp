@@ -225,4 +225,15 @@ namespace memory
 	static const std::string ADMIN_FILE = "admin";
 }
 
+namespace SQUAD
+{
+	static const int LEFT_CHASER = 0;
+	static const int CENTER_CHASER = 1;
+	static const int RIGHT_CHASER = 2;
+	static const int LEFT_BEATER = 3;
+	static const int RIGHT_BEATER = 4;
+	static const int SEEKER = 5;
+	static const int KEEPER = 6;
+}
+
 #endif
