@@ -11,6 +11,7 @@
 #include "User.hpp"
 #include "MemoryAccess.hpp"
 #include <string>
+#include <json/Document.hpp>
 
 TEST(player_instanciation)
 	JSON::Value *json = JSON::load("fixtures/chaser.json");
@@ -63,12 +64,16 @@ ENDTEST()
 TEST(chaser_document)
 	JSON::Document<Chaser> doc;
 	
+	Chaser onDisk;
+
 	std::string name;
 	doc.with("fixtures/chaser.json", [&](Chaser & chaser){
 		name = chaser.getName();
 		chaser.setName("Coucougnette");
+		onDisk = chaser;
 	});
 	ASSERT(name == "Chaser1");
+	ASSERT(onDisk.hasQuaffle());
 
 	doc.with("fixtures/chaser.json", [&](Chaser & chaser){
 		name = chaser.getName();
@@ -94,6 +99,25 @@ TEST(player_role)
 	ASSERT(s.getRole() == "Seeker");
 ENDTEST()
 
+TEST(has_quaffle)
+	Chaser c;
+	ASSERT(! c.hasQuaffle());
+
+	c.retainQuaffle();
+	ASSERT(c.hasQuaffle());
+	JSON::Dict serialized = c;
+
+	ASSERT(ISBOOL(serialized.get("Q?")));
+	ASSERT(BOOL(serialized.get("Q?")));
+
+	c.releaseQuaffle();
+	ASSERT(! c.hasQuaffle());
+
+	serialized = c;
+	ASSERT(ISBOOL(serialized.get("Q?")));
+	ASSERT(! BOOL(serialized.get("Q?")))
+ENDTEST()
+
 int main(){
 	TestFunc tests[] = {
 		ADDTEST(player_instanciation),
@@ -101,7 +125,8 @@ int main(){
 		ADDTEST(collision_score),
 		ADDTEST(posmatrix),
 		ADDTEST(chaser_document),
-		ADDTEST(player_role)
+		ADDTEST(player_role),
+		ADDTEST(has_quaffle)
 	};
 	return RUN(tests);
 }

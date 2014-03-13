@@ -141,10 +141,10 @@ float Chaser::pass () const {
     return res;
 }
 
-float Chaser::shoot () const {
-    float res = 2*getStrength()+getPrecision()+getChance();
-    res = res * (100000000 +(rand()%10000000))/100000000;
-    return res;
+Chaser & Chaser::operator= (Player const & other) {
+    Player::operator=(other);
+    _hasQuaffle = false;
+    return *this;
 }
 
 // KEEPER ----------------------------------------------------------------------

@@ -20,7 +20,7 @@ public:
  //                _jersey(new Jersey()), _strength(5), _constitution(5), 
  //                _magic(5), _spirit(5), _velocity(5), _precision(5), _chance(5){}
 
-    Player(int id, std::string username): Player() {
+    Player(int id, std::string username) : Player() {
     	_memberID = id;
     	_owner = username;
     }
@@ -30,7 +30,7 @@ public:
     	if (_broomstick != NULL) delete _broomstick; 
     	if (_jersey != NULL) delete _jersey; 
     }
-    operator JSON::Dict() const;
+    virtual operator JSON::Dict() const;
     //void save();
     //Player* load(int id, std::string username = "");
 
@@ -129,11 +129,30 @@ private:
 /*================================CHASER===============================*/
 class Chaser : public Player 
 {
+private:
+	bool _hasQuaffle;
 public:
-	using Player::Player;
+    Chaser(int id, std::string username) : Player(), _hasQuaffle(false) {}
+    Chaser(JSON::Dict const & json = JSON::Dict()) : Player(json) {
+        _hasQuaffle = ISBOOL(json.get("Q?")) && BOOL(json.get("Q?"));
+    }
+  	
+  	operator JSON::Dict() const {
+  		JSON::Dict res = Player::operator JSON::Dict();
+  		res.set("Q?", JSON::Bool(_hasQuaffle));
+  		return res;
+  	}
+
+	Chaser & operator=(Player const & player);
     bool isChaser () const { return true; }
+
+    bool hasQuaffle() const {return _hasQuaffle;}
+    void retainQuaffle(){_hasQuaffle = true;}
+    void releaseQuaffle(){_hasQuaffle = false;}
+
+    /*! Return the pass score (speed of the quaffle when throwed) */
     float pass () const;
-    float shoot () const;
+
     std::string getRole() const {return std::string("Chaser");}
 };
 
@@ -143,7 +162,12 @@ class Keeper : public Player
 public:
     using Player::Player;
 	bool isKeeper () const { return true; }
+
+    /*! Return the catch ball score 
+        (probability to catch a quaffle) */
     float catchBall () const;
+
+    /*! Return the pass score (speed of the quaffle when throwed) */
     float pass () const;
     std::string getRole() const {return std::string("Keeper");}
 };
@@ -154,6 +178,9 @@ class Seeker : public Player
 public:
     using Player::Player;
 	bool isSeeker () const { return true; }
+
+    /*! Return the catch golden snitch score 
+        (probability to catch a Golden Snitch) */
     float catchGS () const;
     std::string getRole() const {return std::string("Seeker");}
 };
