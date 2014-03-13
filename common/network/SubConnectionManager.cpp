@@ -36,7 +36,7 @@ void SubConnectionManager::_doDisconnect(int fd)
     BaseConnectionManager::_doDisconnect(fd);
     JSON::Dict payload = {
         {"type", JSON::String(MSG::DISCONNECT)},
-        {"client_id", JSON::Integer(fd)}
+        {"data", JSON::Integer(fd)}
     };
     _parent.transmit(Message(fd, payload.clone()));
 }

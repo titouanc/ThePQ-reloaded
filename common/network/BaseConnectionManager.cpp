@@ -134,7 +134,7 @@ void BaseConnectionManager::_doDisconnect(int fd)
     removeClient(fd);
     JSON::Dict msgdata;
     msgdata.set("type", MSG::DISCONNECT);
-    msgdata.set("client_id", fd);
+    msgdata.set("data", fd);
     _incoming.push(Message(fd, msgdata.clone()));
     if (_logger)
 		std::cout << "[" << this << "] "<< "\033[1m" << fd 
@@ -147,7 +147,7 @@ void BaseConnectionManager::_doConnect(int fd)
     addClient(fd);
     JSON::Dict msgdata;
     msgdata.set("type", "CONNECT");
-    msgdata.set("client_id", fd);
+    msgdata.set("data", fd);
     _incoming.push(Message(fd, msgdata.clone()));
     std::cout << "[" << this << "] "<< "\033[1m" << fd 
               << " \033[34m connected\033[0m" << std::endl;
