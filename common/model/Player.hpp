@@ -65,6 +65,10 @@ public:
 	float collisionScore() const;
     int level () const;
 
+    /*! return a string for this player role 
+        ("beater", "chaser", "keeper" or "seeker") */
+    virtual std::string getRole() const {return std::string("");}
+
 	Player &operator=(Player const & player){
 		Moveable::operator=(player);
 		Member::operator=(player);
@@ -117,6 +121,7 @@ public:
     int getPrecision() const { return Player::getPrecision() + _bat->getPrecisionBonus(); }
     void equipBat (Bat aBat);
     float shootBludger () const;
+    std::string getRole() const {return std::string("Beater");}
 private:
 	Bat * _bat;
 };
@@ -129,6 +134,7 @@ public:
     bool isChaser () const { return true; }
     float pass () const;
     float shoot () const;
+    std::string getRole() const {return std::string("Chaser");}
 };
 
 /*================================CHASER================================*/
@@ -139,6 +145,7 @@ public:
 	bool isKeeper () const { return true; }
     float catchBall () const;
     float pass () const;
+    std::string getRole() const {return std::string("Keeper");}
 };
 
 // SEEKER ----------------------------------------------------------------------
@@ -148,7 +155,7 @@ public:
     using Player::Player;
 	bool isSeeker () const { return true; }
     float catchGS () const;
-
+    std::string getRole() const {return std::string("Seeker");}
 };
 
 

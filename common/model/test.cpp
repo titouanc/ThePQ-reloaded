@@ -77,29 +77,21 @@ TEST(chaser_document)
 	ASSERT(name == "Coucougnette");
 ENDTEST()
 
-TEST(matchresult)
-	// std::string user1("loser");
-	// std::string user2("winner");
-	// User l(user1, "loser"); 
-	// l.createUser();
-	// User w(user2, "winner"); 
-	// w.createUser();
-	// Team loser("loser", "loser", 10000, 2000);
-	// Team winner("winner", "winner", 10000, 1000);
-	// loser.save();
-	// winner.save();
-	// MatchResult result;
-	// result.setTeams("winner", "loser");
-	// result.setScore(210, 120);
-	// result.compute();
-	// result.save();
-	// loser.load();
-	// winner.load();
-	// ASSERT(loser.getFame() == 2000 - 2*gameconfig::FAME_GAIN_RATIO);
-	// ASSERT(winner.getFame() == 1000 + 2*gameconfig::FAME_GAIN_RATIO);
-	// MemoryAccess::removeObject(l);
-	// MemoryAccess::removeObject(w);
+TEST(player_role)
+	Player p;
+	ASSERT(p.getRole() == "");
 
+	Beater b;
+	ASSERT(b.getRole() == "Beater");
+
+	Chaser c;
+	ASSERT(c.getRole() == "Chaser");
+
+	Keeper k;
+	ASSERT(k.getRole() == "Keeper");
+
+	Seeker s;
+	ASSERT(s.getRole() == "Seeker");
 ENDTEST()
 
 int main(){
@@ -109,7 +101,7 @@ int main(){
 		ADDTEST(collision_score),
 		ADDTEST(posmatrix),
 		ADDTEST(chaser_document),
-		ADDTEST(matchresult)
+		ADDTEST(player_role)
 	};
 	return RUN(tests);
 }
