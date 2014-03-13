@@ -16,7 +16,6 @@ GraphicTeamManager::GraphicTeamManager(
 	if (user().players.size() > 0){
 		displayPlayers();
 		displayChangeButtons();
-
 	} else {
 		loadPlayers();
 		_wait = true;
@@ -109,6 +108,8 @@ void GraphicTeamManager::displayChangeButtons(){
 	_canvas.addButton<GraphicTeamManager, int>(
 		&GraphicTeamManager::changePlayerAt, KEEPER, this, "todo"
 	).centerOn(900, 535);
+
+	redrawCanvas();
 }
 
 void GraphicTeamManager::changePlayerAt(int position){
@@ -175,6 +176,8 @@ void GraphicTeamManager::displaySwapWith(int position){
 		_canvas.addButton<GraphicTeamManager, int>(
 			&GraphicTeamManager::changePlayerAt, KEEPER, this, "Keep"
 		).centerOn(900, 535);
+
+	redrawCanvas();
 }
 
 void GraphicTeamManager::onPlayersLoad()
