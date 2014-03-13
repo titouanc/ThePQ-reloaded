@@ -26,7 +26,7 @@ void StadiumManager::treatMessage(std::string const & type, JSON::Value const * 
 	}
 	else if (type == net::MSG::INSTALLATION_DOWNGRADE)
 	{
-		onUpgradeInstallation();
+		onDowngradeInstallation();
 	}
 	else if (type == net::MSG::INSTALLATIONS_LIST)
 	{
