@@ -16,8 +16,11 @@ struct Squad {
 	Seeker seeker;
 	Keeper keeper;
 	Player *players[7];
+    Jersey *_jersey;
+    Broomstick *_broomstick;
+    Bat *_bat;
 
-	Squad(){
+	Squad() : _jersey(NULL), _broomstick(NULL), _bat(NULL){
 		for (int i=0; i<3; i++)
 			players[i] = &(chasers[i]);
 		for (int i=0; i<2; i++)
@@ -26,7 +29,8 @@ struct Squad {
 		players[6] = &keeper;
 	}
 
-    Squad(std::string name, int listID[7], Jersey& jersey, Broomstick& broom, Bat& bat){
+    Squad(std::string name, int listID[7], Jersey& jersey, Broomstick& broom, Bat& bat)
+        : _jersey(new Jersey(jersey)), _broomstick(new Broomstick(broom)), _bat(new Bat(bat)){
         squad_owner = name;      
         for (size_t i(0);i<7;++i){
 
@@ -71,11 +75,33 @@ struct Squad {
 			squad_owner = STR(json.get("squad_owner")).value();
 	}
 
+    ~Squad(){
+        if (_jersey != NULL)
+            delete _jersey;
+        if (_broomstick != NULL)
+            delete _broomstick;
+        if (_bat != NULL)
+            delete _bat;
+    }
+
     bool hasPlayer(Moveable *moveable) const{
         for (int i=0; i<7; i++)
             if (players[i] == moveable)
                 return true;
         return false;
+    }
+
+    void putPlayerAtPosition(int member_id, int position){
+        Player toLoad(member_id, squad_owner);
+        MemoryAccess::load(toLoad);
+        if (position < 3) // Chaser
+            chasers[position] = convertToChaser(toLoad, *_jersey, *_broomstick);
+        else if (position < 5 && position > 2) // Beater
+            beaters[position-3] = convertToBeater(toLoad, *_jersey, *_broomstick, *_bat);
+        else if (position == 5) // seeker
+            seeker = convertToSeeker(toLoad, *_jersey, *_broomstick);
+        else if (position == 6) // keeper
+            keeper = convertToKeeper(toLoad, *_jersey, *_broomstick);
     }
 
 	Squad & operator=(Squad const & other){
