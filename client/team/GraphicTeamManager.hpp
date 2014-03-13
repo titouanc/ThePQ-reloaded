@@ -13,8 +13,13 @@ private:
 	void displayPlayers();
 	void displaySquadLabels();
 	void displayChangeButtons();
+
 	void changePlayerAt(int position);
 	void displaySwapWith(int position);
+	void displayAvailablePlayers();
+
+	void selectPlayer(int id);
+
 	void onPlayersLoad();
 	bool _wait;
 

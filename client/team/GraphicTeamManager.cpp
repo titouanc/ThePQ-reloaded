@@ -114,6 +114,7 @@ void GraphicTeamManager::displayChangeButtons(){
 
 void GraphicTeamManager::changePlayerAt(int position){
 	displayPlayers();
+	displayAvailablePlayers();
 	displaySwapWith(position);
 }
 
@@ -178,6 +179,20 @@ void GraphicTeamManager::displaySwapWith(int position){
 		).centerOn(900, 535);
 
 	redrawCanvas();
+}
+
+void GraphicTeamManager::displayAvailablePlayers(){
+	for(int i=0; i<user().players.size(); ++i){
+		if (!user().squad.hasMemberID(user().players[i].getMemberID())){
+			_canvas.addButton<GraphicTeamManager, int>(
+				&GraphicTeamManager::selectPlayer, user().players[i].getMemberID(), this, "Select" 
+				).setPosition(10, 153+i*52);
+		}
+	}
+}
+
+void GraphicTeamManager::selectPlayer(int id){
+
 }
 
 void GraphicTeamManager::onPlayersLoad()
