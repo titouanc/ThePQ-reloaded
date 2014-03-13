@@ -26,25 +26,33 @@ const sf::Color UIMatch::hilightYellow(0xcc, 0xcc, 0x00, ALPHA);
 const sf::Color UIMatch::hilightRed(0xcc, 0x00, 0x00, ALPHA);
 const sf::Color UIMatch::hilightBlue(0x00, 0x00, 0xff, ALPHA);
 
-UIMatch::UIMatch(Pitch & pitch, int hexagonSize) : 
+UIMatch::UIMatch(Pitch & pitch, const Squad & viewerSquad, int hexagonSize) : 
     sf::Drawable(),
     _pitch(pitch), 
+    _ownSquad(viewerSquad),
     _size(hexagonSize), 
     _hexagon(circleSize(), 6), /* 6 sides regular polygon */
     _left(0), _top(0)
 {
-    sf::Texture *toLoad[6] = {
+    sf::Texture *toLoad[14] = {
         &_grass_texture, &_sand_texture, &_goal_texture, &_bludger_texture,
-        &_quaffle_texture, &_snitch_texture
+        &_quaffle_texture, &_snitch_texture,
+        &_own_chaser_texture, &_own_seeker_texture, &_own_keeper_texture, &_own_beater_texture,
+        &_other_chaser_texture, &_other_seeker_texture, &_other_keeper_texture, &_other_beater_texture
     };
-    const char *files[6] = {
+    const char *files[14] = {
         "grass1.png", "sand1.png", "goal2_50.png", "Bludger.png", "Quaffle.png",
-        "GoldenSnitch.png"
+        "GoldenSnitch.png", "BluePlayer.png", "YellowPlayer.png", "GreenPlayer.png", "RedPlayer.png",
+        "BlueStripedPlayer.png", "YellowStripedPlayer.png", "GreenStripedPlayer.png", "RedStripedPlayer.png"
     };
-    for (int i=0; i<6; i++){
+    for (int i=0; i<14; i++){
         if (! toLoad[i]->loadFromFile(texturePath(files[i])))
             throw TextureNotFound(files[i]);
     }
+    if (_ownSquad.players[0]->getPosition().x() > 0)
+        _playsOnLeftSide = false;
+    else
+        _playsOnLeftSide = true;
 }
 
 unsigned int UIMatch::width(void) const
@@ -138,7 +146,7 @@ void UIMatch::drawMoveables(sf::RenderTarget & dest) const
 
     if (_pitch.size() > 0){
         Pitch::const_iterator it;
-        sf::CircleShape shape(circleSize());
+        sf::Sprite playerSprite;
 
         for (it=_pitch.begin(); it!=_pitch.end(); it++){
             Position const & destpos = pitch2GUI(it->first);
@@ -160,16 +168,36 @@ void UIMatch::drawMoveables(sf::RenderTarget & dest) const
 
             } else if (it->second->isPlayer()){
                 Player const & player = (Player const &) *(it->second);
-                if (player.isBeater())
-                    shape.setFillColor(sf::Color(0xff, 0x33, 0x33, 0xff));
-                else if (player.isSeeker())
-                    shape.setFillColor(sf::Color(0xff, 0xff, 0x33, 0xff));
-                else if (player.isChaser())
-                    shape.setFillColor(sf::Color(0x33, 0, 0xff, 0xff));
-                else if (player.isKeeper())
-                    shape.setFillColor(sf::Color(0, 0xff, 0x33, 0xff));
-                shape.setPosition(destpos.x(), destpos.y());
-                dest.draw(shape);
+                if (player.isBeater()){
+                    if (_ownSquad.hasPlayer(&(Moveable &)player))
+                        playerSprite.setTexture(_own_beater_texture);
+                    else
+                        playerSprite.setTexture(_other_beater_texture);
+                }
+                else if (player.isSeeker()){
+                    if (_ownSquad.hasPlayer(&(Moveable &)player))
+                        playerSprite.setTexture(_own_seeker_texture);
+                    else
+                        playerSprite.setTexture(_other_seeker_texture);
+                }
+                else if (player.isChaser()){
+                    if (_ownSquad.hasPlayer(&(Moveable &)player))
+                        playerSprite.setTexture(_own_chaser_texture);
+                    else
+                        playerSprite.setTexture(_other_chaser_texture);
+                }
+                else if (player.isKeeper()){
+                    if (_ownSquad.hasPlayer(&(Moveable &)player))
+                        playerSprite.setTexture(_own_keeper_texture);
+                    else
+                        playerSprite.setTexture(_other_keeper_texture);
+                }
+                s = _own_chaser_texture.getSize();
+                rx = (double)_size/s.x;
+                ry = (double)_size/s.y;
+                playerSprite.setScale(sf::Vector2f(rx, ry));
+                playerSprite.setPosition(destpos.x(), destpos.y());
+                dest.draw(playerSprite);
             }
         }
     }
