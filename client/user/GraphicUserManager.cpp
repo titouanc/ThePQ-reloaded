@@ -101,23 +101,23 @@ void GraphicUserManager::displayMainMenu()
 	
 	_canvas.addButton<GraphicUserManager>(
 		&GraphicUserManager::goToPlayers, this, "Team management"
-	).setPosition(100, 300);
+	).setPosition(100, 250);
 
 	_canvas.addButton<GraphicUserManager>(
 		&GraphicUserManager::goToStadium, this, "Stadium management"
-	).setPosition(100, 350);
+	).setPosition(100, 300);
 
 	_canvas.addButton<GraphicUserManager>(
 		&GraphicUserManager::goToMarket, this, "Player market"
-	).setPosition(100, 400);
+	).setPosition(100, 350);
 
 	_canvas.addButton<GraphicUserManager>(
 		&GraphicUserManager::goToFriendlyGame, this, "Play a friendly game"
-	).setPosition(100, 450);
+	).setPosition(100, 400);
 
 	_canvas.addButton<GraphicUserManager>(
 		&GraphicUserManager::goToChampionships, this, "Championships"
-	).setPosition(100, 500);
+	).setPosition(100, 450);
 
 	backButton("Exit").setPosition(100, 550);
 	
