@@ -124,20 +124,21 @@ void GraphicChampionshipManager::seeCurrentChampionship(){
 			nameLabel.setColor(BUTTON_TEXT_COLOR);
 		}
 		if(user().joinedChamp.isStarted()){
+			int schedulesWidth = cellWidth*3;
 			users.setPosition((window().getSize().x - cellWidth) / 4, (4*BUTTON_HEIGHT) + (3*MARGIN));
-			TableView & users = _canvas.addTableView();
-			users.setPosition((window().getSize().x - cellWidth) / 2, (4*BUTTON_HEIGHT) + (3*MARGIN));
-			TableCell & header = users.addTableCell(cellWidth,47);
+			TableView & schedules = _canvas.addTableView();
+			schedules.setPosition((window().getSize().x - schedulesWidth) / 4, (4*BUTTON_HEIGHT) + (3*MARGIN));
+			TableCell & header = schedules.addTableCell(schedulesWidth,47);
 			header.setBackgroundColor(BUTTON_BACKGROUND_COLOR);
-			Label & stringHeader = header.addLabel("Users");
-			stringHeader.setPosition((cellWidth - stringHeader.getWidth())/2,10);
-			stringHeader.setColor(BUTTON_TEXT_COLOR);
-			for(std::string & name : user().joinedChamp.getUsers()){
-				TableCell & userCell = users.addTableCell(cellWidth,47);
-				userCell.setBackgroundColor(sf::Color(0x00, 0x00, 0x00, 0x77));
-				Label & nameLabel = userCell.addLabel(name);
-				nameLabel.setPosition((cellWidth - nameLabel.getWidth())/2, 10);
-				nameLabel.setColor(BUTTON_TEXT_COLOR);
+			Label & scheduleHeader = header.addLabel("Schedules");
+			scheduleHeader.setPosition((schedulesWidth - scheduleHeader.getWidth())/2,10);
+			scheduleHeader.setColor(BUTTON_TEXT_COLOR);
+			for(Schedule & schedule : user().joinedChamp.getSchedules()){
+				TableCell & scheduleCell = schedules.addTableCell(schedulesWidth,47);
+				scheduleCell.setBackgroundColor(sf::Color(0x00, 0x00, 0x00, 0x77));
+				Label & name1Label = scheduleCell.addLabel(schedule.user1);
+				name1Label.setPosition(155, 10);
+				name1Label.setColor(BUTTON_TEXT_COLOR);
 			}
 		}
 		

@@ -46,6 +46,12 @@ struct Schedule
 		res.set("isHappening", JSON::Bool(isHappening));
 		return res;
 	}
+	std::string getReadableDate() const {
+		std::string dateStr = ctime(&date);
+		if(! dateStr.empty())
+			dateStr.erase(dateStr.size()-1);
+		return dateStr;
+	}
 };
 
 

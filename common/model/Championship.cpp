@@ -30,7 +30,7 @@ std::ostream& operator<< (std::ostream& out, const Schedule& sche)
             << " - " << status1
             << "\033[0m) User2(\033[32m" << sche.user2
             << " - " << status2
-            << "\033[0m) Date(\033[32m" << ctime(&sche.date) << "\033[0m)";
+            << "\033[0m) Date(\033[32m" << sche.getReadableDate() << "\033[0m)";
         return out;
 
     }
