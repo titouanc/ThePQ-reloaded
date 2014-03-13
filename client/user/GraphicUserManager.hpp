@@ -27,6 +27,7 @@ private:
 	void goToStadium();
 	void goToMarket();
 	void goToPlayers();
+	void goToChampionships();
 
 	/* Hooks */
 	void onAskTeamName();

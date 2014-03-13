@@ -45,11 +45,16 @@ class ClientManager {
 		void loadPlayers();
 
 
+		void showFinancialStatus();
+		void showTeamStatus();
+
+
 		/* Notifications handlers */
 		/*! pop() a notification and handles it */
 		void handleNotification();
 
-		/*! handle message for end of player sale */
+		/* handle message for end of player sale */
+
 		std::string onEndOfSale(JSON::Dict const & json);
 
 		/* handle message when a championship match has been automatically resolved */

@@ -51,15 +51,15 @@ void ClientManager::treatMessage(std::string const & type, JSON::Value const * d
 	{
 		std::string response = STR(data).value();
 		if (response == net::MSG::CHAMPIONSHIP_MATCH_WITHDRAW)
-			this->onNotificationResponse(true,response,"You \033[32mwithdrawed\033[0m from your match.\n\033[31mEvicted\033[0m from championship.");
+			this->onNotificationResponse(true,response,"You withdrawed from your match.\nEvicted from championship.");
 		else if (response == net::MSG::CHAMPIONSHIP_UNPLAYED_MATCH_WON)
-			this->onNotificationResponse(true,response,"Your opponent failed to be ready in time for your championship match, you have \033[32mwon\033[0m the match.");
+			this->onNotificationResponse(true,response,"Your opponent failed to be ready in time for your championship match, you have won the match.");
 		else if (response == net::MSG::CHAMPIONSHIP_MATCH_OPPONENT_WITHDRAW)
-			this->onNotificationResponse(true,response,"Your opponent \033[32mwithdrawed\033[0m from your match, you have \033[32mwon\033[0m the match.");
+			this->onNotificationResponse(true,response,"Your opponent withdrawed from your match, you have won the match.");
 		else if(response == net::MSG::CHAMPIONSHIP_MATCH_WAIT)
-			this->onNotificationResponse(true,response,"You are \033[32mready\033[0m for your match.\nThe match will start when your opponent is ready.\nPlease wait...");
+			this->onNotificationResponse(true,response,"You are readyfor your match.\nThe match will start when your opponent is ready.");
 		else if(response == net::MSG::CHAMPIONSHIP_MATCH_START){
-			this->onNotificationResponse(true,response,"Your opponent is \033[32mready\033[0m too. Match is starting.");
+			this->onNotificationResponse(true,response,"Your opponent is ready too. Match is starting.");
 			this->onMatchStart();
 		}
 		else if(response == net::MSG::CHAMPIONSHIP_MATCH_NOT_FOUND){
@@ -139,7 +139,7 @@ void ClientManager::handleNotification(){
 std::string ClientManager::onEndOfSale(JSON::Dict const & json)
 {
 	std::stringstream res;
-	res << "\n\033[36mMessage : a sale has ended.\033[0m" << endl;
+	res << "\nMessage : a sale has ended." << endl;
 	if(STR(json.get("type")).value()==net::MSG::END_OF_OWNED_SALE_RAPPORT){
 		if(STR(json.get(net::MSG::RAPPORT_SALE_STATUS)).value() == net::MSG::PLAYER_NOT_SOLD){
 			res << "Your player " << INT(json.get(net::MSG::PLAYER_ID)) << " has not been sold." << endl; 
@@ -151,7 +151,7 @@ std::string ClientManager::onEndOfSale(JSON::Dict const & json)
 	}
 	else if(STR(json.get("type")).value()==net::MSG::WON_SALE_RAPPORT){
 		std::string owner = STR(json.get(net::MSG::SALE_OWNER)).value();
-		res << "You bought player " << INT(json.get(net::MSG::PLAYER_ID)) << " for \33[32m" << INT(json.get(net::MSG::BID_VALUE)) << "\033[0m." <<endl;
+		res << "You bought player " << INT(json.get(net::MSG::PLAYER_ID)) << " for " << INT(json.get(net::MSG::BID_VALUE)) << "." <<endl;
 		if(owner==net::MSG::GENERATED_BY_MARKET)
 			res << "This player did not belong to any team. He was free. Like the wind."<<endl;
 		else
@@ -163,15 +163,15 @@ std::string ClientManager::onEndOfSale(JSON::Dict const & json)
 
 std::string ClientManager::onUnplayedMatch(std::string const & msg){
 	std::stringstream res;
-	res << "\n\033[36mMessage : championship match has ended.\033[0m" << endl;
+	res << "Message : championship match has ended." << endl;
 	if(msg == net::MSG::CHAMPIONSHIP_UNPLAYED_MATCH_WON){
-		res << "Your opponent failed to be ready in time for your championship match, you have \033[32mwon\033[0m the match." << endl;
+		res << "Your opponent failed to be ready in time for your championship match, you have won the match." << endl;
 	}
 	else if(msg == net::MSG::CHAMPIONSHIP_UNPLAYED_MATCH_LOST){
-		res << "You failed to be ready in time for your championship match, you have been \033[31mevicted\033[0m from the championship." << endl;
+		res << "You failed to be ready in time for your championship match, you have been evicted from the championship." << endl;
 	}
 	else if(msg == net::MSG::CHAMPIONSHIP_MATCH_WITHDRAW){
-		res << "Your opponent withdrawed from the championship match, you have \033[32mwon\033[0m the match." << endl;
+		res << "Your opponent withdrawed from the championship match, you have won the match." << endl;
 	}
 	else
 		res << "Unknown message type." << endl;
@@ -182,13 +182,13 @@ std::string ClientManager::onUnplayedMatch(std::string const & msg){
 std::string ClientManager::onChampionshipStatusChange(std::string const & msg){
 	std::stringstream res;
 	if (msg == net::MSG::CHAMPIONSHIP_STARTED){
-		res << "\n\033[36mMessage : the championship you joined has started.\033[0m" << endl;
-		res << "You can check the infos about your next championship match in the \033[1mcurrent championship\033[0m tab."
+		res << "\nMessage : the championship you joined has started." << endl;
+		res << "You can check the infos about your next championship match in your current championship infos."
 			<< "\nYou will receive a notification when it is ready to be played." << endl;
 	}
 	else if(msg == net::MSG::CHAMPIONSHIP_WON){
-		res << "\n\033[36mMessage : you have won the championship !\033[0m"<<endl;
-		res << "Such much very wow." << endl;
+		res << "\nMessage : you have won the championship !"<<endl;
+		res << "Such very much wow." << endl;
 	}
 	res << endl;
 	return res.str();
@@ -223,6 +223,8 @@ void ClientManager::onTeamInfo(UserData const & user)
 	_user.username = user.username;
 	_user.funds = user.funds;
 	_user.teamname = user.teamname;
+	_user.acPoints = user.acPoints;
+	_user.fame = user.fame;
 }
 
 ClientManager::ClientManager(

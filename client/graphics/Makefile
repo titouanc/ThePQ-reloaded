@@ -9,8 +9,8 @@ else
 	CPPFLAGS += $(shell ${PKGCONFIG} --cflags sfml-all)
 endif
 
-all: libgraphics.a testbox.app
-
+#all: libgraphics.a testbox.app
+all: libgraphics.a
 libgraphics.a: ${OBJS}
 	ar r $@ $^
 

@@ -3,6 +3,7 @@
 #include <market/GraphicMarketManager.hpp>
 #include <fgame/GUIFGameManager.hpp>
 #include <team/GraphicTeamManager.hpp>
+#include <championship/GraphicChampionshipManager.hpp>
 
 using namespace std;
 using namespace GUI;
@@ -114,7 +115,11 @@ void GraphicUserManager::displayMainMenu()
 		&GraphicUserManager::goToFriendlyGame, this, "Play a friendly game"
 	).setPosition(100, 450);
 
-	backButton("Exit").setPosition(100, 500);
+	_canvas.addButton<GraphicUserManager>(
+		&GraphicUserManager::goToChampionships, this, "Championships"
+	).setPosition(100, 500);
+
+	backButton("Exit").setPosition(100, 550);
 	
 	redrawCanvas();
 }
@@ -194,12 +199,20 @@ void GraphicUserManager::goToPlayers()
 	displayMainMenu();
 }
 
+void GraphicUserManager::goToChampionships()
+{
+	GraphicChampionshipManager champ(*this, _controller);
+	champ.run();
+	deleteCanvas();
+	displayMainMenu();
+}
+
 
 /* HOOKS */
 void GraphicUserManager::onLoginOK()
 {
-	displayMainMenu();
 	loadPlayers();
+	displayMainMenu();
 	_wait = false;
 }
 

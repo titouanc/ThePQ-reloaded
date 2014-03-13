@@ -15,6 +15,7 @@ private:
 	void printInstallationsList();
 	void showUpgradeInstallation();
 	void showDowngradeInstallation();
+	void clScreen();
 	virtual void onMatchStart();
 	virtual void treatMessage(std::string const & type, JSON::Value const * data);
 };

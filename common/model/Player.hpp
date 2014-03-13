@@ -9,7 +9,7 @@
 #include "Member.hpp"
 #include "Gear.hpp"
 #include "Moveable.hpp"
-
+#include <Constants.hpp>
 
 class Player : public Member, public Moveable
 {
@@ -82,9 +82,7 @@ public:
 	}
 
     float getSpeed() const {
-        float res = 4*getVelocity();
-        res = res * (100000000 +(rand()%10000000))/100000000;
-        return res;
+        return (getVelocity()+(gameconfig::MAXAPTVAL/10)-1)/(gameconfig::MAXAPTVAL/10);
     }
 
 protected:
