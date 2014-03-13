@@ -148,7 +148,7 @@ void GraphicChampionshipManager::seeCurrentChampionship(){
 				name1Label.setPosition((schedulesWidth-dateLabel.getWidth()-versusLabel.getWidth())/2 + dateLabel.getWidth() - name1Label.getWidth() - 15, 10);
 				name1Label.setColor(BUTTON_TEXT_COLOR);
 				Label & name2Label = scheduleCell.addLabel(schedule.user2);
-				name2Label.setPosition((schedulesWidth-dateLabel.getWidth()-versusLabel.getWidth())/2 + dateLabel.getWidth() + versusLabel.getWidth() + name2Label.getWidth() + 15, 10);
+				name2Label.setPosition((schedulesWidth-dateLabel.getWidth()-versusLabel.getWidth())/2 + dateLabel.getWidth() + versusLabel.getWidth() + 15, 10);
 				name2Label.setColor(BUTTON_TEXT_COLOR);
 
 			}
