@@ -77,7 +77,7 @@ namespace net
 		static const std::string PLAYERS_ON_MARKET_LIST= "DQ_P_OM_L";
 		static const std::string PLAYERS_LIST = "DQ_P_L";
 		static const std::string SHOW_TEAM_STATUS = "DQ_T_S";//new data query!!!
-		static const std::string SHOW_FINANCIAL_STATUS = "DQ_F_S";
+		static const std::string SHOW_FINANCIAL_STATUS = "DQ_F_S";		
 
 		// friendly game
 		static const std::string FRIENDLY_GAME_USERNAME = "F_G_U";
@@ -143,7 +143,9 @@ namespace net
 		static const std::string CHAMPIONSHIP_UNPLAYED_MATCH_WON = "CMATCH_UPLAYED_W";
 		static const std::string CHAMPIONSHIP_UNPLAYED_MATCH_LOST = "CMATCH_UPLAYED_L";
 		
-		
+		// SQUAD ------------------------
+		static const std::string PUT_PLAYER_ON_SQUAD_POSITION = "P_P_S_P";
+		static const std::string SQUAD_POSITION = "SQUAD_POS";
 
 	}
 }

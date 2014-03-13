@@ -113,6 +113,7 @@ void GraphicTeamManager::displayChangeButtons(){
 }
 
 void GraphicTeamManager::changePlayerAt(int position){
+	selectPosition(position); // storing it in an instance variable
 	displayPlayers();
 	displayAvailablePlayers();
 	displaySwapWith(position);
@@ -192,7 +193,11 @@ void GraphicTeamManager::displayAvailablePlayers(){
 }
 
 void GraphicTeamManager::selectPlayer(int id){
-
+	putPlayerAtPosition(id, getSelectedPosition());
+	_wait = true;
+	cout << "1" << endl;
+	while (_wait);
+		readMessages();
 }
 
 void GraphicTeamManager::onPlayersLoad()
@@ -200,4 +205,11 @@ void GraphicTeamManager::onPlayersLoad()
 	displayPlayers();
 	displayChangeButtons();
 	_wait = false;
+}
+
+void GraphicTeamManager::onTeamInfoChange()
+{
+	_wait = false;
+	displayPlayers();
+	displayChangeButtons();
 }

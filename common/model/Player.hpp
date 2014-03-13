@@ -117,6 +117,7 @@ public:
     int getPrecision() const { return Player::getPrecision() + _bat->getPrecisionBonus(); }
     void equipBat (Bat aBat);
     float shootBludger () const;
+    Bat & getBat() { return *_bat; }
 private:
 	Bat * _bat;
 };

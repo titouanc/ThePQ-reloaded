@@ -92,6 +92,7 @@ class ClientManager {
 
 		/*! Triggered when user's team informations are updated */
 		virtual void onTeamInfo(UserData const & user);
+		virtual void onTeamInfoChange() {}
 
 	public:
 		/*! Create a new client manager with a connection to server, a user 

@@ -148,6 +148,7 @@ void Team::generateBaseSquad(){
 		p.equipJersey(jers);
 		_players.push_back(p);
 		*(_squad.players[i]) = p;
+		_squad.squad_owner = _owner;
 	}
 }
 

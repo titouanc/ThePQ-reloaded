@@ -20,7 +20,7 @@ struct Squad {
     Broomstick *_broomstick;
     Bat *_bat;
 
-	Squad() : _jersey(NULL), _broomstick(NULL), _bat(NULL){
+	Squad() : _jersey(new Jersey()), _broomstick(new Broomstick(5, 5)), _bat(new Bat(5, 5)){
 		for (int i=0; i<3; i++)
 			players[i] = &(chasers[i]);
 		for (int i=0; i<2; i++)
@@ -73,6 +73,15 @@ struct Squad {
 			keeper = Keeper(DICT(json.get("keeper")));
 		if (ISSTR(json.get("squad_owner")))
 			squad_owner = STR(json.get("squad_owner")).value();
+        if (_jersey != NULL)
+            delete _jersey;
+        if (_broomstick != NULL)
+            delete _broomstick;
+        if (_bat != NULL)
+            delete _bat;
+        _bat = new Bat(beaters[0].getBat());
+        _jersey = new Jersey(beaters[0].getJersey());
+        _broomstick = new Broomstick(beaters[0].getBroomstick());
 	}
 
     ~Squad(){
@@ -101,6 +110,7 @@ struct Squad {
     void putPlayerAtPosition(int member_id, int position){
         Player toLoad(member_id, squad_owner);
         MemoryAccess::load(toLoad);
+        cout << "hello ! j=" << _jersey<< ", br="<<_broomstick << ", ba="<<_bat << endl; 
         if (position < 3) // Chaser
             chasers[position] = convertToChaser(toLoad, *_jersey, *_broomstick);
         else if (position < 5 && position > 2) // Beater
@@ -109,6 +119,7 @@ struct Squad {
             seeker = convertToSeeker(toLoad, *_jersey, *_broomstick);
         else if (position == 6) // keeper
             keeper = convertToKeeper(toLoad, *_jersey, *_broomstick);
+        cout << "yes!"<< endl;
     }
 
 	Squad & operator=(Squad const & other){

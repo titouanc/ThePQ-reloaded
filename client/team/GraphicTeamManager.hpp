@@ -21,6 +21,7 @@ private:
 	void selectPlayer(int id);
 
 	void onPlayersLoad();
+	void onTeamInfoChange();
 	bool _wait;
 
 	NOTIFIABLE

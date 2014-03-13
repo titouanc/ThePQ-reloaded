@@ -241,6 +241,9 @@ void Server::treatMessage(
 		
 		else if(messageType == MSG::FRIENDLY_GAME_INVITATION_RESPONSE)
 				sendInvitationResponseToPlayer(dict, peer_id);	
+
+		else if(messageType == MSG::PUT_PLAYER_ON_SQUAD_POSITION)
+			putPlayerOnSquadPosition(dict, peer_id);
 	} 
 
 	else if (ISSTR(payload)){
@@ -575,6 +578,17 @@ User *Server::getUserByName(std::string username)
 		if (username == iter->second->getUsername())
 			return iter->second;
 	return NULL;
+}
+
+void Server::putPlayerOnSquadPosition(const JSON::Dict &response, int peer_id){
+	int position;
+	int member_id;
+	if (ISINT(response.get(net::MSG::PLAYER_ID)))
+		member_id = INT(response.get(net::MSG::PLAYER_ID));
+	if (ISINT(response.get(net::MSG::SQUAD_POSITION)))
+		position = INT(response.get(net::MSG::SQUAD_POSITION));
+	_users[peer_id]->getTeam().getSquad().putPlayerAtPosition(member_id, position);
+	sendTeamInfos(_users[peer_id]->getTeam(), peer_id);
 }
 
 void Server::timeLoop()
