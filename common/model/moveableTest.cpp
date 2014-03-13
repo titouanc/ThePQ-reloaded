@@ -1,5 +1,6 @@
 #include <string>
 #include <model/Moveable.hpp>
+#include <model/Squad.hpp>
 #include <lighttest/lighttest.hpp>
 
 TEST(constructor_without_parameters)
@@ -45,12 +46,19 @@ TEST(serialize)
 	ASSERT(copy.getID() == titou.getID());
 ENDTEST()
 
+TEST(squad)
+	Squad sq1, sq2;
+	ASSERT(sq1.hasPlayer(&(sq1.seeker)));
+	ASSERT(! sq2.hasPlayer(&(sq1.seeker)));
+ENDTEST()
+
 int main(){
 	TestFunc tests[] = {
 		ADDTEST(constructor_without_parameters),
 		ADDTEST(constructor_with_parameters),
 		ADDTEST(setters),
-		ADDTEST(serialize)
+		ADDTEST(serialize),
+		ADDTEST(squad)
 	};
 	return RUN(tests);
 }
