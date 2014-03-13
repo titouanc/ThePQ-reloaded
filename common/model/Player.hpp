@@ -69,6 +69,9 @@ public:
         ("beater", "chaser", "keeper" or "seeker") */
     virtual std::string getRole() const {return std::string("");}
 
+    /*! return true if the player can catch/throw the quaffle */
+    virtual bool canQuaffle() const { return false; }
+
 	Player &operator=(Player const & player){
 		Moveable::operator=(player);
 		Member::operator=(player);
@@ -103,6 +106,31 @@ protected:
 };
 
 
+/*! A base class for players that can catch and throw the quaffle */
+class PlayerQuaffle : public Player
+{
+private:
+    bool _hasQuaffle;
+public:
+    PlayerQuaffle & operator=(Player const & player);
+    PlayerQuaffle(int id, std::string username) : Player(), _hasQuaffle(false) {}
+    PlayerQuaffle(JSON::Dict const & json = JSON::Dict()) : Player(json) {
+        _hasQuaffle = ISBOOL(json.get("Q?")) && BOOL(json.get("Q?"));
+    }
+    
+    operator JSON::Dict() const {
+        JSON::Dict res = Player::operator JSON::Dict();
+        res.set("Q?", JSON::Bool(_hasQuaffle));
+        return res;
+    }
+
+    bool canQuaffle() const { return true; }
+
+    bool hasQuaffle() const {return _hasQuaffle;}
+    void retainQuaffle(){_hasQuaffle = true;}
+    void releaseQuaffle(){_hasQuaffle = false;}
+};
+
 
 /*================================BEATER==============================*/
 class Beater : public Player 
@@ -127,45 +155,22 @@ private:
 };
 
 /*================================CHASER===============================*/
-class Chaser : public Player 
+class Chaser : public PlayerQuaffle 
 {
-private:
-	bool _hasQuaffle;
 public:
-    Chaser(int id, std::string username) : Player(), _hasQuaffle(false) {}
-    Chaser(JSON::Dict const & json = JSON::Dict()) : Player(json) {
-        _hasQuaffle = ISBOOL(json.get("Q?")) && BOOL(json.get("Q?"));
-    }
-  	
-  	operator JSON::Dict() const {
-  		JSON::Dict res = Player::operator JSON::Dict();
-  		res.set("Q?", JSON::Bool(_hasQuaffle));
-  		return res;
-  	}
-
-	Chaser & operator=(Player const & player);
+    using PlayerQuaffle::PlayerQuaffle;
     bool isChaser () const { return true; }
-
-    bool hasQuaffle() const {return _hasQuaffle;}
-    void retainQuaffle(){_hasQuaffle = true;}
-    void releaseQuaffle(){_hasQuaffle = false;}
-
     /*! Return the pass score (speed of the quaffle when throwed) */
     float pass () const;
-
     std::string getRole() const {return std::string("Chaser");}
 };
 
 /*================================CHASER================================*/
-class Keeper : public Player 
+class Keeper : public PlayerQuaffle 
 {
 public:
     using Player::Player;
 	bool isKeeper () const { return true; }
-
-    /*! Return the catch ball score 
-        (probability to catch a quaffle) */
-    float catchBall () const;
 
     /*! Return the pass score (speed of the quaffle when throwed) */
     float pass () const;

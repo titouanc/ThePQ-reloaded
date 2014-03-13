@@ -123,6 +123,13 @@ int Player::level () const{
     return static_cast<int>(pow(_strength * _velocity * _precision * _chance, 0.25));
 }
 
+// PLAYERQUAFFLE ---------------------------------------------------------------
+PlayerQuaffle & PlayerQuaffle::operator= (Player const & other) {
+    Player::operator=(other);
+    _hasQuaffle = false;
+    return *this;
+}
+
 // BEATER ----------------------------------------------------------------------
 void Beater::equipBat(Bat aBat){
     *_bat = aBat;
@@ -141,19 +148,7 @@ float Chaser::pass () const {
     return res;
 }
 
-Chaser & Chaser::operator= (Player const & other) {
-    Player::operator=(other);
-    _hasQuaffle = false;
-    return *this;
-}
-
 // KEEPER ----------------------------------------------------------------------
-float Keeper::catchBall () const {
-    float res = 2*getPrecision()+getVelocity()+getChance();
-    res = res * (100000000 +(rand()%10000000))/100000000;
-    return res;
-}
-
 float Keeper::pass () const {
     float res = getStrength()+2*getPrecision()+getChance();
     res = res * (100000000 +(rand()%10000000))/100000000;
