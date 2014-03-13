@@ -712,6 +712,7 @@ void Server::timeUpdateChampionship()
 {
 	for (size_t i = 0; i < _championships.size(); ++i)
 	{
+		std::cout << *(_championships[i]) << std::endl;
 		if(_championships[i]->isStarted() && !(_championships[i]->areUsersNotified())){
 			notifyStartingChampionship(*(_championships[i]));
 			_championships[i]->usersNotified();
@@ -844,7 +845,7 @@ void Server::sendChampionshipsList(int peer_id){
 	std::deque<Championship*>::iterator it;
 	pthread_mutex_lock(&_champsMutex);
 	for(it = _championships.begin();it < _championships.end();++it){
-		if(!(*it)->isStarted())
+		if(!(*it)->isStarted() && !(*it)->isFull())
 			champs.append(JSON::Dict(*(*it)));
 	}
 	pthread_mutex_unlock(&_champsMutex);
