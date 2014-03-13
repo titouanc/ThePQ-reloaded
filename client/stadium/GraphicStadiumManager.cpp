@@ -46,12 +46,12 @@ void GraphicStadiumManager::displayInstallations()
 		levelLabel.setColor(BLUE_TEXT_COLOR);
 		//levelLabel.setFont(HEADER_FONT_PATH);
 
-		current.addLabel("Upgrade cost : ").setPosition(10, 50);
+		current.addLabel("Upgrade cost : ", sf::Color::White).setPosition(10, 50);
 		Label &upgradeCostValue = current.addLabel(user().installations[i]->getUpgradeCost());	
 		upgradeCostValue.setPosition(270-15-upgradeCostValue.getWidth(), 50);
 		upgradeCostValue.setColor(BLUE_TEXT_COLOR);
 
-		current.addLabel("Downgrade refunds : ").setPosition(10, 90);
+		current.addLabel("Downgrade refunds : ", sf::Color::White).setPosition(10, 90);
 		Label &downgradeRefundsValue = current.addLabel(user().installations[i]->getUpgradeCost());	
 		downgradeRefundsValue.setPosition(270-15-downgradeRefundsValue.getWidth(), 90);
 		downgradeRefundsValue.setColor(BLUE_TEXT_COLOR);
@@ -76,7 +76,7 @@ void GraphicStadiumManager::displayInstallations()
 	titleLabel.setFont(HEADER_FONT_PATH);
 	titleLabel.setColor(sf::Color::White);
 	titleLabel.setFontSize(40);
-	titleLabel.setPosition(700, 250);
+	titleLabel.setPosition(700, 300);
 
 	backButton();
 
