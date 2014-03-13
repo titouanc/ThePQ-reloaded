@@ -4,6 +4,7 @@
 #include <json/json.hpp>
 #include <model/Player.hpp>
 #include <model/Installation.hpp>
+#include <model/Squad.hpp>
 #include <string>
 #include <vector>
 #include <model/MemoryAccess.hpp>
@@ -15,6 +16,7 @@ class Team{
 private:
     std::string _name;
     std::string _owner;
+    Squad _squad;
     int _funds;
     int _fame;
     int _acpoints;//<-activity points

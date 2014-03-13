@@ -43,6 +43,8 @@ Team::Team(const JSON::Dict &json): Team() {
 		_name = STR(json.get(memory::TEAM_NAME)).value();
 	if(ISINT(json.get(memory::FAME)))
 		_fame = INT(json.get(memory::FAME));
+	if(ISDICT(json.get(memory::SQUAD)))
+		_squad = DICT(json.get(memory::SQUAD));
 }
 
 Team::~Team()
@@ -59,6 +61,7 @@ Team::operator JSON::Dict(){
 	ret.set(memory::AC_POINTS,_acpoints);
 	ret.set(memory::TEAM_NAME,_name);
 	ret.set(memory::FAME, _fame);
+	ret.set(memory::SQUAD, JSON::Dict(_squad));
 	return ret;
 }
 void Team::load(){
