@@ -56,6 +56,8 @@ public:
 		int wFame = _winner.getFame();
 		int lFame = _loser.getFame();
 		//Case 1 : winner's fame >= loser's fame, fame lose/win isn't that much
+		if (wFame == lFame)
+			++wFame;
 		if (wFame>=lFame){
 			if ((_score[0] - _score[1])>=gameconfig::BIG_GOAL_DIFFERENCE){
 				_winnerFameGain = (int((gameconfig::FAME_WIN/(wFame-lFame))*0.15));
