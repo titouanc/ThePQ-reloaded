@@ -32,7 +32,8 @@ void GUIFGameManager::onUserList(JSON::List const & list)
 
 	usernameButton(user().username);
 	userBudgetButton(user().funds);
-
+	userAcPointsButton(user().acPoints);
+	userFameButton(user().fame);
 	TableView & playersTV = _canvas.addTableView(2);
 	playersTV.setPosition(50, 50);
 	for (size_t i=0; i<list.len(); i++){

@@ -17,6 +17,8 @@ struct UserData
 		username = ""; 
 		teamname = "";
 		funds = -1;
+		acPoints = -1;//new addition
+		fame=-1;
 	}
 	bool isLogged() { return username != ""; }
 
@@ -30,6 +32,12 @@ struct UserData
 		
 		if (ISINT(json.get("funds")))
 			funds = INT(json.get("funds"));
+
+		if (ISINT(json.get("acPoints")))
+			acPoints = INT(json.get("acPoints"));
+
+		if(ISINT(json.get("fame")))
+			fame = INT(json.get("fame"));
 	}
 	~UserData()
 	{
@@ -46,6 +54,8 @@ struct UserData
 	std::string username;
 	std::string teamname;
 	int funds;
+	int acPoints;//new addition
+	int fame;
 };
 
 #endif // __USER_DATA_HPP

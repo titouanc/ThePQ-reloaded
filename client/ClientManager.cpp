@@ -223,6 +223,8 @@ void ClientManager::onTeamInfo(UserData const & user)
 	_user.username = user.username;
 	_user.funds = user.funds;
 	_user.teamname = user.teamname;
+	_user.acPoints = user.acPoints;
+	_user.fame = user.fame;
 }
 
 ClientManager::ClientManager(

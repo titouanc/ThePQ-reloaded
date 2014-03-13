@@ -76,6 +76,8 @@ namespace net
 		static const std::string CONNECTED_USERS_LIST = "DQ_CU_L";
 		static const std::string PLAYERS_ON_MARKET_LIST= "DQ_P_OM_L";
 		static const std::string PLAYERS_LIST = "DQ_P_L";
+		static const std::string SHOW_TEAM_STATUS = "DQ_T_S";//new data query!!!
+		static const std::string SHOW_FINANCIAL_STATUS = "DQ_F_S";
 
 		// friendly game
 		static const std::string FRIENDLY_GAME_USERNAME = "F_G_U";
@@ -160,18 +162,27 @@ namespace gameconfig
 	static const int MIN_PLAYERS = 7;
 	static const int STARTING_FUNDS = 100000;
 	static const int STARTING_FAME = 1000;
-	static const int STARTING_AP = 20;
+	static const int STARTING_AC_POINTS=20;
 	static const int SALE_FIRST_TURN_TIME = 30;
 	static const int SALE_TURN_TIME = 30;
 	static const float BID_RATIO = 0.05;
 	static const int MAX_CHAMPIONSHIP_TURNS = 5; //32 teams
-
-	static const int MAX_CHAMP_MATCH_OFFSET = 61;
+	static const int MAX_CHAMP_MATCH_OFFSET = 3600;
+	static const float FAME_MULTIPLIER_INSTALLATION=0.25;
+	static const float FAME_MULTIPLIER_B_GAME=0.23;//will determine the fame gained after a victory based on the other teams
+	static const float FAME_MULTIPLIER_S_GAME=0.23;
+	static const int FAME_EARN_DISCONNECT=30;
+	static const int FUNDS_EARN_DISCONNECT=600;
+	static const int FUNDS_EARN_GAME=900;
+	static const float FUNDS_GAME_RATIO=0.05;
+	static const float FUNDS_CHAMP_RATIO=0.12;
+//	static const int MAX_CHAMP_MATCH_OFFSET = 61;
 	static const int WINNER_LOSER_GAIN_RATIO = 4;
 	static const int MONEY_GAIN_RATIO = 100;
 	static const int AP_GAIN_RATIO = 1;
 	static const int FAME_GAIN_RATIO = 10;
     static const int MAXAPTVAL = 100;
+
 }
 
 namespace memory
@@ -195,6 +206,7 @@ namespace memory
 	static const std::string USERNAMES_FILE = "userNames";
 	// Data
 	static const std::string FUNDS = "funds";
+	static const std::string AC_POINTS = "activity_points";
 	static const std::string TEAM_NAME = "teamname";
 	static const std::string FAME = "fame";
 	static const std::string SALE_FILE = "_sale";

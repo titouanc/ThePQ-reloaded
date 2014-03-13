@@ -122,8 +122,8 @@ void Server::collectFinishedMatches(void)
 				if (champ != NULL){
 					champ->endMatch(result);
 				}
-				result.compute();
-				result.save();
+				result.compute(true);
+				//result.save();
 			}
 			delete *it;
 			_matches.erase(it);
@@ -788,8 +788,8 @@ void Server::resolveUnplayedChampMatch(Schedule & pending){
 		sendNotification(loser,toLoser);
 	}
 	res.setTeams(winner,loser);
-	res.compute();
-	res.save();
+	res.compute(true);
+	//res.save();
 	Championship* champ = getChampionshipByUsername(winner);
 	if (champ != NULL) 
 		champ->endMatch(res);
