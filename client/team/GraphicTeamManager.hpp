@@ -11,10 +11,8 @@ public:
 	~GraphicTeamManager();
 private:
 	void displayPlayers();
-
-	/*! Displays nicely the positions occupied by the 7 players composing the squad,
-	    including buttons to change the player at that position */
-	void displaySquad();
+	void displaySquadLabels();
+	void displayChangeButtons();
 	void changePlayerAt(int position);
 	void onPlayersLoad();
 	bool _wait;

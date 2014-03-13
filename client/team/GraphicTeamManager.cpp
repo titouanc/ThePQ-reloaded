@@ -53,14 +53,15 @@ void GraphicTeamManager::displayPlayers()
 			).setPosition(435, 10);
 	}
 
-	displaySquad();
+	displaySquadLabels();
+	displayChangeButtons();
 
 	backButton();
 
 	redrawCanvas();
 }
 
-void GraphicTeamManager::displaySquad(){
+void GraphicTeamManager::displaySquadLabels(){
 	_canvas.addPanel(515, 500, sf::Color(0x00, 0x00, 0x00, 0x77)
 		).setPosition(650, 100);
 
@@ -80,7 +81,9 @@ void GraphicTeamManager::displaySquad(){
 		).centerOn(900, 370);
 	_canvas.addLabel("Keeper", sf::Color::White
 		).centerOn(900, 485);
+}
 
+void GraphicTeamManager::displayChangeButtons(){
 	_canvas.addButton<GraphicTeamManager, int>(
 		&GraphicTeamManager::changePlayerAt, 0, this, "todo"
 	).centerOn(755, 210);
