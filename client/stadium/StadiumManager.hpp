@@ -23,7 +23,7 @@ protected:
 	/* received an installation downgrade response */
 	virtual void onDowngradeInstallation();
 	/* received installations list : put it in user().installations */
-	virtual void onInstallationsLoad(JSON::List const & json);
+	virtual void onInstallationsLoad(){}
 public:
 	using ClientManager::ClientManager;
 	StadiumManager(ClientManager const & parent);

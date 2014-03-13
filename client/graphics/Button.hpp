@@ -10,7 +10,7 @@
 #include "loadPath.hpp"
 
 namespace GUI {
-	template <typename T, typename P=int> class Button : public Clickable<T> {
+	template <typename T, typename P=int> class Button : public Clickable<T, P> {
 	public:
 		Button(
 			const typename Clickable<T>::Callback& callback, 
@@ -84,6 +84,10 @@ namespace GUI {
 
 		void setBackgroundColor(sf::Color color){
 			_backgroundRect.setFillColor(color);
+		}
+
+		void setTextColor(sf::Color color){
+			_text.setColor(color);
 		}
 
 		void setText(std::string text) { 

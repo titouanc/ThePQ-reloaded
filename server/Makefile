@@ -11,7 +11,7 @@ server.app: main.o ${OBJS} ${LIBS}
 .PHONY: rmusers
 rmusers:
 	rm -rf data/users/*
-	rm -f data/global/userNames.json
-	rm -f data/global/teamNames.json
+	rm -f data/global/userNames.json data/global/teamNames.json data/PlayerMarket/* data/championships/*
+	echo 1 > data/global/memberID.json
 
 include ../Makefile.includes

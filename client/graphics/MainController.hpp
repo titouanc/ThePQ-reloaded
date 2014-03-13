@@ -13,6 +13,7 @@ namespace GUI {
 		~MainController();
 		void addLayer(Layer& layer);
 		void deleteTopLayer();
+		void renderTopLayer();
 		bool handleClick(sf::Event e);
 		bool handleRightClick(sf::Event e);
 		void handleTextEntered(sf::Event e);

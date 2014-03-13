@@ -1,6 +1,7 @@
 #include "Team.hpp"
 #include <cmath>
 
+
 Team::Team(std::string owner, std::string teamname, int funds): 
 	_owner(owner), 
 	_name(teamname), 
@@ -10,7 +11,6 @@ Team::Team(std::string owner, std::string teamname, int funds):
 	_players(), 
 	_installations()
 {}
-
 
 Team::Team(std::string owner, std::string teamname, int funds, int fame,int acPoints) : 
 	_owner(owner),

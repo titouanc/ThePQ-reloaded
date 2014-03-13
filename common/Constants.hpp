@@ -110,7 +110,10 @@ namespace net
 		static const std::string CHAMPIONSHIP_NOTIFICATION = "CHAMP_NOTIF";
 		static const std::string TEAMS_NUMBER = "nbOfUsers";
 		static const std::string CHAMPIONSHIP_NAME = "name";
-		static const std::string CHAMPIONSHIPS_LIST = "C_LIST";
+		static const std::string CHAMPIONSHIP_CASHPRIZE = "cashprize";
+		static const std::string CHAMPIONSHIP_FAME = "fame";
+		static const std::string JOINABLE_CHAMPIONSHIPS_LIST = "C_LIST";
+		static const std::string JOINED_CHAMPIONSHIP = "C_JOINED";
 		static const std::string ALREADY_IN_CHAMPIONSHIP = "C_AIC";
 		static const std::string CHAMPIONSHIP_FULL = "C_FULL";
 		static const std::string CHAMPIONSHIP_STARTED = "C_START";
@@ -120,20 +123,39 @@ namespace net
 		static const std::string JOIN_CHAMPIONSHIP = "C_JOIN";
 		static const std::string ADDED_TO_CHAMPIONSHIP = "C_ADDED";
 		static const std::string CHAMPIONSHIP_NOT_FOUND = "C_NOTFOUND";
+		static const std::string CHAMPIONSHIP_WON = "C_WON";
+		static const std::string CHAMPIONSHIP_MATCH_PENDING = "CMATCH_PENDING";
+		static const std::string CHAMPIONSHIP_MATCH_STATUS_CHANGE = "CMATCH_SCHANGE";
+		static const std::string CHAMPIONSHIP_MATCH_OFFSET_OVER = "CMATCH_OO";
+		static const std::string CHAMPIONSHIP_STATUS_CHANGE = "C_SCHANGE";
 
 		static const std::string CHAMPIONSHIP_MATCH_STATUS = "CMATCH_STATUS";
-		static const std::string CHAMPIONSHIP_MATCH_CAN_START = "CMATCH_OK";
-		static const std::string CHAMPIONSHIP_MATCH_START = "CMATCH_START";
-		static const std::string CHAMPIONSHIP_MATCH_READY = "CMATCH_USER_RDY";
-		static const std::string CHAMPIONSHIP_MATCH_OPPONENT_READY = "CMATCH_OPP_RDY";
-		static const std::string CHAMPIONSHIP_MATCH_OPPONENT_WITHDRAW = "CMATCH_OPP_WD";
+		static const std::string CHAMPIONSHIP_MATCH_OPPONENT_WITHDRAW = "CMATCH_USER_OWD";
 		static const std::string CHAMPIONSHIP_MATCH_WITHDRAW = "CMATCH_USER_WD";
 		static const std::string CHAMPIONSHIP_MATCH_WAIT = "CMATCH_WAIT";
+
+		static const std::string CHAMPIONSHIP_MATCH_PENDING_RESPONSE = "CMATCH_P_RES";
+		static const std::string CHAMPIONSHIP_MATCH_READY = "CMATCH_USER_RDY";
+		
+		static const std::string CHAMPIONSHIP_MATCH_START = "CMATCH_START";
+		static const std::string CHAMPIONSHIP_MATCH_NOT_FOUND = "CMATCH_NFOUND";
+
+		static const std::string CHAMPIONSHIP_UNPLAYED_MATCH_WON = "CMATCH_UPLAYED_W";
+		static const std::string CHAMPIONSHIP_UNPLAYED_MATCH_LOST = "CMATCH_UPLAYED_L";
+		
+		
+
 	}
 }
 
 namespace gameconfig
 {
+	static const unsigned int SLEEP_TIME = 10;
+	static const unsigned int TICK_TIME = 20;
+	static const unsigned int TICKS_BEFORE_MATCH = 1;
+	static const unsigned int TICKS_BEFORE_STADIUM = 1;
+	static const unsigned int TICKS_BEFORE_CHAMPIONSHIP = 1;
+	static const unsigned int TICKS_BEFORE_RESET = 1440;
 	static const std::string UNNAMED_TEAM = "NO_NAME";
 	static const int MAX_COACHES = 5;
 	static const int MAX_PLAYERS = 100;
@@ -147,12 +169,20 @@ namespace gameconfig
 	static const int MAX_CHAMPIONSHIP_TURNS = 5; //32 teams
 	static const int MAX_CHAMP_MATCH_OFFSET = 3600;
 	static const float FAME_MULTIPLIER_INSTALLATION=0.25;
-	static const float FAME_MULTIPLIER_GAME=0.23;//will determine the fame gained after a victory based on the other teams
+	static const float FAME_MULTIPLIER_B_GAME=0.23;//will determine the fame gained after a victory based on the other teams
+	static const float FAME_MULTIPLIER_S_GAME=0.23;
 	static const int FAME_EARN_DISCONNECT=30;
-	static const int FUNDS_EARN_DISCONNECT=1000;
-	static const int FUNDS_EARN_GAME=500;
+	static const int FUNDS_EARN_DISCONNECT=600;
+	static const int FUNDS_EARN_GAME=900;
 	static const float FUNDS_GAME_RATIO=0.05;
 	static const float FUNDS_CHAMP_RATIO=0.12;
+//	static const int MAX_CHAMP_MATCH_OFFSET = 61;
+	static const int WINNER_LOSER_GAIN_RATIO = 4;
+	static const int MONEY_GAIN_RATIO = 100;
+	static const int AP_GAIN_RATIO = 1;
+	static const int FAME_GAIN_RATIO = 10;
+    static const int MAXAPTVAL = 100;
+
 }
 
 namespace memory

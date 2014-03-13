@@ -50,6 +50,16 @@ namespace GUI {
 			_w = _text.getLocalBounds().width;
 			_h = _text.getLocalBounds().height;
 		}
+
+		void setFontSize(int fontSize) {
+			_text.setCharacterSize(fontSize);
+		}
+
+		void setFont(std::string path) {
+			if (!_font.loadFromFile(fontPath(path)))
+				throw "Could not load font!";
+			_text.setFont(_font);
+		}
 		void setColor(sf::Color color) { _text.setColor(color); }
 private:
 		sf::Text _text;

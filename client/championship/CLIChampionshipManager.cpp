@@ -78,10 +78,9 @@ void CLIChampionshipManager::currentChampionshipMenu(){
 
 void CLIChampionshipManager::displayCurrentChampionship(){
 	_waitForChamps = true;
-	loadChampionships();
+	joinedChampionship();
 	while (_waitForChamps)
 		readMessage();
-	updateCurrentChampionship();
 	if(user().joinedChamp.getName().empty()){
 		std::cout << "You are currently not taking part in any championship." << std::endl;
 	}
@@ -96,43 +95,28 @@ void CLIChampionshipManager::displayChampionships(){
 		readMessage();
 	std::cout << "================ CHAMPIONSHIPS ================" << std::endl;
 	for(size_t i=0;i<getChamps().size();++i){
-		std::cout<< getChamps()[i];
+		std::cout<< getChamps()[i] << endl;
 	}
 	std::cout << "===============================================" << std::endl;
 }
 
-void CLIChampionshipManager::onJoinChampionship(std::string data){
+void CLIChampionshipManager::onJoinChampionship(bool success, std::string msg){
 	_waitForJoin = false;
-	if(data == net::MSG::ALREADY_IN_CHAMPIONSHIP){
-		std::cout << "\033[1;31mError\033[0m : cannot take part in more than one championship at the same time." << std::endl;
-	}
-	else if(data == net::MSG::CHAMPIONSHIP_FULL){
-		std::cout << "\033[1;31mError\033[0m : the championship you tried to join is now full." << std::endl;
-	}
-	else if(data == net::MSG::CHAMPIONSHIP_NOT_FOUND){
-		std::cout << "\033[1;31mError\033[0m : championship not found." << std::endl;
-	}
-	else if(data == net::MSG::ADDED_TO_CHAMPIONSHIP){
-		std::cout << "\033[32mSuccessfully\033[0m added to championship." << std::endl;
-	}
+	(success) ? okMsg(msg) : errorMsg(msg);
+	
 }
 
-void CLIChampionshipManager::onLeaveChampionship(std::string data){
+void CLIChampionshipManager::onLeaveChampionship(bool success, std::string msg){
 	_waitForJoin = false;
-	if(data == net::MSG::CHAMPIONSHIP_STARTED){
-		std::cout << "\033[1;31mError\033[0m : your championship started; cannot leave it." << std::endl;
-	}
-	else if(data == net::MSG::NOT_IN_CHAMPIONSHIP){
-		std::cout << "\033[1;31mError\033[0m : you are currently not taking part in any championship; cannot leave any." << std::endl;
-	}
-	else if(data == net::MSG::REMOVED_FROM_CHAMPIONSHIP){
-		std::cout << "\033[32mSuccessfully\033[0m removed from championship." << std::endl;
-	}
+	(success) ? okMsg(msg) : errorMsg(msg);
 }
 
-void CLIChampionshipManager::onChampionshipsLoad(JSON::List const & list){
+void CLIChampionshipManager::onChampionshipsLoad(){
 	_waitForChamps = false;
-	ChampionshipManager::onChampionshipsLoad(list);
+}
+
+void CLIChampionshipManager::onJoinedChampionship(){
+	_waitForChamps = false;
 }
 
 void CLIChampionshipManager::onMatchStart(){

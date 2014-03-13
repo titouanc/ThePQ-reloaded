@@ -52,6 +52,9 @@ public:
 	void earnFame(int amount){ _fame+=amount;}
 	void buy(int amount){_funds-=amount;}
 	bool fundsAvailble(int amount);
+	int getACPoints() { return _acpoints; }
+	void earnAcPoints(int ap) { _acpoints += ap; }
+
 	std::vector<Player>& getPlayers(){return _players;}
 	std::vector<Installation*>& getInstallations(){return _installations;}
 	

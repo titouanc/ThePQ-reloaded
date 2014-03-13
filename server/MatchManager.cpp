@@ -143,12 +143,16 @@ void MatchManager::_mainloop_out()
 		playStrokes();
 	}
 	if(hasClient(_squads[0].client_id)){
-		resolveFameDisconnection(_squads[0].squad_owner);
-		resolveMoneyDisconnection(_squads[0].squad_owner);
+		_matchRes.setScore(100,0);
+		_matchRes.setTeams(_squads[0].squad_owner,_squads[1].squad_owner);
+		_matchRes.resolveFameDisconnection(_squads[0].squad_owner);
+		_matchRes.resolveMoneyDisconnection(_squads[0].squad_owner);
 	}
 	if(hasClient(_squads[1].client_id)){
-		resolveFameDisconnection(_squads[1].squad_owner);
-		resolveMoneyDisconnection(_squads[1].squad_owner);
+		_matchRes.setScore(100,0);
+		_matchRes.setTeams(_squads[1].squad_owner,_squads[0].squad_owner);
+		_matchRes.resolveFameDisconnection(_squads[1].squad_owner);
+		_matchRes.resolveMoneyDisconnection(_squads[1].squad_owner);
 	}
 	sendSignal(net::MSG::MATCH_END);
 	cout << "[" << this << "] \033[32mMatch finished\033[0m" << endl;
@@ -424,13 +428,19 @@ void MatchManager::endMatch(void)
 	releaseClient(_squads[0].client_id);
 	releaseClient(_squads[1].client_id);
 
+	_matchRes.setTeams(_squads[winner].squad_owner,_squads[looser].squad_owner);
+	_matchRes.compute(isChampMatch());
+}
+/*
 	_matchRes.winner = _squads[winner].squad_owner;
 	_matchRes.loser = _squads[looser].squad_owner;
 	_matchRes.score[0] = _score[winner];
 	_matchRes.score[1] = _score[looser];
 	resolveFame(_squads[winner].squad_owner,_squads[looser].squad_owner);
 	resolveMoney(_squads[winner].squad_owner,_squads[looser].squad_owner);
-}
+	_matchRes.setScore(_score[winner], _score[looser]);
+
+}/*
 void MatchManager::resolveFameDisconnection(std::string win){
 	User *winner=new User(win);
 	winner = winner->load(win);
@@ -449,7 +459,7 @@ void MatchManager::resolveMoneyDisconnection(std::string win){
 void MatchManager::resolveFame(std::string win,std::string los){
 	/*Method calculating the fame to be attributed to each player
 	 *based on the existing fame of the teams and the score difference
-	 */
+	 
 	User *winner = new User(win); 
 	User *looser =  new User(los); 
 	winner = winner->load(win);
@@ -487,7 +497,7 @@ void MatchManager::resolveFame(std::string win,std::string los){
 	MemoryAccess::save(looser->getTeam());
 	delete winner;
 	delete looser;
-	/*##########remove after test#########*/
+	/*##########remove after test#########
 	cout<<"new fame status team:"<<winner->getUsername()<<" "<<winner->getTeam().getFame()<<endl;
 	cout<<"new fame status team:"<<looser->getUsername()<<" "<<looser->getTeam().getFame()<<endl;
 
@@ -509,10 +519,9 @@ void MatchManager::resolveMoney(std::string win,std::string los){
 	delete[] winner;
 	delete[] looser;
 }
+*/
 
-
-void MatchManager::onCollision(
-	Stroke & stroke,     /* Stroke that leads to conflict */
+void MatchManager::onCollision(	Stroke & stroke,     /* Stroke that leads to conflict */
 	Position & conflict, /* Clonflicting pos */
 	Position & fromPos  /* last pos occupied by moving */
 )

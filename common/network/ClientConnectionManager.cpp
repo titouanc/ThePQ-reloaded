@@ -14,19 +14,36 @@ static void* runClientThread(void* arg)
 
 void net::ClientConnectionManager::start()
 {
-	_isRunning = true;
+	int lock = pthread_mutex_lock(&_mutex);
+	if (lock == 0)
+	{
+		_isRunning = true;
+		pthread_mutex_unlock(&_mutex);
+	}
 	loop();
 }
 
 net::ClientConnectionManager::ClientConnectionManager(const std::string hostname, int portno) : 
 	_isRunning(false), _sockfd(-1), _hostName(hostname), _port(portno)
 {
+	pthread_mutex_init(&_mutex, NULL);
 }
 
 net::ClientConnectionManager::~ClientConnectionManager()
 {
-	_isRunning = false;
+	stop();
 	close(_sockfd);
+    pthread_mutex_destroy(&_mutex);
+}
+
+void net::ClientConnectionManager::stop()
+{
+	int lock = pthread_mutex_lock(&_mutex);
+	if (lock == 0)
+	{
+		_isRunning = false;
+		pthread_mutex_unlock(&_mutex);
+	}
 }
 
 void net::ClientConnectionManager::run()
@@ -52,11 +69,35 @@ void net::ClientConnectionManager::run()
 	pthread_create(&_thread, NULL, runClientThread, this);
 }
 
+bool net::ClientConnectionManager::isRunning()
+{
+	bool res = false;
+	int lock = pthread_mutex_lock(&_mutex);
+	if (lock == 0)
+	{
+		res = _isRunning;
+		pthread_mutex_unlock(&_mutex);
+	}
+	return res;
+}
+
+bool net::ClientConnectionManager::canRead() const
+{
+	fd_set readable;
+	FD_ZERO(&readable);
+	FD_SET(_sockfd, &readable);
+	timeval tiemout = {0, 100000};
+	return select(_sockfd+1, &readable, NULL, NULL, &tiemout) > 0;
+}
+
 #define min(a,b) ((a) < (b)) ? (a) : (b)
 void net::ClientConnectionManager::loop()
 {
-	while (_isRunning)
+	while (isRunning())
 	{
+		if (! canRead())
+			continue;
+
 		std::stringstream res;
 		char data[MSG_SIZE+1];
 		bzero(data, MSG_SIZE);
@@ -80,9 +121,10 @@ void net::ClientConnectionManager::loop()
 		if (json != NULL && ISDICT(json))
 		{
 			JSON::Dict const & dict = DICT(json);
-			if (dict.hasKey("type") && dict.hasKey("data") && ISSTR(dict.get("type")))
-			{
-				_messages.push(json);
+			if (dict.hasKey("type") && dict.hasKey("data") && ISSTR(dict.get("type"))){
+				pushMessage(json);
+			} else {
+				delete json;
 			}
 		}
 	}
@@ -108,6 +150,11 @@ void net::ClientConnectionManager::send(JSON::Value const & json)
 JSON::Value* net::ClientConnectionManager::popMessage()
 {
 	return _messages.pop();
+}
+
+void net::ClientConnectionManager::pushMessage(JSON::Value* toPush)
+{
+	_messages.push(toPush);
 }
 
 bool net::ClientConnectionManager::hasMessage()

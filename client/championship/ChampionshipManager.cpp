@@ -5,7 +5,7 @@ ChampionshipManager::ChampionshipManager(ClientManager const & parent) : ClientM
 
 void ChampionshipManager::loadChampionships()
 {
-	say(net::MSG::CHAMPIONSHIPS_LIST, JSON::String(""));
+	say(net::MSG::JOINABLE_CHAMPIONSHIPS_LIST, JSON::String(""));
 }
 
 void ChampionshipManager::joinChampionship(std::string champName)
@@ -13,14 +13,9 @@ void ChampionshipManager::joinChampionship(std::string champName)
 	say(net::MSG::JOIN_CHAMPIONSHIP, JSON::String(champName));
 }
 
-void ChampionshipManager::updateCurrentChampionship()
+void ChampionshipManager::joinedChampionship()
 {
-	user().joinedChamp = Championship();
-	for(size_t i = 0;i<_champs.size();++i){
-		if(_champs[i].isUserIn(user().username)){
-			user().joinedChamp = _champs[i];
-		}
-	}
+	say(net::MSG::JOINED_CHAMPIONSHIP, JSON::String(""));
 }
 
 void ChampionshipManager::leaveCurrentChampionship()
@@ -32,22 +27,70 @@ void ChampionshipManager::treatMessage(std::string const & type, JSON::Value con
 {
 	if (type == net::MSG::JOIN_CHAMPIONSHIP)
 	{
-		onJoinChampionship(STR(data).value());
+		if(ISSTR(data)){
+			std::string response = STR(data).value();
+			std::string message;
+			bool ok=false;
+			if(response == net::MSG::ALREADY_IN_CHAMPIONSHIP){
+				message =  "Cannot take part in more than one championship at the same time.";
+				ok = false;
+			}
+			else if(response == net::MSG::CHAMPIONSHIP_FULL){
+				message = "The championship you tried to join is now full.";
+				ok = false;
+			}
+			else if(response == net::MSG::CHAMPIONSHIP_NOT_FOUND){
+				message = "Championship not found.";
+				ok = false;
+			}
+			else if(response == net::MSG::ADDED_TO_CHAMPIONSHIP){
+				message = "Added to championship.";
+				ok = true;
+			}
+			onJoinChampionship(ok, message);
+		}
 	}
-	else if (type == net::MSG::CHAMPIONSHIPS_LIST)
+	else if (type == net::MSG::JOINABLE_CHAMPIONSHIPS_LIST)
 	{
-		onChampionshipsLoad(LIST(data));
+		JSON::List & champs = LIST(data);
+		_champs.clear();
+		for(size_t i = 0; i<champs.len();++i){
+			_champs.push_back(Championship(DICT(champs[i])));
+		}
+		onChampionshipsLoad();
 	}
 	else if(type == net::MSG::LEAVE_CHAMPIONSHIP)
 	{
-		onLeaveChampionship(STR(data).value());
+		if(ISSTR(data)){
+			std::string response = STR(data).value();
+			std::string message;
+			bool ok=false;
+			if(response == net::MSG::CHAMPIONSHIP_STARTED){
+				message = "Your championship started; cannot leave it.";
+				ok = false;
+			}
+			else if(response == net::MSG::NOT_IN_CHAMPIONSHIP){
+				message = "You are currently not taking part in any championship.";
+				ok = false;
+			}
+			else if(response == net::MSG::REMOVED_FROM_CHAMPIONSHIP){
+				message = "Removed from championship.";
+				ok = true;
+			}
+			onLeaveChampionship(ok,message);
+		}
+	}
+	else if(type == net::MSG::JOINED_CHAMPIONSHIP)
+	{
+		user().joinedChamp = Championship();
+		if(ISSTR(data)){
+			if(STR(data).value() == net::MSG::CHAMPIONSHIP_NOT_FOUND){
+				return;
+			}
+		}
+		else if(ISDICT(data)){
+			user().joinedChamp = DICT(data);
+		}
+		onJoinedChampionship();
 	}
 }
-
-void ChampionshipManager::onChampionshipsLoad(JSON::List const & champs){
-	_champs.clear();
-	for(size_t i = 0; i<champs.len();++i){
-		_champs.push_back(Championship(DICT(champs[i])));
-	}
-}
-

@@ -41,7 +41,7 @@ class MatchManager : public SubConnectionManager {
 		SharedQueue<Message> _inbox, _outbox;
 		unsigned int _score[2];
 		bool _champMatch;
-		struct MatchResult _matchRes;
+		MatchResult _matchRes;
 		/* Current match deltas */
 		JSON::List _turnDeltas;
 

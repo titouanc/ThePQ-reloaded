@@ -138,8 +138,18 @@ void AdminClient::showCreateChampionshipMenu(){
 		std::cout << "Number of turns (between 2 and " << gameconfig::MAX_CHAMPIONSHIP_TURNS <<") : "; 
 		cin >> nbTurns;
 	}
+	int cashprize = -1;
+	while(cashprize < 0){
+		std::cout << "Cashprize (> 0) : ";
+		cin >> cashprize;
+	}
+	int fame =-1;
+	while(fame<0){
+		std::cout << "Fame (> 0) : ";
+		cin >> fame;
+	}
 	try{
-		createChampionship(champName, nbTurns);
+		createChampionship(champName, nbTurns, cashprize, fame);
 		std::cout << "Championship \033[32msuccessfully\033[0m created !" << std::endl;
 	}
 	catch(const ChampionshipNameError & e){
@@ -148,12 +158,14 @@ void AdminClient::showCreateChampionshipMenu(){
 }
 
 
-void AdminClient::createChampionship(std::string name, int nbTurns){
+void AdminClient::createChampionship(std::string name, int nbTurns, int cash, int fame){
 	JSON::Dict toSend;
 	toSend.set("type",net::MSG::CHAMPIONSHIP_CREATION);
 	JSON::Dict data;
 	data.set(net::MSG::CHAMPIONSHIP_NAME,name);
 	data.set(net::MSG::TURN_NUMBER,nbTurns);
+	data.set(net::MSG::CHAMPIONSHIP_CASHPRIZE,cash);
+	data.set(net::MSG::CHAMPIONSHIP_FAME,fame);
 	toSend.set("data",data);
 	_connection.send(toSend);
 	JSON::Value *serverMessage = _connection.popMessage();
