@@ -45,6 +45,7 @@ public:
 	void setOwner(std::string owner){_owner=owner;}
 	std::string getName() const {return _name;}
 	void setName(std::string name){_name=name;}
+	Squad & getSquad() {return _squad; }
 	int getFunds(){return _funds;}
 	int getFame(){return _fame;}
 	int getAcPoints(){return _acpoints;}
