@@ -76,7 +76,13 @@ void Server::run()
 	pthread_create(&_timeThread, NULL, runTimeLoop, this);
 	while (_connectionManager.isRunning() || _inbox.available()){
 		Message const & msg = _inbox.pop();
-		try {treatMessage(msg);}
+		try {
+			if (ISDICT(msg.data)){
+				JSON::Dict const & content = DICT(msg.data);
+				if (ISSTR(content.get("type")) && content.hasKey("data"))
+					treatMessage(msg.peer_id, STR(content.get("type")), content.get("data"));
+			}
+		}
 		catch (std::runtime_error & err){
 			cerr << "\033[31mError " << humanExcName(typeid(err).name()) 
 				 << " in handler of " << *(msg.data) << endl
@@ -180,89 +186,94 @@ void Server::startMatch(int client_idA, int client_idB, bool champMatch)
 	_matches.push_back(match);
 }
 
-void Server::treatMessage(const Message &message)
-{
-	if (ISDICT(message.data)){
-		JSON::Dict const &received = DICT(message.data);
-		if (ISSTR(received.get("type"))) {
-			string messageType = STR(received.get("type")).value();
-			if (messageType == MSG::DISCONNECT){
-				/* Disconnect user */
-				map<int, User*>::iterator it = _users.find(message.peer_id);
-				if (it != _users.end()){
-					delete it->second;
-					_users.erase(it);
+void Server::treatMessage(
+	int peer_id, 
+	std::string const & messageType, 
+	const JSON::Value * payload
+){
+	if (messageType == MSG::DISCONNECT){
+		/* Disconnect user */
+		map<int, User*>::iterator it = _users.find(peer_id);
+		if (it != _users.end()){
+			delete it->second;
+			_users.erase(it);
+		}
+	}
+	else if (messageType == MSG::ADMIN_LOGIN){
+		_adminManager.acquireClient(peer_id);
+		_adminManager.start();
+		JSON::Dict toTransmit = {
+			{"type", JSON::String(messageType)},
+			{"data", *payload}
+		};
+		_adminManager.transmit(Message(peer_id, toTransmit.clone()));
+	}
+	else if (ISDICT(payload)){
+		JSON::Dict const & dict = DICT(payload);
+		if (messageType == MSG::LOGIN){
+			User *loggedIn = logUserIn(dict, peer_id);
+			/* If someone successfully logged in; send his offline 
+			   messages and reset queue */
+			if (loggedIn){
+				JSON::List const & offlineMsg = loggedIn->getOfflineMsg();
+				for (size_t i=0; i<offlineMsg.len(); i++){
+					_outbox.push(Message(peer_id, offlineMsg[i]->clone()));
 				}
+				loggedIn->clearOfflineMsg();
+				loggedIn->loadTeam();
+				sendTeamInfos(loggedIn->getTeam(), peer_id);
 			}
-			else if(messageType == MSG::ADMIN_LOGIN){
-				_adminManager.acquireClient(message.peer_id);
-				_adminManager.start();
-				_adminManager.transmit(Message(
-					message.peer_id, message.data->clone()
-				));
-			}
-			else if (ISDICT(received.get("data"))){
-				if (messageType == MSG::LOGIN){
-					User *loggedIn = logUserIn(DICT(received.get("data")), message.peer_id);
-					/* If someone successfully logged in; send his offline 
-					   messages and reset queue */
-					if (loggedIn){
-						JSON::List const & offlineMsg = loggedIn->getOfflineMsg();
-						for (size_t i=0; i<offlineMsg.len(); i++){
-							_outbox.push(Message(message.peer_id, offlineMsg[i]->clone()));
-						}
-						loggedIn->clearOfflineMsg();
-						loggedIn->loadTeam();
-						sendTeamInfos(loggedIn->getTeam(), message.peer_id);
-					}
-				}
-				else if(messageType == MSG::USER_CHOOSE_TEAMNAME)
-					checkTeamName(DICT(received.get("data")), message.peer_id);
-				else if (messageType == MSG::REGISTER) 
-					registerUser(DICT(received.get("data")), message.peer_id);
-				else if (messageType == MSG::ADD_PLAYER_ON_MARKET_QUERY){
-					addPlayerOnMarket(DICT(received.get("data")), message.peer_id);
-				}
-				else if (messageType == MSG::BID_ON_PLAYER_QUERY){
-					placeBidOnPlayer(DICT(received.get("data")), message.peer_id);
-				}
-				else if(messageType == MSG::PLAYERS_LIST) {
-					sendPlayersList(message.peer_id);
-				}
-				else if(messageType == MSG::FRIENDLY_GAME_INVITATION_RESPONSE) {
-						sendInvitationResponseToPlayer(DICT(received.get("data")), message.peer_id);
-				}
-			} else if (ISSTR(received.get("data"))){
-				string const & data = STR(received.get("data"));
+		}
+		else if(messageType == MSG::USER_CHOOSE_TEAMNAME)
+			checkTeamName(dict, peer_id);
 
-				if (messageType == MSG::USER_EXISTS) {
-					checkIfUserExists(data, message.peer_id);
-				} else if (messageType == MSG::INSTALLATIONS_LIST){
-						sendInstallationsList(message.peer_id);
-				} else if(messageType == MSG::CONNECTED_USERS_LIST){
-						sendConnectedUsersList(message.peer_id);
-				} else if(messageType == MSG::PLAYERS_ON_MARKET_LIST) {
-						sendPlayersOnMarketList(message.peer_id);
-				} else if(messageType == MSG::FRIENDLY_GAME_USERNAME) {
-						sendInvitationToPlayer(data, message.peer_id);
-				} else if(messageType == MSG::JOINABLE_CHAMPIONSHIPS_LIST) {
-						sendChampionshipsList(message.peer_id);
-				} else if(messageType == MSG::JOIN_CHAMPIONSHIP) {
-						joinChampionship(data, message.peer_id);
-				} else if(messageType == MSG::LEAVE_CHAMPIONSHIP) {
-						leaveChampionship(message.peer_id);
-				} else if(messageType == MSG::CHAMPIONSHIP_MATCH_PENDING_RESPONSE){
-						responsePendingChampMatch(data,message.peer_id);
-				} else if(messageType == MSG::JOINED_CHAMPIONSHIP)
-						sendJoinedChampionship(message.peer_id);
-			} else if (ISINT(received.get("data"))) {
-				int data = INT(received.get("data"));
-				if (messageType == MSG::INSTALLATION_UPGRADE) {
-					upgradeInstallation(message.peer_id, data);
-				} else if (messageType == MSG::INSTALLATION_DOWNGRADE) {
-					downgradeInstallation(message.peer_id, data);
-				}
-			}
+		else if (messageType == MSG::REGISTER) 
+			registerUser(dict, peer_id);
+
+		else if (messageType == MSG::ADD_PLAYER_ON_MARKET_QUERY)
+			addPlayerOnMarket(dict, peer_id);
+		
+		else if (messageType == MSG::BID_ON_PLAYER_QUERY)
+			placeBidOnPlayer(dict, peer_id);
+		
+		else if(messageType == MSG::PLAYERS_LIST)
+			sendPlayersList(peer_id);
+		
+		else if(messageType == MSG::FRIENDLY_GAME_INVITATION_RESPONSE)
+				sendInvitationResponseToPlayer(dict, peer_id);	
+	} 
+
+	else if (ISSTR(payload)){
+		string const & data = STR(payload);
+
+		if (messageType == MSG::USER_EXISTS) {
+			checkIfUserExists(data, peer_id);
+		} else if (messageType == MSG::INSTALLATIONS_LIST){
+				sendInstallationsList(peer_id);
+		} else if(messageType == MSG::CONNECTED_USERS_LIST){
+				sendConnectedUsersList(peer_id);
+		} else if(messageType == MSG::PLAYERS_ON_MARKET_LIST) {
+				sendPlayersOnMarketList(peer_id);
+		} else if(messageType == MSG::FRIENDLY_GAME_USERNAME) {
+				sendInvitationToPlayer(data, peer_id);
+		} else if(messageType == MSG::JOINABLE_CHAMPIONSHIPS_LIST) {
+				sendChampionshipsList(peer_id);
+		} else if(messageType == MSG::JOIN_CHAMPIONSHIP) {
+				joinChampionship(data, peer_id);
+		} else if(messageType == MSG::LEAVE_CHAMPIONSHIP) {
+				leaveChampionship(peer_id);
+		} else if(messageType == MSG::CHAMPIONSHIP_MATCH_PENDING_RESPONSE){
+				responsePendingChampMatch(data,peer_id);
+		} else if(messageType == MSG::JOINED_CHAMPIONSHIP)
+				sendJoinedChampionship(peer_id);
+	} 
+
+	else if (ISINT(payload)) {
+		int data = INT(payload);
+		if (messageType == MSG::INSTALLATION_UPGRADE) {
+			upgradeInstallation(peer_id, data);
+		} else if (messageType == MSG::INSTALLATION_DOWNGRADE) {
+			downgradeInstallation(peer_id, data);
 		}
 	}
 }

@@ -42,9 +42,15 @@ public:
 	explicit Server(NetConfig const & config);
     ~Server();
 	void run();
-	void treatMessage(const net::Message &message);
 
-    /* Create default user accounts if there is no registred user */
+    /*! Main incoming messages dispatcher */
+	void treatMessage(
+        int peer_id,
+        std::string const & type, 
+        const JSON::Value * data
+    );
+
+    /*! Create default user accounts if there is no registered user */
     void initDefaultAccounts();
 
 	void registerUser(const JSON::Dict &credentials, int peer_id);
