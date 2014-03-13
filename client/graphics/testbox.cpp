@@ -50,6 +50,9 @@ public:
 				case 4:
 					myTableCell.addLabel("Magic");
 					break;
+				default:
+					myTableCell.addLabel("Default");
+					break;
 			}
 			Button<TestBoxManager, int>& b = myTableCell.addButton<TestBoxManager, int>(&TestBoxManager::printWow, i, this, "Wow");
 			b.setPosition(10, 40);
