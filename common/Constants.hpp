@@ -205,6 +205,7 @@ namespace memory
 	static const std::string TEAMNAMES_FILE = "teamNames";
 	static const std::string USERNAMES_FILE = "userNames";
 	// Data
+	static const std::string SQUAD = "squad";
 	static const std::string FUNDS = "funds";
 	static const std::string AC_POINTS = "activity_points";
 	static const std::string TEAM_NAME = "teamname";
