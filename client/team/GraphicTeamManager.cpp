@@ -53,9 +53,34 @@ void GraphicTeamManager::displayPlayers()
 			).setPosition(435, 10);
 	}
 
+	displaySquad();
+
 	backButton();
 
 	redrawCanvas();
+}
+
+void GraphicTeamManager::displaySquad(){
+	_canvas.addPanel(515, 500, sf::Color(0x00, 0x00, 0x00, 0x77)
+		).setPosition(650, 100);
+
+	_canvas.addLabel("Left Chaser", sf::Color::White
+		).setPosition(680, 160);
+	_canvas.addLabel("Center Chaser", sf::Color::White
+		).setPosition(835, 160);
+	_canvas.addLabel("Right Chaser", sf::Color::White
+		).setPosition(1010, 160);
+
+	_canvas.addLabel("Left Beater", sf::Color::White
+		).setPosition(750, 265);
+	_canvas.addLabel("Right Beater", sf::Color::White
+		).setPosition(950, 265);
+
+	_canvas.addLabel("Seeker", sf::Color::White
+		).setPosition(865, 370);
+	_canvas.addLabel("Keeper", sf::Color::White
+		).setPosition(865, 485);
+
 }
 
 void GraphicTeamManager::onPlayersLoad()
