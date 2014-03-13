@@ -30,7 +30,11 @@ struct UserData
 		
 		if (ISINT(json.get("funds")))
 			funds = INT(json.get("funds"));
+
+		if (ISDICT(json.get("squad")))
+			squad = DICT(json.get("squad"));
 	}
+
 	~UserData()
 	{
 		for (size_t i = 0; i < installations.size(); ++i)
@@ -45,6 +49,7 @@ struct UserData
 	Championship joinedChamp;
 	std::string username;
 	std::string teamname;
+	Squad squad;
 	int funds;
 };
 
