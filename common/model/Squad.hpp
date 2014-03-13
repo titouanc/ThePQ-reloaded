@@ -91,6 +91,13 @@ struct Squad {
         return false;
     }
 
+    bool hasMemberID(int member_id) const {
+        for (int i=0; i<7; i++)
+            if (players[i]->getMemberID() == member_id)
+                return true;
+        return false;
+    }
+
     void putPlayerAtPosition(int member_id, int position){
         Player toLoad(member_id, squad_owner);
         MemoryAccess::load(toLoad);
