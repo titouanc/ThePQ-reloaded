@@ -8,6 +8,7 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <model/MemoryAccess.hpp>
+#include <utility>
 
 using namespace std;
 using namespace net;
@@ -122,15 +123,48 @@ void Server::collectFinishedMatches(void)
 		next = it;
 		next++;
 		if(! (*it)->isRunning()){
+			MatchResult result;
+			std::pair<std::string,unsigned int> winner = (*it)->getWinner();
+			std::pair<std::string,unsigned int> loser = (*it)->getLoser();
+			result.setTeams(winner.first,loser.first);
+			result.setScore(winner.second,loser.second);
 			if( (*it)->isChampMatch()){
-				MatchResult & result = (*it)->getResult();
 				Championship* champ = getChampionshipByUsername(result.getWinner());
 				if (champ != NULL){
+					result.compute(true,champ->getTurn(),champ->getTotalTurns(),champ->getCashPrize());
 					champ->endMatch(result);
 				}
-				result.compute(true);
-				//result.save();
 			}
+			else{
+				result.compute();
+			}
+			endOfMatchTeamInfosUpdate(result.getWinner(),result.getWinnerMoneyGain(),result.getWinnerFameGain(),result.getWinnerAPGain());
+			endOfMatchTeamInfosUpdate(result.getLoser(),result.getLoserMoneyGain(),result.getLoserFameGain(),result.getLoserAPGain());
+			//Send end of match rapports
+			JSON::Dict toWinner;
+			JSON::Dict dataW;
+			toWinner.set("type",net::MSG::END_OF_MATCH_RAPPORT);
+			dataW.set(net::MSG::USERNAME,result.getLoser());
+			dataW.set(net::MSG::WON_MATCH,JSON::Bool(true));
+			dataW.set(net::MSG::CHAMPIONSHIP_MATCH,JSON::Bool((*it)->isChampMatch()));
+			dataW.set(net::MSG::FAME_WON,result.getWinnerFameGain());
+			dataW.set(net::MSG::AP_WON,result.getWinnerAPGain());
+			dataW.set(net::MSG::MONEY_GAIN,result.getWinnerMoneyGain());
+			toWinner.set("data",dataW);
+			sendNotification(result.getWinner(),toWinner);
+
+			JSON::Dict toLoser;
+			JSON::Dict dataL;
+			toLoser.set("type",net::MSG::END_OF_MATCH_RAPPORT);
+			dataL.set(net::MSG::USERNAME,result.getWinner());
+			dataL.set(net::MSG::WON_MATCH,JSON::Bool(false));
+			dataL.set(net::MSG::CHAMPIONSHIP_MATCH,JSON::Bool((*it)->isChampMatch()));
+			dataL.set(net::MSG::FAME_WON,result.getLoserFameGain());
+			dataL.set(net::MSG::AP_WON,result.getLoserAPGain());
+			dataL.set(net::MSG::MONEY_GAIN,result.getLoserMoneyGain());
+			toLoser.set("data",dataL);
+			sendNotification(result.getLoser(),toLoser);
+
 			delete *it;
 			_matches.erase(it);
 		}
@@ -345,6 +379,26 @@ User *Server::logUserIn(const JSON::Dict &credentials, int peer_id)
 		_outbox.push(Message(peer_id, response.clone()));
 	}
 	return res;
+}
+
+void Server::endOfMatchTeamInfosUpdate(std::string username, int money, int fame, int ap)
+{
+	int peer_id = getPeerID(username);
+	if(peer_id >= 0){
+		Team & team = _users[peer_id]->getTeam();
+		(money>=0) ? team.getPayed(money) : team.buy(abs(money));		//Should never lose money
+		(fame>=0) ? team.earnFame(fame) : team.loseFame(abs(fame));	
+		(ap>=0) ? team.earnAcPoints(ap) : team.loseAcPoints(abs(ap));	//Should never lose AP
+		team.saveInfos();
+	}
+	else{
+		Team team(username);
+		team.loadInfos();
+		(money>=0) ? team.getPayed(money) : team.buy(abs(money));
+		(fame>=0) ? team.earnFame(fame) : team.loseFame(abs(fame));
+		(ap>=0) ? team.earnAcPoints(ap) : team.loseAcPoints(abs(ap));
+		team.saveInfos();
+	}
 }
 
 void Server::sendTeamInfos(const JSON::Dict &data, int peer_id)
@@ -723,6 +777,7 @@ void Server::timeUpdateChampionship()
 {
 	for (size_t i = 0; i < _championships.size(); ++i)
 	{
+		std::cout << *(_championships[i]) << std::endl;
 		if(_championships[i]->isStarted() && !(_championships[i]->areUsersNotified())){
 			notifyStartingChampionship(*(_championships[i]));
 			_championships[i]->usersNotified();
@@ -741,6 +796,7 @@ void Server::timeUpdateChampionship()
 			toSend.set("type",net::MSG::CHAMPIONSHIP_STATUS_CHANGE);
 			toSend.set("data",net::MSG::CHAMPIONSHIP_WON);
 			sendNotification(_championships[i]->getWinner(),toSend);
+			MemoryAccess::removeObject(*(_championships[i]));
 			pthread_mutex_lock(&_champsMutex);
 			delete _championships[i]; 
 			_championships.erase(_championships.begin()+i);
@@ -854,7 +910,7 @@ void Server::sendChampionshipsList(int peer_id){
 	std::deque<Championship*>::iterator it;
 	pthread_mutex_lock(&_champsMutex);
 	for(it = _championships.begin();it < _championships.end();++it){
-		if(!(*it)->isStarted())
+		if(!(*it)->isStarted() && !(*it)->isFull())
 			champs.append(JSON::Dict(*(*it)));
 	}
 	pthread_mutex_unlock(&_champsMutex);

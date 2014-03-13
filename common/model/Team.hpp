@@ -10,6 +10,7 @@
 #include <Constants.hpp>
 #include <Exception.hpp>
 #include "RandomNameGenerator.hpp"
+#include <pthread.h>
 
 class Team{
 private:
@@ -20,6 +21,9 @@ private:
     int _acpoints;//<-activity points
 	std::vector<Player> _players;
 	std::vector<Installation*> _installations;
+	pthread_mutex_t _changes;
+	void lockChanges() 		{ pthread_mutex_lock(&_changes); }
+	void unlockChanges() 	{ pthread_mutex_unlock(&_changes); }
 public:
 	//Team();
 	Team(std::string owner,std::string teamname);
@@ -39,21 +43,69 @@ public:
 	void load();
 	void save();
 
-	std::string getOwner(){return _owner;}
+	std::string getOwner() const {return _owner;}
 	void setOwner(std::string owner){_owner=owner;}
 	std::string getName() const {return _name;}
 	void setName(std::string name){_name=name;}
-	int getFunds(){return _funds;}
-	int getFame(){return _fame;}
-	int getAcPoints(){return _acpoints;}
-	void getPayed(int amount){_funds+=amount;}
-	void loseFame(int amount);
-	int loseFunds(int amount);
-	void earnFame(int amount){ _fame+=amount;}
-	void buy(int amount){_funds-=amount;}
-	bool fundsAvailble(int amount);
-	int getACPoints() { return _acpoints; }
-	void earnAcPoints(int ap) { _acpoints += ap; }
+	int getFunds() const {return _funds;}
+	int getFame() const {return _fame;}
+	int getAcPoints() const {return _acpoints;}
+	bool fundsAvailble(int amount) { return amount <= _funds;}
+
+	void loseFame(int amount){
+		lockChanges();
+		if (amount>_fame)
+			_fame=0;
+		else
+			_fame-=amount;
+		unlockChanges();
+	}
+
+	int loseFunds(int amount){
+		lockChanges();
+		if(amount>_funds){
+			amount=_funds;
+			_funds=0;
+		}else{
+			_funds-=amount;
+		}
+		unlockChanges();
+		return amount;
+	}
+	
+	void earnFame(int amount){ 
+		lockChanges();
+		_fame+=amount;
+		unlockChanges();
+	}
+
+	void buy(int amount){
+		lockChanges();
+		_funds-=amount;
+		unlockChanges();
+	}
+	
+	void getPayed(int amount){
+		lockChanges();
+		_funds+=amount;
+		unlockChanges();
+	}
+
+	void earnAcPoints(int ap) {
+		lockChanges();
+		_acpoints += ap;
+		unlockChanges();
+	}
+
+	void loseAcPoints(int ap) {
+		lockChanges();
+		if(ap > _acpoints)
+			_acpoints = 0;
+		else
+			_acpoints -= ap;
+		unlockChanges(); 
+	}
+	
 
 	std::vector<Player>& getPlayers(){return _players;}
 	std::vector<Installation*>& getInstallations(){return _installations;}

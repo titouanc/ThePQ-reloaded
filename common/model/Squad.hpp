@@ -28,8 +28,7 @@ struct Squad {
 
     Squad(std::string name, int listID[7], Jersey& jersey, Broomstick& broom, Bat& bat){
         squad_owner = name;      
-        for (size_t i(0);i<7;++i){
-
+        for (size_t i = 0;i<7;++i){
             Player toLoad(listID[i], squad_owner);
             MemoryAccess::load(toLoad);
             switch (i){

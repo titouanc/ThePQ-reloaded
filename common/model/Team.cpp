@@ -78,19 +78,24 @@ void Team::save(){
 	}
 }
 bool Team::removePlayer(int id){
+	lockChanges();
 	for(size_t i=0;i<_players.size();++i){
 		if(_players[i].getMemberID()==id){
 			MemoryAccess::removeObject(_players[i]);
 			_players.erase(_players.begin()+i);
+			unlockChanges();
 			return true;
 		}
 	}
+	unlockChanges();
 	return false;
 }
 void Team::addPlayer(Player &player){
+	lockChanges();
 	player.setOwner(getOwner());
 	MemoryAccess::save(player);
 	_players.push_back(player);
+	unlockChanges();
 }
 Player Team::getPlayer(int id){
 	for(size_t i=0;i<_players.size();++i){
@@ -103,6 +108,7 @@ Player Team::getPlayer(int id){
 
 bool Team::upgradeInstallation(size_t i)
 {
+	lockChanges();
 	bool res = false;
 	if (i < _installations.size() && _installations[i]->getUpgradeCost() <= _funds)
 	{
@@ -112,11 +118,13 @@ bool Team::upgradeInstallation(size_t i)
 		MemoryAccess::save(_installations[i]);
 		saveInfos();
 	}
+	unlockChanges();
 	return res;
 }
 
 bool Team::downgradeInstallation(size_t i)
 {
+	lockChanges();
 	bool res = false;
 	if (i < _installations.size() && _installations[i]->getLevel() > 0)
 	{
@@ -126,6 +134,7 @@ bool Team::downgradeInstallation(size_t i)
 		MemoryAccess::save(_installations[i]);
 		saveInfos();
 	}
+	unlockChanges();
 	return res;
 }
 
@@ -179,29 +188,4 @@ int Team::level () const {
     for (Player it : _players)
         sum += it.level();
     return static_cast<int>(pow(sum, 1.0/_players.size()));
-}
-
-int Team::loseFunds(int amount){
-	if(amount>_funds){
-		amount=_funds;
-		_funds=0;
-	}else{
-		_funds-=amount;
-	}
-	return amount;
-}
-
-void Team::loseFame(int amount){
-	if (amount>_fame){
-		_fame=0;
-	}else{
-		_fame-=amount;
-	}
-}
-
-bool Team::fundsAvailble(int amount){
-	if (amount<_funds){
-		return false;
-	}
-	return true;
 }

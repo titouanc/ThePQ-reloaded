@@ -429,7 +429,6 @@ void MatchManager::endMatch(void)
 	releaseClient(_squads[1].client_id);
 
 	_matchRes.setTeams(_squads[winner].squad_owner,_squads[looser].squad_owner);
-	_matchRes.compute(isChampMatch());
 }
 
 void MatchManager::onCollision(	Stroke & stroke,     /* Stroke that leads to conflict */
