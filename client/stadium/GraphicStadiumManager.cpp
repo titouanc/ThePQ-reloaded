@@ -45,7 +45,7 @@ void GraphicStadiumManager::displayInstallations()
 	Label &titleLabel = _canvas.addLabel("Your\ninstallations");
 	titleLabel.setFont(HEADER_FONT_PATH);
 	titleLabel.setColor(sf::Color::White);
-	titleLabel.setFontSize(50);
+	titleLabel.setFontSize(40);
 	titleLabel.setPosition(650, 100);
 
 	backButton();

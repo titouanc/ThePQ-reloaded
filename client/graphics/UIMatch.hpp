@@ -41,6 +41,9 @@ class UIMatch : public sf::Drawable {
            two borders of an hexagon is hexagonSize pixels */
         UIMatch(Pitch & pitch, const Squad & viewerSquad, int hexagonSize=25);
 
+        /* Sets the side on which your own squad plays */
+        void setOwnSquadDirection();
+
         /* Return graphical pitch width, in pixels */
         unsigned int width(void) const;
         /* Return graphical pitch height, in pixels */

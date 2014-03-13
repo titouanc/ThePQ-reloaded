@@ -49,6 +49,9 @@ UIMatch::UIMatch(Pitch & pitch, const Squad & viewerSquad, int hexagonSize) :
         if (! toLoad[i]->loadFromFile(texturePath(files[i])))
             throw TextureNotFound(files[i]);
     }
+}
+
+void UIMatch::setOwnSquadDirection(){
     if (_ownSquad.players[0]->getPosition().x() > 0)
         _playsOnLeftSide = false;
     else
@@ -168,26 +171,27 @@ void UIMatch::drawMoveables(sf::RenderTarget & dest) const
 
             } else if (it->second->isPlayer()){
                 Player const & player = (Player const &) *(it->second);
+                bool isOfOwnTeam = _ownSquad.hasPlayer(&(Moveable &)player);
                 if (player.isBeater()){
-                    if (_ownSquad.hasPlayer(&(Moveable &)player))
+                    if (isOfOwnTeam)
                         playerSprite.setTexture(_own_beater_texture);
                     else
                         playerSprite.setTexture(_other_beater_texture);
                 }
                 else if (player.isSeeker()){
-                    if (_ownSquad.hasPlayer(&(Moveable &)player))
+                    if (isOfOwnTeam)
                         playerSprite.setTexture(_own_seeker_texture);
                     else
                         playerSprite.setTexture(_other_seeker_texture);
                 }
                 else if (player.isChaser()){
-                    if (_ownSquad.hasPlayer(&(Moveable &)player))
+                    if (isOfOwnTeam)
                         playerSprite.setTexture(_own_chaser_texture);
                     else
                         playerSprite.setTexture(_other_chaser_texture);
                 }
                 else if (player.isKeeper()){
-                    if (_ownSquad.hasPlayer(&(Moveable &)player))
+                    if (isOfOwnTeam)
                         playerSprite.setTexture(_own_keeper_texture);
                     else
                         playerSprite.setTexture(_other_keeper_texture);
@@ -195,8 +199,14 @@ void UIMatch::drawMoveables(sf::RenderTarget & dest) const
                 s = _own_chaser_texture.getSize();
                 rx = (double)_size/s.x;
                 ry = (double)_size/s.y;
+                if (    ( (isOfOwnTeam)  && (!_playsOnLeftSide) )
+                    ||  ( (!isOfOwnTeam) && (_playsOnLeftSide) ) )
+                    rx = -rx;
                 playerSprite.setScale(sf::Vector2f(rx, ry));
-                playerSprite.setPosition(destpos.x(), destpos.y());
+                if (rx<0)
+                    playerSprite.setPosition(destpos.x()+_size, destpos.y());
+                else
+                    playerSprite.setPosition(destpos.x(), destpos.y());
                 dest.draw(playerSprite);
             }
         }

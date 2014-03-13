@@ -48,8 +48,8 @@ std::ostream& operator<< (std::ostream& out, const Championship& champ){
 }
 
 Championship::Championship(size_t nbOfTurns,std::string name,int cashprize, int fame) : 
-_isStarted(false), _isEnded(false), _usersNotified(false), _name(name), _turn(1), _nbOfUsers(2<<(nbOfTurns-1)),
-_cashPrize(cashprize), _fame(fame)
+_isStarted(false), _isEnded(false), _usersNotified(false), _name(name), _cashPrize(cashprize), 
+_fame(fame), _turn(1), _nbOfUsers(2<<(nbOfTurns-1))
 {
 	if (_nbOfUsers < 2 || _nbOfUsers > 32) //Should never happen (AdminClient verifying it)
 	{
