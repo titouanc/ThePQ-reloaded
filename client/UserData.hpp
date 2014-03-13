@@ -7,6 +7,7 @@
 #include <model/Sale.hpp>
 #include <model/Player.hpp>
 #include <model/Championship.hpp>
+#include <model/Squad.hpp>
 
 struct UserData
 {
@@ -38,6 +39,9 @@ struct UserData
 
 		if(ISINT(json.get("fame")))
 			fame = INT(json.get("fame"));
+
+		if(ISDICT(json.get(memory::SQUAD)))
+			squad = DICT(json.get(memory::SQUAD));
 	}
 	~UserData()
 	{
@@ -50,6 +54,7 @@ struct UserData
 	// Cache
 	std::vector<Installation*> installations;
 	std::vector<Player> players;
+	Squad squad;
 	Championship joinedChamp;
 	std::string username;
 	std::string teamname;
