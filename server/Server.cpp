@@ -730,6 +730,7 @@ void Server::timeUpdateChampionship()
 			toSend.set("type",net::MSG::CHAMPIONSHIP_STATUS_CHANGE);
 			toSend.set("data",net::MSG::CHAMPIONSHIP_WON);
 			sendNotification(_championships[i]->getWinner(),toSend);
+			MemoryAccess::removeObject(*(_championships[i]));
 			pthread_mutex_lock(&_champsMutex);
 			delete _championships[i]; 
 			_championships.erase(_championships.begin()+i);
