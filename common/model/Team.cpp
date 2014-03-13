@@ -161,7 +161,9 @@ void Team::generateStartingTeam(){
 void Team::initFame(){
 	_fame=gameconfig::STARTING_FAME;
 }
-
+void Team::initAcPoints(){
+	_acpoints=gameconfig::STARTING_AC_POINTS;
+}
 void Team::timeUpdate()
 {
 	for (size_t j = 0; j < _installations.size(); ++j)

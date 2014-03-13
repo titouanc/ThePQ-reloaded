@@ -29,7 +29,7 @@ struct Schedule
 	Schedule(JSON::Dict const & json)
 	{
 		if (ISSTR(json.get("user1")))		{ user1 = STR(json.get("user1")).value(); }
-		if (ISSTR(json.get("user2")))		{ user1 = STR(json.get("user2")).value(); }
+		if (ISSTR(json.get("user2")))		{ user2 = STR(json.get("user2")).value(); }
 		if (ISSTR(json.get("statususer1")))	{ statusUser1 = STR(json.get("statususer1")).value();}
 		if (ISSTR(json.get("statususer2")))	{ statusUser2 = STR(json.get("statususer2")).value();}
 		if (ISINT(json.get("date")))		{ date = INT(json.get("date")); }
@@ -45,6 +45,12 @@ struct Schedule
 		res.set("statususer2",statusUser2);
 		res.set("isHappening", JSON::Bool(isHappening));
 		return res;
+	}
+	std::string getReadableDate() const {
+		std::string dateStr = ctime(&date);
+		if(! dateStr.empty())
+			dateStr.erase(dateStr.size()-1);
+		return dateStr;
 	}
 };
 
@@ -93,6 +99,7 @@ private:
 
 	std::vector<std::string> _users;
 	std::vector<Schedule> _schedules;
+	std::vector<std::vector<std::string>> _turnsResult;
 
 	
 	

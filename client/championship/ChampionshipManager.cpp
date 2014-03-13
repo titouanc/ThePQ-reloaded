@@ -31,6 +31,7 @@ void ChampionshipManager::treatMessage(std::string const & type, JSON::Value con
 			std::string response = STR(data).value();
 			std::string message;
 			bool ok=false;
+
 			if(response == net::MSG::ALREADY_IN_CHAMPIONSHIP){
 				message =  "Cannot take part in more than one championship at the same time.";
 				ok = false;
@@ -47,7 +48,7 @@ void ChampionshipManager::treatMessage(std::string const & type, JSON::Value con
 				message = "Added to championship.";
 				ok = true;
 			}
-			onJoinChampionship(ok, message);
+			this->onJoinChampionship(ok, message);
 		}
 	}
 	else if (type == net::MSG::JOINABLE_CHAMPIONSHIPS_LIST)
@@ -57,14 +58,16 @@ void ChampionshipManager::treatMessage(std::string const & type, JSON::Value con
 		for(size_t i = 0; i<champs.len();++i){
 			_champs.push_back(Championship(DICT(champs[i])));
 		}
-		onChampionshipsLoad();
+		this->onChampionshipsLoad();
 	}
 	else if(type == net::MSG::LEAVE_CHAMPIONSHIP)
 	{
 		if(ISSTR(data)){
 			std::string response = STR(data).value();
 			std::string message;
-			bool ok=false;
+
+			bool ok = false;
+
 			if(response == net::MSG::CHAMPIONSHIP_STARTED){
 				message = "Your championship started; cannot leave it.";
 				ok = false;
@@ -75,18 +78,17 @@ void ChampionshipManager::treatMessage(std::string const & type, JSON::Value con
 			}
 			else if(response == net::MSG::REMOVED_FROM_CHAMPIONSHIP){
 				message = "Removed from championship.";
+				user().joinedChamp = Championship();
 				ok = true;
 			}
-			onLeaveChampionship(ok,message);
+			this->onLeaveChampionship(ok,message);
 		}
 	}
 	else if(type == net::MSG::JOINED_CHAMPIONSHIP)
 	{
 		user().joinedChamp = Championship();
 		if(ISSTR(data)){
-			if(STR(data).value() == net::MSG::CHAMPIONSHIP_NOT_FOUND){
-				return;
-			}
+			if(STR(data).value() == net::MSG::CHAMPIONSHIP_NOT_FOUND){}
 		}
 		else if(ISDICT(data)){
 			user().joinedChamp = DICT(data);

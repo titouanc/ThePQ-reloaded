@@ -67,7 +67,7 @@ public:
 
 	void generateStartingTeam();
 	void initFame();
-
+	void initAcPoints();
 	void timeUpdate();
 
     int level() const;

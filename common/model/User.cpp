@@ -53,6 +53,7 @@ void User::createUser(){
 	_team.setOwner(_username);
 	_team.generateStartingTeam();
 	_team.initFame();
+	_team.initAcPoints();
 	_team.save();
 }
 

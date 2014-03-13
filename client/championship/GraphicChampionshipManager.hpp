@@ -16,6 +16,10 @@ private:
 	void updateCurrentChampionship();
 	void onJoinedChampionship();
 	void joinChampionship(std::string);
+	void onJoinChampionship(bool,std::string const &);
+	void leaveChampionship();
+	void onLeaveChampionship(bool, std::string const &);
+	void seeCurrentChampionship();
 	NOTIFIABLE
 	bool _wait;
 };
