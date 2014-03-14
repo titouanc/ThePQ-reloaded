@@ -244,6 +244,9 @@ void Server::treatMessage(
 
 		else if(messageType == MSG::PUT_PLAYER_ON_SQUAD_POSITION)
 			putPlayerOnSquadPosition(dict, peer_id);
+
+		else if(messageType == MSG::SWAP_PLAYERS_SQUAD_POSITION)
+			swapPlayersOfSquad(dict, peer_id);
 	} 
 
 	else if (ISSTR(payload)){
