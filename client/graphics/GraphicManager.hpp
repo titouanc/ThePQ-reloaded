@@ -35,6 +35,7 @@ namespace GUI {
 		void updateBudget(int newBudget);
 		void updateAcPoints(int newAcPoints);
 		void updateFame(int newFame);
+		void updateUsername(std::string username);
 
 		void doNothing(){}
 	protected:

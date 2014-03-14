@@ -111,6 +111,11 @@ void GUI::GraphicManager::updateFame(int newFame){
 		_userFameButton->setText(s.str());
 }
 
+void GUI::GraphicManager::updateUsername(std::string username){
+	if (_usernameButton)
+		_usernameButton->setText(username);
+}
+
 
 GUI::Button<GUI::GraphicManager> & GUI::GraphicManager::addBackButton(std::string const & caption)
 {
