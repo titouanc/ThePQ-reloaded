@@ -190,7 +190,7 @@ void Match::throwBall(Collision & collide)
 				cout << "ACTIONVEC:" << JSON::List(stroke.actionVec) << "  "
 				     << "NORMALIZED: " << JSON::List(stroke.actionVec.normalize()) << " "
 				     << "frompos:" << JSON::List(collide.fromPos) << endl;
-				Position qPos = collide.fromPos + stroke.actionVec.normalize();
+				Position qPos = collide.conflict + stroke.actionVec.normalize();
 				_quaffle.setPosition(qPos);
 				_pitch.insert(&_quaffle);
 
