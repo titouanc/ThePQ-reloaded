@@ -59,10 +59,6 @@ void GUI::Layer::renderTo(sf::RenderTarget & dest){
 void GUI::Layer::renderAllAttributesTo(sf::RenderTarget &dest){		
 	for (size_t i=0; i<_panels.size(); ++i)
 		dest.draw(*(_panels[i]));
-	// rendering clickables
-	for(unsigned int i=0; i<_clickables.size(); ++i)
-		if (!_clickables[i]->isHidden())
-			_clickables[i]->renderTo(dest);
 	// rendering textboxes
 	map<string, Textbox*>::iterator it = _textboxes.begin();
 	for(; it != _textboxes.end(); it++)
@@ -81,6 +77,10 @@ void GUI::Layer::renderAllAttributesTo(sf::RenderTarget &dest){
 		if(!_tableViews[i]->isHidden())
 			_tableViews[i]->renderTo(dest);
 	}
+	// rendering clickables
+	for(unsigned int i=0; i<_clickables.size(); ++i)
+		if (!_clickables[i]->isHidden())
+			_clickables[i]->renderTo(dest);
 	for(unsigned i=0; i<_overlayPanels.size(); ++i)
 		dest.draw(*(_overlayPanels[i]));
 
