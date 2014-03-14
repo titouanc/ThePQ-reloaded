@@ -52,7 +52,7 @@ public:
 	int getPrecision () const 		{ return _precision; }
 	int getChance () const 			{ return _chance; }
 	/* Effective aptitude(s) getter(s) used in a Match */
-	float getSpeed() const 			{ return (getVelocity()+(gameconfig::MAXAPTVAL/10)-1)/(gameconfig::MAXAPTVAL/10); }
+	float getSpeed() const 			{ return (getVelocity()+(gameconfig::MAXAPTVAL/10)-1)/(gameconfig::MAXAPTVAL/10)+5; }
     
    	/* Aptitudes setters */
     void setStrength(int strength) { _strength = strength; }
