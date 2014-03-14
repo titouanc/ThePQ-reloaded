@@ -11,6 +11,9 @@ public:
 	CLITeamManager(ClientManager const & parent);
 	void run();
 	virtual void showPlayers();
+	virtual void showSquad();
+	virtual void showSelectPosition();
+	virtual void showSelectPlayer();
 	virtual void onPlayersLoad();
 	virtual void onMatchStart();
 };
