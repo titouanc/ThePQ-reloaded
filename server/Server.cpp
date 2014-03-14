@@ -33,7 +33,7 @@ Server::Server(NetConfig const & config) :
 	_inbox(), _outbox(), _users(),
 	_connectionManager(_inbox, _outbox, config.ip.c_str(), config.port, config.maxClients),
 	_market(new PlayerMarket(this)),_matches(),_adminManager(_connectionManager,this),
-	_timeTicks(0)
+	_timeTicks(0), _champsMutex(PTHREAD_MUTEX_INITIALIZER), _timeThread()
 {
 	loadChampionships();
 	_connectionManager.start();
@@ -199,21 +199,12 @@ void Server::startMatch(int client_idA, int client_idB, bool champMatch)
 		_users.find(client_idB) == _users.end()){
 		return;
 	}
-	JSON::Value *json = JSON::load("fixtures/squad1.json");
-	if (! ISDICT(json))
-		return;
-	Squad squad1(DICT(json));
-	squad1.client_id = client_idA;
-	squad1.squad_owner = _users[client_idA]->getUsername();
-	delete json;
 
-	json = JSON::load("fixtures/squad2.json");
-	if (! ISDICT(json))
-		return;
-	Squad squad2(DICT(json));
+	Squad & squad1 = _users[client_idA]->getTeam().getSquad();
+	squad1.client_id = client_idA;
+
+	Squad & squad2 = _users[client_idB]->getTeam().getSquad();
 	squad2.client_id = client_idB;
-	squad2.squad_owner = _users[client_idB]->getUsername();
-	delete json;
 
 	while (_outbox.available()); /* Clear outbox (do not lose msgs) */
 	MatchManager *match = new MatchManager(_connectionManager, squad1, squad2, champMatch);
@@ -276,6 +267,12 @@ void Server::treatMessage(
 		
 		else if(messageType == MSG::FRIENDLY_GAME_INVITATION_RESPONSE)
 				sendInvitationResponseToPlayer(dict, peer_id);	
+
+		else if(messageType == MSG::PUT_PLAYER_ON_SQUAD_POSITION)
+			putPlayerOnSquadPosition(dict, peer_id);
+
+		else if(messageType == MSG::SWAP_PLAYERS_SQUAD_POSITION)
+			swapPlayersOfSquad(dict, peer_id);
 	} 
 
 	else if (ISSTR(payload)){
@@ -479,6 +476,9 @@ void Server::upgradeInstallation(int peer_id, size_t i)
 	msg.set("type", net::MSG::INSTALLATION_UPGRADE);
 	msg.set("data", JSON::Bool(res));
 	_outbox.push(Message(peer_id, msg.clone()));
+	JSON::Dict cache;
+	cache.set("funds",_users[peer_id]->getTeam().getFunds());
+	sendTeamInfos(cache,peer_id);
 }
 
 void Server::downgradeInstallation(int peer_id, size_t i)
@@ -488,6 +488,9 @@ void Server::downgradeInstallation(int peer_id, size_t i)
 	msg.set("type", net::MSG::INSTALLATION_DOWNGRADE);
 	msg.set("data", JSON::Bool(res));
 	_outbox.push(Message(peer_id, msg.clone()));
+	JSON::Dict cache;
+	cache.set("funds",_users[peer_id]->getTeam().getFunds());
+	sendTeamInfos(cache,peer_id);
 }
 
 void Server::sendConnectedUsersList(int peer_id)
@@ -632,6 +635,30 @@ User *Server::getUserByName(std::string username)
 	return NULL;
 }
 
+void Server::putPlayerOnSquadPosition(const JSON::Dict &response, int peer_id){
+	int position = 0;
+	int member_id = 0;
+	if (ISINT(response.get(net::MSG::PLAYER_ID)))
+		member_id = INT(response.get(net::MSG::PLAYER_ID));
+	if (ISINT(response.get(net::MSG::SQUAD_POSITION)))
+		position = INT(response.get(net::MSG::SQUAD_POSITION));
+	_users[peer_id]->getTeam().getSquad().putPlayerAtPosition(member_id, position);
+	sendTeamInfos(_users[peer_id]->getTeam(), peer_id);
+	MemoryAccess::save(_users[peer_id]->getTeam());
+}
+
+void Server::swapPlayersOfSquad(const JSON::Dict &response, int peer_id){
+	int position = 0;
+	int member_id = 0;
+	if (ISINT(response.get(net::MSG::PLAYER_ID)))
+		member_id = INT(response.get(net::MSG::PLAYER_ID));
+	if (ISINT(response.get(net::MSG::SQUAD_POSITION)))
+		position = INT(response.get(net::MSG::SQUAD_POSITION));
+	_users[peer_id]->getTeam().getSquad().swapPlayers(member_id, position);
+	sendTeamInfos(_users[peer_id]->getTeam(), peer_id);
+	MemoryAccess::save(_users[peer_id]->getTeam());
+}
+
 void Server::timeLoop()
 {
 	time_t timeStart = time(NULL);
@@ -674,16 +701,33 @@ void Server::timeUpdateStadium()
 {
 	vector<User> users;
 	MemoryAccess::load(users);
+	long int before, after;
+	std::string name;
 	for (size_t i = 0; i < users.size(); ++i)
 	{
-		users[i].loadTeam();
-		Team & team = users[i].getTeam();
-		long int before = team.getFunds();
-		team.timeUpdate();
+		int peer_id;
+		if( (peer_id = getPeerID(users[i].getUsername())) >= 0 ){
+			Team & team = _users[peer_id]->getTeam();
+			before = team.getFunds();
+			team.timeUpdate();
+			team.save();
+			after = team.getFunds();
+			name = team.getName();
+			JSON::Dict toSend;
+			toSend.set("funds",team.getFunds());
+			sendTeamInfos(toSend,peer_id);
+		}
+		else{
+			Team team(users[i].getUsername());
+			team.load();
+			before = team.getFunds();
+			team.timeUpdate();
+			team.save();
+			after = team.getFunds();
+			name = team.getName();
+		}
 
-		long int after = team.getFunds();
-
-		cout << "[" << this << "] \033[33m" << team.getName()
+		cout << "[" << this << "] \033[33m" << name
 			 << "\033[0m before: " << before << "$; after: " << after << "$" << endl;
 	}
 }
@@ -972,3 +1016,11 @@ void Server::joinChampionship(std::string champName, int peer_id){
 	Message status(peer_id, toSend.clone());
 	_outbox.push(status);
 }
+
+
+
+
+
+
+
+

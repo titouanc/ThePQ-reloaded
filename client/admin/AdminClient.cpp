@@ -4,14 +4,11 @@ AdminClient::AdminClient(NetConfig const &config) : _connection(config.host, con
 _admin()
 {
 	_connection.run();
-	/*
-	JSON::Dict identify;
-	identify.set("type",net::MSG::ADMIN_CLIENT);
-	identify.set("data","");
-	_connection.send(identify);*/
+	
 }
 
 void AdminClient::run(){
+	/*Method starting the admin interface*/
 	std::cout<<"Welcome. This is the admin client for The Pro Quidditch Manager 2014."<<std::endl;
 	while(_isRunning){
 		if(_admin.isLogged()){
@@ -25,6 +22,7 @@ void AdminClient::run(){
 }
 
 void AdminClient::showAdminMenu(){
+	/*Method displaying the administration menu*/
 	Menu _menu;
 	_menu.addToDisplay("   - create a championship\n");
 	_menu.addToDisplay("   - quit\n");
@@ -64,6 +62,7 @@ bool AdminClient::showBaseMenu(){
 }
 
 void AdminClient::showIdentifyMenu(){	
+	/*Method showing the administrator login menu*/
 	std::string username = Menu::askForUserData("Username : ");
 	std::string password = Menu::askForUserData("Password : ");
 	
@@ -83,8 +82,10 @@ void AdminClient::showIdentifyMenu(){
 	}
 }
 
-void AdminClient::loginAdmin(std::string username, std::string password)
-{
+void AdminClient::loginAdmin(std::string username, std::string password){
+	/*Method sending the admin credentials to the server.
+	 * Credential errors are handled by specific exceptions
+	*/
 	JSON::Dict toSend, data;
 	data.set(net::MSG::USERNAME, username);
 	data.set(net::MSG::PASSWORD, password);
@@ -118,6 +119,7 @@ void AdminClient::loginAdmin(std::string username, std::string password)
 }
 
 void AdminClient::logoutAdmin(){
+	/*Method handling the logout of the admin user*/
 	_admin.logout();
 	JSON::Dict toSend;
 	toSend.set("type",net::MSG::DISCONNECT);
@@ -127,6 +129,7 @@ void AdminClient::logoutAdmin(){
 }
 
 void AdminClient::showCreateChampionshipMenu(){	
+	/*Method showing the interface for a championship constructor*/
 	std::cout << "\n\033[1m\033[33mCreating championship :\033[0m"<<std::endl;
 	std::cout<<"Championship name : ";
 	std::string champName;
@@ -159,6 +162,7 @@ void AdminClient::showCreateChampionshipMenu(){
 
 
 void AdminClient::createChampionship(std::string name, int nbTurns, int cash, int fame){
+	/*Method creating a championship*/
 	JSON::Dict toSend;
 	toSend.set("type",net::MSG::CHAMPIONSHIP_CREATION);
 	JSON::Dict data;

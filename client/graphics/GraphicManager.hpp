@@ -7,11 +7,14 @@
 #include "Textbox.hpp"
 #include "Label.hpp"
 #include "TableView.hpp"
+#include "../UserData.hpp"
 
 namespace GUI {
 	class GraphicManager {
 	public:
-		GraphicManager(MainController &uic) : _controller(uic), _isRunning(true){}
+		GraphicManager(MainController &uic) : _controller(uic), _isRunning(true),
+		_backButton(NULL), _usernameButton(NULL), _userBudgetButton(NULL),
+		_userAcPointsButton(NULL), _userFameButton(NULL) {}
 		
 		/*! run the GraphicManager mainloop */
 		virtual void run();
@@ -22,12 +25,21 @@ namespace GUI {
 		void deleteCanvas();
 		void displayCanvas();
 		void redrawCanvas();
+		void clear();
 		void stop(){_isRunning = false;}
 
 		void displayError(std::string errorMessage);
 		void displayOk(std::string okMessage);
 		void displayMessage(std::string message);
 		int confirm(std::string message);
+
+		void updateBudget(int newBudget);
+		void updateAcPoints(int newAcPoints);
+		void updateFame(int newFame);
+		void updateUsername(std::string username);
+
+		void positionTopButtons();
+
 		void doNothing(){}
 	protected:
 		/* Standard event processing; always return true */
@@ -36,15 +48,24 @@ namespace GUI {
 		bool readEvent();
 
 		/* Create and add a button bound to stop() then return it */
-		GUI::Button<GraphicManager> & backButton(std::string const & caption="Back");
-		GUI::Button<GraphicManager> & usernameButton(std::string const username);
-		GUI::Button<GraphicManager> & userBudgetButton(const int budget);	
-		GUI::Button<GUI::GraphicManager> & userAcPointsButton(const int acPoints);	
-		GUI::Button<GUI::GraphicManager> & userFameButton(const int fame);
+		GUI::Button<GraphicManager> & addBackButton(std::string const & caption="Back");
+		GUI::Button<GraphicManager> & addUsernameButton(std::string const username);
+		GUI::Button<GraphicManager> & addUserBudgetButton(const int budget);	
+		GUI::Button<GUI::GraphicManager> & addUserAcPointsButton(const int acPoints);	
+		GUI::Button<GUI::GraphicManager> & addUserFameButton(const int fame);
+
+		void addTopBar(UserData & user);
+
 		sf::RenderWindow & window(){return _controller.window;}
 		MainController &_controller;
 		Layer _canvas;
 		bool _isRunning;
+
+		GUI::Button<GraphicManager> * _backButton;
+		GUI::Button<GraphicManager> * _usernameButton;
+		GUI::Button<GraphicManager> * _userBudgetButton;	
+		GUI::Button<GUI::GraphicManager> * _userAcPointsButton;	
+		GUI::Button<GUI::GraphicManager> * _userFameButton;
 	};
 }
 

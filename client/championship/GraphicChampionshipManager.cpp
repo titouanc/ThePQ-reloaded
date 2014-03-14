@@ -68,9 +68,8 @@ void GraphicChampionshipManager::onJoinChampionship(bool success, std::string co
 
 void GraphicChampionshipManager::seeCurrentChampionship(){
 
-	_canvas.clear();
-	usernameButton(user().username);
-	userBudgetButton(user().funds);
+	clear();
+	addTopBar(user());
 	if(! user().joinedChamp.getName().empty()){
 		Championship & champ = user().joinedChamp;
 		TableView & champInfos = _canvas.addTableView();
@@ -163,10 +162,8 @@ void GraphicChampionshipManager::seeCurrentChampionship(){
 
 void GraphicChampionshipManager::onChampionshipsLoad(){
 	_wait = false;
-	_canvas.clear();
-	usernameButton(user().username);
-	userBudgetButton(user().funds);
-	updateCurrentChampionship();
+	clear();
+	addTopBar(user());
 	TableView & champsList = _canvas.addTableView();
 	champsList.setPosition(100,100);
 
@@ -242,7 +239,7 @@ void GraphicChampionshipManager::onChampionshipsLoad(){
 		leaveChampButton.setBackgroundColor(sf::Color(0xcc, 0xcc, 0xcc, 0xff));
 	}
 	
-	backButton();
+	addBackButton();
 
 
 	redrawCanvas();

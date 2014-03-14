@@ -10,6 +10,9 @@ namespace GUI{
 			_x = x; 
 			_y = y;
 		}
+		virtual void centerOn(int x, int y){
+			setPosition(x-_w/2, y-_h/2);
+		}
 		virtual int x() {return _x;}
 		virtual int y() {return _y;}
 		virtual void setWidth(int w) 	{ _w = w; }

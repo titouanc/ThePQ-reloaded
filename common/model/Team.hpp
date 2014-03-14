@@ -4,6 +4,7 @@
 #include <json/json.hpp>
 #include <model/Player.hpp>
 #include <model/Installation.hpp>
+#include <model/Squad.hpp>
 #include <string>
 #include <vector>
 #include <model/MemoryAccess.hpp>
@@ -14,8 +15,9 @@
 
 class Team{
 private:
-    std::string _name;
     std::string _owner;
+    std::string _name;
+    Squad _squad;
     int _funds;
     int _fame;
     int _acpoints;//<-activity points
@@ -43,6 +45,7 @@ public:
 	void setOwner(std::string owner){_owner=owner;}
 	std::string getName() const {return _name;}
 	void setName(std::string name){_name=name;}
+
 	int getFunds() const {return _funds;}
 	int getFame() const {return _fame;}
 	int getAcPoints() const {return _acpoints;}
@@ -122,10 +125,10 @@ public:
 			_acpoints -= ap;
 		pthread_mutex_unlock(&_changes);
 	}
-	
 
 	std::vector<Player>& getPlayers(){return _players;}
 	std::vector<Installation*>& getInstallations(){return _installations;}
+	Squad& getSquad() { return _squad; }
 	
 	bool upgradeInstallation(size_t i);
 	bool downgradeInstallation(size_t i);

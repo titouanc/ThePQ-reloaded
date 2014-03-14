@@ -77,7 +77,7 @@ namespace net
 		static const std::string PLAYERS_ON_MARKET_LIST= "DQ_P_OM_L";
 		static const std::string PLAYERS_LIST = "DQ_P_L";
 		static const std::string SHOW_TEAM_STATUS = "DQ_T_S";//new data query!!!
-		static const std::string SHOW_FINANCIAL_STATUS = "DQ_F_S";
+		static const std::string SHOW_FINANCIAL_STATUS = "DQ_F_S";		
 
 		// friendly game
 		static const std::string FRIENDLY_GAME_USERNAME = "F_G_U";
@@ -152,7 +152,10 @@ namespace net
 		static const std::string MONEY_GAIN = "MR_$";
 		static const std::string AP_WON = "MR_APWW";
 		
-		
+		// SQUAD ------------------------
+		static const std::string PUT_PLAYER_ON_SQUAD_POSITION = "P_P_S_P";
+		static const std::string SWAP_PLAYERS_SQUAD_POSITION = "S_P_S_P";
+		static const std::string SQUAD_POSITION = "SQUAD_POS";
 
 	}
 }
@@ -160,11 +163,11 @@ namespace net
 namespace gameconfig
 {
 	static const unsigned int SLEEP_TIME = 10;
-	static const unsigned int TICK_TIME = 20;
+	static const unsigned int TICK_TIME = 60;
 	static const unsigned int TICKS_BEFORE_MATCH = 1;
 	static const unsigned int TICKS_BEFORE_STADIUM = 1;
 	static const unsigned int TICKS_BEFORE_CHAMPIONSHIP = 1;
-	static const unsigned int TICKS_BEFORE_RESET = 1440;
+	static const unsigned int TICKS_BEFORE_RESET = 86400/TICK_TIME;
 	static const std::string UNNAMED_TEAM = "NO_NAME";
 	static const int MAX_COACHES = 5;
 	static const int MAX_PLAYERS = 100;
@@ -176,7 +179,7 @@ namespace gameconfig
 	static const int SALE_TURN_TIME = 30;
 	static const float BID_RATIO = 0.05;
 	static const int MAX_CHAMPIONSHIP_TURNS = 5; //32 teams
-	static const int MAX_CHAMP_MATCH_OFFSET = 3600;
+	static const int MAX_CHAMP_MATCH_OFFSET = 61;
 	static const float FAME_MULTIPLIER_INSTALLATION=0.25;
 	static const float FAME_MULTIPLIER_B_GAME=0.23;//will determine the fame gained after a victory based on the other teams
 	static const float FAME_MULTIPLIER_S_GAME=0.23;
@@ -223,6 +226,7 @@ namespace memory
 	static const std::string TEAMNAMES_FILE = "teamNames";
 	static const std::string USERNAMES_FILE = "userNames";
 	// Data
+	static const std::string SQUAD = "squad";
 	static const std::string FUNDS = "funds";
 	static const std::string AC_POINTS = "activity_points";
 	static const std::string TEAM_NAME = "teamname";
@@ -241,6 +245,17 @@ namespace memory
 
 	static const std::string ADMIN_DIR = "data/admins/";
 	static const std::string ADMIN_FILE = "admin";
+}
+
+namespace SQUAD
+{
+	static const int LEFT_CHASER = 0;
+	static const int CENTER_CHASER = 1;
+	static const int RIGHT_CHASER = 2;
+	static const int LEFT_BEATER = 3;
+	static const int RIGHT_BEATER = 4;
+	static const int SEEKER = 5;
+	static const int KEEPER = 6;
 }
 
 #endif

@@ -54,10 +54,7 @@ int Installation::getUpgradeCost() const{
 	/*Method returning an integer representing the cost of an upgrade to
 	 *the next level. 
 	 */
-	int res = _baseValue;	// buy the installation
-	if (_level > 0) 
-		res = getValueAtLevel(_level+1) - getCurrentValue();
-	return res;
+	return getValueAtLevel(_level+1) - getCurrentValue();
 }
 
 int Installation::getDowngradeRefunds() const {
@@ -84,19 +81,17 @@ void Installation::downgrade(){
 	}
 }
 
-FanShop::FanShop(std::string owner) : Installation(owner, memory::FANSHOP, 1000)
+FanShop::FanShop(std::string owner) : Installation(owner, memory::FANSHOP, 10000)
 {}
 
 int FanShop::getMaintenanceCost() const
 {
-	// EXAMPLE ==> TODO
-	return getCurrentValue()/1000;
+	return getCurrentValue()/50;
 }
 
 int FanShop::getIncome() const
 {
-	// EXAMPLE ==> TODO
-	return getCurrentValue()/50;
+	return (getCurrentValue()*gameconfig::TICKS_BEFORE_STADIUM)/(50*gameconfig::TICKS_BEFORE_RESET); // CAN'T TOUCH THIS MC HAMMER
 }
 
 int FanShop::getMatchIncome(int nbOfSpectators)
@@ -104,13 +99,13 @@ int FanShop::getMatchIncome(int nbOfSpectators)
 	return nbOfSpectators*gameconfig::GOODIES_PRICE;
 }
 	
-FoodStand::FoodStand(std::string owner) : Installation(owner, memory::FOOD_STAND, 500)
+FoodStand::FoodStand(std::string owner) : Installation(owner, memory::FOOD_STAND, 10000)
 {}
 
 int FoodStand::getMaintenanceCost() const
 {
 	// EXAMPLE ==> TODO
-	return getCurrentValue()/1000;	
+	return getCurrentValue()/50;	
 }
 
 int FoodStand::getIncome() const
@@ -123,7 +118,7 @@ int FoodStand::getMatchIncome(int nbOfSpectators)
 	return nbOfSpectators*gameconfig::FOOD_PRICE;
 }
 
-Tribune::Tribune(std::string owner) : Installation(owner, memory::TRIBUNE, 2500, 1)
+Tribune::Tribune(std::string owner) : Installation(owner, memory::TRIBUNE, 20000, 1)
 {}
 
 int Tribune::getMaxSpectators()
@@ -134,7 +129,7 @@ int Tribune::getMaxSpectators()
 int Tribune::getMaintenanceCost() const
 {
 	// EXAMPLE ==> TODO
-	return getCurrentValue()/1000;	
+	return getCurrentValue()/50;	
 }
 
 int Tribune::getIncome() const
@@ -153,7 +148,7 @@ MedicalCenter::MedicalCenter(std::string owner) : Installation(owner, memory::ME
 int MedicalCenter::getMaintenanceCost() const
 {
 	// EXAMPLE ==> TODO
-	return getCurrentValue()/1000;	
+	return getCurrentValue()/50;	
 }
 
 int MedicalCenter::getIncome() const

@@ -45,6 +45,7 @@
 \DeclareRobustCommand{\gloss}[1]{\it{#1}\index{\glslabel}}
 \renewcommand{\glsdisplay}[4]{\gloss{#1#4}}
 \renewcommand{\glsdisplayfirst}[4]{\gloss{#1#4}}
+\newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
 
 %===================
 \newglossaryentry{utilisateur}{
@@ -171,23 +172,8 @@
 %===================
 
 
-\author{
-- Groupe 3 -\\
-Anthony \bsc{Caccia} \texttt{acaccia@ulb.ac.be},\\
-Antoine \bsc{Carpentier} \texttt{antcarpe@ulb.ac.be},\\
-Titouan \bsc{Christophe} \texttt{tichrist@ulb.ac.be},\\
-Jerôme \bsc{Hellinckx} \texttt{jerhelli@ulb.ac.be},\\
-Florentin \bsc{Hennecker} \texttt{fhenneck@ulb.ac.be},\\
-Mircea \bsc{Mudura} \texttt{mmudura@ulb.ac.be}\\
-}
-
-\title{The Pro Quidditch Manager\\Software Requirements Document}
-\date{\today}
-
-
-
 \begin{document}
-\maketitle
+\input{title.tex}
 \tableofcontents
 
 \chapter{Introduction}
@@ -207,6 +193,11 @@ Sur \textbf{The Pro Quidditch Manager},vous bâtissez votre propre \textit{dream
 
 \subsection{Le Quidditch}
 Selon le souhait du client, les règles utilisées dans le jeu seront, autant que possible, proches des règles décrites sur Wikipédia\footnote{\url{http://en.wikipedia.org/wiki/Quidditch}, dernière consultation le 18/12/2013}.
+
+\subsubsection*{Copyright}
+Le mot Quidditch, créé par J.K. Rowling, appartient actuellement à la société \emph{Warner Bros}.
+Le loqo sur la page de garde appartient à l' \emph{International Quidditch Association}.
+
 
 \section{Historique du document}
 \begin{figure}[h!]
@@ -232,6 +223,22 @@ Selon le souhait du client, les règles utilisées dans le jeu seront, autant qu
 1.7 & Anthony & 21/02/2014 & Diagramme de classes général ajouté\\
 \hline
 2.0 & Anthony & 21/02/2014 & Release phase 2\\
+\hline
+2.1 & Anthony & 11/03/2014 & Nouvelle page de garde\\
+\hline
+2.2 & Anthony & 14/03/2014 & Big diagramme de composants ajouté en annexe\\
+\hline
+2.3 & Anthony & 14/03/2014 & Diagrammes de classes mis à jours\\
+\hline
+2.4 & Anthony & 14/03/2014 & Suppression des parties non implémentées dans le texte\\
+\hline
+2.5 & Anthony & 14/03/2014 & Suppression des parties non implémentées dans les use cases\\
+\hline
+2.6 & Anthony / Mircea & 14/03/2014 & Ajout des diagrammes d'activité\\
+\hline
+2.7 & Anthony & 14/03/2014 & Dans le futur\\
+\hline
+3.0 & Anthony & 14/03/2014 & Release phase 3\\
 \hline
 \end{tabular}
 \end{figure}
@@ -297,11 +304,33 @@ Cette section décrira ce que le système doit être capable de faire. À nouvea
 \chapter{À propos de la librairie graphique}
 \input{gui.tex}
 
+\chapter{Dans le futur…}
+Dans le cadre de ce projet, certaines fonctionnalités  supplémentaires auraient pu être ajoutées. 
+Malheureusement, le manque de temps nous aura contraint à les abandonner. 
+Voici quelques-unes de ces idées :
+\begin{list}{\labelitemi}{\leftmargin=1.5em}
+\item{choix du thème graphique du jeu;}
+\item{une API python (ou autre langage de script);}
+\item{un chat ou un système de mails entre utilisateurs;}
+\item{un historique des résultats des matches et championnats;}
+\item{sessions d'\gls{entrainement}s;}
+\item{\gls{sponsor}s;}
+\item{un système d'achat d'argent et de points d'action via Paypal.}
+\end{list}
+
+
 \chapter{Diagramme de classes général}
 \begin{figure}[ht]
   \centering
   \includegraphics[angle=90,width=0.4\textwidth]{figures/general-class.eps}
   \caption{\label{fig:Class:General} Classes: diagramme général}
+\end{figure}
+
+\chapter{Diagramme de composants}
+\begin{figure}[ht]
+  \centering
+  \includegraphics[angle=90,width=0.6\textwidth]{figures/Componentsbis.eps}
+  \caption{\label{fig:CompleteComponents} Diagramme de composants}
 \end{figure}
 
 \printindex

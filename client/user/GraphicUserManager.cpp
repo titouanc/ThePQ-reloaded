@@ -31,7 +31,7 @@ GraphicUserManager::GraphicUserManager(
 
 void GraphicUserManager::displayChoice()
 {
-	_canvas.clear();
+	clear();
 
 	Button<GraphicUserManager> & loginButton = _canvas.addButton<GraphicUserManager>(
 		&GraphicUserManager::displayLoginForm, this, "Login");
@@ -48,7 +48,7 @@ void GraphicUserManager::displayChoice()
 
 void GraphicUserManager::displayLoginForm()
 {
-	_canvas.clear();
+	clear();
 	
 	_canvas.addTextbox(USERNAME_TEXTBOX_ID).setPosition(900, 300);
 	_canvas.addTextbox(PASSWORD_TEXTBOX_ID).setPosition(900, 360);
@@ -62,7 +62,7 @@ void GraphicUserManager::displayLoginForm()
 
 void GraphicUserManager::displayRegisterForm()
 {
-	_canvas.clear();
+	clear();
 	
 	_canvas.addTextbox(USERNAME_TEXTBOX_ID).setPosition(900, 300);
 	_canvas.addTextbox(PASSWORD_TEXTBOX_ID).setPosition(900, 360);
@@ -77,7 +77,7 @@ void GraphicUserManager::displayRegisterForm()
 
 void GraphicUserManager::displayTeamNameForm()
 {
-	_canvas.clear();
+	clear();
 
 	_canvas.setBackgroundImage(texturePath("HexBack.png"));
 	
@@ -92,10 +92,9 @@ void GraphicUserManager::displayTeamNameForm()
 
 void GraphicUserManager::displayMainMenu()
 {
-	_canvas.clear();
+	clear();
 
-	usernameButton(user().username);
-	userBudgetButton(user().funds);
+	addTopBar(user());
 
 	_canvas.setBackgroundImage(texturePath("HexBack.png"));
 	
@@ -119,7 +118,7 @@ void GraphicUserManager::displayMainMenu()
 		&GraphicUserManager::goToChampionships, this, "Championships"
 	).setPosition(100, 450);
 
-	backButton("Exit").setPosition(100, 550);
+	addBackButton("Exit").setPosition(100, 550);
 	
 	redrawCanvas();
 }
@@ -129,7 +128,6 @@ void GraphicUserManager::submitLoginForm()
 {
 	GUI::Textbox & userTextbox = _canvas.textboxWithID(USERNAME_TEXTBOX_ID);
 	GUI::Textbox & passTextbox = _canvas.textboxWithID(PASSWORD_TEXTBOX_ID);
-
 	_wait = true;	
 	loginUser(userTextbox.getText(), passTextbox.getText());
 	while (_wait){
@@ -211,7 +209,6 @@ void GraphicUserManager::goToChampionships()
 /* HOOKS */
 void GraphicUserManager::onLoginOK()
 {
-	loadPlayers();
 	displayMainMenu();
 	_wait = false;
 }

@@ -84,10 +84,15 @@ void CLIUserManager::showRegisterMenu()
 
 void CLIUserManager::showMainMenu()
 {
+	std::cout << "main menu ok"<< std::endl;
 	readMessages();
+	std::cout << "readmessages" <<std::endl;
 	CLIMarketManager marketManager(*this);
+	std::cout << "market ok"<<std::endl;
 	CLIFGameManager friendlyGame(*this);
+	std::cout << "fgame ok" << std::endl;
 	CLIChampionshipManager champManager(*this);
+	std::cout << "champ ok" << std::endl;
 	Menu _menu;
 	_menu.addToDisplay("   - manage your team and stadium\n");
 	_menu.addToDisplay("   - access market\n");
@@ -131,7 +136,7 @@ void CLIUserManager::showManagementMenu()
 	CLIStadiumManager stadiumManager(*this);
 	CLITeamManager teamManager(*this);
 	Menu _menu;
-	_menu.addToDisplay("   - manage your stadium and installations\n");
+	_menu.addToDisplay("   - manage your installations\n");
 	_menu.addToDisplay("   - manage your players\n");
 	_menu.addToDisplay("   - quit to main menu\n");
 	int option;

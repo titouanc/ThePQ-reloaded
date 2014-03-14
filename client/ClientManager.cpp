@@ -31,10 +31,12 @@ void ClientManager::say(std::string const & type, JSON::Value const & data)
 
 void ClientManager::treatMessage(std::string const & type, JSON::Value const * data)
 {
-	if (type == net::MSG::TEAM_INFOS)
-	{
-		onTeamInfo(DICT(data));
+	if(type == net::MSG::TEAM_INFOS){
+		if(ISDICT((data))){
+			onTeamInfo(DICT(data));
+		}
 	}
+
 	else if (type == net::MSG::PLAYERS_LIST)
 	{
 		user().players.clear();
@@ -256,13 +258,28 @@ void ClientManager::denyInvitationFromUser(std::string const & username){
 	say(net::MSG::FRIENDLY_GAME_INVITATION_RESPONSE, data);
 }
 
-void ClientManager::onTeamInfo(UserData const & user)
+void ClientManager::onTeamInfo(JSON::Dict const & json)
 {
-	_user.username = user.username;
-	_user.funds = user.funds;
-	_user.teamname = user.teamname;
-	_user.acPoints = user.acPoints;
-	_user.fame = user.fame;
+	if (ISSTR(json.get(net::MSG::USERNAME)))
+		_user.username = STR(json.get(net::MSG::USERNAME)).value();
+	
+	if (ISSTR(json.get("teamname")))
+		_user.teamname = STR(json.get("teamname")).value();
+	
+	if (ISINT(json.get("funds")))
+		_user.funds = INT(json.get("funds"));
+
+	if (ISINT(json.get("activity_points")))
+		_user.acPoints = INT(json.get("activity_points"));
+
+	if(ISINT(json.get("fame")))
+		_user.fame = INT(json.get("fame"));
+
+	if(ISDICT(json.get(memory::SQUAD))){
+		_user.squad = DICT(json.get(memory::SQUAD));
+		onSquadUpdated();
+	}
+	onTeamInfoChange();
 }
 
 ClientManager::ClientManager(

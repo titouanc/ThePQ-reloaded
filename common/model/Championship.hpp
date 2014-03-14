@@ -94,11 +94,11 @@ private:
 	bool _isEnded;
 	bool _usersNotified;
 	std::string _name;
-	int _cashPrize;
-	int _fame;
 	int _turn;
 	int _totalTurns;
 	size_t _nbOfUsers;
+	int _cashPrize;
+	int _fame;
 
 	std::vector<std::string> _users;
 	std::vector<Schedule> _schedules;

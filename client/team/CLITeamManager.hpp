@@ -11,8 +11,31 @@ public:
 	CLITeamManager(ClientManager const & parent);
 	void run();
 	virtual void showPlayers();
-	virtual void onPlayersLoad();
+	virtual void showSquad();
+	virtual void showSelectPosition();
+	virtual void showSelectPlayer();
+	virtual void showSwapPlayer();
 	virtual void onMatchStart();
+
+	bool isPlayerInTeam(int player_id)
+	{
+		for (size_t i = 0; i < user().players.size(); ++i)
+		{
+			if (user().players[i].getMemberID() == player_id)
+				return true;
+		}
+		return false;
+	}
+
+	bool isPlayerInSquad(int player_id)
+	{
+		for (size_t i = 0; i < 7; ++i)
+		{
+			if (user().squad.players[i]->getMemberID() == player_id)
+				return true;
+		}
+		return false;
+	}
 };
 
 #endif // __CLI_TEAM_MANAGER_HPP
