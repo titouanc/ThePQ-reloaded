@@ -123,7 +123,7 @@ void GraphicTeamManager::changePlayerAt(int position){
 void GraphicTeamManager::displaySwapWith(int position){
 	if (LEFT_CHASER != position)
 		_canvas.addButton<GraphicTeamManager, int>(
-			&GraphicTeamManager::doSwap, LEFT_CHASER, this, "Swap"
+			&GraphicTeamManager::doSwap, user().squad.players[LEFT_CHASER]->getMemberID(), this, "Swap"
 		).centerOn(755, 210);
 	else
 		_canvas.addButton<GraphicTeamManager, int>(
@@ -131,7 +131,7 @@ void GraphicTeamManager::displaySwapWith(int position){
 		).centerOn(755, 210);
 	if (CENTER_CHASER != position)
 		_canvas.addButton<GraphicTeamManager, int>(
-			&GraphicTeamManager::doSwap, CENTER_CHASER, this, "Swap"
+			&GraphicTeamManager::doSwap, user().squad.players[CENTER_CHASER]->getMemberID(), this, "Swap"
 		).centerOn(900, 210);
 	else
 		_canvas.addButton<GraphicTeamManager, int>(
@@ -139,7 +139,7 @@ void GraphicTeamManager::displaySwapWith(int position){
 		).centerOn(900, 210);
 	if (RIGHT_CHASER != position)
 		_canvas.addButton<GraphicTeamManager, int>(
-			&GraphicTeamManager::doSwap, RIGHT_CHASER, this, "Swap"
+			&GraphicTeamManager::doSwap, user().squad.players[RIGHT_CHASER]->getMemberID(), this, "Swap"
 		).centerOn(1045, 210);
 	else
 		_canvas.addButton<GraphicTeamManager, int>(
@@ -148,7 +148,7 @@ void GraphicTeamManager::displaySwapWith(int position){
 
 	if (LEFT_BEATER != position)
 		_canvas.addButton<GraphicTeamManager, int>(
-			&GraphicTeamManager::doSwap, LEFT_BEATER, this, "Swap"
+			&GraphicTeamManager::doSwap, user().squad.players[LEFT_BEATER]->getMemberID(), this, "Swap"
 		).centerOn(816, 315);
 	else
 		_canvas.addButton<GraphicTeamManager, int>(
@@ -156,7 +156,7 @@ void GraphicTeamManager::displaySwapWith(int position){
 		).centerOn(816, 315);
 	if (RIGHT_BEATER != position)
 		_canvas.addButton<GraphicTeamManager, int>(
-			&GraphicTeamManager::doSwap, RIGHT_BEATER, this, "Swap"
+			&GraphicTeamManager::doSwap, user().squad.players[RIGHT_BEATER]->getMemberID(), this, "Swap"
 		).centerOn(983, 315);
 	else
 		_canvas.addButton<GraphicTeamManager, int>(
@@ -165,7 +165,7 @@ void GraphicTeamManager::displaySwapWith(int position){
 
 	if (SEEKER != position)
 		_canvas.addButton<GraphicTeamManager, int>(
-			&GraphicTeamManager::doSwap, SEEKER, this, "Swap"
+			&GraphicTeamManager::doSwap, user().squad.players[SEEKER]->getMemberID(), this, "Swap"
 		).centerOn(900, 420);
 	else
 		_canvas.addButton<GraphicTeamManager, int>(
@@ -173,7 +173,7 @@ void GraphicTeamManager::displaySwapWith(int position){
 		).centerOn(900, 420);
 	if (KEEPER != position)
 		_canvas.addButton<GraphicTeamManager, int>(
-			&GraphicTeamManager::doSwap, KEEPER, this, "Swap"
+			&GraphicTeamManager::doSwap, user().squad.players[KEEPER]->getMemberID(), this, "Swap"
 		).centerOn(900, 535);
 	else
 		_canvas.addButton<GraphicTeamManager, int>(

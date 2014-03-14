@@ -141,7 +141,7 @@ struct Squad {
         }
         else if (position > 2 && position < 5){  // Beater
             beaters[position-3] = player;
-            equipAll(&(beaters[position]));
+            equipAll(&(beaters[position-3]));
         }
         else if (position == 5){                // Seeker
             seeker = player;
