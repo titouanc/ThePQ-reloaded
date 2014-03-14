@@ -52,6 +52,7 @@ void CLIUserManager::showLoginMenu()
 	string username = Menu::askForUserData("Username : ");
 	string password = Menu::askForUserData("Password : ");
 	cout << "Please wait..." << endl;
+	cout << endl;
 	loginUser(username, password);
 	_pending++;
 }
@@ -84,15 +85,11 @@ void CLIUserManager::showRegisterMenu()
 
 void CLIUserManager::showMainMenu()
 {
-	std::cout << "main menu ok"<< std::endl;
 	readMessages();
-	std::cout << "readmessages" <<std::endl;
 	CLIMarketManager marketManager(*this);
-	std::cout << "market ok"<<std::endl;
 	CLIFGameManager friendlyGame(*this);
-	std::cout << "fgame ok" << std::endl;
 	CLIChampionshipManager champManager(*this);
-	std::cout << "champ ok" << std::endl;
+	cout << "\033[2J\033[1;1H";
 	Menu _menu;
 	_menu.addToDisplay("   - manage your team and stadium\n");
 	_menu.addToDisplay("   - access market\n");
@@ -107,18 +104,23 @@ void CLIUserManager::showMainMenu()
 		switch(option)
 		{
 			case 1:
+				cout << "\033[2J\033[1;1H";
 				showManagementMenu();
 				break;
 			case 2:
+				cout << "\033[2J\033[1;1H";
 				marketManager.run();
 				break;
 			case 3:
+				cout << "\033[2J\033[1;1H";
 				friendlyGame.run();
 				break;
 			case 4:
+				cout << "\033[2J\033[1;1H";
 				champManager.run();
 				break;
 			case 5:
+				cout << "\033[2J\033[1;1H";
 				askForNotificationHandling();
 				break;
 			case 6:
@@ -146,9 +148,11 @@ void CLIUserManager::showManagementMenu()
 		switch(option)
 		{
 			case 1:
+				cout << "\033[2J\033[1;1H";
 				stadiumManager.run();
 				break;
 			case 2:
+				cout << "\033[2J\033[1;1H";
 				teamManager.run();
 				break;
 			default:

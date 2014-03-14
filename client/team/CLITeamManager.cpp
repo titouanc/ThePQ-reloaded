@@ -27,9 +27,11 @@ void CLITeamManager::run()
 		switch(option)
 		{
 			case 1:
+				cout << "\033[2J\033[1;1H";
 				showSelectPlayer();
 				break;
 			case 2:
+				cout << "\033[2J\033[1;1H";
 				showSwapPlayer();
 			default:
 				break;
@@ -39,6 +41,7 @@ void CLITeamManager::run()
 }
 
 void CLITeamManager::showPlayers(){
+	cout << "\033[2J\033[1;1H";
 	cout << "================ YOUR PLAYERS ================" << endl;
 	for(size_t i =0; i<user().players.size();++i){
 		cout << user().players[i] << endl;
@@ -48,6 +51,7 @@ void CLITeamManager::showPlayers(){
 
 void CLITeamManager::showSquad()
 {
+	cout << "\033[2J\033[1;1H";
 	cout << "================ YOUR SQUAD ==================" << endl;
 	cout << LEFT_CHASER << " - \033[34mLeft Chaser\033[0m : 		" << user().squad.players[LEFT_CHASER]->getName() << " - ID: " << user().squad.players[LEFT_CHASER]->getMemberID() << endl;
 	cout << CENTER_CHASER << " - \033[34mCenter Chaser\033[0m : 		" << user().squad.players[CENTER_CHASER]->getName() << " - ID: " << user().squad.players[CENTER_CHASER]->getMemberID() << endl;
