@@ -36,7 +36,7 @@ graphics/libgraphics.a:
  
 include ../Makefile.includes
 ifeq ($(shell uname -s),Darwin)
-	LDFLAGS += -framework sfml-system -framework sfml-graphics -framework sfml-window
+	LDFLAGS += -framework sfml-system -framework sfml-graphics -framework sfml-window -framework sfml-audio
 else
 	LDFLAGS += $(shell ${PKGCONFIG} --libs sfml-all)
 endif

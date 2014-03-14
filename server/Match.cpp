@@ -63,7 +63,7 @@ void Match::initMoveables()
 			_pitch.insert(_squads[i].players[j]);
 	}
 
-	_snitch.setPosition(c + 6*Pitch::SouthWest);
+	_snitch.setPosition(c + 6*Pitch::SouthWest+6*Pitch::SouthEast);
 	_pitch.insert(&_snitch);
 }
 
@@ -203,6 +203,22 @@ void Match::throwBall(Collision & collide)
 			}
 		}
 	}
+}
+
+void Match::mkSnitchStroke(void)
+{
+	static const Position directions[6] = {
+		Pitch::West, Pitch::NorthWest, Pitch::NorthEast	,
+		Pitch::East, Pitch::SouthEast, Pitch::SouthWest
+	};
+	if (rand()%11 < 7) /* 30% probability to move */
+		return;
+	Displacement move;
+	for (int i=1+rand()%5; i>=0; i--){ /* Max 5 moves */
+		int choosed = rand()%6;
+		move.addMove(directions[choosed]);
+	}
+	addStroke(Stroke(_snitch, move));
 }
 
 JSON::List Match::playStrokes()
