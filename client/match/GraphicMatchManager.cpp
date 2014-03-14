@@ -47,6 +47,7 @@ bool GraphicMatchManager::treatEvent(sf::Event const & ev)
 			/* Cancel move: click on player */
 			_selectedPlayer = NULL;
 			_currentMove = Displacement();
+			_throwBall = false;
 		} 
 
 		else if (_selectedPlayer) {
@@ -76,11 +77,10 @@ bool GraphicMatchManager::treatEvent(sf::Event const & ev)
 
 			else if (_throwBall && delta.isDirection()){
 				sendStroke(Stroke(
-					*_selectedPlayer, _currentMove, ACT_THROW, 
-					_currentMove.position(1, *_selectedPlayer), delta
-				));
+					*_selectedPlayer, _currentMove, ACT_THROW, lastPos, delta));
 				_selectedPlayer = NULL;
 				_currentMove = Displacement();
+				_throwBall = false;
 			}
 
 			else if (delta.isDirection() && l <= _selectedPlayer->getSpeed()){
@@ -95,6 +95,7 @@ bool GraphicMatchManager::treatEvent(sf::Event const & ev)
 			} else {
 				_selectedPlayer = NULL;
 				_currentMove = Displacement();
+				_throwBall = false;
 			}
 		}
 		redraw();

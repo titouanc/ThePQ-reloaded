@@ -69,10 +69,15 @@ void Match::initMoveables()
 
 size_t Match::timesteps() const
 {
-	size_t res = 0;
+	size_t res = 0;/*
 	for (Stroke const & stroke : _turn)
 		if (stroke.move.length() > res)
-			res = stroke.move.length();
+			res = stroke.move.length();*/
+	for (size_t i=0; i<7; i++){
+		for (int j=0; j<2; j++)
+			if (_squads[j].players[i]->getSpeed() > res)
+				res = _squads[j].players[i]->getSpeed();
+	}
 	return res;
 }
 
@@ -235,11 +240,6 @@ JSON::List Match::playStrokes()
 
 			Collision collide(nextPos, curPos, stroke);
 
-			/* Handle throw ball strokes */
-			if (stroke.action == ACT_THROW && stroke.actionPos == curPos){
-				throwBall(collide);
-			}
-
 			if (! (
 				stayInEllipsis(collide) ||
 				keeperInZone(collide) ||
@@ -253,6 +253,11 @@ JSON::List Match::playStrokes()
 				_pitch.setAt(curPos, NULL);
 				cout << " &&& Regular move" << stroke.moveable.getID() << " "
 					 << JSON::List(curPos) << " -> " << JSON::List(nextPos) << endl;
+			}
+
+			/* Handle throw ball strokes */
+			if (stroke.action == ACT_THROW && stroke.actionPos == nextPos){
+				throwBall(collide);
 			}
 		}
 		tLast = _t;
@@ -299,8 +304,6 @@ JSON::Dict Match::getMoveables() const
 /* ================== RULES ================= */
 bool Match::stayInEllipsis(Collision & collide)
 {
-	cout <<  " === " << collide.stroke.moveable.getID() << " Stay in ellipsis" << endl;
-
 	if (_pitch.inEllipsis(collide.conflict))
 		return false;
 
@@ -313,8 +316,6 @@ bool Match::stayInEllipsis(Collision & collide)
 
 bool Match::keeperInZone(Collision & collide)
 {
-	cout <<  " === " << collide.stroke.moveable.getID() << " Keeper in zone" << endl;
-
 	if (! collide.stroke.moveable.isPlayer())
 		return false;
 
@@ -333,8 +334,6 @@ bool Match::keeperInZone(Collision & collide)
 
 bool Match::scoreGoal(Collision & collide)
 {
-	cout <<  " === " << collide.stroke.moveable.getID() << " Score goal" << endl;
-
 	if (! _pitch.isGoal(collide.conflict))
 		return false;
 
@@ -380,8 +379,6 @@ bool Match::scoreGoal(Collision & collide)
 /* This rule give the Quaffle to a chaser||keeper */
 bool Match::playerCatchQuaffle(Collision & collide)
 {
-	cout <<  " === " << collide.stroke.moveable.getID() << " catch quaffle" << endl;
-
 	Moveable *atPos = _pitch.getAt(collide.conflict);
 	if (atPos == NULL)
 		return false;
@@ -448,7 +445,6 @@ bool Match::playerCatchQuaffle(Collision & collide)
 
 bool Match::simpleCollision(Collision & collide)
 {
-	cout <<  " === " << collide.stroke.moveable.getID() << " Simple collision" << endl;
 
 	Moveable *atPos = _pitch.getAt(collide.conflict);
 	if (! atPos)
@@ -462,7 +458,6 @@ bool Match::simpleCollision(Collision & collide)
 	       score, stop the moving one. */
 		collide.stroke.active = false;
 		_deltas.append(mkDelta(collide.stroke.moveable, collide.fromPos));
-		cout << " ===== COLLIDE 1" << endl;
 		return true;
 	}
 
@@ -473,7 +468,6 @@ bool Match::simpleCollision(Collision & collide)
 	_deltas.append(mkDelta(*atPos, collide.fromPos));
 	_pitch.setAt(collide.fromPos, atPos);
 	_pitch.setAt(collide.conflict, &(collide.stroke.moveable));
-	cout << " ===== COLLIDE 2" << endl;
 	return true;
 }
 
