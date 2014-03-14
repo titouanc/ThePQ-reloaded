@@ -195,9 +195,8 @@ void GraphicTeamManager::displayAvailablePlayers(){
 void GraphicTeamManager::selectPlayer(int id){
 	putPlayerAtPosition(id, getSelectedPosition());
 	_wait = true;
-	cout << "1" << endl;
-	while (_wait);
-		readMessages();
+	while (_wait)
+		readMessage();
 }
 
 void GraphicTeamManager::onPlayersLoad()
