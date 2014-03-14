@@ -61,6 +61,10 @@ private:
 
 	std::list<Stroke>::iterator getStrokeFor(Moveable const & moveable);
 
+
+	/*! Apply a Throw ball Stroke */
+	void throwBall(Stroke & stroke);
+
 	/* RULES: method accepting a Collision object.
 	          Return true if the rule processing should stop */
 	
@@ -75,6 +79,9 @@ private:
 
 	/*! A Chaser or Quaffle can pass in the goal */
 	bool scoreGoal(Collision & collide);
+
+	/*! A Chaser or Quaffle can pass in the goal */
+	bool simpleCollision(Collision & collide);
 
 public:
 	Match(Squad const & squad1, Squad const & squad2);
@@ -96,7 +103,14 @@ public:
 
 	/*! add a stroke for this turn */
 	bool addStroke(Stroke const & stroke);
-	bool addStroke(int mid, Displacement const & d);
+	bool addStroke(
+		int mid, 
+		Displacement const & d, 
+		ActionType act=ACT_NONE,
+		Position actpos=Position(0, 0),
+		Position actvec=Position(0, 0)
+	);
+	bool addStroke(JSON::Dict const & stroke);
 
 	/*! Play all strokes, and return a list of match changes
 	    @return [{"mid": <int>, "from": <pos>, "to": <pos>}], where pos is a

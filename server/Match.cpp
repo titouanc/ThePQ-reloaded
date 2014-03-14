@@ -124,13 +124,61 @@ bool Match::addStroke(Stroke const & stroke)
 	return true;
 }
 
-bool Match::addStroke(int mid, Displacement const & d)
-{
+bool Match::addStroke(
+	int mid, 
+	Displacement const & d, 
+	ActionType act,
+	Position actpos,
+	Position actvec
+){
 	Moveable *moveable = id2Moveable(mid);
 	if (! moveable)
 		return false;
-	addStroke(Stroke(*moveable, d));
+	addStroke(Stroke(*moveable, d, act, actpos, actvec));
 	return true;
+}
+
+bool Match::addStroke(JSON::Dict const & stroke){
+	if (ISINT(stroke.get("mid"))){
+		Moveable *moving = id2Moveable(INT(stroke.get("mid")));
+		if (moving)
+			return addStroke(Stroke(*moving, stroke));
+	}
+	return false;
+}
+
+/* Helper function to quickly create DELTA_MOVE JSON objects */
+static JSON::Dict mkDelta(Moveable const & moveable, Position destPos)
+{
+	JSON::Dict res = {
+		{"type", JSON::Integer(DELTA_MOVE)},
+		{"mid", JSON::Integer(moveable.getID())},
+		{"from", JSON::List(moveable.getPosition())},
+		{"to", JSON::List(destPos)}
+	};
+	return res;
+}
+
+void Match::throwBall(Stroke & stroke)
+{
+	if (stroke.moveable.isPlayer()){
+		Player & player = (Player &) stroke.moveable;
+		if (player.canQuaffle()){
+			PlayerQuaffle & pq = (PlayerQuaffle &) player;
+			if (pq.hasQuaffle() && stroke.actionVec != Position(0, 0)){
+				Displacement ballMove(_t);
+				ballMove.addMove(stroke.actionVec);
+
+				Stroke ballStroke = Stroke(_quaffle, ballMove);
+				_turn.push_back(ballStroke);
+				JSON::Dict delta = {
+					{"type", JSON::Integer(DELTA_APPEAR)},
+					{"mid", JSON::Integer(_quaffle.getID())}
+				};
+				_deltas.append(delta);
+			}
+		}
+	}
 }
 
 JSON::List Match::playStrokes()
@@ -140,16 +188,15 @@ JSON::List Match::playStrokes()
 	   are updated at the end. */
 
 	size_t n_steps = timesteps();
+	if (n_steps == 0)
+		n_steps = 1;
 	double tLast = 0;
 	double step = 1.0/n_steps;
 
 	/* for each interval of time in this turn do... */
-	for (size_t i=1; i<=n_steps; i++){
-		_t = step*i;
-
+	for (_t=step; _t<=1; _t+=step){
 		/* for each stroke do... */
 		for (Stroke & stroke : _turn){
-			cout << "\t" << JSON::Dict(stroke) << endl;
 			if (! stroke.active){
 				/* The moveable with this stroke has been stopped */
 				continue;
@@ -159,25 +206,35 @@ JSON::List Match::playStrokes()
 			Position curPos  = stroke.move.position(tLast, stroke.moveable);
 			Position nextPos = stroke.move.position(_t, stroke.moveable);
 
-			cout << "\t" << JSON::List(curPos) << "->" << JSON::List(nextPos) << endl;
+			cout << "Move " << stroke.moveable.getID() << " ("<<tLast<<".."<<_t<<")"<<endl;
 
-			if (curPos == nextPos){
+			if (curPos == nextPos && stroke.move.length() > 0){
 				/* If the moveable Position doesn't change during this
 				   time interval, just skip */
 				continue;
 			}
 
-			Collision collide(curPos, nextPos, stroke);
+			/* Handle throw ball strokes */
+			if (stroke.action == ACT_THROW && stroke.actionPos == curPos){
+				throwBall(stroke);
+				n_steps = timesteps();
+				step = 1.0/n_steps;
+			}
+
+			Collision collide(nextPos, curPos, stroke);
 
 			if (! (
 				stayInEllipsis(collide) ||
 				keeperInZone(collide) ||
 				playerCatchQuaffle(collide) ||
-				scoreGoal(collide)
+				scoreGoal(collide) || 
+				simpleCollision(collide)
 			)){
 				/* If no rule has stopped this stroke; set it to its new position */
 				_pitch.setAt(nextPos, &(stroke.moveable));
 				_pitch.setAt(curPos, NULL);
+				cout << " &&& Regular move" << stroke.moveable.getID() << " "
+					 << JSON::List(curPos) << " -> " << JSON::List(nextPos) << endl;
 			}
 		}
 		tLast = _t;
@@ -187,12 +244,7 @@ JSON::List Match::playStrokes()
 	for (Stroke & stroke : _turn){
 		if (! stroke.active)
 			continue;
-		JSON::Dict d = {
-			{"mid", JSON::Integer(stroke.moveable.getID())},
-			{"from", JSON::List(stroke.moveable.getPosition())},
-			{"to", JSON::List(stroke.move.position(1, stroke.moveable))}
-		};
-		_deltas.append(d);
+		_deltas.append(mkDelta(stroke.moveable, stroke.move.position(1, stroke.moveable)));
 	}
 
 	/* Update all players positions attributes that already have a delta */
@@ -213,17 +265,22 @@ bool Match::isFinished() const
 /* ================== RULES ================= */
 bool Match::stayInEllipsis(Collision & collide)
 {
+	cout <<  " === " << collide.stroke.moveable.getID() << " Stay in ellipsis" << endl;
+
 	if (_pitch.inEllipsis(collide.conflict))
 		return false;
 
 	cout << collide.stroke.moveable.getName() << " GETS OUT !!!" << endl;
 
 	collide.stroke.active = false;
+	_deltas.append(mkDelta(collide.stroke.moveable, collide.fromPos));
 	return true;
 }
 
 bool Match::keeperInZone(Collision & collide)
 {
+	cout <<  " === " << collide.stroke.moveable.getID() << " Keeper in zone" << endl;
+
 	if (! collide.stroke.moveable.isPlayer())
 		return false;
 
@@ -236,11 +293,14 @@ bool Match::keeperInZone(Collision & collide)
 
 	/* Otherwise stop the move */
 	collide.stroke.active = false;
+	_deltas.append(mkDelta(player, collide.fromPos));
 	return true;
 }
 
 bool Match::scoreGoal(Collision & collide)
 {
+	cout <<  " === " << collide.stroke.moveable.getID() << " Score goal" << endl;
+
 	if (! _pitch.isGoal(collide.conflict))
 		return false;
 
@@ -260,32 +320,34 @@ bool Match::scoreGoal(Collision & collide)
 	} 
 
 	Player & player = (Player &) (collide.stroke.moveable);
-	if (! player.isChaser())
-		return false;
+	if (player.isChaser()){
+		Chaser & chaser = (Chaser &) player;
+		if (chaser.hasQuaffle()){
+			/* If it is a chaser, and he has the ball; let him score */
+			Squad *owner = id2Squad(chaser.getID());
+			if (owner == &(_squads[0]) && _pitch.isInWestKeeperZone(collide.conflict)){
+				_points[0] += 10;
+				return false;
+			}
 
-	Chaser & chaser = (Chaser &) player;
-	if (chaser.hasQuaffle()){
-		/* If it is a chaser, and he has the ball; let him score */
-		Squad *owner = id2Squad(chaser.getID());
-		if (owner == &(_squads[0]) && _pitch.isInWestKeeperZone(collide.conflict)){
-			_points[0] += 10;
-			return false;
-		}
-
-		if (owner == &(_squads[1]) && _pitch.isInEastKeeperZone(collide.conflict)){
-			_points[1] += 10;
-			return false;
+			if (owner == &(_squads[1]) && _pitch.isInEastKeeperZone(collide.conflict)){
+				_points[1] += 10;
+				return false;
+			}
 		}
 	}
 
 	/* The Chaser try to go through its own goal; STAHP ! NOW ! */
 	collide.stroke.active = false;
+	_deltas.append(mkDelta(player, collide.fromPos));
 	return true;
 }
 
 /* This rule give the Quaffle to a chaser||keeper */
 bool Match::playerCatchQuaffle(Collision & collide)
 {
+	cout <<  " === " << collide.stroke.moveable.getID() << " catch quaffle" << endl;
+
 	Moveable *atPos = _pitch.getAt(collide.conflict);
 	if (atPos == NULL)
 		return false;
@@ -306,6 +368,12 @@ bool Match::playerCatchQuaffle(Collision & collide)
 
 		/* And remove the Quaffle from the pitch */
 		_pitch.setAt(collide.fromPos, NULL);
+		cout << "#" << pq.getID() << " catch the quaffle !!!" << endl;
+		JSON::Dict delta = {
+			{"type", JSON::Integer(DELTA_CATCH)},
+			{"mid", JSON::Integer(collide.stroke.moveable.getID())}
+		};
+		_deltas.append(delta);
 		return true;
 	}
 
@@ -331,9 +399,46 @@ bool Match::playerCatchQuaffle(Collision & collide)
 		/* Put the player on the position of the Quaffle */
 		_pitch.setAt(collide.conflict, &pq);
 		_pitch.setAt(collide.fromPos, NULL);
+		cout << "#" << pq.getID() << " catch the quaffle !!!" << endl;
+		JSON::Dict delta = {
+			{"type", JSON::Integer(DELTA_CATCH)},
+			{"mid", JSON::Integer(collide.stroke.moveable.getID())}
+		};
+		_deltas.append(delta);
 
 		return true;
 	}
 
 	return false;
+}
+
+bool Match::simpleCollision(Collision & collide)
+{
+	cout <<  " === " << collide.stroke.moveable.getID() << " Simple collision" << endl;
+
+	Moveable *atPos = _pitch.getAt(collide.conflict);
+	if (! atPos)
+		return false; /* Nobody there, just continue */
+
+	float firstScore  = atPos->collisionScore();
+	float secondScore = collide.stroke.moveable.collisionScore();
+
+	if (firstScore > secondScore){
+		/* The first moveable on the conflicting position has a greater collision
+	       score, stop the moving one. */
+		collide.stroke.active = false;
+		_deltas.append(mkDelta(collide.stroke.moveable, collide.fromPos));
+		cout << " ===== COLLIDE 1" << endl;
+		return true;
+	}
+
+	/* Otherwise, we eventually stop the first moveable stroke, then we swap
+	   their positions */
+	std::list<Stroke>::iterator it = getStrokeFor(*atPos);
+	if (it != _turn.end()) (*it).active = false;
+	_deltas.append(mkDelta(*atPos, collide.fromPos));
+	_pitch.setAt(collide.fromPos, atPos);
+	_pitch.setAt(collide.conflict, &(collide.stroke.moveable));
+	cout << " ===== COLLIDE 2" << endl;
+	return true;
 }
