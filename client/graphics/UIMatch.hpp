@@ -21,6 +21,7 @@ class UIMatch : public sf::Drawable {
         sf::Texture _bludger_texture, _quaffle_texture, _snitch_texture;
         sf::Texture _own_chaser_texture, _own_seeker_texture, _own_beater_texture, _own_keeper_texture;
         sf::Texture _other_chaser_texture, _other_seeker_texture, _other_beater_texture, _other_keeper_texture;
+        sf::Texture _own_chaser_quaffle_texture, _other_chaser_quaffle_texture, _background_texture;
         sf::Sprite _bludger, _quaffle, _snitch;
         /* Hilights matrix */
         PosMatrix<const sf::Color> _hilights;
@@ -66,8 +67,8 @@ class UIMatch : public sf::Drawable {
         void draw(sf::RenderTarget &target, sf::RenderStates states=sf::RenderStates()) const;
 
         void hilight(Position const & pos, const sf::Color *color=&hilightYellow);
-        void hilightAccessibles(Position const & from, int len);
-        void hilightDisplacement(Position const & from, Displacement const & move);
+        void hilightAccessibles(Position const & from, int len, const sf::Color *color=&hilightYellow);
+        void hilightDisplacement(Position const & from, Displacement const & move, const sf::Color *color=&hilightRed);
 
         void clear(void);
 };

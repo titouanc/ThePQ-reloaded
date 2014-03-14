@@ -83,6 +83,9 @@ private:
 	/*! A Chaser or Quaffle can pass in the goal */
 	bool simpleCollision(Collision & collide);
 
+	/*! A sseker catch the golden snitch */
+	bool seekerCatchGS(Collision & collide);
+
 public:
 	Match(Squad const & squad1, Squad const & squad2);
 	~Match();

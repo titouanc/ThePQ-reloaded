@@ -244,6 +244,7 @@ JSON::List Match::playStrokes()
 				stayInEllipsis(collide) ||
 				keeperInZone(collide) ||
 				playerCatchQuaffle(collide) ||
+				seekerCatchGS(collide) ||
 				scoreGoal(collide) || 
 				simpleCollision(collide)
 			)){
@@ -474,4 +475,49 @@ bool Match::simpleCollision(Collision & collide)
 	_pitch.setAt(collide.conflict, &(collide.stroke.moveable));
 	cout << " ===== COLLIDE 2" << endl;
 	return true;
+}
+
+bool Match::seekerCatchGS(Collision & collide)
+{
+	Moveable *atPos = _pitch.getAt(collide.conflict);
+	if (! atPos)
+		return false;
+
+	/* If it is a seeker and it arrives on the GoldenSnitch */
+	if (atPos->isBall()){
+		Ball & ball = (Ball &) *atPos;
+		if (! ball.isGoldenSnitch())
+			return false;
+		if (! collide.stroke.moveable.isPlayer())
+			return false;
+		Player & player = (Player &) collide.stroke.moveable;
+		if (! player.isSeeker())
+			return false;
+		
+		_finished = true;
+		if (_squads[0].hasPlayer(&player))
+			_points[0] += 150;
+		else
+			_points[1] += 150;
+	}
+
+	/* If it is a golden snitch that arrive on a seeker */
+	if (collide.stroke.moveable.isBall()){
+		Ball & ball = (Ball &) collide.stroke.moveable;
+		if (! ball.isGoldenSnitch())
+			return false;
+		if (! atPos->isPlayer())
+			return false;
+		Player & player = (Player &) *atPos;
+		if (! player.isSeeker())
+			return false;
+		
+		_finished = true;
+		if (_squads[0].hasPlayer(&player))
+			_points[0] += 150;
+		else
+			_points[1] += 150;
+	}
+	
+	return false;
 }

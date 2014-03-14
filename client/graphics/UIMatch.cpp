@@ -34,18 +34,20 @@ UIMatch::UIMatch(Pitch & pitch, const Squad & viewerSquad, int hexagonSize) :
     _hexagon(circleSize(), 6), /* 6 sides regular polygon */
     _left(0), _top(0)
 {
-    sf::Texture *toLoad[14] = {
+    sf::Texture *toLoad[] = {
         &_grass_texture, &_sand_texture, &_goal_texture, &_bludger_texture,
         &_quaffle_texture, &_snitch_texture,
         &_own_chaser_texture, &_own_seeker_texture, &_own_keeper_texture, &_own_beater_texture,
-        &_other_chaser_texture, &_other_seeker_texture, &_other_keeper_texture, &_other_beater_texture
+        &_other_chaser_texture, &_other_seeker_texture, &_other_keeper_texture, &_other_beater_texture,
+        &_own_chaser_quaffle_texture, &_other_chaser_quaffle_texture, &_background_texture
     };
-    const char *files[14] = {
+    const char *files[] = {
         "grass1.png", "sand1.png", "goal2_50.png", "Bludger.png", "Quaffle.png",
         "GoldenSnitch.png", "BluePlayer.png", "YellowPlayer.png", "GreenPlayer.png", "RedPlayer.png",
-        "BlueStripedPlayer.png", "YellowStripedPlayer.png", "GreenStripedPlayer.png", "RedStripedPlayer.png"
+        "BlueStripedPlayer.png", "YellowStripedPlayer.png", "GreenStripedPlayer.png", "RedStripedPlayer.png",
+        "BluePlayerWithQuaffle.png", "BlueStripedPlayerWithQuaffle.png", "StarBack.png"
     };
-    for (int i=0; i<14; i++){
+    for (int i=0; i<sizeof(toLoad)/sizeof(sf::Texture*); i++){
         if (! toLoad[i]->loadFromFile(texturePath(files[i])))
             throw TextureNotFound(files[i]);
     }
@@ -179,16 +181,27 @@ void UIMatch::drawMoveables(sf::RenderTarget & dest) const
                         playerSprite.setTexture(_other_beater_texture);
                 }
                 else if (player.isSeeker()){
-                    if (isOfOwnTeam)
+                    if (isOfOwnTeam){
                         playerSprite.setTexture(_own_seeker_texture);
-                    else
+                    }
+                    else {
                         playerSprite.setTexture(_other_seeker_texture);
+                    }
                 }
                 else if (player.isChaser()){
-                    if (isOfOwnTeam)
-                        playerSprite.setTexture(_own_chaser_texture);
-                    else
-                        playerSprite.setTexture(_other_chaser_texture);
+                    Chaser const & chaser = (Chaser const &) player;
+                    if (isOfOwnTeam){
+                        if (chaser.hasQuaffle())
+                            playerSprite.setTexture(_own_chaser_quaffle_texture);
+                        else
+                            playerSprite.setTexture(_own_chaser_texture);
+                    }
+                    else {
+                        if (chaser.hasQuaffle())
+                            playerSprite.setTexture(_other_chaser_quaffle_texture);
+                        else
+                            playerSprite.setTexture(_other_chaser_texture);
+                    }
                 }
                 else if (player.isKeeper()){
                     if (isOfOwnTeam)
@@ -215,6 +228,9 @@ void UIMatch::drawMoveables(sf::RenderTarget & dest) const
 
 void UIMatch::draw(sf::RenderTarget &dest, sf::RenderStates states) const
 {
+    sf::Sprite background(_background_texture);
+    dest.draw(background);
+
     sf::CircleShape sand(circleSize(), 6);
     sand.setTexture(&_sand_texture);
 
@@ -266,22 +282,22 @@ void UIMatch::clear(void)
     _hilights.clear();
 }
 
-void UIMatch::hilightAccessibles(Position const & from, int len)
+void UIMatch::hilightAccessibles(Position const & from, int len, const sf::Color *color)
 {
     for (int i=0; i<6; i++){
         for (int j=1; j<=len; j++){
             Position const & toDraw = from + Pitch::directions[i]*j;
             if (_pitch.inEllipsis(toDraw))
-                hilight(toDraw, &hilightYellow);
+                hilight(toDraw, color);
         }
     }
 }
 
-void UIMatch::hilightDisplacement(Position const & from, Displacement const & move)
+void UIMatch::hilightDisplacement(Position const & from, Displacement const & move, const sf::Color *color)
 {
     for (size_t i=0; i<=move.length(); i++){
         double t = ((double) i)/move.length();
         Position const & atTime = from + move.position(t);
-        hilight(atTime, &hilightRed);
+        hilight(atTime, color);
     }
 }

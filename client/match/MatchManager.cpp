@@ -143,6 +143,11 @@ void MatchManager::treatMessage(std::string const & type, JSON::Value const * da
 		onError(STR(data));
 }
 
+void MatchManager::sendStroke(Stroke const & stroke)
+{
+	say(MSG::MATCH_STROKE, JSON::Dict(stroke));
+}
+
 void MatchManager::sendDisplacement(Player const & player, Displacement const & move)
 {
 	JSON::Dict msg = {

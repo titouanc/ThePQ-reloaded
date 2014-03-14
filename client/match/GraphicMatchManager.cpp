@@ -5,7 +5,7 @@ GraphicMatchManager::GraphicMatchManager(ClientManager const & parent, GUI::Main
 	MatchManager(parent),
 	GUI::GraphicManager(controller), 
 	_match(pitch(), mySquad()), 
-	_selectedPlayer(NULL)
+	_selectedPlayer(NULL), _throwBall(false)
 {}
 
 void GraphicMatchManager::redraw()
@@ -39,7 +39,6 @@ bool GraphicMatchManager::treatEvent(sf::Event const & ev)
 		Moveable *atPos = pitch().getAt(pos);
 		if (! _selectedPlayer && atPos && atPos->isPlayer() && 
 			isMyPlayer(*((Player*)atPos))){
-			cout << JSON::List(pos) << " <=> " << JSON::List(atPos->getPosition()) << endl;
 			_selectedPlayer = (Player *) atPos;
 			_match.hilightAccessibles(pos, _selectedPlayer->getSpeed());
 		} 
@@ -56,12 +55,32 @@ bool GraphicMatchManager::treatEvent(sf::Event const & ev)
 			size_t l = delta.length()+_currentMove.length();
 
 			if (delta == Position(0, 0)){
-				/* Click on last reached position: finish and send move */
-				sendDisplacement(*_selectedPlayer, _currentMove);
-				cout << "SENT MOVE " << JSON::List(_currentMove) << endl;
+				if (ev.mouseButton.button == sf::Mouse::Left){
+					/* Left-Click on last reached position: finish and send move */
+					sendDisplacement(*_selectedPlayer, _currentMove);
+					cout << "SENT MOVE " << JSON::List(_currentMove) << endl;
+					_selectedPlayer = NULL;
+					_currentMove = Displacement();
+					_match.clear();
+				} else if (ev.mouseButton.button == sf::Mouse::Right){
+					/* Right-Click on last reached position: maybe throw quaffle */
+					if (_selectedPlayer->canQuaffle()){
+						PlayerQuaffle & pq = (PlayerQuaffle &) *_selectedPlayer;
+						if (pq.hasQuaffle()){
+							_throwBall = true;
+							_match.hilightAccessibles(pos, 5, &UIMatch::hilightBlue);
+						}
+					}
+				}
+			}
+
+			else if (_throwBall && delta.isDirection()){
+				sendStroke(Stroke(
+					*_selectedPlayer, _currentMove, ACT_THROW, 
+					_currentMove.position(1, *_selectedPlayer), delta
+				));
 				_selectedPlayer = NULL;
 				_currentMove = Displacement();
-				_match.clear();
 			}
 
 			else if (delta.isDirection() && l <= _selectedPlayer->getSpeed()){
@@ -74,9 +93,8 @@ bool GraphicMatchManager::treatEvent(sf::Event const & ev)
 				}
 				_match.hilightDisplacement(_selectedPlayer->getPosition(), _currentMove);
 			} else {
-				cout << " &&&&& Reject move " << _selectedPlayer->getName() 
-				     << " to " << JSON::List(pos) << " because delta "
-				     << JSON::List(delta) << " is invalid" << endl;
+				_selectedPlayer = NULL;
+				_currentMove = Displacement();
 			}
 		}
 		redraw();

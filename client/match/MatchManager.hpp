@@ -6,6 +6,7 @@
 #include <model/Squad.hpp>
 #include <model/Ball.hpp>
 #include <model/Displacement.hpp>
+#include <model/Stroke.hpp>
 
 class MatchManager : public ClientManager {
 	public:
@@ -30,6 +31,10 @@ class MatchManager : public ClientManager {
 
 		/* Send a player displacement to the server */
 		void sendDisplacement(Player const & player, Displacement const & move);
+
+		/* Send a player displacement to the server */
+		void sendStroke(Stroke const & stroke);
+
 		/* HOOKS */
 		/* Called after pitch gets updated */
 		virtual void onPitchChange(){}
