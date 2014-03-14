@@ -37,6 +37,8 @@ namespace GUI {
 		void updateFame(int newFame);
 		void updateUsername(std::string username);
 
+		void positionTopButtons();
+
 		void doNothing(){}
 	protected:
 		/* Standard event processing; always return true */

@@ -95,6 +95,7 @@ void GUI::GraphicManager::updateBudget(int newBudget){
 	s << newBudget << " $";
 	if (_userBudgetButton)
 		_userBudgetButton->setText(s.str());
+	positionTopButtons();
 }
 
 void GUI::GraphicManager::updateAcPoints(int newAcPoints){
@@ -102,6 +103,7 @@ void GUI::GraphicManager::updateAcPoints(int newAcPoints){
 	s << newAcPoints << " points";
 	if (_userAcPointsButton)
 		_userAcPointsButton->setText(s.str());
+	positionTopButtons();
 }
 
 void GUI::GraphicManager::updateFame(int newFame){
@@ -109,11 +111,28 @@ void GUI::GraphicManager::updateFame(int newFame){
 	s << "Fame : " << newFame;
 	if (_userFameButton)
 		_userFameButton->setText(s.str());
+	positionTopButtons();
 }
 
 void GUI::GraphicManager::updateUsername(std::string username){
 	if (_usernameButton)
 		_usernameButton->setText("Welcome, "+username+" !");
+}
+
+void GUI::GraphicManager::positionTopButtons(){
+	int totalLength = GUI::MARGIN;
+	if (_userBudgetButton){
+		_userBudgetButton->setPosition(window().getSize().x-totalLength-_userBudgetButton->getWidth(), MARGIN);
+		totalLength = totalLength + _userBudgetButton.getWidth() + MARGIN;
+	}
+	if (_userFameButton){
+		_userFameButton->setPosition(window().getSize().x-totalLength-_userFameButton->getWidth(), MARGIN);
+		totalLength = totalLength + _userFameButton.getWidth() + MARGIN;
+	}
+	if (_userAcPointsButton){
+		_userAcPointsButton->setPosition(window().getSize().x-totalLength-_userAcPointsButton->getWidth(), MARGIN);
+		totalLength = totalLength + _userAcPointsButton.getWidth() + MARGIN;
+	}
 }
 
 
