@@ -68,7 +68,7 @@ void GraphicChampionshipManager::onJoinChampionship(bool success, std::string co
 
 void GraphicChampionshipManager::seeCurrentChampionship(){
 
-	_canvas.clear();
+	clear();
 	addUsernameButton(user().username);
 	addUserBudgetButton(user().funds);
 	if(! user().joinedChamp.getName().empty()){
@@ -163,7 +163,7 @@ void GraphicChampionshipManager::seeCurrentChampionship(){
 
 void GraphicChampionshipManager::onChampionshipsLoad(){
 	_wait = false;
-	_canvas.clear();
+	clear();
 	addUsernameButton(user().username);
 	addUserBudgetButton(user().funds);
 	updateCurrentChampionship();

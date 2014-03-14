@@ -31,7 +31,7 @@ GraphicTeamManager::~GraphicTeamManager(){}
 
 void GraphicTeamManager::displayPlayers()
 {
-	_canvas.clear();
+	clear();
 
 	addUsernameButton(user().username);
 	addUserBudgetButton(user().funds);

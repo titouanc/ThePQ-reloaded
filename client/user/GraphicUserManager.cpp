@@ -31,7 +31,7 @@ GraphicUserManager::GraphicUserManager(
 
 void GraphicUserManager::displayChoice()
 {
-	_canvas.clear();
+	clear();
 
 	Button<GraphicUserManager> & loginButton = _canvas.addButton<GraphicUserManager>(
 		&GraphicUserManager::displayLoginForm, this, "Login");
@@ -48,7 +48,7 @@ void GraphicUserManager::displayChoice()
 
 void GraphicUserManager::displayLoginForm()
 {
-	_canvas.clear();
+	clear();
 	
 	_canvas.addTextbox(USERNAME_TEXTBOX_ID).setPosition(900, 300);
 	_canvas.addTextbox(PASSWORD_TEXTBOX_ID).setPosition(900, 360);
@@ -62,7 +62,7 @@ void GraphicUserManager::displayLoginForm()
 
 void GraphicUserManager::displayRegisterForm()
 {
-	_canvas.clear();
+	clear();
 	
 	_canvas.addTextbox(USERNAME_TEXTBOX_ID).setPosition(900, 300);
 	_canvas.addTextbox(PASSWORD_TEXTBOX_ID).setPosition(900, 360);
@@ -77,7 +77,7 @@ void GraphicUserManager::displayRegisterForm()
 
 void GraphicUserManager::displayTeamNameForm()
 {
-	_canvas.clear();
+	clear();
 
 	_canvas.setBackgroundImage(texturePath("HexBack.png"));
 	
@@ -92,7 +92,7 @@ void GraphicUserManager::displayTeamNameForm()
 
 void GraphicUserManager::displayMainMenu()
 {
-	_canvas.clear();
+	clear();
 
 	addUsernameButton(user().username);
 	addUserBudgetButton(user().funds);

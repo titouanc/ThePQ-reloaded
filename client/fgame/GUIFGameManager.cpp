@@ -28,7 +28,7 @@ void GUIFGameManager::invitePlayer(string playername)
 
 void GUIFGameManager::onUserList(JSON::List const & list)
 {
-	_canvas.clear();
+	clear();
 
 	addUsernameButton(user().username);
 	addUserBudgetButton(user().funds);
