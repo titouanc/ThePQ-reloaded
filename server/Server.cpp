@@ -664,6 +664,7 @@ void Server::timeLoop()
 			{
 				_timeTicks = 0;
 			}
+			cout << endl;
 		}
 	}
 }
