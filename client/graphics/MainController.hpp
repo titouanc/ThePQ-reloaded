@@ -2,6 +2,7 @@
 #define GUI_MAINCONTROLLER_HPP
 
 #include <SFML/Window.hpp>
+#include <SFML/Audio.hpp>
 #include <stack>
 #include "Layer.hpp"
 #include "GUIConstants.hpp"
@@ -18,6 +19,7 @@ namespace GUI {
 		bool handleRightClick(sf::Event e);
 		void handleTextEntered(sf::Event e);
 		sf::RenderWindow window;
+		sf::Music mainMusic;
 	private:
 		std::stack<Layer*> _layers;
 	};
