@@ -91,7 +91,7 @@ int FanShop::getMaintenanceCost() const
 
 int FanShop::getIncome() const
 {
-	return getCurrentValue()/10;
+	return _level * gameconfig::GOODIES_PRICE * 100;
 }
 
 int FanShop::getMatchIncome(int nbOfSpectators)
