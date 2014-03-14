@@ -45,7 +45,7 @@ TEST(jersey_serialization)
 	Jersey k(d);
 	cout << "Jersey serialized : " << d << endl;
 	ASSERT(k.getName() == "SuperJersey");
-	ASSERT(k.getStrengthBonus() == 0);
+	ASSERT(k.getStrengthBonus() == 5);
 ENDTEST()
 
 TEST(player_serialization)
