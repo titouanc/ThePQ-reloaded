@@ -29,7 +29,8 @@ void * saleManager(void * p){
 	PlayerMarket *market = static_cast<PlayerMarket*>(p);
 	while(market->_runManager){
 		sleep(1); //One iteration = --timeLeft for each sale
-		market->lockMarket();
+		if(pthread_mutex_lock(&(market->_locker)) != 0)
+			throw "Couldn't acquire lock for PlayerMarket";
 		for(size_t i = 0; i<market->_sales.size();++i){
 			Sale & sale = *(market->_sales[i]);
 			sale.decTime();
@@ -43,7 +44,7 @@ void * saleManager(void * p){
 				}
 			}
 		}
-		market->unlockMarket();
+		pthread_mutex_unlock(&(market->_locker));
 	}
 	return NULL;
 }
@@ -74,11 +75,12 @@ void PlayerMarket::startGenerator(){
 }
 
 void PlayerMarket::createSale(int player_id, int value, Player& player, std::string username){
-	lockMarket();
+	if(pthread_mutex_lock(&_locker) != 0)
+		throw "Couldn't acquire lock for PlayerMarket";
 	_sales.push_back(new Sale(value, username, player_id, player));
 	Sale *added = getSale(player_id);
 	added->save();
-	unlockMarket();
+	pthread_mutex_unlock(&_locker);
 }
 
 void PlayerMarket::transfert(std::string fromName, std::string toName, int id, int bidValue, Sale* sale){
@@ -159,12 +161,13 @@ JSON::Dict PlayerMarket::allSales() {
 	JSON::Dict response;
 	response.set("type", net::MSG::PLAYERS_ON_MARKET_LIST);
 	JSON::List sales;
-	lockMarket();
+	if(pthread_mutex_lock(&_locker) != 0)
+		throw "Couldn't acquire lock for PlayerMarket";
 	for(size_t i=0;i<_sales.size();++i){
 		sales.append(JSON::Dict(*(_sales[i])));
 	}
 	response.set("data", sales);
-	unlockMarket();
+	pthread_mutex_unlock(&_locker);
 	return response;
 }
 
@@ -202,7 +205,8 @@ JSON::Dict PlayerMarket::bid(const JSON::Dict &json){
 	}
 	else{
 		try{
-			lockMarket();
+			if(pthread_mutex_lock(&_locker) != 0)
+				throw "Couldn't acquire lock for PlayerMarket";
 			Sale * sale = getSale(player_id);
 			if(sale == NULL or sale->isOver())
 				throw bidEndedException();
@@ -225,7 +229,7 @@ JSON::Dict PlayerMarket::bid(const JSON::Dict &json){
 		catch(lastBidderException e){
 			response.set("data", net::MSG::LAST_BIDDER);
 		}
-		unlockMarket();
+		pthread_mutex_unlock(&_locker);
 	}
 	return response;
 }
