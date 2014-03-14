@@ -151,7 +151,6 @@ struct Squad {
             keeper = player;
             equipAll(&keeper);
         }
-        cout << "yes!"<< endl;
     }
 
     void equipAll(Player* player){
