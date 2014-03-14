@@ -34,25 +34,29 @@ void GraphicTeamManager::displayPlayers()
 	clear();
 
 	addTopBar(user());
-
+	//_canvas.addLabel()
 	TableView & playerList = _canvas.addTableView();
-	playerList.setPosition(100, 100);
+	playerList.setPosition(30, 100);
 	/* Header line */
-	TableCell & header = playerList.addTableCell(515, 47);
+	TableCell & header = playerList.addTableCell(575, 47);
 	header.addLabel("Name", sf::Color::White).setPosition(15, 10);
-	header.addLabel("Life", sf::Color::White).setPosition(355, 10);
-	header.addLabel("Mana", sf::Color::White).setPosition(435, 10);
+	header.addLabel("Strength", sf::Color::White).setPosition(245, 10);
+	header.addLabel("Velocity", sf::Color::White).setPosition(332, 10);
+	header.addLabel("Precision",sf::Color::White).setPosition(410,10);
+	header.addLabel("Chance",sf::Color::White).setPosition(495,10);
 	header.setBackgroundColor(BUTTON_BACKGROUND_COLOR);
 
 	/* Content */
 	for (Player & player : user().players){
-		TableCell & playerCell = playerList.addTableCell(515, 47, sf::Color(0xee, 0xee, 0xee, 0xff));
+		TableCell & playerCell = playerList.addTableCell(575, 47, sf::Color(0xee, 0xee, 0xee, 0xff));
 		playerCell.setBackgroundColor(sf::Color(0x00, 0x00, 0x00, 0x77));
-		playerCell.addLabel(player.getName(), sf::Color::White).setPosition(15, 10);;
-		playerCell.addLabel(player.getRemainingLife(), GREEN_TEXT_COLOR
-			).setPosition(355, 10);
-		playerCell.addLabel(player.getRemainingMana(), BLUE_TEXT_COLOR
-			).setPosition(435, 10);
+		playerCell.addLabel(player.getName(), sf::Color::White).setPosition(25, 10);;
+		playerCell.addLabel(player.getStrength(), sf::Color::White
+			).setPosition(270, 10);
+		playerCell.addLabel(player.getVelocity(), sf::Color::White
+			).setPosition(356, 10);
+		playerCell.addLabel(player.getPrecision(), sf::Color::White).setPosition(445,10);
+		playerCell.addLabel(player.getChance(), sf::Color::White).setPosition(520,10);
 	}
 
 	displaySquadLabels();

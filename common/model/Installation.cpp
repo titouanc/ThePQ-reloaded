@@ -86,14 +86,12 @@ FanShop::FanShop(std::string owner) : Installation(owner, memory::FANSHOP, 10000
 
 int FanShop::getMaintenanceCost() const
 {
-	// EXAMPLE ==> TODO
-	return getCurrentValue()/1000;
+	return getCurrentValue()/50;
 }
 
 int FanShop::getIncome() const
 {
-	// EXAMPLE ==> TODO
-	return getCurrentValue()/50;
+	return getCurrentValue()/10;
 }
 
 int FanShop::getMatchIncome(int nbOfSpectators)
@@ -107,7 +105,7 @@ FoodStand::FoodStand(std::string owner) : Installation(owner, memory::FOOD_STAND
 int FoodStand::getMaintenanceCost() const
 {
 	// EXAMPLE ==> TODO
-	return getCurrentValue()/1000;	
+	return getCurrentValue()/50;	
 }
 
 int FoodStand::getIncome() const
@@ -131,7 +129,7 @@ int Tribune::getMaxSpectators()
 int Tribune::getMaintenanceCost() const
 {
 	// EXAMPLE ==> TODO
-	return getCurrentValue()/1000;	
+	return getCurrentValue()/50;	
 }
 
 int Tribune::getIncome() const
@@ -150,7 +148,7 @@ MedicalCenter::MedicalCenter(std::string owner) : Installation(owner, memory::ME
 int MedicalCenter::getMaintenanceCost() const
 {
 	// EXAMPLE ==> TODO
-	return getCurrentValue()/1000;	
+	return getCurrentValue()/50;	
 }
 
 int MedicalCenter::getIncome() const

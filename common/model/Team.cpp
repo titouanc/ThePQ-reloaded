@@ -185,7 +185,7 @@ void Team::timeUpdate()
 	for (size_t j = 0; j < _installations.size(); ++j)
 	{
 		_funds -= _installations[j]->getMaintenanceCost();
-		_funds += _fame*_installations[j]->getIncome(); // fame dependant income
+		_funds += _fame/gameconfig::STARTING_FAME*_installations[j]->getIncome(); // fame dependant income
 	}
 	saveInfos();
 }
