@@ -19,7 +19,7 @@ public:
 		if (ISSTR(json.get("description"))) _description = STR(json.get("description")).value();
 		if (ISINT(json.get("price"))) _price = INT(json.get("price")).value();		
 	}
-	operator JSON::Dict(){
+	operator JSON::Dict() const {
 		JSON::Dict res;
 		res.set("name", _name);
 		res.set("description", _description);
@@ -54,7 +54,7 @@ public:
 		if (ISINT(json.get("precisionBonus"))) _precisionBonus = INT(json.get("precisionBonus")).value();		
 	}
 
-	operator JSON::Dict(){
+	operator JSON::Dict() const{
 		JSON::Dict res = JSON::Dict((Gear)*this);
 		res.set("strengthBonus", _strengthBonus);
 		res.set("precisionBonus", _precisionBonus);
@@ -81,7 +81,7 @@ public:
 		if (ISINT(json.get("velocityBonus"))) _velocityBonus = INT(json.get("velocityBonus"));		
 	}
 
-	operator JSON::Dict(){
+	operator JSON::Dict() const{
 		JSON::Dict res = Gear::operator JSON::Dict();
 		res.set("velocityBonus", _velocityBonus);
 		return res;
@@ -108,7 +108,7 @@ public:
 	Jersey(const Jersey & jersey): Gear(jersey._name,jersey._description,jersey._price),
 	_strengthBonus(jersey._strengthBonus){}
 
-	operator JSON::Dict(){
+	operator JSON::Dict() const {
 		JSON::Dict res = Gear::operator JSON::Dict();
 		res.set("strengthBonus", _strengthBonus);
 		return res;
