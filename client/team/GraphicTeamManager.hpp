@@ -19,6 +19,7 @@ private:
 	void displayAvailablePlayers();
 
 	void selectPlayer(int id);
+	void doSwap(int id);
 
 	void onPlayersLoad();
 	void onTeamInfoChange();
