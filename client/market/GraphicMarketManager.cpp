@@ -141,7 +141,7 @@ void GraphicMarketManager::onSalesUpdate()
 	bidderHeader.setPosition(400, BUTTON_TOP_PADDING);
 	bidderHeader.setColor(BUTTON_TEXT_COLOR);
 
-	Label & priceHeader = header.addLabel("Price");
+	Label & priceHeader = header.addLabel("Next Price");
 	priceHeader.setPosition(550, BUTTON_TOP_PADDING);
 	priceHeader.setColor(BUTTON_TEXT_COLOR);
 
