@@ -30,10 +30,7 @@ void GUIFGameManager::onUserList(JSON::List const & list)
 {
 	clear();
 
-	addUsernameButton(user().username);
-	addUserBudgetButton(user().funds);
-	addUserAcPointsButton(user().acPoints);
-	addUserFameButton(user().fame);
+	addTopBar(user());
 
 	Label &titleLabel = _canvas.addLabel("Connected users");
 	titleLabel.setFont(HEADER_FONT_PATH);

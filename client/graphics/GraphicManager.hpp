@@ -7,6 +7,7 @@
 #include "Textbox.hpp"
 #include "Label.hpp"
 #include "TableView.hpp"
+#include "../UserData.hpp"
 
 namespace GUI {
 	class GraphicManager {
@@ -52,6 +53,8 @@ namespace GUI {
 		GUI::Button<GraphicManager> & addUserBudgetButton(const int budget);	
 		GUI::Button<GUI::GraphicManager> & addUserAcPointsButton(const int acPoints);	
 		GUI::Button<GUI::GraphicManager> & addUserFameButton(const int fame);
+
+		void addTopBar(UserData & user);
 
 		sf::RenderWindow & window(){return _controller.window;}
 		MainController &_controller;

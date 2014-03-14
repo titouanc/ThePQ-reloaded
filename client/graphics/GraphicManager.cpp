@@ -100,7 +100,7 @@ void GUI::GraphicManager::updateBudget(int newBudget){
 
 void GUI::GraphicManager::updateAcPoints(int newAcPoints){
 	std::stringstream s;
-	s << newAcPoints << " points";
+	s << newAcPoints << " AP";
 	if (_userAcPointsButton)
 		_userAcPointsButton->setText(s.str());
 	positionTopButtons();
@@ -191,4 +191,12 @@ GUI::Button<GUI::GraphicManager> & GUI::GraphicManager::addUserFameButton(const 
 	_userFameButton->setTextColor(LIGHT_BUTTON_TEXT_COLOR);
 	_userFameButton->setPosition(window().getSize().x-_userFameButton->getWidth()*2.8-3.5*MARGIN,MARGIN);
 	return *_userFameButton;
+}
+
+void GUI::GraphicManager::addTopBar(UserData & user){
+	addUsernameButton(user.username);
+	addUserBudgetButton(user.funds);
+	addUserFameButton(user.fame);
+	addUserAcPointsButton(user.acPoints);
+	positionTopButtons();
 }

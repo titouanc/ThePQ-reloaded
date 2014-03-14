@@ -33,8 +33,7 @@ void GraphicTeamManager::displayPlayers()
 {
 	clear();
 
-	addUsernameButton(user().username);
-	addUserBudgetButton(user().funds);
+	addTopBar(user());
 
 	TableView & playerList = _canvas.addTableView();
 	playerList.setPosition(100, 100);
