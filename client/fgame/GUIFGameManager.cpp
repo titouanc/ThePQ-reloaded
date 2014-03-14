@@ -8,7 +8,6 @@ GUIFGameManager::GUIFGameManager(ClientManager const & parent, GUI::MainControll
 		: FGameManager(parent), GraphicManager(controller)
 {
 	askConnectedList();
-
 	_canvas.setBackgroundImage(texturePath("HexBack.png"));
 
 	displayCanvas();
@@ -29,7 +28,6 @@ void GUIFGameManager::invitePlayer(string playername)
 void GUIFGameManager::onUserList(JSON::List const & list)
 {
 	clear();
-
 	addTopBar(user());
 
 	Label &titleLabel = _canvas.addLabel("Connected users");
@@ -60,6 +58,8 @@ void GUIFGameManager::onUserList(JSON::List const & list)
 		noPlayersLabel.setColor(sf::Color::White);
 	}
 
+	Button<GUIFGameManager> & updateButton = _canvas.addButton<GUIFGameManager>(&GUIFGameManager::askConnectedList, this, "Update");
+	updateButton.setPosition(window().getSize().x-2*updateButton.getWidth()-MARGIN, window().getSize().y-updateButton.getHeight()-MARGIN);
 	addBackButton();
 
 	redrawCanvas();

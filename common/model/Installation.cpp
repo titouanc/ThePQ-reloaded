@@ -81,7 +81,7 @@ void Installation::downgrade(){
 	}
 }
 
-FanShop::FanShop(std::string owner) : Installation(owner, memory::FANSHOP, 1000)
+FanShop::FanShop(std::string owner) : Installation(owner, memory::FANSHOP, 10000)
 {}
 
 int FanShop::getMaintenanceCost() const
@@ -101,7 +101,7 @@ int FanShop::getMatchIncome(int nbOfSpectators)
 	return nbOfSpectators*gameconfig::GOODIES_PRICE;
 }
 	
-FoodStand::FoodStand(std::string owner) : Installation(owner, memory::FOOD_STAND, 500)
+FoodStand::FoodStand(std::string owner) : Installation(owner, memory::FOOD_STAND, 10000)
 {}
 
 int FoodStand::getMaintenanceCost() const
@@ -120,7 +120,7 @@ int FoodStand::getMatchIncome(int nbOfSpectators)
 	return nbOfSpectators*gameconfig::FOOD_PRICE;
 }
 
-Tribune::Tribune(std::string owner) : Installation(owner, memory::TRIBUNE, 2500, 1)
+Tribune::Tribune(std::string owner) : Installation(owner, memory::TRIBUNE, 20000, 1)
 {}
 
 int Tribune::getMaxSpectators()
