@@ -20,6 +20,7 @@ private:
 
 	void selectPlayer(int id);
 	void doSwap(int id);
+	void cancelChange();
 
 	void onPlayersLoad();
 	void onTeamInfoChange();
