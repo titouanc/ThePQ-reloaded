@@ -186,10 +186,10 @@ namespace gameconfig
 	static const int FAME_EARN_DISCONNECT=30;
 	static const int FAME_LOSE_DISCONNECT=30;
 	static const int FUNDS_EARN_DISCONNECT=600;
-	static const int FUNDS_EARN_GAME=900;
+	static const int FUNDS_EARN_GAME=5000;
 	static const int BIG_GOAL_DIFFERENCE = 100;
-	static const float FUNDS_GAME_RATIO=0.05;
-	static const float FUNDS_CHAMP_RATIO=0.12;
+	static const float FUNDS_GAME_RATIO=0.4;
+	static const float FUNDS_CHAMP_RATIO=0.8;
 //	static const int MAX_CHAMP_MATCH_OFFSET = 61;
 	static const int WINNER_LOSER_GAIN_RATIO = 4;
 	static const int MONEY_GAIN_RATIO = 100;
