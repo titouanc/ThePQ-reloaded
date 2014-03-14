@@ -67,6 +67,9 @@ void GraphicTeamManager::displaySquadLabels(){
 	_canvas.addPanel(515, 500, sf::Color(0x00, 0x00, 0x00, 0x77)
 		).setPosition(650, 100);
 
+	_canvas.addLabel("Your Squad", BLUE_TEXT_COLOR
+		).centerOn(900, 120);
+
 	_canvas.addLabel("Left Chaser", sf::Color::White
 		).centerOn(755, 160);
 	_canvas.addLabel("Center Chaser", sf::Color::White
