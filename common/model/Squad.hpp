@@ -153,6 +153,15 @@ struct Squad {
         }
     }
 
+    void swapPlayers(int member_id, int position){
+        int player2Pos;
+        for (int i=0; i<7; i++)
+            if (players[i]->getMemberID() == member_id)
+                player2Pos = i;
+        putPlayerAtPosition(players[position]->getMemberID(), player2Pos);
+        putPlayerAtPosition(member_id, position);
+    }
+
     void equipAll(Player* player){
         player->equipBroomstick(&_broomstick);
         player->equipJersey(&_jersey);
