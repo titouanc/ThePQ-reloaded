@@ -91,7 +91,7 @@ int FanShop::getMaintenanceCost() const
 
 int FanShop::getIncome() const
 {
-	return _level * gameconfig::GOODIES_PRICE * 100;
+	return (getCurrentValue()*gameconfig::TICKS_BEFORE_STADIUM)/(50*gameconfig::TICKS_BEFORE_RESET); // CAN'T TOUCH THIS MC HAMMER
 }
 
 int FanShop::getMatchIncome(int nbOfSpectators)
