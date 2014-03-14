@@ -196,6 +196,10 @@ namespace gameconfig
     static const int FAME_WIN = 100;
     static const int MATCH_WON_AP_GAIN = 10;
     static const int MATCH_LOST_AP_GAIN = 5;
+    static const int TRIBUNE_SPECTATORS = 100;
+    static const int FOOD_PRICE = 5;
+    static const int TICKET_PRICE = 5;
+    static const int GOODIES_PRICE = 5;
 
 }
 
