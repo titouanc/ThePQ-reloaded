@@ -135,7 +135,7 @@ void ClientManager::handleNotification(){
 			onMessage(onChampionshipStatusChange(STR(popped.get("data")).value()));
 		}
 		else if(type == net::MSG::END_OF_MATCH_RAPPORT){
-			onMessage(onChampionshipStatusChange(STR(popped.get("data")).value()));
+			onMessage(onMatchRapport(DICT(popped.get("data"))));
 		}
 	}
 }
@@ -164,6 +164,8 @@ std::string ClientManager::onEndOfSale(JSON::Dict const & json)
 	res<<endl;
 	return res.str();
 }
+
+std::string ClientManager::onMatchRapport(JSON::Dict const & json){}
 
 std::string ClientManager::onUnplayedMatch(std::string const & msg){
 	std::stringstream res;

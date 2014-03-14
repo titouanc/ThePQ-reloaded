@@ -54,8 +54,9 @@ class ClientManager {
 		void handleNotification();
 
 		/* handle message for end of player sale */
-
 		std::string onEndOfSale(JSON::Dict const & json);
+
+		std::string onMatchRapport(JSON::Dict const & json);
 
 		/* handle message when a championship match has been automatically resolved */
 		std::string onUnplayedMatch(std::string const &);
