@@ -33,8 +33,7 @@ void GraphicTeamManager::displayPlayers()
 {
 	clear();
 
-	addUsernameButton(user().username);
-	addUserBudgetButton(user().funds);
+	addTopBar(user());
 
 	TableView & playerList = _canvas.addTableView();
 	playerList.setPosition(100, 100);
@@ -187,7 +186,7 @@ void GraphicTeamManager::displaySwapWith(int position){
 }
 
 void GraphicTeamManager::displayAvailablePlayers(){
-	for(int i=0; i<user().players.size(); ++i){
+	for(size_t i=0; i<user().players.size(); ++i){
 		if (!user().squad.hasMemberID(user().players[i].getMemberID())){
 			_canvas.addButton<GraphicTeamManager, int>(
 				&GraphicTeamManager::selectPlayer, user().players[i].getMemberID(), this, "Select" 
