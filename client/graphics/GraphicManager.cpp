@@ -123,15 +123,15 @@ void GUI::GraphicManager::positionTopButtons(){
 	int totalLength = GUI::MARGIN;
 	if (_userBudgetButton){
 		_userBudgetButton->setPosition(window().getSize().x-totalLength-_userBudgetButton->getWidth(), MARGIN);
-		totalLength = totalLength + _userBudgetButton.getWidth() + MARGIN;
+		totalLength = totalLength + _userBudgetButton->getWidth() + MARGIN;
 	}
 	if (_userFameButton){
 		_userFameButton->setPosition(window().getSize().x-totalLength-_userFameButton->getWidth(), MARGIN);
-		totalLength = totalLength + _userFameButton.getWidth() + MARGIN;
+		totalLength = totalLength + _userFameButton->getWidth() + MARGIN;
 	}
 	if (_userAcPointsButton){
 		_userAcPointsButton->setPosition(window().getSize().x-totalLength-_userAcPointsButton->getWidth(), MARGIN);
-		totalLength = totalLength + _userAcPointsButton.getWidth() + MARGIN;
+		totalLength = totalLength + _userAcPointsButton->getWidth() + MARGIN;
 	}
 }
 
@@ -150,6 +150,7 @@ GUI::Button<GUI::GraphicManager> & GUI::GraphicManager::addUsernameButton(std::s
 	_usernameButton = &_canvas.addButton<GUI::GraphicManager>(
 		&GUI::GraphicManager::doNothing, this, "Welcome, "+username+"!"
 	);
+	updateUsername(username);
 	_usernameButton->setBackgroundColor(LIGHT_BUTTON_BACKGROUND_COLOR);
 	_usernameButton->setTextColor(LIGHT_BUTTON_TEXT_COLOR);
 	_usernameButton->setPosition(MARGIN, MARGIN);
@@ -158,11 +159,10 @@ GUI::Button<GUI::GraphicManager> & GUI::GraphicManager::addUsernameButton(std::s
 
 GUI::Button<GUI::GraphicManager> & GUI::GraphicManager::addUserBudgetButton(const int budget)
 {
-	char casted[512];
-	sprintf(casted, "%d $", budget);
 	_userBudgetButton = &_canvas.addButton<GUI::GraphicManager>(
-		&GUI::GraphicManager::doNothing, this, casted
+		&GUI::GraphicManager::doNothing, this, "0"
 	);
+	updateBudget(budget);
 	_userBudgetButton->setBackgroundColor(LIGHT_BUTTON_BACKGROUND_COLOR);
 	_userBudgetButton->setTextColor(LIGHT_BUTTON_TEXT_COLOR);
 	_userBudgetButton->setPosition(window().getSize().x-_userBudgetButton->getWidth()-MARGIN, MARGIN);
@@ -171,11 +171,10 @@ GUI::Button<GUI::GraphicManager> & GUI::GraphicManager::addUserBudgetButton(cons
 
 GUI::Button<GUI::GraphicManager> & GUI::GraphicManager::addUserAcPointsButton(const int acPoints)
 {
-	char casted[512];
-	sprintf(casted,"%d points",acPoints);
 	_userAcPointsButton = &_canvas.addButton<GUI::GraphicManager>(
-		&GUI::GraphicManager::doNothing,this,casted
+		&GUI::GraphicManager::doNothing,this,"0"
 		);
+	updateAcPoints(acPoints);
 	_userAcPointsButton->setBackgroundColor(LIGHT_BUTTON_BACKGROUND_COLOR);
 	_userAcPointsButton->setTextColor(LIGHT_BUTTON_TEXT_COLOR);
 	_userAcPointsButton->setPosition(window().getSize().x-_userAcPointsButton->getWidth()*1.8-1.2*MARGIN,MARGIN);
@@ -184,11 +183,10 @@ GUI::Button<GUI::GraphicManager> & GUI::GraphicManager::addUserAcPointsButton(co
 
 GUI::Button<GUI::GraphicManager> & GUI::GraphicManager::addUserFameButton(const int fame)
 {
-	char casted[512];
-	sprintf(casted,"Fame: %d",fame);
 	_userFameButton = &_canvas.addButton<GUI::GraphicManager>(
-		&GUI::GraphicManager::doNothing,this,casted
+		&GUI::GraphicManager::doNothing,this,"0"
 		);
+	updateFame(fame);
 	_userFameButton->setBackgroundColor(LIGHT_BUTTON_BACKGROUND_COLOR);
 	_userFameButton->setTextColor(LIGHT_BUTTON_TEXT_COLOR);
 	_userFameButton->setPosition(window().getSize().x-_userFameButton->getWidth()*2.8-3.5*MARGIN,MARGIN);
