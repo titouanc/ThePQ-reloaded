@@ -129,6 +129,15 @@ public:
 	
 	bool upgradeInstallation(size_t i);
 	bool downgradeInstallation(size_t i);
+	Tribune* getTribune()
+	{
+		for (size_t i = 0; i < _installations.size(); ++i)
+		{
+			if (_installations[i]->getName() == memory::TRIBUNE)
+				return dynamic_cast<Tribune*>(_installations[i]);
+		}
+		return NULL;
+	}
 
 	bool removePlayer(int id);
 	void addPlayer(Player &player);

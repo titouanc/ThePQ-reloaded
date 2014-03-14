@@ -111,7 +111,7 @@ class MatchManager : public SubConnectionManager {
 		/* Run dat shit */
 		void _mainloop_out();
 		bool isChampMatch();
-		MatchResult& getResult();
+		MatchResult getResult();
 		std::pair<std::string,unsigned int> getWinner() const { std::pair<std::string,unsigned int> ret(_matchRes.getWinner(),_score[0]);return ret; }
 		std::pair<std::string,unsigned int> getLoser() const { std::pair<std::string,unsigned int> ret(_matchRes.getLoser(),_score[1]);return ret; }
 };
