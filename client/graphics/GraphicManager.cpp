@@ -113,7 +113,7 @@ void GUI::GraphicManager::updateFame(int newFame){
 
 void GUI::GraphicManager::updateUsername(std::string username){
 	if (_usernameButton)
-		_usernameButton->setText(username);
+		_usernameButton->setText("Welcome, "+username+" !");
 }
 
 
