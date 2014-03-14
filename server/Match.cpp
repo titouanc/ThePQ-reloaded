@@ -4,7 +4,7 @@
 using namespace std;
 
 Match::Match(Squad const & squadA, Squad const & squadB) : 
-	_finished(false), _hasStroke(20)
+	_turn(), _finished(false), _hasStroke(20)
 {
 	_squads[0] = squadA;
 	_squads[1] = squadB;
@@ -60,7 +60,6 @@ void Match::initMoveables()
 	_pitch.insert(&_snitch);
 }
 
-
 size_t Match::timesteps() const
 {
 	size_t res = 0;
@@ -107,13 +106,39 @@ std::pair<std::string, unsigned int> Match::getLoser() const
 	return std::pair<string, unsigned int>(_squads[0].squad_owner, _points[1]);
 }
 
-void Match::addStroke(Stroke const & stroke)
+std::list<Stroke>::iterator Match::getStrokeFor(Moveable const & moveable)
 {
+	std::list<Stroke>::iterator res;
+	for (res=_turn.begin(); res!=_turn.end(); res++){
+		if (res->moveable.getID() == moveable.getID())
+			break;
+	}
+	return res;
+}
+
+bool Match::addStroke(Stroke const & stroke)
+{
+	if (! id2Moveable(stroke.moveable.getID()))
+		return false;
 	_turn.push_back(stroke);
+	return true;
+}
+
+bool Match::addStroke(int mid, Displacement const & d)
+{
+	Moveable *moveable = id2Moveable(mid);
+	if (! moveable)
+		return false;
+	addStroke(Stroke(*moveable, d));
+	return true;
 }
 
 JSON::List Match::playStrokes()
 {
+	/* This method process moveables moves, in regular time intervals. The
+	   Moveable are moved on the pitch structure, and their positions attributes
+	   are updated at the end. */
+
 	size_t n_steps = timesteps();
 	double tLast = 0;
 	double step = 1.0/n_steps;
@@ -124,14 +149,17 @@ JSON::List Match::playStrokes()
 
 		/* for each stroke do... */
 		for (Stroke & stroke : _turn){
+			cout << "\t" << JSON::Dict(stroke) << endl;
 			if (! stroke.active){
 				/* The moveable with this stroke has been stopped */
 				continue;
 			}
 
 			/* Current position for the moveable of this stroke */
-			Position curPos  = stroke.move.position(_t, stroke.moveable);
-			Position nextPos = stroke.move.position(tLast, stroke.moveable);
+			Position curPos  = stroke.move.position(tLast, stroke.moveable);
+			Position nextPos = stroke.move.position(_t, stroke.moveable);
+
+			cout << "\t" << JSON::List(curPos) << "->" << JSON::List(nextPos) << endl;
 
 			if (curPos == nextPos){
 				/* If the moveable Position doesn't change during this
@@ -139,21 +167,37 @@ JSON::List Match::playStrokes()
 				continue;
 			}
 
-			/* Is there someone (or something) at the position the 
-			   moveable would occupy ? */
-			Moveable *atDest = _pitch.getAt(nextPos);
-			
-			if (atDest == NULL){
+			Collision collide(curPos, nextPos, stroke);
+
+			if (! (
+				stayInEllipsis(collide) ||
+				keeperInZone(collide) ||
+				playerCatchQuaffle(collide) ||
+				scoreGoal(collide)
+			)){
+				/* If no rule has stopped this stroke; set it to its new position */
 				_pitch.setAt(nextPos, &(stroke.moveable));
 				_pitch.setAt(curPos, NULL);
-				cout << "MOVE " << JSON::List(curPos) << " -> " << JSON::List(nextPos) << endl;
-			} else {
-				//onCollision();
-				cout << "COLLISION " << JSON::List(nextPos) << endl;
-				stroke.active = false;
 			}
 		}
 		tLast = _t;
+	}
+
+	/* Generate delta for unstopped players */
+	for (Stroke & stroke : _turn){
+		if (! stroke.active)
+			continue;
+		JSON::Dict d = {
+			{"mid", JSON::Integer(stroke.moveable.getID())},
+			{"from", JSON::List(stroke.moveable.getPosition())},
+			{"to", JSON::List(stroke.move.position(1, stroke.moveable))}
+		};
+		_deltas.append(d);
+	}
+
+	/* Update all players positions attributes that already have a delta */
+	for (std::pair<Position const &, Moveable*> it : _pitch){
+		it.second->setPosition(it.first);
 	}
 
 	JSON::List res = _deltas;
@@ -164,4 +208,132 @@ JSON::List Match::playStrokes()
 bool Match::isFinished() const
 {
 	return _finished;
+}
+
+/* ================== RULES ================= */
+bool Match::stayInEllipsis(Collision & collide)
+{
+	if (_pitch.inEllipsis(collide.conflict))
+		return false;
+
+	cout << collide.stroke.moveable.getName() << " GETS OUT !!!" << endl;
+
+	collide.stroke.active = false;
+	return true;
+}
+
+bool Match::keeperInZone(Collision & collide)
+{
+	if (! collide.stroke.moveable.isPlayer())
+		return false;
+
+	Player & player = (Player &) collide.stroke.moveable;
+	/* If it isn't a keeper, or still in keeper zone, do nothing */
+	if (! player.isKeeper() || _pitch.isInKeeperZone(collide.conflict))
+		return false;
+
+	cout << collide.stroke.moveable.getName() << " IN KEEPER ZONE !!!" << endl;
+
+	/* Otherwise stop the move */
+	collide.stroke.active = false;
+	return true;
+}
+
+bool Match::scoreGoal(Collision & collide)
+{
+	if (! _pitch.isGoal(collide.conflict))
+		return false;
+
+	if (collide.stroke.moveable.isBall()){
+		Ball & ball = (Ball &) collide.stroke.moveable;
+		if (! ball.isQuaffle())
+			return false;
+
+		/* Give 10 points to the squad who started on the opposite side 
+		   of this goal */
+		if (_pitch.isInWestKeeperZone(collide.conflict)){
+			_points[0] += 10; /* see initMoveables() for initial squads positions */
+		} else {
+			_points[1] += 10;
+		}
+		return false;
+	} 
+
+	Player & player = (Player &) (collide.stroke.moveable);
+	if (! player.isChaser())
+		return false;
+
+	Chaser & chaser = (Chaser &) player;
+	if (chaser.hasQuaffle()){
+		/* If it is a chaser, and he has the ball; let him score */
+		Squad *owner = id2Squad(chaser.getID());
+		if (owner == &(_squads[0]) && _pitch.isInWestKeeperZone(collide.conflict)){
+			_points[0] += 10;
+			return false;
+		}
+
+		if (owner == &(_squads[1]) && _pitch.isInEastKeeperZone(collide.conflict)){
+			_points[1] += 10;
+			return false;
+		}
+	}
+
+	/* The Chaser try to go through its own goal; STAHP ! NOW ! */
+	collide.stroke.active = false;
+	return true;
+}
+
+/* This rule give the Quaffle to a chaser||keeper */
+bool Match::playerCatchQuaffle(Collision & collide)
+{
+	Moveable *atPos = _pitch.getAt(collide.conflict);
+	if (atPos == NULL)
+		return false;
+
+	/* The moveable is the quaffle, check if the other is a PlayerQuaffle */
+	if (&(collide.stroke.moveable) == &_quaffle){
+		if (! atPos->isPlayer())
+			return false;
+		
+		Player & player = (Player &) *atPos;
+		if (! player.canQuaffle())
+			return false;
+		
+		/* If yes, stop its movement and give it to the player */
+		PlayerQuaffle & pq = (PlayerQuaffle &) player;
+		pq.retainQuaffle();
+		collide.stroke.active = false;
+
+		/* And remove the Quaffle from the pitch */
+		_pitch.setAt(collide.fromPos, NULL);
+		return true;
+	}
+
+	/* The moveable is a player; is this a PlayerQuaffle ? 
+	   Is the other a Quaffle ? */
+	else if (collide.stroke.moveable.isPlayer()){
+		Player & player = (Player &) collide.stroke.moveable;
+		if (! player.isChaser() || atPos != &_quaffle)
+			return false;
+
+		/* If yes, give it the Quaffle */
+		PlayerQuaffle & pq = (PlayerQuaffle &) player;
+		pq.retainQuaffle();
+
+		/* Find the stroke for the Quaffle, if any, and deactivate it */
+		for (Stroke & stroke : _turn){
+			if (&(stroke.moveable) == &_quaffle){
+				stroke.active = false;
+				break;
+			}
+		}
+
+		/* Put the player on the position of the Quaffle */
+		_pitch.setAt(collide.conflict, &pq);
+		_pitch.setAt(collide.fromPos, NULL);
+
+		return true;
+	}
+
+	return false;
 }

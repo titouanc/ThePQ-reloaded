@@ -1,7 +1,7 @@
 #ifndef DEFINE_MATCH_HEADER
 #define DEFINE_MATCH_HEADER
 
-#include <deque>
+#include <list>
 #include <vector>
 #include <utility>
 #include <model/Stroke.hpp>
@@ -10,10 +10,24 @@
 #include <model/Displacement.hpp>
 #include <model/Squad.hpp>
 
+/* Represent a potential collision if a stroke move a player from a certain
+   position to another. */
+struct Collision {
+	/*! Where the collision happens */
+	Position const & conflict;
+	/*! Last position occupied by the secon moveable to arrive */
+	Position const & fromPos;
+	/*! Current stroke */
+	Stroke & stroke;
+	Collision(Position const & c, Position const & f, Stroke & s) : 
+		conflict(c), fromPos(f), stroke(s) 
+	{}
+};
+
 class Match {
 private:
 	/*! strokes for this turn */
-	std::deque<Stroke> _turn;
+	std::list<Stroke> _turn;
 
 	/*! what changed during this turn */
 	JSON::List _deltas;
@@ -45,6 +59,23 @@ private:
 	/*! Return the number of timesteps to consider (longest displacement) */
 	size_t timesteps() const;
 
+	std::list<Stroke>::iterator getStrokeFor(Moveable const & moveable);
+
+	/* RULES: method accepting a Collision object.
+	          Return true if the rule processing should stop */
+	
+	/*! All Moveables stay on the pitch */
+	bool stayInEllipsis(Collision & collide);
+
+	/*! A keeper could not get out of his zone */
+	bool keeperInZone(Collision & collide);
+	
+	/*! A Chaser can catch the ball */
+	bool playerCatchQuaffle(Collision & collide);
+
+	/*! A Chaser or Quaffle can pass in the goal */
+	bool scoreGoal(Collision & collide);
+
 public:
 	Match(Squad const & squad1, Squad const & squad2);
 	~Match();
@@ -64,7 +95,8 @@ public:
 	std::pair<std::string, unsigned int> getLoser() const;
 
 	/*! add a stroke for this turn */
-	void addStroke(Stroke const & stroke);
+	bool addStroke(Stroke const & stroke);
+	bool addStroke(int mid, Displacement const & d);
 
 	/*! Play all strokes, and return a list of match changes
 	    @return [{"mid": <int>, "from": <pos>, "to": <pos>}], where pos is a
