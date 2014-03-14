@@ -43,14 +43,17 @@ protected://modif
 class Bat : public Gear 
 {
 public:
+	Bat() : Gear(), _strengthBonus(0), _precisionBonus(0){}
     Bat(const int strength, const int precision) : 	_strengthBonus(strength),
     												_precisionBonus(precision){}
     Bat(const Bat &bat): Gear(bat._name, bat._description, bat._price),
     _strengthBonus(bat._strengthBonus), _precisionBonus(bat._precisionBonus){}//modif
-    Bat(JSON::Dict const &json): Gear(json) {
+    
+    Bat(JSON::Dict const &json) : Gear(json) {
 		if (ISINT(json.get("strengthBonus"))) _strengthBonus = INT(json.get("strengthBonus")).value();		
 		if (ISINT(json.get("precisionBonus"))) _precisionBonus = INT(json.get("precisionBonus")).value();		
 	}
+
 	operator JSON::Dict(){
 		JSON::Dict res = JSON::Dict((Gear)*this);
 		res.set("strengthBonus", _strengthBonus);
@@ -69,28 +72,25 @@ private:
 class Broomstick : public Gear 
 {
 public:
-	Broomstick(const int cases, const int velocity) : Gear(), _cases(cases), _velocityBonus(velocity)
-	{}
+	Broomstick() : Gear(), _velocityBonus(0) {}
+	Broomstick(const int velocity) : Gear(), _velocityBonus(velocity) {}
 	Broomstick(const Broomstick & broomstick): Gear(broomstick._name,broomstick._description,broomstick._price), 
-	_cases(broomstick._cases), _velocityBonus(broomstick._velocityBonus){}//modif
+	_velocityBonus(broomstick._velocityBonus) {} 
 
-	Broomstick(JSON::Dict const &json = JSON::Dict()): Gear(json), _cases(5), _velocityBonus(50) {
-		if (ISINT(json.get("cases"))) _cases = INT(json.get("cases")).value();		
-		if (ISINT(json.get("velocityBonus"))) _velocityBonus = INT(json.get("velocityBonus")).value();		
+	Broomstick(JSON::Dict const &json): Gear(json), _velocityBonus(5) {	
+		if (ISINT(json.get("velocityBonus"))) _velocityBonus = INT(json.get("velocityBonus"));		
 	}
+
 	operator JSON::Dict(){
-		JSON::Dict res = JSON::Dict((Gear)*this);
-		res.set("cases", _cases);
+		JSON::Dict res = Gear::operator JSON::Dict();
 		res.set("velocityBonus", _velocityBonus);
 		return res;
-	}	
-	void setCases(const int cases) { _cases = cases; }
+	}
+
 	void setVelocityBonus(const int velocity) { _velocityBonus = velocity; }
 	
-	int getCases () const 			{ return _cases; }
 	int getVelocityBonus () const  	{ return _velocityBonus; }
 private:
-	int _cases;
 	int _velocityBonus;
 };
 
@@ -99,26 +99,23 @@ private:
 class Jersey : public Gear 
 {
 public:
-
-	Jersey(JSON::Dict const &json = JSON::Dict()): Gear(json),
+	Jersey() : Gear(), _strengthBonus(0) {}
+	Jersey(JSON::Dict const &json): Gear(json),
 		_strengthBonus(0) {
 		if (ISINT(json.get("strengthBonus"))) _strengthBonus = INT(json.get("strengthBonus")).value();		
 	}
 
 	Jersey(const Jersey & jersey): Gear(jersey._name,jersey._description,jersey._price),
-	_strengthBonus(jersey._strengthBonus){}//modif
+	_strengthBonus(jersey._strengthBonus){}
 
 	operator JSON::Dict(){
-		JSON::Dict res = JSON::Dict((Gear)*this);
+		JSON::Dict res = Gear::operator JSON::Dict();
 		res.set("strengthBonus", _strengthBonus);
 		return res;
-	}	
-	/*===Getters for Bonuses===*/
+	}
+
 	int getStrengthBonus () const 			{ return _strengthBonus; }
-	/*===Setters for Bonuses===*/
-	void setStrengthBonus(int bonus)		{ _strengthBonus=bonus;}
-	void setName(string name)				{ Gear::setName(name);}
-	void setPrice(int price)				{ Gear::setPrice(price);}
+	void setStrengthBonus(int bonus)		{ _strengthBonus=bonus; }
 
 private:
 	int _strengthBonus;

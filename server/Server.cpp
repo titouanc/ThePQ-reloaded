@@ -581,8 +581,8 @@ User *Server::getUserByName(std::string username)
 }
 
 void Server::putPlayerOnSquadPosition(const JSON::Dict &response, int peer_id){
-	int position;
-	int member_id;
+	int position = 0;
+	int member_id = 0;
 	if (ISINT(response.get(net::MSG::PLAYER_ID)))
 		member_id = INT(response.get(net::MSG::PLAYER_ID));
 	if (ISINT(response.get(net::MSG::SQUAD_POSITION)))
