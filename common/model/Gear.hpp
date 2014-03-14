@@ -43,7 +43,7 @@ protected://modif
 class Bat : public Gear 
 {
 public:
-	Bat() : Gear(), _strengthBonus(0), _precisionBonus(0){}
+	Bat() : Gear(), _strengthBonus(5), _precisionBonus(5){}
     Bat(const int strength, const int precision) : 	_strengthBonus(strength),
     												_precisionBonus(precision){}
     Bat(const Bat &bat): Gear(bat._name, bat._description, bat._price),
@@ -72,7 +72,7 @@ private:
 class Broomstick : public Gear 
 {
 public:
-	Broomstick() : Gear(), _velocityBonus(0) {}
+	Broomstick() : Gear(), _velocityBonus(5) {}
 	Broomstick(const int velocity) : Gear(), _velocityBonus(velocity) {}
 	Broomstick(const Broomstick & broomstick): Gear(broomstick._name,broomstick._description,broomstick._price), 
 	_velocityBonus(broomstick._velocityBonus) {} 
@@ -99,7 +99,7 @@ private:
 class Jersey : public Gear 
 {
 public:
-	Jersey() : Gear(), _strengthBonus(0) {}
+	Jersey() : Gear(), _strengthBonus(5) {}
 	Jersey(JSON::Dict const &json): Gear(json),
 		_strengthBonus(0) {
 		if (ISINT(json.get("strengthBonus"))) _strengthBonus = INT(json.get("strengthBonus")).value();		
