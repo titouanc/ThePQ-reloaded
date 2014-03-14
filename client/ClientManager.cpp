@@ -31,8 +31,13 @@ void ClientManager::say(std::string const & type, JSON::Value const & data)
 
 void ClientManager::treatMessage(std::string const & type, JSON::Value const * data)
 {
-	
-	if (type == net::MSG::PLAYERS_LIST)
+	if(type == net::MSG::TEAM_INFOS){
+		if(ISDICT((data))){
+			onTeamInfo(DICT(data));
+		}
+	}
+
+	else if (type == net::MSG::PLAYERS_LIST)
 	{
 		user().players.clear();
 		JSON::List const & players = LIST(data);
@@ -68,8 +73,7 @@ void ClientManager::treatMessage(std::string const & type, JSON::Value const * d
 				type == net::MSG::FRIENDLY_GAME_INVITATION ||
 			 	type == net::MSG::CHAMPIONSHIP_MATCH_PENDING ||
 			 	type == net::MSG::CHAMPIONSHIP_MATCH_STATUS_CHANGE ||
-				type == net::MSG::CHAMPIONSHIP_STATUS_CHANGE||
-				type == net::MSG::TEAM_INFOS)
+				type == net::MSG::CHAMPIONSHIP_STATUS_CHANGE)
 	{
 		if (type == net::MSG::MARKET_MESSAGE){
 			JSON::Dict const & msg = DICT(data);
@@ -130,11 +134,6 @@ void ClientManager::handleNotification(){
 		}
 		else if(type == net::MSG::CHAMPIONSHIP_STATUS_CHANGE){
 			onMessage(onChampionshipStatusChange(STR(popped.get("data")).value()));
-		}
-		else if(type == net::MSG::TEAM_INFOS){
-			if(ISDICT((popped.get("data")))){
-				onTeamInfo(DICT(popped.get("data")));
-			}
 		}
 	}
 }

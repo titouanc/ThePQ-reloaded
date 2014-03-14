@@ -4,7 +4,9 @@ MarketManager::MarketManager(ClientManager const & parent) :
 	ClientManager(parent)
 {
 	updateSales();
+	std::cout << "loading players" << std::endl;
 	loadPlayers();
+	std::cout << "players loaded" << std::endl;
 }
 
 pair<int, int> MarketManager::getBidValueRange(Player *player){
