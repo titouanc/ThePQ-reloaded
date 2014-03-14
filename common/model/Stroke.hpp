@@ -4,7 +4,19 @@
 #include <model/Displacement.hpp>
 #include <model/Moveable.hpp>
 
-enum ActionType {ACT_NONE=0, ACT_BAT=1, ACT_THROW=2};
+/*! Type of action in a stroke */
+enum ActionType {
+	ACT_NONE=0,  //!< No action
+	ACT_BAT=1,   //!< Bat action
+	ACT_THROW=2  //!< Throw quaffle action
+};
+
+/*! Type of a MatchDelta */
+enum DeltaType {
+	DELTA_MOVE=1,  //!< Regular delta (move)
+	DELTA_CATCH=2, //!< Quaffle catched 
+	DELTA_APPEAR=3 //!< Ball reappear (was throwed)
+};
 
 struct Stroke {
 	Moveable & moveable;
