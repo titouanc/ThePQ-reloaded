@@ -19,7 +19,7 @@ protected:
 	void treatMessage(std::string const & type, JSON::Value const * data);
 	/* HOOKS */
 	/* received an installation upgrade response */
-	virtual void onUpgradeInstallation();
+	virtual void onUpgradeInstallation(bool);
 	/* received an installation downgrade response */
 	virtual void onDowngradeInstallation();
 	/* received installations list : put it in user().installations */

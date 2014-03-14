@@ -421,6 +421,9 @@ void Server::upgradeInstallation(int peer_id, size_t i)
 	msg.set("type", net::MSG::INSTALLATION_UPGRADE);
 	msg.set("data", JSON::Bool(res));
 	_outbox.push(Message(peer_id, msg.clone()));
+	JSON::Dict cache;
+	cache.set("funds",_users[peer_id]->getTeam().getFunds());
+	sendTeamInfos(cache,peer_id);
 }
 
 void Server::downgradeInstallation(int peer_id, size_t i)
@@ -430,6 +433,9 @@ void Server::downgradeInstallation(int peer_id, size_t i)
 	msg.set("type", net::MSG::INSTALLATION_DOWNGRADE);
 	msg.set("data", JSON::Bool(res));
 	_outbox.push(Message(peer_id, msg.clone()));
+	JSON::Dict cache;
+	cache.set("funds",_users[peer_id]->getTeam().getFunds());
+	sendTeamInfos(cache,peer_id);
 }
 
 void Server::sendConnectedUsersList(int peer_id)
@@ -639,22 +645,34 @@ void Server::timeUpdateStadium()
 {
 	vector<User> users;
 	MemoryAccess::load(users);
+	long int before, after;
+	std::string name;
 	for (size_t i = 0; i < users.size(); ++i)
 	{
 		int peer_id;
 		if( (peer_id = getPeerID(users[i].getUsername())) >= 0 ){
 			Team & team = _users[peer_id]->getTeam();
-			long int before = team.getFunds();
+			before = team.getFunds();
 			team.timeUpdate();
-			long int after = team.getFunds();
+			team.save();
+			after = team.getFunds();
+			name = team.getName();
+			JSON::Dict toSend;
+			toSend.set("funds",team.getFunds());
+			sendTeamInfos(toSend,peer_id);
 		}
 		else{
 			Team team(users[i].getUsername());
 			team.load();
+			before = team.getFunds();
+			team.timeUpdate();
+			team.save();
+			after = team.getFunds();
+			name = team.getName();
 		}
 
-		//cout << "[" << this << "] \033[33m" << team.getName()
-		//	 << "\033[0m before: " << before << "$; after: " << after << "$" << endl;
+		cout << "[" << this << "] \033[33m" << name
+			 << "\033[0m before: " << before << "$; after: " << after << "$" << endl;
 	}
 }
 

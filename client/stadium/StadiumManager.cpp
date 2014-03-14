@@ -22,7 +22,8 @@ void StadiumManager::treatMessage(std::string const & type, JSON::Value const * 
 {
 	if (type == net::MSG::INSTALLATION_UPGRADE)
 	{
-		onUpgradeInstallation();
+		if(ISBOOL(data))
+			onUpgradeInstallation(BOOL(data));
 	}
 	else if (type == net::MSG::INSTALLATION_DOWNGRADE)
 	{
@@ -38,7 +39,7 @@ void StadiumManager::treatMessage(std::string const & type, JSON::Value const * 
 	}
 }
 
-void StadiumManager::onUpgradeInstallation()
+void StadiumManager::onUpgradeInstallation(bool success)
 {
 	loadInstallations();
 }
