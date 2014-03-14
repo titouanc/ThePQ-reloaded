@@ -20,40 +20,17 @@
 #include <network/SubConnectionManager.hpp>
 #include <utility>
 
-using namespace net;
+#include "Match.hpp"
 
-struct Stroke {
-	Moveable & moveable;
-	Displacement move;
-	bool active;
-	Stroke(Moveable & m, Displacement d) : moveable(m), move(d), active(true){}
-};
+using namespace net;
 
 class MatchManager : public SubConnectionManager {
 	private:
-		std::deque<Stroke> _strokes;
-		/* Players */
-		Squad _squads[2];
-		/* Balls */
-		Quaffle _quaffle;
-		GoldenSnitch _snitch;
-		Bludger _bludgers[2];
-		Pitch  _pitch;
+		Match _match;
 		SharedQueue<Message> _inbox, _outbox;
-		unsigned int _score[2];
 		bool _champMatch;
 		MatchResult _matchRes;
-		/* Current match deltas */
-		JSON::List _turnDeltas;
-
-		/* Current time step */
-		double _t;
-
-		typedef std::deque<Stroke>::iterator iter;
-
-		/* initialise moveable positions */
-		void initPositions(void);
-
+		
 		/* Processing of incoming messages*/
 		void processMessage(Message const & msg);
 		/* Process incoming message with given data (a JSON::Dict)
@@ -65,41 +42,24 @@ class MatchManager : public SubConnectionManager {
 
 		/* Send messages to clients */
 		void sendToAll(JSON::Value const & data);
+
 		/* Send {"type": "<signal>", "data": true} to everyone */
 		void sendSignal(std::string const & sig);
+
 		/* Send message to <msg> sender with given <type> and payload */
 		void reply(Message const & msg, std::string type, JSON::Value const & data);
+
 		/* Like ^ but data set to "<text>" */
 		void reply(Message const & msg, std::string type, const char *text);
+
 		/* Send squads composition to everyone */
 		void sendMoveables(void);
-		/* Send match delta to everyone */
-		void sendMatchDeltas(void);
-		void stopStroke(Stroke & stroke, Position const & pos);
-		void addDelta(Moveable const & moveable, Position const & dest);
+
 		void resolveFame(std::string win,std::string los);
 		void resolveFameDisconnection(std::string win);
 		void resolveMoneyDisconnection(std::string win);
 		void resolveMoney(std::string win,std::string los);
-		iter getStrokeForMoveable(Moveable *moveable);
-		/* Resolve strokes */
-		void playStrokes(void);
-		bool checkGoal(
-			Stroke & stroke,     /* Stroke that might lead to goal */
-			Position & toPos,    /* Position that might be a goal */
-			Position & fromPos  /* last pos occupied by moving */
-		);
-		/* *SMASH* */
-		void onCollision(
-			Stroke & stroke,     /* Stroke that leads to conflict */
-			Position & conflict, /* Clonflicting pos */
-			Position & fromPos  /* last pos occupied by moving */
-		);
-		void throwBall(
-			Moveable & ball,
-			Position & fromPos,
-			Position & direction
-		);
+		
 		void endMatch(void);
 	public:
 		MatchManager(
@@ -110,10 +70,10 @@ class MatchManager : public SubConnectionManager {
 		virtual ~MatchManager();
 		/* Run dat shit */
 		void _mainloop_out();
-		bool isChampMatch();
-		MatchResult getResult();
-		std::pair<std::string,unsigned int> getWinner() const { std::pair<std::string,unsigned int> ret(_matchRes.getWinner(),_score[0]);return ret; }
-		std::pair<std::string,unsigned int> getLoser() const { std::pair<std::string,unsigned int> ret(_matchRes.getLoser(),_score[1]);return ret; }
+		bool isChampMatch() const;
+		MatchResult getResult() const;
+		std::pair<std::string,unsigned int> getWinner() const {return _match.getWinner();}
+		std::pair<std::string,unsigned int> getLoser() const {return _match.getLoser();}
 };
 
 #endif

@@ -23,6 +23,9 @@ class Position {
         unsigned int length(void) const; //Distance, in cells, from 0,0 to this pos
         bool isDirection(void) const;
 
+        /*! Return a position of length=1 in the same direction */
+        Position normalize() const;
+
         /* Numeric operations */
         Position operator+(Position const & other) const;
         Position operator-(Position const & other) const;

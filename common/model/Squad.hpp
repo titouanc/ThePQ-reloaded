@@ -82,7 +82,7 @@ struct Squad {
         return *this;
     }
 
-    operator JSON::Dict(){
+    operator JSON::Dict() const {
         JSON::Dict res;
         res.set("squad_id", squad_id);
         res.set("squad_owner", squad_owner);

@@ -37,6 +37,14 @@ bool Position::isDirection(void) const
     return (abs(_x)==abs(_y) || abs(_y)==0) && (_x+_y)%2 == 0;
 }
 
+Position Position::normalize() const
+{
+    assert(isDirection());
+    assert(length() > 0);
+    int l = length();
+    return Position(_x/l, _y/l);
+}
+
 Position Position::operator+(Position const & other) const
 {
     return Position(_x+other.x(), _y+other.y());

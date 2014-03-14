@@ -13,6 +13,7 @@ private:
 
 	Player *_selectedPlayer; /* Currently selected player, or NULL */
 	Displacement _currentMove; /* Displacement for selected player */
+	bool _throwBall;
 
 	/* Return true if main loop should continue */
 	bool treatEvent(sf::Event const & ev);

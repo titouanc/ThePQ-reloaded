@@ -18,6 +18,13 @@ TEST(position)
     ASSERT(West.x() == -2);
 ENDTEST()
 
+TEST(normalize)
+    Position p(3, -3);
+    Position const & n = p.normalize();
+    cout << JSON::List(n) << endl;
+    ASSERT(n == Position(1, -1));
+ENDTEST()
+
 TEST(position_to_json)
     Position p(2, 7);
     ASSERT(((JSON::List)p).dumps() == "[2, 7]");
@@ -104,6 +111,17 @@ TEST(displacement_from_json)
 
     ASSERT(d.length() == initial.length());
     ASSERT(d.count() == initial.count());
+ENDTEST()
+
+TEST(displacement_with_tbeg)
+    Displacement d(0.25);
+    d.addMove(Position(6, 0));
+
+    ASSERT(d.position(0) == Position(0, 0));
+    ASSERT(d.position(0.25) == Position(0, 0));
+    ASSERT(d.position(0.5) == Position(2, 0));
+    ASSERT(d.position(0.75) == Position(4, 0));
+    ASSERT(d.position(1) == Position(6, 0));
 ENDTEST()
 
 TEST(displacement_with_higher_speed)
@@ -222,6 +240,7 @@ int main()
 {
     TestFunc testSuite[] = {
     	ADDTEST(position),
+        ADDTEST(normalize),
         ADDTEST(position_to_json),
         ADDTEST(position_from_json),
         ADDTEST(position_length),
@@ -233,6 +252,7 @@ int main()
         ADDTEST(displacement_not_a_direction),
         ADDTEST(displacement_to_json),
         ADDTEST(displacement_from_json),
+        ADDTEST(displacement_with_tbeg),
         ADDTEST(displacement_with_higher_speed),
         ADDTEST(composite_displacement_with_higher_speed),
         ADDTEST(composite_displacement),
