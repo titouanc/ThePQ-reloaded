@@ -4,6 +4,7 @@
 
 using namespace std;
 
+
 Match::Match(Squad const & squadA, Squad const & squadB) : 
 	_turn(), _finished(false), _hasStroke(20)
 {
@@ -63,7 +64,7 @@ void Match::initMoveables()
 			_pitch.insert(_squads[i].players[j]);
 	}
 
-	_snitch.setPosition(c + 6*Pitch::SouthWest);
+	_snitch.setPosition(c + 6*Pitch::SouthWest+6*Pitch::SouthEast);
 	_pitch.insert(&_snitch);
 }
 
@@ -203,6 +204,22 @@ void Match::throwBall(Collision & collide)
 			}
 		}
 	}
+}
+
+void Match::mkSnitchStroke(void)
+{
+	static const Position directions[6] = {
+		Pitch::West, Pitch::NorthWest, Pitch::NorthEast	,
+		Pitch::East, Pitch::SouthEast, Pitch::SouthWest
+	};
+	if (rand()%11 < 7) /* 30% probability to move */
+		return;
+	Displacement move;
+	for (int i=1+rand()%5; i>=0; i--){ /* Max 5 moves */
+		int choosed = rand()%6;
+		move.addMove(directions[choosed]);
+	}
+	addStroke(Stroke(_snitch, move));
 }
 
 JSON::List Match::playStrokes()
@@ -360,11 +377,29 @@ bool Match::scoreGoal(Collision & collide)
 			Squad *owner = id2Squad(chaser.getID());
 			if (owner == &(_squads[0]) && _pitch.isInWestKeeperZone(collide.conflict)){
 				_points[0] += 10;
+				chaser.releaseQuaffle();
+				_quaffle.setPosition(Position(0, 0));
+				_pitch.insert(&_quaffle);
+				JSON::Dict delta = {
+					{"type", JSON::Integer(DELTA_APPEAR)},
+					{"mid", JSON::Integer(chaser.getID())},
+					{"from", JSON::List(_quaffle.getPosition())}
+				};
+				_deltas.append(delta);
 				return false;
 			}
 
 			if (owner == &(_squads[1]) && _pitch.isInEastKeeperZone(collide.conflict)){
 				_points[1] += 10;
+				chaser.releaseQuaffle();
+				_quaffle.setPosition(Position(0, 0));
+				_pitch.insert(&_quaffle);
+				JSON::Dict delta = {
+					{"type", JSON::Integer(DELTA_APPEAR)},
+					{"mid", JSON::Integer(chaser.getID())},
+					{"from", JSON::List(_quaffle.getPosition())}
+				};
+				_deltas.append(delta);
 				return false;
 			}
 		}
