@@ -139,7 +139,7 @@ struct Squad {
             chasers[position] = player;
             equipAll(&(chasers[position]));
         }
-        else if (position > 2 & position < 5){  // Beater
+        else if (position > 2 && position < 5){  // Beater
             beaters[position-3] = player;
             equipAll(&(beaters[position]));
         }
