@@ -119,6 +119,8 @@ public:
 	);
 	bool addStroke(JSON::Dict const & stroke);
 
+	void mkSnitchStroke(void);
+
 	/*! Play all strokes, and return a list of match changes
 	    @return [{"mid": <int>, "from": <pos>, "to": <pos>}], where pos is a
 	            Position object serialized as JSON::List.

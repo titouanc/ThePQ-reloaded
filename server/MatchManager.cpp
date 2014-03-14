@@ -72,6 +72,7 @@ void MatchManager::_mainloop_out()
 		} while (time(NULL) - tick < STROKES_TIMEOUT_SECONDS);
 		
 		sendSignal(net::MSG::MATCH_TIMEOUT);
+		_match.mkSnitchStroke();
 
 		JSON::List const & deltas = _match.playStrokes();
 		JSON::Dict msg = {

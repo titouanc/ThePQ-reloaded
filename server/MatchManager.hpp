@@ -38,7 +38,7 @@ class MatchManager : public SubConnectionManager {
 		   moveable_id -> Moveable */
 		void processStroke(Message const & msg, JSON::Dict const & data);
 		/* Create random moves for golden snitch */
-		void mkSnitchStroke(void);
+		//void mkSnitchStroke(void);
 
 		/* Send messages to clients */
 		void sendToAll(JSON::Value const & data);
