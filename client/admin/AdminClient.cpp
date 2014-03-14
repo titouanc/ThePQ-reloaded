@@ -119,6 +119,7 @@ void AdminClient::loginAdmin(std::string username, std::string password){
 }
 
 void AdminClient::logoutAdmin(){
+	/*Method handling the logout of the admin user*/
 	_admin.logout();
 	JSON::Dict toSend;
 	toSend.set("type",net::MSG::DISCONNECT);
@@ -128,6 +129,7 @@ void AdminClient::logoutAdmin(){
 }
 
 void AdminClient::showCreateChampionshipMenu(){	
+	/*Method showing the interface for a championship constructor*/
 	std::cout << "\n\033[1m\033[33mCreating championship :\033[0m"<<std::endl;
 	std::cout<<"Championship name : ";
 	std::string champName;
@@ -160,6 +162,7 @@ void AdminClient::showCreateChampionshipMenu(){
 
 
 void AdminClient::createChampionship(std::string name, int nbTurns, int cash, int fame){
+	/*Method creating a championship*/
 	JSON::Dict toSend;
 	toSend.set("type",net::MSG::CHAMPIONSHIP_CREATION);
 	JSON::Dict data;
