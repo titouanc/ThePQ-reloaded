@@ -4,6 +4,7 @@
 
 using namespace std;
 
+
 Match::Match(Squad const & squadA, Squad const & squadB) : 
 	_turn(), _finished(false), _hasStroke(20)
 {
