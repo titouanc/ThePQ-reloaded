@@ -63,7 +63,7 @@ private:
 
 
 	/*! Apply a Throw ball Stroke */
-	void throwBall(Stroke & stroke);
+	void throwBall(Collision & collide);
 
 	/* RULES: method accepting a Collision object.
 	          Return true if the rule processing should stop */
@@ -96,6 +96,10 @@ public:
 	    @return NULL if no moveable maps to this mid or it is a Ball
 	 */
 	Squad *id2Squad(int mid);
+
+	/*! Return one of the squads.
+	    @param id 0 or 1 */
+	Squad const & squad(int id);
 
 	/*! Return a pair <"username",score> */
 	std::pair<std::string, unsigned int> getWinner() const;

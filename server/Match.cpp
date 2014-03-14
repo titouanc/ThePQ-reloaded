@@ -1,5 +1,6 @@
 #include "Match.hpp"
 #include <iostream>
+#include <cassert>
 
 using namespace std;
 
@@ -14,6 +15,12 @@ Match::Match(Squad const & squadA, Squad const & squadB) :
 
 Match::~Match()
 {}
+
+Squad const & Match::squad(int id)
+{
+	assert(id==0 || id==1);
+	return _squads[id];
+}
 
 void Match::initState()
 {
@@ -159,8 +166,10 @@ static JSON::Dict mkDelta(Moveable const & moveable, Position destPos)
 	return res;
 }
 
-void Match::throwBall(Stroke & stroke)
+void Match::throwBall(Collision & collide)
 {
+	Stroke & stroke = collide.stroke;
+
 	if (stroke.moveable.isPlayer()){
 		Player & player = (Player &) stroke.moveable;
 		if (player.canQuaffle()){
@@ -171,9 +180,19 @@ void Match::throwBall(Stroke & stroke)
 
 				Stroke ballStroke = Stroke(_quaffle, ballMove);
 				_turn.push_back(ballStroke);
+
+				/* Put the Quaffle 1 position further in its direction */
+				cout << "ACTIONVEC:" << JSON::List(stroke.actionVec) << "  "
+				     << "NORMALIZED: " << JSON::List(stroke.actionVec.normalize()) << " "
+				     << "frompos:" << JSON::List(collide.fromPos) << endl;
+				Position qPos = collide.fromPos + stroke.actionVec.normalize();
+				_quaffle.setPosition(qPos);
+				_pitch.insert(&_quaffle);
+
 				JSON::Dict delta = {
 					{"type", JSON::Integer(DELTA_APPEAR)},
-					{"mid", JSON::Integer(_quaffle.getID())}
+					{"mid", JSON::Integer(player.getID())},
+					{"from", JSON::List(qPos)}
 				};
 				_deltas.append(delta);
 			}
@@ -214,14 +233,12 @@ JSON::List Match::playStrokes()
 				continue;
 			}
 
+			Collision collide(nextPos, curPos, stroke);
+
 			/* Handle throw ball strokes */
 			if (stroke.action == ACT_THROW && stroke.actionPos == curPos){
-				throwBall(stroke);
-				n_steps = timesteps();
-				step = 1.0/n_steps;
+				throwBall(collide);
 			}
-
-			Collision collide(nextPos, curPos, stroke);
 
 			if (! (
 				stayInEllipsis(collide) ||
@@ -387,7 +404,7 @@ bool Match::playerCatchQuaffle(Collision & collide)
 		cout << "#" << pq.getID() << " catch the quaffle !!!" << endl;
 		JSON::Dict delta = {
 			{"type", JSON::Integer(DELTA_CATCH)},
-			{"mid", JSON::Integer(collide.stroke.moveable.getID())}
+			{"mid", JSON::Integer(player.getID())}
 		};
 		_deltas.append(delta);
 		return true;
@@ -418,7 +435,7 @@ bool Match::playerCatchQuaffle(Collision & collide)
 		cout << "#" << pq.getID() << " catch the quaffle !!!" << endl;
 		JSON::Dict delta = {
 			{"type", JSON::Integer(DELTA_CATCH)},
-			{"mid", JSON::Integer(collide.stroke.moveable.getID())}
+			{"mid", JSON::Integer(player.getID())}
 		};
 		_deltas.append(delta);
 

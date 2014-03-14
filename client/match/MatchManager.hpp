@@ -4,6 +4,7 @@
 #include <ClientManager.hpp>
 #include <model/Pitch.hpp>
 #include <model/Squad.hpp>
+#include <model/Ball.hpp>
 #include <model/Displacement.hpp>
 
 class MatchManager : public ClientManager {
@@ -14,6 +15,7 @@ class MatchManager : public ClientManager {
 		Pitch _pitch;
 		Squad _mySquad, _otherSquad;
 		State _state;
+		Quaffle *_quaffle;
 
 		void treatBalls(JSON::List const & balls);
 		void treatSquads(JSON::List const & squads);

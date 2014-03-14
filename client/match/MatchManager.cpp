@@ -1,6 +1,7 @@
 #include "MatchManager.hpp"
 #include <Constants.hpp>
 #include <model/Ball.hpp>
+#include <model/Stroke.hpp>
 
 using namespace net;
 
@@ -8,6 +9,7 @@ void MatchManager::treatBalls(JSON::List const & balls)
 {
 	Quaffle *q = new Quaffle(DICT(balls[0]));
 	_pitch.insert(q);
+	_quaffle = q;
 	GoldenSnitch *g = new GoldenSnitch(DICT(balls[1]));
 	_pitch.insert(g);
 	for (size_t i=2; i<4; i++){
@@ -46,20 +48,49 @@ void MatchManager::treatDeltas(JSON::List const & deltas)
 {
 	for (size_t i=0; i<deltas.len(); i++){
 		JSON::Dict const & delta = DICT(deltas[i]);
-		Position from(LIST(delta.get("from")));
-		Position to(LIST(delta.get("to")));
+		DeltaType type = (DeltaType) INT(delta.get("type")).value();
 
-		Moveable *toMove = _pitch.getAt(from);
-		_pitch.setAt(to, toMove);
-		_pitch.setAt(from, NULL);
-		toMove->setPosition(to);
-		cout << "MOVE " << toMove->getName() << " " 
-		     << JSON::List(from) << " -> " << JSON::List(to) << endl;
+		if (type == DELTA_MOVE){
+			Position from(LIST(delta.get("from")));
+			Position to(LIST(delta.get("to")));
+
+			Moveable *toMove = _pitch.getAt(from);
+			_pitch.setAt(to, toMove);
+			_pitch.setAt(from, NULL);
+			toMove->setPosition(to);
+			cout << "MOVE " << toMove->getName() << " " 
+			     << JSON::List(from) << " -> " << JSON::List(to) << endl;
+		} else if (type == DELTA_APPEAR){
+			Position pos(LIST(delta.get("from")));
+			_pitch.setAt(pos, _quaffle);
+			_quaffle->setPosition(pos);
+
+			/* The quaffle appears, remove it from its holder */
+			for (std::pair<const Position,Moveable*> & it : _pitch){
+				if (it.second->getID() == INT(delta.get("mid"))){
+					PlayerQuaffle *pq = (PlayerQuaffle *) it.second;
+					pq->releaseQuaffle();
+					cout << pq->getName() << " THROW QUAFFLE" << endl;
+					break;
+				}
+			}
+		} else if (type == DELTA_CATCH){
+			/* The quaffle was catched by someone; give him the quaffle*/
+			for (std::pair<const Position,Moveable*> & it : _pitch){
+				if (it.second->getID() == INT(delta.get("mid"))){
+					PlayerQuaffle *pq = (PlayerQuaffle *) it.second;
+					pq->retainQuaffle();
+					cout << pq->getName() << " CATCH QUAFFLE" << endl;
+				}
+			}
+			_pitch.setAt(_quaffle->getPosition(), NULL);
+		}
 	}
 	onPitchChange();
 }
 
-MatchManager::MatchManager(ClientManager const & other) : ClientManager(other), _state(CREATED)
+MatchManager::MatchManager(ClientManager const & other) 
+: ClientManager(other), _state(CREATED), _quaffle(NULL)
 {}
 
 MatchManager::~MatchManager()
