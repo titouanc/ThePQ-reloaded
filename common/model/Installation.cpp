@@ -54,10 +54,7 @@ int Installation::getUpgradeCost() const{
 	/*Method returning an integer representing the cost of an upgrade to
 	 *the next level. 
 	 */
-	int res = _baseValue;	// buy the installation
-	if (_level > 0) 
-		res = getValueAtLevel(_level+1) - getCurrentValue();
-	return res;
+	return getValueAtLevel(_level+1) - getCurrentValue();
 }
 
 int Installation::getDowngradeRefunds() const {
