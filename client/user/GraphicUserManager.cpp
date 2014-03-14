@@ -94,8 +94,7 @@ void GraphicUserManager::displayMainMenu()
 {
 	clear();
 
-	addUsernameButton(user().username);
-	addUserBudgetButton(user().funds);
+	addTopBar(user());
 
 	_canvas.setBackgroundImage(texturePath("HexBack.png"));
 	
