@@ -164,21 +164,12 @@ void Server::startMatch(int client_idA, int client_idB, bool champMatch)
 		_users.find(client_idB) == _users.end()){
 		return;
 	}
-	JSON::Value *json = JSON::load("fixtures/squad1.json");
-	if (! ISDICT(json))
-		return;
-	Squad squad1(DICT(json));
-	squad1.client_id = client_idA;
-	squad1.squad_owner = _users[client_idA]->getUsername();
-	delete json;
 
-	json = JSON::load("fixtures/squad2.json");
-	if (! ISDICT(json))
-		return;
-	Squad squad2(DICT(json));
+	Squad & squad1 = _users[client_idA]->getTeam().getSquad();
+	squad1.client_id = client_idA;
+
+	Squad & squad2 = _users[client_idB]->getTeam().getSquad();
 	squad2.client_id = client_idB;
-	squad2.squad_owner = _users[client_idB]->getUsername();
-	delete json;
 
 	while (_outbox.available()); /* Clear outbox (do not lose msgs) */
 	MatchManager *match = new MatchManager(_connectionManager, squad1, squad2, champMatch);

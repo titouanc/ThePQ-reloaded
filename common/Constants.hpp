@@ -147,8 +147,6 @@ namespace net
 		static const std::string PUT_PLAYER_ON_SQUAD_POSITION = "P_P_S_P";
 		static const std::string SWAP_PLAYERS_SQUAD_POSITION = "S_P_S_P";
 		static const std::string SQUAD_POSITION = "SQUAD_POS";
-		static const std::string PLAYER_TO_SWAP_1 = "SQ_SW_P1";
-		static const std::string PLAYER_TO_SWAP_2 = "SQ_SW_P2";
 
 	}
 }
