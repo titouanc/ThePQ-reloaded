@@ -165,7 +165,39 @@ std::string ClientManager::onEndOfSale(JSON::Dict const & json)
 	return res.str();
 }
 
-std::string ClientManager::onMatchRapport(JSON::Dict const & json){}
+std::string ClientManager::onMatchRapport(JSON::Dict const & json){
+	std::stringstream res;
+	std::string matchType;
+	res << "Match rapport" << endl << endl;
+	if(ISBOOL(json.get(net::MSG::CHAMPIONSHIP_MATCH))){
+		if(BOOL(json.get(net::MSG::CHAMPIONSHIP_MATCH)) == true)
+			matchType = "championship match";
+		else
+			matchType = "friendly game";
+	}
+	if(ISBOOL(json.get(net::MSG::WON_MATCH))){
+		if(BOOL(json.get(net::MSG::WON_MATCH)) == true)
+			res << "Congratulations, you have won the " << matchType << " against ";
+		else
+			res << "Noob, you have lost the " << matchType << " against ";
+	}
+	if(ISSTR(json.get(net::MSG::USERNAME))){
+		res << STR(json.get(net::MSG::USERNAME)).value();
+	}
+	res << endl << endl;;
+	if(ISINT(json.get(net::MSG::MONEY_GAIN))){
+		res << "Money : +" << INT(json.get(net::MSG::MONEY_GAIN)) << " $" << endl;
+	}
+	if(ISINT(json.get(net::MSG::FAME_WON))){
+		std::string delta = "";
+		if(INT(json.get(net::MSG::FAME_WON)) > 0) { delta = "+"; }
+		res << "Fame  : " << delta << INT(json.get(net::MSG::FAME_WON)) << endl;
+	}
+	if(ISINT(json.get(net::MSG::AP_WON))){
+		res << "AP    : +" << INT(json.get(net::MSG::AP_WON)) << endl;
+	}
+	return res.str();
+}
 
 std::string ClientManager::onUnplayedMatch(std::string const & msg){
 	std::stringstream res;
