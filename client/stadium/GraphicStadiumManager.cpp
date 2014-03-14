@@ -58,16 +58,16 @@ void GraphicStadiumManager::displayInstallations()
 
 		if (user().installations[i]->getLevel() == 0){
 			current.addButton<GraphicStadiumManager, int>(
-				&GraphicStadiumManager::doUpgrade, i, this, "Buy"
+				&GraphicStadiumManager::doUpgrade, i, this, "Buy", GREEN_BUTTON_BACKGROUND_COLOR
 			).setPosition(10, 220);
 		}
 		else{
 			current.addButton<GraphicStadiumManager, int>(
-				&GraphicStadiumManager::doUpgrade, i, this, "Upgrade"
+				&GraphicStadiumManager::doUpgrade, i, this, "Upgrade", GREEN_BUTTON_BACKGROUND_COLOR
 			).setPosition(10, 220);
 
 			Button<GraphicStadiumManager, int> &downButton = current.addButton<GraphicStadiumManager, int>(
-				&GraphicStadiumManager::doDowngrade, i, this, "Downgrade");
+				&GraphicStadiumManager::doDowngrade, i, this, "Downgrade",RED_BUTTON_BACKGROUND_COLOR);
 			downButton.setPosition(270-10-downButton.getWidth(), 220);
 		}
 	}
