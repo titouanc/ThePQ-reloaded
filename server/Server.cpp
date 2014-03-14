@@ -123,11 +123,12 @@ void Server::collectFinishedMatches(void)
 		next = it;
 		next++;
 		if(! (*it)->isRunning()){
-			MatchResult result;
-			std::pair<std::string,unsigned int> winner = (*it)->getWinner();
-			std::pair<std::string,unsigned int> loser = (*it)->getLoser();
-			result.setTeams(winner.first,loser.first);
-			result.setScore(winner.second,loser.second);
+			MatchResult result = (*it)->getResult();
+			// std::pair<std::string,unsigned int> winner = (*it)->getWinner();
+			// std::pair<std::string,unsigned int> loser = (*it)->getLoser();
+			// std::cout << "WINNER USERNAME : " << winner.first << "LOSE USERNAME : "<< loser.first << std::endl;
+			// result.setTeams(winner.first,loser.first);
+			// result.setScore(winner.second,loser.second);
 			if( (*it)->isChampMatch()){
 				Championship* champ = getChampionshipByUsername(result.getWinner());
 				if (champ != NULL){
