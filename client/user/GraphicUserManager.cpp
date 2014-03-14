@@ -129,14 +129,12 @@ void GraphicUserManager::submitLoginForm()
 {
 	GUI::Textbox & userTextbox = _canvas.textboxWithID(USERNAME_TEXTBOX_ID);
 	GUI::Textbox & passTextbox = _canvas.textboxWithID(PASSWORD_TEXTBOX_ID);
-	std::cout << "LOG IN"<<std::endl;
 	_wait = true;	
 	loginUser(userTextbox.getText(), passTextbox.getText());
 	while (_wait){
 		readEvent();
 		readMessages();
 	}
-	std::cout <<"LOGGED"<<std::endl;
 }
 
 void GraphicUserManager::submitRegisterForm()
@@ -212,7 +210,6 @@ void GraphicUserManager::goToChampionships()
 /* HOOKS */
 void GraphicUserManager::onLoginOK()
 {
-	//loadPlayers();
 	displayMainMenu();
 	_wait = false;
 }
