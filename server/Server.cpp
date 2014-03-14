@@ -126,6 +126,8 @@ void Server::collectFinishedMatches(void)
 			MatchResult result;
 			std::pair<std::string,unsigned int> winner = (*it)->getWinner();
 			std::pair<std::string,unsigned int> loser = (*it)->getLoser();
+			int random = rand() % 2;
+			(random == 0) ? result.setHost(winner.first) : result.setHost(loser.first); 
 			result.setTeams(winner.first,loser.first);
 			result.setScore(winner.second,loser.second);
 			if( (*it)->isChampMatch()){
