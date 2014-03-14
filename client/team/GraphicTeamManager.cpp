@@ -1,4 +1,5 @@
 #include "GraphicTeamManager.hpp"
+#include <sstream>
 
 using namespace std;
 using namespace GUI;
@@ -211,11 +212,13 @@ void GraphicTeamManager::onTeamInfoChange()
 	_wait = false;
 	displayPlayers();
 	displayChangeButtons();
-	char casted[512];
-	sprintf(casted, "%d $", user().funds);
-	_userBudgetButton->setText(casted);
-	sprintf(casted, "%d points", user().acPoints);
-	_userAcPointsButton->setText(casted);
-	sprintf(casted, "Fame : %d", user().fame);
-	_userFameButton->setText(casted);
+	/*
+	std::stringstream s1, s2, s3;
+	s1 << user().funds << " $";
+	_userBudgetButton->setText(s1.str());
+	s2 << user().acPoints << " points";
+	_userAcPointsButton->setText(s2.str());
+	s3 << "Fame : " <<user().fame;
+	_userFameButton->setText(s3.str());
+	*/
 }

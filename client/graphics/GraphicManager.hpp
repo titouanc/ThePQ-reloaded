@@ -14,14 +14,6 @@ namespace GUI {
 		GraphicManager(MainController &uic) : _controller(uic), _isRunning(true),
 		_backButton(NULL), _usernameButton(NULL), _userBudgetButton(NULL),
 		_userAcPointsButton(NULL), _userFameButton(NULL) {}
-
-		~GraphicManager(){
-			if (_backButton) delete _backButton;
-			if (_usernameButton) delete _usernameButton;
-			if (_userBudgetButton) delete _userBudgetButton;
-			if (_userAcPointsButton) delete _userAcPointsButton;
-			if (_userFameButton) delete _userFameButton;
-		}
 		
 		/*! run the GraphicManager mainloop */
 		virtual void run();
