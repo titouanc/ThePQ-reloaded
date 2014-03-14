@@ -28,8 +28,8 @@ void GraphicStadiumManager::displayInstallations()
 
 	_canvas.clear();
 
-	usernameButton(user().username);
-	userBudgetButton(user().funds);
+	addUsernameButton(user().username);
+	addUserBudgetButton(user().funds);
 
 	TableView & installations = _canvas.addTableView(2, 10);
 	installations.setPosition(85, 85);
@@ -78,7 +78,7 @@ void GraphicStadiumManager::displayInstallations()
 	titleLabel.setFontSize(40);
 	titleLabel.setPosition(700, 300);
 
-	backButton();
+	addBackButton();
 
 	redrawCanvas();
 }

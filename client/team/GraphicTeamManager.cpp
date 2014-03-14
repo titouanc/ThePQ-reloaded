@@ -32,8 +32,8 @@ void GraphicTeamManager::displayPlayers()
 {
 	_canvas.clear();
 
-	usernameButton(user().username);
-	userBudgetButton(user().funds);
+	addUsernameButton(user().username);
+	addUserBudgetButton(user().funds);
 
 	TableView & playerList = _canvas.addTableView();
 	playerList.setPosition(100, 100);
@@ -57,7 +57,7 @@ void GraphicTeamManager::displayPlayers()
 
 	displaySquadLabels();
 
-	backButton();
+	addBackButton();
 
 	redrawCanvas();
 }
@@ -212,4 +212,11 @@ void GraphicTeamManager::onTeamInfoChange()
 	_wait = false;
 	displayPlayers();
 	displayChangeButtons();
+	char casted[512];
+	sprintf(casted, "%d $", user().funds);
+	_userBudgetButton->setText(casted);
+	sprintf(casted, "%d points", user().acPoints);
+	_userAcPointsButton->setText(casted);
+	sprintf(casted, "Fame : %d", user().fame);
+	_userFameButton->setText(casted);
 }

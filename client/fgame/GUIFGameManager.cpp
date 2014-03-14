@@ -30,10 +30,10 @@ void GUIFGameManager::onUserList(JSON::List const & list)
 {
 	_canvas.clear();
 
-	usernameButton(user().username);
-	userBudgetButton(user().funds);
-	userAcPointsButton(user().acPoints);
-	userFameButton(user().fame);
+	addUsernameButton(user().username);
+	addUserBudgetButton(user().funds);
+	addUserAcPointsButton(user().acPoints);
+	addUserFameButton(user().fame);
 
 	Label &titleLabel = _canvas.addLabel("Connected users");
 	titleLabel.setFont(HEADER_FONT_PATH);
@@ -63,7 +63,7 @@ void GUIFGameManager::onUserList(JSON::List const & list)
 		noPlayersLabel.setColor(sf::Color::White);
 	}
 
-	backButton();
+	addBackButton();
 
 	redrawCanvas();
 }
