@@ -7,38 +7,35 @@ StadiumManager(parent)
 void CLIStadiumManager::run()
 {
 	Menu _menu;
-	_menu.addToDisplay("    - view your installations\n");
 	_menu.addToDisplay("    - upgrade an installation\n");
 	_menu.addToDisplay("    - downgrade an installation\n");
 	_menu.addToDisplay("    - quit to management menu\n");
 	int option;
 	_pending = 0;
-	loadInstallations();
-	_pending++;
 	do
 	{
+		loadInstallations();
+		_pending++;
 		do {
 			minisleep(0.1);
 			readMessages();
 		}
 		while (_pending > 0);
+		printInstallationsList();
 		option = _menu.run();
 		switch(option)
 		{
 			case 1:
-				printInstallationsList();
-				break;
-			case 2:
 				showUpgradeInstallation();
 				break;
-			case 3:
+			case 2:
 				showDowngradeInstallation();
 				break;
 			default:
 				break;
 		}
 	}
-	while (option != 4);
+	while (option != 3);
 }
 
 void CLIStadiumManager::printInstallationsList()
