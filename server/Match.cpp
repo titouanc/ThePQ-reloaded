@@ -360,11 +360,29 @@ bool Match::scoreGoal(Collision & collide)
 			Squad *owner = id2Squad(chaser.getID());
 			if (owner == &(_squads[0]) && _pitch.isInWestKeeperZone(collide.conflict)){
 				_points[0] += 10;
+				chaser.releaseQuaffle();
+				_quaffle.setPosition(Position(0, 0));
+				_pitch.insert(&_quaffle);
+				JSON::Dict delta = {
+					{"type", JSON::Integer(DELTA_APPEAR)},
+					{"mid", JSON::Integer(chaser.getID())},
+					{"from", JSON::List(_quaffle.getPosition())}
+				};
+				_deltas.append(delta);
 				return false;
 			}
 
 			if (owner == &(_squads[1]) && _pitch.isInEastKeeperZone(collide.conflict)){
 				_points[1] += 10;
+				chaser.releaseQuaffle();
+				_quaffle.setPosition(Position(0, 0));
+				_pitch.insert(&_quaffle);
+				JSON::Dict delta = {
+					{"type", JSON::Integer(DELTA_APPEAR)},
+					{"mid", JSON::Integer(chaser.getID())},
+					{"from", JSON::List(_quaffle.getPosition())}
+				};
+				_deltas.append(delta);
 				return false;
 			}
 		}
