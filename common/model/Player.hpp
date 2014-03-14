@@ -169,7 +169,7 @@ public:
 class Keeper : public PlayerQuaffle 
 {
 public:
-    using Player::Player;
+    using PlayerQuaffle::PlayerQuaffle;
 	bool isKeeper () const { return true; }
 
     /*! Return the pass score (speed of the quaffle when throwed) */
