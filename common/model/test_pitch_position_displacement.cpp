@@ -18,6 +18,13 @@ TEST(position)
     ASSERT(West.x() == -2);
 ENDTEST()
 
+TEST(normalize)
+    Position p(3, -3);
+    Position const & n = p.normalize();
+    cout << JSON::List(n) << endl;
+    ASSERT(n == Position(1, -1));
+ENDTEST()
+
 TEST(position_to_json)
     Position p(2, 7);
     ASSERT(((JSON::List)p).dumps() == "[2, 7]");
@@ -233,6 +240,7 @@ int main()
 {
     TestFunc testSuite[] = {
     	ADDTEST(position),
+        ADDTEST(normalize),
         ADDTEST(position_to_json),
         ADDTEST(position_from_json),
         ADDTEST(position_length),
