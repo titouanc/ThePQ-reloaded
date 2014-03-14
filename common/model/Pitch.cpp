@@ -71,23 +71,20 @@ bool Pitch::isInWestKeeperZone(int x, int y) const{
 		res = true;
 	return res;
 }
-bool Pitch::isInWestKeeperZone(Moveable *moveable) const{
-	bool res = false;
-	if (inEllipsis(moveable) && (moveable->getPosition().x() < -int(width()/3.0)))
-		res = true;
-	return res;
+
+bool Pitch::isInWestKeeperZone(Position const & pos) const{
+	return isInWestKeeperZone(pos.x(), pos.y());
 }
+
 bool Pitch::isInEastKeeperZone(int x, int y) const{
 	bool res = false;
 	if (inEllipsis(x, y) && (x > int(width()/3.0)))
 		res = true;
 	return res;
 }
-bool Pitch::isInEastKeeperZone(Moveable *moveable) const{
-	bool res = false;
-	if (inEllipsis(moveable) && (moveable->getPosition().x() > int(width()/3.0)))
-		res = true;
-	return res;
+
+bool Pitch::isInEastKeeperZone(Position const & pos) const{
+	return isInEastKeeperZone(pos.x(), pos.y());
 }
 
 bool Pitch::isWestGoal(int x, int y) const {
