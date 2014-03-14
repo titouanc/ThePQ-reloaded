@@ -136,7 +136,7 @@ void CLIUserManager::showManagementMenu()
 	CLIStadiumManager stadiumManager(*this);
 	CLITeamManager teamManager(*this);
 	Menu _menu;
-	_menu.addToDisplay("   - manage your stadium and installations\n");
+	_menu.addToDisplay("   - manage your installations\n");
 	_menu.addToDisplay("   - manage your players\n");
 	_menu.addToDisplay("   - quit to main menu\n");
 	int option;

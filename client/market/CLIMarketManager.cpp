@@ -6,7 +6,6 @@ MarketManager(parent), _waitForSales(false), _waitForBid(false)
 
 void CLIMarketManager::run()
 {
-	cout << "MARKET MANAGER STARTING..." << endl;
 	while (user().players.size() == 0){
 		readMessage();
 	}
