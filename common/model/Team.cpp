@@ -2,25 +2,17 @@
 #include <cmath>
 
 
-Team::Team(std::string owner, std::string teamname, int funds): 
+Team::Team(std::string owner, std::string teamname, int funds, int fame, int acpoints): 
 	_owner(owner), 
 	_name(teamname), 
 	_funds(funds),
-	_fame(gameconfig::STARTING_FAME), 
-	_acpoints(gameconfig::STARTING_AC_POINTS),
-	_players(), 
-	_installations()
-{}
-
-Team::Team(std::string owner, std::string teamname, int funds, int fame,int acPoints) : 
-	_owner(owner),
-	_name(teamname), 
-	_funds(funds),
 	_fame(fame), 
-	_acpoints(acPoints),
+	_acpoints(acpoints),
 	_players(), 
 	_installations()
-{}
+{
+	pthread_mutex_init(&_changes, NULL);
+}
 
 Team::Team(const Team& other) : 
 	_owner(other._owner), 
@@ -30,7 +22,9 @@ Team::Team(const Team& other) :
 	_acpoints(other._acpoints),
 	_players(other._players), 
 	_installations(other._installations)
-{}
+{
+	pthread_mutex_init(&_changes, NULL);
+}
 
 Team::Team(const JSON::Dict &json): Team() {
 	if(ISSTR(json.get(net::MSG::USERNAME)))
@@ -43,6 +37,7 @@ Team::Team(const JSON::Dict &json): Team() {
 		_name = STR(json.get(memory::TEAM_NAME)).value();
 	if(ISINT(json.get(memory::FAME)))
 		_fame = INT(json.get(memory::FAME));
+	pthread_mutex_init(&_changes, NULL);
 }
 
 Team::~Team()
@@ -51,6 +46,7 @@ Team::~Team()
 		if (_installations[i])
 			delete _installations[i];
 	}
+	pthread_mutex_destroy(&_changes);
 }
 Team::operator JSON::Dict(){
 	JSON::Dict ret;
@@ -78,24 +74,30 @@ void Team::save(){
 	}
 }
 bool Team::removePlayer(int id){
-	lockChanges();
+	if (pthread_mutex_lock(&_changes) != 0)
+	{
+		return false;
+	}
 	for(size_t i=0;i<_players.size();++i){
 		if(_players[i].getMemberID()==id){
 			MemoryAccess::removeObject(_players[i]);
 			_players.erase(_players.begin()+i);
-			unlockChanges();
+			pthread_mutex_unlock(&_changes);
 			return true;
 		}
 	}
-	unlockChanges();
+	pthread_mutex_unlock(&_changes);
 	return false;
 }
 void Team::addPlayer(Player &player){
-	lockChanges();
+	if (pthread_mutex_lock(&_changes) != 0)
+	{
+		return;
+	}
 	player.setOwner(getOwner());
 	MemoryAccess::save(player);
 	_players.push_back(player);
-	unlockChanges();
+	pthread_mutex_unlock(&_changes);
 }
 Player Team::getPlayer(int id){
 	for(size_t i=0;i<_players.size();++i){
@@ -108,7 +110,10 @@ Player Team::getPlayer(int id){
 
 bool Team::upgradeInstallation(size_t i)
 {
-	lockChanges();
+	if (pthread_mutex_lock(&_changes) != 0)
+	{
+		return false;
+	}
 	bool res = false;
 	if (i < _installations.size() && _installations[i]->getUpgradeCost() <= _funds)
 	{
@@ -118,13 +123,16 @@ bool Team::upgradeInstallation(size_t i)
 		MemoryAccess::save(_installations[i]);
 		saveInfos();
 	}
-	unlockChanges();
+	pthread_mutex_unlock(&_changes);
 	return res;
 }
 
 bool Team::downgradeInstallation(size_t i)
 {
-	lockChanges();
+	if (pthread_mutex_lock(&_changes) != 0)
+	{
+		return false;
+	}
 	bool res = false;
 	if (i < _installations.size() && _installations[i]->getLevel() > 0)
 	{
@@ -134,7 +142,7 @@ bool Team::downgradeInstallation(size_t i)
 		MemoryAccess::save(_installations[i]);
 		saveInfos();
 	}
-	unlockChanges();
+	pthread_mutex_unlock(&_changes);
 	return res;
 }
 
