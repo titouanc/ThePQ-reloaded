@@ -16,5 +16,5 @@ virtual void onMessage(std::string const & message){displayMessage(message);}\
 virtual void onNotificationResponse(bool success, std::string const & response, std::string const & message){(success) ? displayOk(message) : displayError(message);}\
 virtual void onMatchPending(){MessageBox m(_controller, "Next championship match is close. What do you want to do ?", {"Ready to play !", "Withdraw"});int res = m.showBox();(res==0) ? readyForMatch() : withdrawFromMatch();}\
 virtual void onMatchStart(){launchMatch();}\
-virtual void onTeamInfoChange(){updateBudget(user().funds);updateFame(user().fame);updateAcPoints(user().acPoints);redrawCanvas();}
+virtual void onTeamInfoChange(){updateUsername(user().username);updateBudget(user().funds);updateFame(user().fame);updateAcPoints(user().acPoints);redrawCanvas();}
 #endif
