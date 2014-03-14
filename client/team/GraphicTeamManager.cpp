@@ -222,18 +222,9 @@ void GraphicTeamManager::onPlayersLoad()
 	_wait = false;
 }
 
-void GraphicTeamManager::onTeamInfoChange()
+void GraphicTeamManager::onSquadUpdated()
 {
 	_wait = false;
 	displayPlayers();
 	displayChangeButtons();
-	/*
-	std::stringstream s1, s2, s3;
-	s1 << user().funds << " $";
-	_userBudgetButton->setText(s1.str());
-	s2 << user().acPoints << " points";
-	_userAcPointsButton->setText(s2.str());
-	s3 << "Fame : " <<user().fame;
-	_userFameButton->setText(s3.str());
-	*/
 }

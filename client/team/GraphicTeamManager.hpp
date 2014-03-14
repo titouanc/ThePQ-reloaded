@@ -23,7 +23,7 @@ private:
 	void cancelChange();
 
 	void onPlayersLoad();
-	void onTeamInfoChange();
+	void onSquadUpdated();
 	bool _wait;
 
 	NOTIFIABLE

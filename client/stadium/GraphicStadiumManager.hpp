@@ -18,6 +18,7 @@ private:
 	
 	void onInstallationsLoad();
 	bool _wait;
+	NOTIFIABLE
 };
 
 

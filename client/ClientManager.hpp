@@ -91,8 +91,9 @@ class ClientManager {
 		virtual void onPlayersLoad(){}
 
 		/*! Triggered when user's team informations are updated */
-		virtual void onTeamInfo(UserData const & user);
+		virtual void onTeamInfo(JSON::Dict const&);
 		virtual void onTeamInfoChange() {}
+		virtual void onSquadUpdated() {}
 
 	public:
 		/*! Create a new client manager with a connection to server, a user 

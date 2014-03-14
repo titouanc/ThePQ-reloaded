@@ -31,11 +31,8 @@ void ClientManager::say(std::string const & type, JSON::Value const & data)
 
 void ClientManager::treatMessage(std::string const & type, JSON::Value const * data)
 {
-	if (type == net::MSG::TEAM_INFOS)
-	{
-		onTeamInfo(DICT(data));
-	}
-	else if (type == net::MSG::PLAYERS_LIST)
+	
+	if (type == net::MSG::PLAYERS_LIST)
 	{
 		user().players.clear();
 		JSON::List const & players = LIST(data);
@@ -71,7 +68,8 @@ void ClientManager::treatMessage(std::string const & type, JSON::Value const * d
 				type == net::MSG::FRIENDLY_GAME_INVITATION ||
 			 	type == net::MSG::CHAMPIONSHIP_MATCH_PENDING ||
 			 	type == net::MSG::CHAMPIONSHIP_MATCH_STATUS_CHANGE ||
-				type == net::MSG::CHAMPIONSHIP_STATUS_CHANGE)
+				type == net::MSG::CHAMPIONSHIP_STATUS_CHANGE||
+				type == net::MSG::TEAM_INFOS)
 	{
 		if (type == net::MSG::MARKET_MESSAGE){
 			JSON::Dict const & msg = DICT(data);
@@ -132,6 +130,11 @@ void ClientManager::handleNotification(){
 		}
 		else if(type == net::MSG::CHAMPIONSHIP_STATUS_CHANGE){
 			onMessage(onChampionshipStatusChange(STR(popped.get("data")).value()));
+		}
+		else if(type == net::MSG::TEAM_INFOS){
+			if(ISDICT((popped.get("data")))){
+				onTeamInfo(DICT(popped.get("data")));
+			}
 		}
 	}
 }
@@ -218,14 +221,27 @@ void ClientManager::denyInvitationFromUser(std::string const & username){
 	say(net::MSG::FRIENDLY_GAME_INVITATION_RESPONSE, data);
 }
 
-void ClientManager::onTeamInfo(UserData const & user)
+void ClientManager::onTeamInfo(JSON::Dict const & json)
 {
-	_user.username = user.username;
-	_user.funds = user.funds;
-	_user.teamname = user.teamname;
-	_user.acPoints = user.acPoints;
-	_user.fame = user.fame;
-	_user.squad = user.squad;
+	if (ISSTR(json.get(net::MSG::USERNAME)))
+		_user.username = STR(json.get(net::MSG::USERNAME)).value();
+	
+	if (ISSTR(json.get("teamname")))
+		_user.teamname = STR(json.get("teamname")).value();
+	
+	if (ISINT(json.get("funds")))
+		_user.funds = INT(json.get("funds"));
+
+	if (ISINT(json.get("acPoints")))
+		_user.acPoints = INT(json.get("acPoints"));
+
+	if(ISINT(json.get("fame")))
+		_user.fame = INT(json.get("fame"));
+
+	if(ISDICT(json.get(memory::SQUAD))){
+		_user.squad = DICT(json.get(memory::SQUAD));
+		onSquadUpdated();
+	}
 	onTeamInfoChange();
 }
 
