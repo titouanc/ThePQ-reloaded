@@ -94,8 +94,8 @@ void GraphicUserManager::displayMainMenu()
 {
 	_canvas.clear();
 
-	usernameButton(user().username);
-	userBudgetButton(user().funds);
+	addUsernameButton(user().username);
+	addUserBudgetButton(user().funds);
 
 	_canvas.setBackgroundImage(texturePath("HexBack.png"));
 	
@@ -119,7 +119,7 @@ void GraphicUserManager::displayMainMenu()
 		&GraphicUserManager::goToChampionships, this, "Championships"
 	).setPosition(100, 450);
 
-	backButton("Exit").setPosition(100, 550);
+	addBackButton("Exit").setPosition(100, 550);
 	
 	redrawCanvas();
 }

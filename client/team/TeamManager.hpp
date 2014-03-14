@@ -11,7 +11,15 @@ class TeamManager : public ClientManager
 public:
 	using ClientManager::ClientManager;
 	TeamManager(ClientManager const & parent);
-private:
+	void selectPosition(int position);
+	int getSelectedPosition();
+protected:
+	int _selectedPosition; // is the position that we want to change;
+	void putPlayerAtPosition(int player_id, int position);
+	/* for swapPlayers, we need to select a position and then the player A
+	   who is going to go at that position. the player B that was on that position
+	   will then go where the player A was. */
+	void swapPlayers(int player_id, int position);
 };
 
 #endif // __TEAM_MANAGER_HPP

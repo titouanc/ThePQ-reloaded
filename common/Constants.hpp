@@ -77,7 +77,7 @@ namespace net
 		static const std::string PLAYERS_ON_MARKET_LIST= "DQ_P_OM_L";
 		static const std::string PLAYERS_LIST = "DQ_P_L";
 		static const std::string SHOW_TEAM_STATUS = "DQ_T_S";//new data query!!!
-		static const std::string SHOW_FINANCIAL_STATUS = "DQ_F_S";
+		static const std::string SHOW_FINANCIAL_STATUS = "DQ_F_S";		
 
 		// friendly game
 		static const std::string FRIENDLY_GAME_USERNAME = "F_G_U";
@@ -143,7 +143,10 @@ namespace net
 		static const std::string CHAMPIONSHIP_UNPLAYED_MATCH_WON = "CMATCH_UPLAYED_W";
 		static const std::string CHAMPIONSHIP_UNPLAYED_MATCH_LOST = "CMATCH_UPLAYED_L";
 		
-		
+		// SQUAD ------------------------
+		static const std::string PUT_PLAYER_ON_SQUAD_POSITION = "P_P_S_P";
+		static const std::string SWAP_PLAYERS_SQUAD_POSITION = "S_P_S_P";
+		static const std::string SQUAD_POSITION = "SQUAD_POS";
 
 	}
 }
@@ -205,6 +208,7 @@ namespace memory
 	static const std::string TEAMNAMES_FILE = "teamNames";
 	static const std::string USERNAMES_FILE = "userNames";
 	// Data
+	static const std::string SQUAD = "squad";
 	static const std::string FUNDS = "funds";
 	static const std::string AC_POINTS = "activity_points";
 	static const std::string TEAM_NAME = "teamname";
@@ -223,6 +227,17 @@ namespace memory
 
 	static const std::string ADMIN_DIR = "data/admins/";
 	static const std::string ADMIN_FILE = "admin";
+}
+
+namespace SQUAD
+{
+	static const int LEFT_CHASER = 0;
+	static const int CENTER_CHASER = 1;
+	static const int RIGHT_CHASER = 2;
+	static const int LEFT_BEATER = 3;
+	static const int RIGHT_BEATER = 4;
+	static const int SEEKER = 5;
+	static const int KEEPER = 6;
 }
 
 #endif

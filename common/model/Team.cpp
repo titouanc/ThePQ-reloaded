@@ -25,6 +25,7 @@ Team::Team(std::string owner, std::string teamname, int funds, int fame,int acPo
 Team::Team(const Team& other) : 
 	_owner(other._owner), 
 	_name(other._name), 
+	_squad(other._squad),
 	_funds(other._funds),
 	_fame(other._fame), 
 	_acpoints(other._acpoints),
@@ -43,6 +44,8 @@ Team::Team(const JSON::Dict &json): Team() {
 		_name = STR(json.get(memory::TEAM_NAME)).value();
 	if(ISINT(json.get(memory::FAME)))
 		_fame = INT(json.get(memory::FAME));
+	if(ISDICT(json.get(memory::SQUAD)))
+		_squad = DICT(json.get(memory::SQUAD));
 }
 
 Team::~Team()
@@ -59,6 +62,7 @@ Team::operator JSON::Dict(){
 	ret.set(memory::AC_POINTS,_acpoints);
 	ret.set(memory::TEAM_NAME,_name);
 	ret.set(memory::FAME, _fame);
+	ret.set(memory::SQUAD, JSON::Dict(_squad));
 	return ret;
 }
 void Team::load(){
@@ -136,13 +140,9 @@ void Team::generateBaseSquad(){
 		p.setName(gen.getRandomName());
 		p.setMemberID();
 		p.setOwner(getOwner());
-		Broomstick broom;
-		MemoryAccess::loadSkel(broom);
-		p.equipBroomstick(broom);
-		Jersey jers;
-		MemoryAccess::loadSkel(jers);
-		p.equipJersey(jers);
 		_players.push_back(p);
+		*(_squad.players[i]) = p;
+		_squad.squad_owner = _owner;
 	}
 }
 

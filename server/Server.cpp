@@ -164,21 +164,12 @@ void Server::startMatch(int client_idA, int client_idB, bool champMatch)
 		_users.find(client_idB) == _users.end()){
 		return;
 	}
-	JSON::Value *json = JSON::load("fixtures/squad1.json");
-	if (! ISDICT(json))
-		return;
-	Squad squad1(DICT(json));
-	squad1.client_id = client_idA;
-	squad1.squad_owner = _users[client_idA]->getUsername();
-	delete json;
 
-	json = JSON::load("fixtures/squad2.json");
-	if (! ISDICT(json))
-		return;
-	Squad squad2(DICT(json));
+	Squad & squad1 = _users[client_idA]->getTeam().getSquad();
+	squad1.client_id = client_idA;
+
+	Squad & squad2 = _users[client_idB]->getTeam().getSquad();
 	squad2.client_id = client_idB;
-	squad2.squad_owner = _users[client_idB]->getUsername();
-	delete json;
 
 	while (_outbox.available()); /* Clear outbox (do not lose msgs) */
 	MatchManager *match = new MatchManager(_connectionManager, squad1, squad2, champMatch);
@@ -241,6 +232,12 @@ void Server::treatMessage(
 		
 		else if(messageType == MSG::FRIENDLY_GAME_INVITATION_RESPONSE)
 				sendInvitationResponseToPlayer(dict, peer_id);	
+
+		else if(messageType == MSG::PUT_PLAYER_ON_SQUAD_POSITION)
+			putPlayerOnSquadPosition(dict, peer_id);
+
+		else if(messageType == MSG::SWAP_PLAYERS_SQUAD_POSITION)
+			swapPlayersOfSquad(dict, peer_id);
 	} 
 
 	else if (ISSTR(payload)){
@@ -575,6 +572,30 @@ User *Server::getUserByName(std::string username)
 		if (username == iter->second->getUsername())
 			return iter->second;
 	return NULL;
+}
+
+void Server::putPlayerOnSquadPosition(const JSON::Dict &response, int peer_id){
+	int position = 0;
+	int member_id = 0;
+	if (ISINT(response.get(net::MSG::PLAYER_ID)))
+		member_id = INT(response.get(net::MSG::PLAYER_ID));
+	if (ISINT(response.get(net::MSG::SQUAD_POSITION)))
+		position = INT(response.get(net::MSG::SQUAD_POSITION));
+	_users[peer_id]->getTeam().getSquad().putPlayerAtPosition(member_id, position);
+	sendTeamInfos(_users[peer_id]->getTeam(), peer_id);
+	MemoryAccess::save(_users[peer_id]->getTeam());
+}
+
+void Server::swapPlayersOfSquad(const JSON::Dict &response, int peer_id){
+	int position = 0;
+	int member_id = 0;
+	if (ISINT(response.get(net::MSG::PLAYER_ID)))
+		member_id = INT(response.get(net::MSG::PLAYER_ID));
+	if (ISINT(response.get(net::MSG::SQUAD_POSITION)))
+		position = INT(response.get(net::MSG::SQUAD_POSITION));
+	_users[peer_id]->getTeam().getSquad().swapPlayers(member_id, position);
+	sendTeamInfos(_users[peer_id]->getTeam(), peer_id);
+	MemoryAccess::save(_users[peer_id]->getTeam());
 }
 
 void Server::timeLoop()

@@ -80,61 +80,61 @@ int GUI::GraphicManager::confirm(std::string message){
 }
 
 
-GUI::Button<GUI::GraphicManager> & GUI::GraphicManager::backButton(std::string const & caption)
+GUI::Button<GUI::GraphicManager> & GUI::GraphicManager::addBackButton(std::string const & caption)
 {
-	GUI::Button<GUI::GraphicManager> &res = _canvas.addButton<GUI::GraphicManager>(
+	_backButton = &_canvas.addButton<GUI::GraphicManager>(
 		&GUI::GraphicManager::stop, this, caption
 	);
-	res.setPosition(window().getSize().x-res.getWidth()-MARGIN, window().getSize().y-res.getHeight()-MARGIN);
-	return res;
+	_backButton->setPosition(window().getSize().x-_backButton->getWidth()-MARGIN, window().getSize().y-_backButton->getHeight()-MARGIN);
+	return *_backButton;
 }
 
-GUI::Button<GUI::GraphicManager> & GUI::GraphicManager::usernameButton(std::string const username)
+GUI::Button<GUI::GraphicManager> & GUI::GraphicManager::addUsernameButton(std::string const username)
 {
-	GUI::Button<GUI::GraphicManager> &res = _canvas.addButton<GUI::GraphicManager>(
+	_usernameButton = &_canvas.addButton<GUI::GraphicManager>(
 		&GUI::GraphicManager::doNothing, this, "Welcome, "+username+"!"
 	);
-	res.setBackgroundColor(LIGHT_BUTTON_BACKGROUND_COLOR);
-	res.setTextColor(LIGHT_BUTTON_TEXT_COLOR);
-	res.setPosition(MARGIN, MARGIN);
-	return res;
+	_usernameButton->setBackgroundColor(LIGHT_BUTTON_BACKGROUND_COLOR);
+	_usernameButton->setTextColor(LIGHT_BUTTON_TEXT_COLOR);
+	_usernameButton->setPosition(MARGIN, MARGIN);
+	return *_usernameButton;
 }
 
-GUI::Button<GUI::GraphicManager> & GUI::GraphicManager::userBudgetButton(const int budget)
+GUI::Button<GUI::GraphicManager> & GUI::GraphicManager::addUserBudgetButton(const int budget)
 {
 	char casted[512];
 	sprintf(casted, "%d $", budget);
-	GUI::Button<GUI::GraphicManager> &res = _canvas.addButton<GUI::GraphicManager>(
+	_userBudgetButton = &_canvas.addButton<GUI::GraphicManager>(
 		&GUI::GraphicManager::doNothing, this, casted
 	);
-	res.setBackgroundColor(LIGHT_BUTTON_BACKGROUND_COLOR);
-	res.setTextColor(LIGHT_BUTTON_TEXT_COLOR);
-	res.setPosition(window().getSize().x-res.getWidth()-MARGIN, MARGIN);
-	return res;
+	_userBudgetButton->setBackgroundColor(LIGHT_BUTTON_BACKGROUND_COLOR);
+	_userBudgetButton->setTextColor(LIGHT_BUTTON_TEXT_COLOR);
+	_userBudgetButton->setPosition(window().getSize().x-_userBudgetButton->getWidth()-MARGIN, MARGIN);
+	return *_userBudgetButton;
 }
 
-GUI::Button<GUI::GraphicManager> & GUI::GraphicManager::userAcPointsButton(const int acPoints)
+GUI::Button<GUI::GraphicManager> & GUI::GraphicManager::addUserAcPointsButton(const int acPoints)
 {
 	char casted[512];
 	sprintf(casted,"%d points",acPoints);
-	GUI::Button<GUI::GraphicManager> &res = _canvas.addButton<GUI::GraphicManager>(
+	_userAcPointsButton = &_canvas.addButton<GUI::GraphicManager>(
 		&GUI::GraphicManager::doNothing,this,casted
 		);
-	res.setBackgroundColor(LIGHT_BUTTON_BACKGROUND_COLOR);
-	res.setTextColor(LIGHT_BUTTON_TEXT_COLOR);
-	res.setPosition(window().getSize().x-res.getWidth()*1.8-1.2*MARGIN,MARGIN);
-	return res;
+	_userAcPointsButton->setBackgroundColor(LIGHT_BUTTON_BACKGROUND_COLOR);
+	_userAcPointsButton->setTextColor(LIGHT_BUTTON_TEXT_COLOR);
+	_userAcPointsButton->setPosition(window().getSize().x-_userAcPointsButton->getWidth()*1.8-1.2*MARGIN,MARGIN);
+	return *_userAcPointsButton;
 }
 
-GUI::Button<GUI::GraphicManager> & GUI::GraphicManager::userFameButton(const int fame)
+GUI::Button<GUI::GraphicManager> & GUI::GraphicManager::addUserFameButton(const int fame)
 {
 	char casted[512];
 	sprintf(casted,"Fame: %d",fame);
-	GUI::Button<GUI::GraphicManager> &res = _canvas.addButton<GUI::GraphicManager>(
+	_userFameButton = &_canvas.addButton<GUI::GraphicManager>(
 		&GUI::GraphicManager::doNothing,this,casted
 		);
-	res.setBackgroundColor(LIGHT_BUTTON_BACKGROUND_COLOR);
-	res.setTextColor(LIGHT_BUTTON_TEXT_COLOR);
-	res.setPosition(window().getSize().x-res.getWidth()*2.8-3.5*MARGIN,MARGIN);
-	return res;
+	_userFameButton->setBackgroundColor(LIGHT_BUTTON_BACKGROUND_COLOR);
+	_userFameButton->setTextColor(LIGHT_BUTTON_TEXT_COLOR);
+	_userFameButton->setPosition(window().getSize().x-_userFameButton->getWidth()*2.8-3.5*MARGIN,MARGIN);
+	return *_userFameButton;
 }

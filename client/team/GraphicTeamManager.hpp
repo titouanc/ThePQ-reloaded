@@ -11,7 +11,19 @@ public:
 	~GraphicTeamManager();
 private:
 	void displayPlayers();
+	void displaySquadLabels();
+	void displayChangeButtons();
+
+	void changePlayerAt(int position);
+	void displaySwapWith(int position);
+	void displayAvailablePlayers();
+
+	void selectPlayer(int id);
+	void doSwap(int id);
+	void cancelChange();
+
 	void onPlayersLoad();
+	void onTeamInfoChange();
 	bool _wait;
 
 	NOTIFIABLE

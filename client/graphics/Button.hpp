@@ -15,7 +15,8 @@ namespace GUI {
 		Button(
 			const typename Clickable<T>::Callback& callback, 
 			T* target, 
-			std::string text="Button"
+			std::string text="Button",
+			sf::Color color=BUTTON_BACKGROUND_COLOR
 		):
 			Clickable<T>(callback, target)
 		{
@@ -33,14 +34,15 @@ namespace GUI {
 			_text.setColor(BUTTON_TEXT_COLOR);
 			this->_w = (int)_text.getLocalBounds().width + 2*BUTTON_SIDE_PADDING;
 			_backgroundRect = sf::RectangleShape(sf::Vector2f(this->_w, this->_h));
-			_backgroundRect.setFillColor(BUTTON_BACKGROUND_COLOR);
+			_backgroundRect.setFillColor(color);
 		}
 
 		Button(
 			const typename Clickable<T, P>::CallbackWithParam& callback, 
 			P param,
 			T* target, 
-			std::string text="Button"
+			std::string text="Button",
+			sf::Color color=BUTTON_BACKGROUND_COLOR
 		):
 			Clickable<T, P>(callback, target, param)
 		{
@@ -58,7 +60,7 @@ namespace GUI {
 			_text.setColor(BUTTON_TEXT_COLOR);
 			this->_w = (int)_text.getLocalBounds().width + 2*BUTTON_SIDE_PADDING;
 			_backgroundRect = sf::RectangleShape(sf::Vector2f(this->_w, this->_h));
-			_backgroundRect.setFillColor(BUTTON_BACKGROUND_COLOR);
+			_backgroundRect.setFillColor(color);
 		}
 
 		bool isInBounds (int x, int y) const {

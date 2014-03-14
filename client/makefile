@@ -18,9 +18,12 @@ else
         CPPFLAGS += $(shell ${PKGCONFIG} --cflags sfml-all)
 endif
 
-.PHONY: graphics/libgraphics.a admin
+.PHONY: graphics/libgraphics.a admin/adminClient.app
  
-all: client.app graphicClient.app admin
+all: client.app graphicClient.app admin/adminClient.app
+
+admin/adminClient.app:
+	+make -C admin/
 
 client.app: main.o Client.o ${OBJS_CONTROLLER} ${OBJS_CLI} ${LIBS}
 	${CXX} ${LDFLAGS} -o $@ $^

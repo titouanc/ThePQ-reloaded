@@ -37,7 +37,8 @@ namespace GUI {
 		GUI::Button<T> & addButton(
 			const typename GUI::Clickable<T>::Callback& callback, 
 			T* target, 
-			std::string text="Button"
+			std::string text="Button", 
+			sf::Color backgroundColor = BUTTON_BACKGROUND_COLOR
 		);
 		
 		template <typename T, typename P>
@@ -45,7 +46,8 @@ namespace GUI {
 			const typename GUI::Clickable<T, P>::CallbackWithParam& callback, 
 			P param, 
 			T* target, 
-			std::string text="Button"
+			std::string text="Button", 
+			sf::Color backgroundColor = BUTTON_BACKGROUND_COLOR
 		);
 
 		void setBackgroundImage(std::string path);
@@ -89,9 +91,10 @@ template <typename T>
 GUI::Button<T> & GUI::Layer::addButton(
 	const typename GUI::Clickable<T>::Callback& callback, 
 	T* target, 
-	std::string text
+	std::string text, 
+	sf::Color backgroundColor
 ){
-	GUI::Button<T> * toAdd = new GUI::Button<T>(callback, target, text);
+	GUI::Button<T> * toAdd = new GUI::Button<T>(callback, target, text, backgroundColor);
 	_clickables.push_back((GUI::ClickableInterface*)toAdd);
 	return *toAdd;
 }
@@ -101,9 +104,10 @@ GUI::Button<T, P> & GUI::Layer::addButton(
 	const typename GUI::Clickable<T, P>::CallbackWithParam& callback, 
 	P param, 
 	T* target, 
-	std::string text
+	std::string text, 
+	sf::Color backgroundColor
 ){
-	GUI::Button<T, P> * toAdd = new GUI::Button<T, P>(callback, param, target, text);
+	GUI::Button<T, P> * toAdd = new GUI::Button<T, P>(callback, param, target, text, backgroundColor);
 	_clickables.push_back((GUI::ClickableInterface*)toAdd);
 	return *toAdd;
 }

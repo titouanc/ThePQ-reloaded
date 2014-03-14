@@ -26,8 +26,6 @@ private:
 
 	void startManager();
 	void startGenerator();
-	void lockMarket(){pthread_mutex_lock(&_locker);}
-	void unlockMarket(){pthread_mutex_unlock(&_locker);}
 	void transfert(std::string,std::string,int,int,Sale* =NULL);
 	void createSale(int, int, Player&, std::string);
 	void resolveEndOfSale(Sale * sale);

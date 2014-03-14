@@ -73,6 +73,8 @@ public:
     void sendPlayersList(int peer_id);
     void sendMarketMessage(const std::string&, const JSON::Dict&);
     void sendNotification(std::string, const JSON::Dict&);
+    void putPlayerOnSquadPosition(const JSON::Dict &response, int peer_id);
+    void swapPlayersOfSquad(const JSON::Dict &response, int peer_id);
     int getPeerID(const std::string&);
     void timeLoop();
     void timeUpdateStadium();

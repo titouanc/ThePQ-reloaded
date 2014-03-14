@@ -4,6 +4,7 @@
 #include <json/json.hpp>
 #include <model/Player.hpp>
 #include <model/Installation.hpp>
+#include <model/Squad.hpp>
 #include <string>
 #include <vector>
 #include <model/MemoryAccess.hpp>
@@ -15,6 +16,7 @@ class Team{
 private:
     std::string _name;
     std::string _owner;
+    Squad _squad;
     int _funds;
     int _fame;
     int _acpoints;//<-activity points
@@ -43,6 +45,7 @@ public:
 	void setOwner(std::string owner){_owner=owner;}
 	std::string getName() const {return _name;}
 	void setName(std::string name){_name=name;}
+	Squad & getSquad() {return _squad; }
 	int getFunds(){return _funds;}
 	int getFame(){return _fame;}
 	int getAcPoints(){return _acpoints;}
