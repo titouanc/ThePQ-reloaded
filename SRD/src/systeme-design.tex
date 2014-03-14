@@ -62,12 +62,24 @@ alors la connexion.
   \caption{\label{fig:Class:Network} Classes: Le gestionnaire de connexion}
 \end{figure}
 
-Les connexions sont ici gérées dans le \emph{BaseConnectionManager}, qui instancie deux threads : un s'occupant des messages entrant, l'autre des sortant. Ces messages arrivent en JSON via un file descriptor, via une file (suivant leur entrée ou sortie) afin d'arriver dans le bon ordre.
+Le gestionnaire de connexion présente une queue d'entrée et une queue de sortie permettant d'envoyer ou 
+recevoir des messages via des threads séparés. Chaque message contient un objet JSON et l'identifiant du 
+pair qui l'a envoyé. Chaque pair a un ID unique.
 
-Le \emph{ConnectionManager} ajoute à la précédente classe la possibilité d'accepter de nouveaux file descriptors.
+Le BaseConnectionManager est la classe de base des gestionnaire de connexion. Sa responsabilité est de 
+maintenir un ensemble de descripteurs de fichiers, d'y lire un message dès qu'il en arrive, et d'y écrire 
+les messages sortants. Si le pair associé à un des FD ferme la connexion, le BaseConnectionManager le 
+retire de la liste des FD gérés (il n'est donc plus disponible pour lecture) et émet un message  dans la queue de sortie. 
 
-Le \emph{SubConnectionManager} peut voler un des file descriptors le temps d'un match, fonctionnalité utilisée par le serveur lors des matches.
+Le ConnectionManager est comme BaseConnectionManager, mais accepte les connexion entrantes (appels système 
+\emph{bind} et \emph{connect}). Un objet de cette classe est initialisé avec les queues d'entrée/sortie, 
+ainsi qu'avec une adresse IP, un port et le nombre maximum de clients à accepter. Lors de la contruction de 
+l'objet, une socket en listen est créée. Lors de chaque nouvelle connection, un message est émis dans la queue d'entrée.
 
+Un SubConnectionManager est un BaseConnectionManager qui emprunte des clients à un autre 
+BaseConnectionManager (le parent). Lorsqu'il est détruit, il rend automatiquement les clients à son parent. 
+Cette classe permet de créer des sous-connexions (par exemple lors d'un match) avec des queues d'entrée/
+sortie séparées.
 
 \subsubsection{Les gestionnaires de jeu}
 \begin{figure}[h!]
