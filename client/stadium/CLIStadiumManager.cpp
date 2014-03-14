@@ -6,6 +6,7 @@ StadiumManager(parent)
 
 void CLIStadiumManager::run()
 {
+	clScreen();
 	Menu _menu;
 	_menu.addToDisplay("    - upgrade an installation\n");
 	_menu.addToDisplay("    - downgrade an installation\n");
@@ -105,7 +106,3 @@ void CLIStadiumManager::onMatchStart(){
 	match.run();
 }
 
-void CLIStadiumManager::clScreen(){
-	/*Method*/
-	cout << "\033[2J\033[1;1H";
-}

@@ -13,6 +13,7 @@ public:
 	bool askForNotificationHandling() const;
 	void splashScreen() const;
 	void goodBye() const;
+	void clScreen() const;
 	std::ostream & errorMsg(std::string const & message="") const;
 	std::ostream & okMsg(std::string const & message="") const;
 };

@@ -7,10 +7,13 @@ void CLI::prompt() const
 	cout << " > ";
 }
 
-
+void CLI::clScreen() const {
+	cout << "\033[2J\033[1;1H";
+}
 
 void CLI::splashScreen() const
 {
+	clScreen();
 	cout << "	             _____ _            ____            " << endl;
 	cout << "	            |_   _| |__   ___  |  _ \\ _ __ ___ " << endl;
 	cout << "		      | | | '_ \\ / _ \\ | |_) | '__/ _ \\\n ";
@@ -36,6 +39,7 @@ void CLI::splashScreen() const
 
 void CLI::goodBye() const 
 {
+	cout << "\033[2J\033[1;1H";
 	cout <<  "                 =========================            " << endl;
 	cout <<  "   Thank you for playing the Pro Quidditch Manager 2014!" << endl;
 	cout <<  "                   See you next time! :)" << endl;
