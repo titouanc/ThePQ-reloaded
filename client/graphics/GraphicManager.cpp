@@ -1,5 +1,6 @@
 #include "GraphicManager.hpp"
 #include "MessageBox.hpp"
+#include <sstream>
 
 void GUI::GraphicManager::run()
 {
@@ -87,6 +88,27 @@ void GUI::GraphicManager::displayMessage(std::string message){
 int GUI::GraphicManager::confirm(std::string message){
 	MessageBox m(_controller, message, {"No", "Yes"});
 	return m.showBox();
+}
+
+void GUI::GraphicManager::updateBudget(int newBudget){
+	std::stringstream s;
+	s << newBudget << " $";
+	if (_userBudgetButton)
+		_userBudgetButton->setText(s.str());
+}
+
+void GUI::GraphicManager::updateAcPoints(int newAcPoints){
+	std::stringstream s;
+	s << newAcPoints << " points";
+	if (_userAcPointsButton)
+		_userAcPointsButton->setText(s.str());
+}
+
+void GUI::GraphicManager::updateFame(int newFame){
+	std::stringstream s;
+	s << "Fame : " << newFame;
+	if (_userFameButton)
+		_userFameButton->setText(s.str());
 }
 
 

@@ -31,6 +31,11 @@ namespace GUI {
 		void displayOk(std::string okMessage);
 		void displayMessage(std::string message);
 		int confirm(std::string message);
+
+		void updateBudget(int newBudget);
+		void updateAcPoints(int newAcPoints);
+		void updateFame(int newFame);
+
 		void doNothing(){}
 	protected:
 		/* Standard event processing; always return true */
