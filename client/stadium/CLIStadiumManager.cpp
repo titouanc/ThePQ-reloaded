@@ -46,12 +46,12 @@ void CLIStadiumManager::printInstallationsList()
 	cout << "Your fame is " << user().fame << endl;
 	cout << "Here are all the installations you own :" << endl;
 	for (size_t i = 0; i < user().installations.size(); ++i){
-		cout << i << " - " << user().installations[i]->getName() << endl;
-		cout << "      Level : 			" << user().installations[i]->getLevel() << endl;
-		cout << "      Current Value : 		" << user().installations[i]->getCurrentValue() << endl;
-		cout << "      Upgrade Cost : 		" << user().installations[i]->getUpgradeCost() << endl;
-		cout << "      Refund Ratio :       	" << user().installations[i]->getRefundRatio() << endl;
-		cout << "      Downgrade Refunds : 	" << user().installations[i]->getDowngradeRefunds() << endl;
+		cout << i << " - \033[32m" << user().installations[i]->getName() << "\033[0m"
+			 << " - Level : " << user().installations[i]->getLevel()
+			 << " - Current Value : " << user().installations[i]->getCurrentValue()
+			 << " - Upgrade Cost : " << user().installations[i]->getUpgradeCost()
+			 << " - Refund Ratio : " << user().installations[i]->getRefundRatio()
+			 << " - Downgrade Refunds : " << user().installations[i]->getDowngradeRefunds() << endl;
 	}
 	cout << endl << endl <<endl;
 }
