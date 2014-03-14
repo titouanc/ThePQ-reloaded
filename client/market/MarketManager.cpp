@@ -80,7 +80,7 @@ void MarketManager::treatMessage(std::string const & type, JSON::Value const * d
 		else if (response == net::MSG::TOO_MANY_PLAYERS)
 			onBidError("you have too many players to be able to place a bid.");
 		else if (response == net::MSG::INSUFFICIENT_FUNDS)
-			onBidError("not enough money (GET MORE $$$$$).");
+			onBidError("not enough money.");
 		else
 			onBidOK();
 	}
