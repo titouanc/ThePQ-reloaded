@@ -108,14 +108,14 @@ std::pair<std::string, unsigned int> Match::getWinner() const
 {
 	if (_points[0] > _points[1])
 		return pair<string, unsigned int>(_squads[0].squad_owner, _points[0]);
-	return std::pair<string, unsigned int>(_squads[0].squad_owner, _points[1]);
+	return std::pair<string, unsigned int>(_squads[1].squad_owner, _points[1]);
 }
 
 std::pair<std::string, unsigned int> Match::getLoser() const
 {
 	if (_points[0] <= _points[1])
 		return pair<string, unsigned int>(_squads[0].squad_owner, _points[0]);
-	return std::pair<string, unsigned int>(_squads[0].squad_owner, _points[1]);
+	return std::pair<string, unsigned int>(_squads[1].squad_owner, _points[1]);
 }
 
 std::list<Stroke>::iterator Match::getStrokeFor(Moveable const & moveable)
