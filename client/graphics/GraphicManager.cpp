@@ -53,6 +53,16 @@ void GUI::GraphicManager::displayCanvas()
 	_controller.addLayer(_canvas);
 }
 
+void GUI::GraphicManager::clear()
+{
+	_canvas.clear();
+	_backButton = NULL;
+	_usernameButton = NULL;
+	_userBudgetButton = NULL;
+	_userAcPointsButton = NULL;
+	_userFameButton = NULL;
+}
+
 void GUI::GraphicManager::redrawCanvas()
 {
 	_canvas.renderTo(_controller.window);

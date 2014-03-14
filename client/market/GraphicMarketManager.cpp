@@ -37,7 +37,7 @@ void GraphicMarketManager::placeBid(int playerID)
 
 void GraphicMarketManager::displaySellablePlayers()
 {
-	_canvas.clear();
+	clear();
 
 	addUsernameButton(user().username);
 	addUserBudgetButton(user().funds);
@@ -120,7 +120,7 @@ void GraphicMarketManager::sellPlayer(Player *player){
 void GraphicMarketManager::onSalesUpdate()
 {
 	_wait = false;
-	_canvas.clear();
+	clear();
 
 	addUsernameButton(user().username);
 	addUserBudgetButton(user().funds);

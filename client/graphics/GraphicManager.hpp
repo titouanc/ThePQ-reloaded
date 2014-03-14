@@ -24,6 +24,7 @@ namespace GUI {
 		void deleteCanvas();
 		void displayCanvas();
 		void redrawCanvas();
+		void clear();
 		void stop(){_isRunning = false;}
 
 		void displayError(std::string errorMessage);
