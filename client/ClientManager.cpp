@@ -231,8 +231,8 @@ void ClientManager::onTeamInfo(JSON::Dict const & json)
 	if (ISINT(json.get("funds")))
 		_user.funds = INT(json.get("funds"));
 
-	if (ISINT(json.get("acPoints")))
-		_user.acPoints = INT(json.get("acPoints"));
+	if (ISINT(json.get("activity_points")))
+		_user.acPoints = INT(json.get("activity_points"));
 
 	if(ISINT(json.get("fame")))
 		_user.fame = INT(json.get("fame"));
