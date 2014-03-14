@@ -106,6 +106,17 @@ TEST(displacement_from_json)
     ASSERT(d.count() == initial.count());
 ENDTEST()
 
+TEST(displacement_with_tbeg)
+    Displacement d(0.25);
+    d.addMove(Position(6, 0));
+
+    ASSERT(d.position(0) == Position(0, 0));
+    ASSERT(d.position(0.25) == Position(0, 0));
+    ASSERT(d.position(0.5) == Position(2, 0));
+    ASSERT(d.position(0.75) == Position(4, 0));
+    ASSERT(d.position(1) == Position(6, 0));
+ENDTEST()
+
 TEST(displacement_with_higher_speed)
     Displacement d;
     d.addMove(3*Pitch::West);
@@ -233,6 +244,7 @@ int main()
         ADDTEST(displacement_not_a_direction),
         ADDTEST(displacement_to_json),
         ADDTEST(displacement_from_json),
+        ADDTEST(displacement_with_tbeg),
         ADDTEST(displacement_with_higher_speed),
         ADDTEST(composite_displacement_with_higher_speed),
         ADDTEST(composite_displacement),

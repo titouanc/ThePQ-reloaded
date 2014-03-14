@@ -29,7 +29,7 @@ Position Displacement::position(double t, size_t speed) const
         speed = length(); /* If no speed given, take start->t=0; end->t=1*/
     assert(speed >= length());
 
-    t *= speed;
+    t *= speed/(1-_tbeg);
 
     for (size_t i=0; i<count(); i++){
         /* Time interval for this direction */
