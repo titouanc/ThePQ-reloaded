@@ -140,12 +140,6 @@ void Team::generateBaseSquad(){
 		p.setName(gen.getRandomName());
 		p.setMemberID();
 		p.setOwner(getOwner());
-		Broomstick broom;
-		MemoryAccess::loadSkel(broom);
-		p.equipBroomstick(broom);
-		Jersey jers;
-		MemoryAccess::loadSkel(jers);
-		p.equipJersey(jers);
 		_players.push_back(p);
 		*(_squad.players[i]) = p;
 		_squad.squad_owner = _owner;

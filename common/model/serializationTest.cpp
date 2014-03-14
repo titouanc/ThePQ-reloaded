@@ -29,14 +29,12 @@ ENDTEST()
 TEST(broomstick_serialization)
 	Broomstick b;
 	b.setName("SuperBroomstick");
-	b.setCases(123);
 	b.setVelocityBonus(456);
 	JSON::Dict d = JSON::Dict(b);
 	Broomstick c(d);
 	cout << "Bat serialized : " << d << endl;
 	ASSERT(c.getName() == "SuperBroomstick");
 	ASSERT(c.getDescription() == "NoDescription");
-	ASSERT(c.getCases() == 123);
 	ASSERT(c.getVelocityBonus() == 456);
 ENDTEST()
 

@@ -55,12 +55,6 @@ void * saleGenerator(void * p){
 		sleep(20);	//TODO : log, nbrUsersConnected(), etc.
 		Player generated;
 		generated.setName(gen.getRandomName());
-		Broomstick broom;
-		MemoryAccess::loadSkel(broom);
-		generated.equipBroomstick(broom);
-		Jersey jers;
-		MemoryAccess::loadSkel(jers);
-		generated.equipJersey(jers);
 		generated.setMemberID();
 		market->createSale(generated.getMemberID(), generated.estimatedValue(), generated, net::MSG::GENERATED_BY_MARKET);
 	}
