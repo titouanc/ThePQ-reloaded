@@ -73,7 +73,8 @@ void ClientManager::treatMessage(std::string const & type, JSON::Value const * d
 				type == net::MSG::FRIENDLY_GAME_INVITATION ||
 			 	type == net::MSG::CHAMPIONSHIP_MATCH_PENDING ||
 			 	type == net::MSG::CHAMPIONSHIP_MATCH_STATUS_CHANGE ||
-				type == net::MSG::CHAMPIONSHIP_STATUS_CHANGE)
+				type == net::MSG::CHAMPIONSHIP_STATUS_CHANGE ||
+				type == net::MSG::END_OF_MATCH_RAPPORT)
 	{
 		if (type == net::MSG::MARKET_MESSAGE){
 			JSON::Dict const & msg = DICT(data);
@@ -135,6 +136,9 @@ void ClientManager::handleNotification(){
 		else if(type == net::MSG::CHAMPIONSHIP_STATUS_CHANGE){
 			onMessage(onChampionshipStatusChange(STR(popped.get("data")).value()));
 		}
+		else if(type == net::MSG::END_OF_MATCH_RAPPORT){
+			onMessage(onMatchRapport(DICT(popped.get("data"))));
+		}
 	}
 }
 
@@ -160,6 +164,40 @@ std::string ClientManager::onEndOfSale(JSON::Dict const & json)
 			res << "This player comes from " << owner << "'s team." << endl;
 	}
 	res<<endl;
+	return res.str();
+}
+
+std::string ClientManager::onMatchRapport(JSON::Dict const & json){
+	std::stringstream res;
+	std::string matchType;
+	res << "Match rapport" << endl << endl;
+	if(ISBOOL(json.get(net::MSG::CHAMPIONSHIP_MATCH))){
+		if(BOOL(json.get(net::MSG::CHAMPIONSHIP_MATCH)) == true)
+			matchType = "championship match";
+		else
+			matchType = "friendly game";
+	}
+	if(ISBOOL(json.get(net::MSG::WON_MATCH))){
+		if(BOOL(json.get(net::MSG::WON_MATCH)) == true)
+			res << "Congratulations, you have won the " << matchType << " against ";
+		else
+			res << "Noob, you have lost the " << matchType << " against ";
+	}
+	if(ISSTR(json.get(net::MSG::USERNAME))){
+		res << STR(json.get(net::MSG::USERNAME)).value();
+	}
+	res << endl << endl;;
+	if(ISINT(json.get(net::MSG::MONEY_GAIN))){
+		res << "Money : +" << INT(json.get(net::MSG::MONEY_GAIN)) << " $" << endl;
+	}
+	if(ISINT(json.get(net::MSG::FAME_WON))){
+		std::string delta = "";
+		if(INT(json.get(net::MSG::FAME_WON)) > 0) { delta = "+"; }
+		res << "Fame  : " << delta << INT(json.get(net::MSG::FAME_WON)) << endl;
+	}
+	if(ISINT(json.get(net::MSG::AP_WON))){
+		res << "AP    : +" << INT(json.get(net::MSG::AP_WON)) << endl;
+	}
 	return res.str();
 }
 

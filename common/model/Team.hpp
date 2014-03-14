@@ -11,21 +11,21 @@
 #include <Constants.hpp>
 #include <Exception.hpp>
 #include "RandomNameGenerator.hpp"
+#include <pthread.h>
 
 class Team{
 private:
-    std::string _name;
     std::string _owner;
+    std::string _name;
     Squad _squad;
     int _funds;
     int _fame;
     int _acpoints;//<-activity points
 	std::vector<Player> _players;
 	std::vector<Installation*> _installations;
+	pthread_mutex_t _changes;
 public:
 	//Team();
-	Team(std::string owner,std::string teamname);
-	Team(std::string owner, std::string teamname, int funds);
 	Team(std::string owner = "", std::string teamname=gameconfig::UNNAMED_TEAM, int funds = gameconfig::STARTING_FUNDS, int fame = gameconfig::STARTING_FAME, 
 		int acPoints=gameconfig::STARTING_AC_POINTS);
 	Team(const Team& other);
@@ -41,28 +41,106 @@ public:
 	void load();
 	void save();
 
-	std::string getOwner(){return _owner;}
+	std::string getOwner() const {return _owner;}
 	void setOwner(std::string owner){_owner=owner;}
 	std::string getName() const {return _name;}
 	void setName(std::string name){_name=name;}
-	Squad & getSquad() {return _squad; }
-	int getFunds(){return _funds;}
-	int getFame(){return _fame;}
-	int getAcPoints(){return _acpoints;}
-	void getPayed(int amount){_funds+=amount;}
-	void loseFame(int amount);
-	int loseFunds(int amount);
-	void earnFame(int amount){ _fame+=amount;}
-	void buy(int amount){_funds-=amount;}
-	bool fundsAvailble(int amount);
-	int getACPoints() { return _acpoints; }
-	void earnAcPoints(int ap) { _acpoints += ap; }
+
+	int getFunds() const {return _funds;}
+	int getFame() const {return _fame;}
+	int getAcPoints() const {return _acpoints;}
+	bool fundsAvailble(int amount) { return amount <= _funds;}
+
+	void loseFame(int amount){
+		if (pthread_mutex_lock(&_changes) != 0)
+		{
+			return;
+		}
+		if (amount>_fame)
+			_fame=0;
+		else
+			_fame-=amount;
+		pthread_mutex_unlock(&_changes);
+	}
+
+	int loseFunds(int amount){
+		if (pthread_mutex_lock(&_changes) != 0)
+		{
+			return 0;
+		}
+		if(amount>_funds){
+			amount=_funds;
+			_funds=0;
+		}else{
+			_funds-=amount;
+		}
+		pthread_mutex_unlock(&_changes);
+		return amount;
+	}
+	
+	void earnFame(int amount){ 
+		if (pthread_mutex_lock(&_changes) != 0)
+		{
+			return;
+		}
+		_fame+=amount;
+		pthread_mutex_unlock(&_changes);
+	}
+
+	void buy(int amount){
+		if (pthread_mutex_lock(&_changes) != 0)
+		{
+			return;
+		}
+		_funds-=amount;
+		pthread_mutex_unlock(&_changes);
+	}
+	
+	void getPayed(int amount){
+		if (pthread_mutex_lock(&_changes) != 0)
+		{
+			return;
+		}
+		_funds+=amount;
+		pthread_mutex_unlock(&_changes);
+	}
+
+	void earnAcPoints(int ap) {
+		if (pthread_mutex_lock(&_changes) != 0)
+		{
+			return;
+		}
+		_acpoints += ap;
+		pthread_mutex_unlock(&_changes);
+	}
+
+	void loseAcPoints(int ap) {
+		if (pthread_mutex_lock(&_changes) != 0)
+		{
+			return;
+		}
+		if(ap > _acpoints)
+			_acpoints = 0;
+		else
+			_acpoints -= ap;
+		pthread_mutex_unlock(&_changes);
+	}
 
 	std::vector<Player>& getPlayers(){return _players;}
 	std::vector<Installation*>& getInstallations(){return _installations;}
+	Squad& getSquad() { return _squad; }
 	
 	bool upgradeInstallation(size_t i);
 	bool downgradeInstallation(size_t i);
+	Tribune* getTribune()
+	{
+		for (size_t i = 0; i < _installations.size(); ++i)
+		{
+			if (_installations[i]->getName() == memory::TRIBUNE)
+				return dynamic_cast<Tribune*>(_installations[i]);
+		}
+		return NULL;
+	}
 
 	bool removePlayer(int id);
 	void addPlayer(Player &player);

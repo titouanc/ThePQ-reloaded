@@ -1,5 +1,7 @@
 #include "MatchManager.hpp"
 #include <toolbox.hpp>
+#include <ctime>
+#include <cstdlib>
 
 /* TODO: read from config file */
 #define STROKES_TIMEOUT_SECONDS 60
@@ -22,6 +24,9 @@ MatchManager::MatchManager(
 
 	_squads[0] = squadA;
 	_squads[1] = squadB;
+	srand(time(NULL));
+	int randNb = rand() % 2;
+	_matchRes.setHost(_squads[randNb].squad_owner);
 
 	for (int i=0; i<2; i++){
 		for (int j=0; j<7; j++){
@@ -165,7 +170,7 @@ bool MatchManager::isChampMatch(){
 	return _champMatch;
 }
 
-MatchResult& MatchManager::getResult(){
+MatchResult MatchManager::getResult(){
 	return _matchRes;
 }
 
@@ -429,7 +434,7 @@ void MatchManager::endMatch(void)
 	releaseClient(_squads[1].client_id);
 
 	_matchRes.setTeams(_squads[winner].squad_owner,_squads[looser].squad_owner);
-	_matchRes.compute(isChampMatch());
+	_matchRes.setScore(_score[winner], _score[looser]);
 }
 
 void MatchManager::onCollision(	Stroke & stroke,     /* Stroke that leads to conflict */

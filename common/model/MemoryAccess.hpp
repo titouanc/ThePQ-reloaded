@@ -64,5 +64,6 @@ namespace MemoryAccess
 	void removeObject(Sale&);
 	void removeObject(User&);
 	void removeObject(Installation*);
+	void removeObject(Championship&);
 }
 #endif

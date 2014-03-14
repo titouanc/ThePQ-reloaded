@@ -48,8 +48,8 @@ std::ostream& operator<< (std::ostream& out, const Championship& champ){
 }
 
 Championship::Championship(size_t nbOfTurns,std::string name,int cashprize, int fame) : 
-_isStarted(false), _isEnded(false), _usersNotified(false), _name(name), _cashPrize(cashprize), 
-_fame(fame), _turn(1), _nbOfUsers(2<<(nbOfTurns-1))
+_isStarted(false), _isEnded(false), _usersNotified(false), _name(name), _turn(1), _totalTurns(nbOfTurns), _nbOfUsers(2<<(nbOfTurns-1)),
+_cashPrize(cashprize), _fame(fame)
 {
 	if (_nbOfUsers < 2 || _nbOfUsers > 32) //Should never happen (AdminClient verifying it)
 	{
@@ -68,6 +68,7 @@ Championship::Championship(JSON::Dict const & json) : Championship()
 	if (ISBOOL(json.get("notified")))	{ _usersNotified = BOOL(json.get("notified"));}
 	if (ISINT(json.get("cashprize")))	{ _cashPrize = INT(json.get("cashprize"));}
 	if (ISINT(json.get("fame")))		{ _fame = INT(json.get("fame"));}
+	if (ISINT(json.get("totalTurns")))	{ _totalTurns = INT(json.get("totalTurns")); }
 	if (ISSTR(json.get("name")))		{ _name = STR(json.get("name")).value(); }
 	if (ISINT(json.get("turn")))		{ _turn = INT(json.get("turn")); }
 	if (ISLIST(json.get("users")))
@@ -119,6 +120,7 @@ Championship::operator JSON::Dict()
 	res.set("turn", _turn);
 	res.set("fame",_fame);
 	res.set("cashprize",_cashPrize);
+	res.set("totalTurns",_totalTurns);
 	JSON::List users;
 	for (size_t i = 0; i < _users.size(); ++i)
 	{

@@ -274,6 +274,10 @@ void MemoryAccess::removeObject(User &user){
 	remove(getUserPath(user.getUsername()).c_str());
 }
 
+void MemoryAccess::removeObject(Championship &champ){
+	remove(getChampionshipPath(champ.getName()).c_str());
+}
+
 void MemoryAccess::removeObject(Installation* install){
 	remove(getInstallationPath(install->getOwner(),install->getName()).c_str());
 }

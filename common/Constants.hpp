@@ -142,6 +142,15 @@ namespace net
 
 		static const std::string CHAMPIONSHIP_UNPLAYED_MATCH_WON = "CMATCH_UPLAYED_W";
 		static const std::string CHAMPIONSHIP_UNPLAYED_MATCH_LOST = "CMATCH_UPLAYED_L";
+
+		//End of match rapport------------
+		static const std::string END_OF_MATCH_RAPPORT = "MR";
+		static const std::string WON_MATCH = "MR_WON";
+		static const std::string CHAMPIONSHIP_MATCH = "MR_CMATCH";
+		static const std::string FAME_WON = "MR_FW";
+		static const std::string FAME_LOST = "MR_FL";
+		static const std::string MONEY_GAIN = "MR_$";
+		static const std::string AP_WON = "MR_APWW";
 		
 		// SQUAD ------------------------
 		static const std::string PUT_PLAYER_ON_SQUAD_POSITION = "P_P_S_P";
@@ -175,8 +184,10 @@ namespace gameconfig
 	static const float FAME_MULTIPLIER_B_GAME=0.23;//will determine the fame gained after a victory based on the other teams
 	static const float FAME_MULTIPLIER_S_GAME=0.23;
 	static const int FAME_EARN_DISCONNECT=30;
+	static const int FAME_LOSE_DISCONNECT=30;
 	static const int FUNDS_EARN_DISCONNECT=600;
 	static const int FUNDS_EARN_GAME=900;
+	static const int BIG_GOAL_DIFFERENCE = 100;
 	static const float FUNDS_GAME_RATIO=0.05;
 	static const float FUNDS_CHAMP_RATIO=0.12;
 //	static const int MAX_CHAMP_MATCH_OFFSET = 61;
@@ -185,6 +196,13 @@ namespace gameconfig
 	static const int AP_GAIN_RATIO = 1;
 	static const int FAME_GAIN_RATIO = 10;
     static const int MAXAPTVAL = 100;
+    static const int FAME_WIN = 100;
+    static const int MATCH_WON_AP_GAIN = 10;
+    static const int MATCH_LOST_AP_GAIN = 5;
+    static const int TRIBUNE_SPECTATORS = 100;
+    static const int FOOD_PRICE = 5;
+    static const int TICKET_PRICE = 5;
+    static const int GOODIES_PRICE = 5;
 
 }
 

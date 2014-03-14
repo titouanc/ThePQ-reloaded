@@ -81,8 +81,14 @@ int Player::level () const{
     return static_cast<int>(pow(_strength * _velocity * _precision * _chance, 0.25));
 }
 
-/*================================BEATER==============================*/
+// =============================PLAYERQUAFFLE=========================
+PlayerQuaffle & PlayerQuaffle::operator= (Player const & other) {
+    Player::operator=(other);
+    _hasQuaffle = false;
+    return *this;
+}
 
+// =================================BEATER============================
 float Beater::shootBludger () const{ 
     float res = (2*getStrength()+getPrecision()+getChance());
     res = res * (100000000 +(rand()%10000000))/100000000;

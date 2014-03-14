@@ -77,6 +77,8 @@ public:
 	bool areUsersNotified() const { return _usersNotified; }
 	int getFame() const { return _fame; }
 	int getCashPrize() const { return _cashPrize; }
+	int getTurn() const { return _turn; }
+	int getTotalTurns() const { return _totalTurns; }
 	void usersNotified() { _usersNotified = true; }
 	std::string getName() const { return _name; }
 	std::string getWinner() const { return (_isEnded) ? _users[0] : ""; }
@@ -92,10 +94,11 @@ private:
 	bool _isEnded;
 	bool _usersNotified;
 	std::string _name;
+	int _turn;
+	int _totalTurns;
+	size_t _nbOfUsers;
 	int _cashPrize;
 	int _fame;
-	int _turn;
-	size_t _nbOfUsers;
 
 	std::vector<std::string> _users;
 	std::vector<Schedule> _schedules;

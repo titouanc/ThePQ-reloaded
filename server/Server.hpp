@@ -13,6 +13,7 @@
 #include "AdminManager.hpp"
 #include <model/Championship.hpp>
 
+
 using namespace std;
 struct NetConfig : public Config {
     std::string ip;
@@ -67,6 +68,8 @@ public:
     void sendPlayersOnMarketList(int peer_id);
     void addPlayerOnMarket(const JSON::Dict &bid, int peer_id);
     void placeBidOnPlayer(const JSON::Dict &bid, int peer_id);
+    /* Add/substract team infos based on int sign (if - : substract, if +, add) */
+    void endOfMatchTeamInfosUpdate(std::string username, int money, int fame, int ap);
     string getRandomName();
     void collectFinishedMatches(void);
     void startMatch(int client_idA, int client_idB, bool champMatch);

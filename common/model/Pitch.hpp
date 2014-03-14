@@ -34,9 +34,7 @@ class Pitch : public PosMatrix<Moveable> {
 
 		Position center(void) const;
 
-		/*!
-		 * @meth Moveable * Pitch::getAt(int x, int y) const
-		 * @brief Get Moveable at position x,y
+		/*! Get Moveable at position x,y
 		 * @return The moveable at the xth column and yth row (NULL if nobody there)
 		 * @param x The column (the middle column is 0)
 		 * @param y The row (the middle row is 0)
@@ -44,9 +42,7 @@ class Pitch : public PosMatrix<Moveable> {
 		using PosMatrix<Moveable>::getAt;
 		Moveable * getAt(int x, int y) const;
 
-		/*!
-		 * @meth void Pitch::setAt(int x, int y, Moveable *moveable)
-		 * @brief Set Moveable at position x,y
+		/*! Set Moveable at position x,y
 		 * @param x The column (the middle column is 0)
 		 * @param y The row (the middle row is 0)
 		 * @param moveable The moveable to place on the pitch
@@ -54,9 +50,7 @@ class Pitch : public PosMatrix<Moveable> {
 		using PosMatrix<Moveable>::setAt;
 		void setAt(int x, int y, Moveable *moveable);
 
-		/*!
-		 * @meth bool Pitch::inEllipsis(int x, int y) const
-		 * @brief Return true if pos x,y is in the ellipsoidal pitch
+		/*! Return true if pos x,y is in the ellipsoidal pitch
 		 * @param x The column (the middle column is 0)
 		 * @param y The row (the middle row is 0)
 		 */
@@ -66,12 +60,17 @@ class Pitch : public PosMatrix<Moveable> {
 
 		/* Return true if (x,y) is in a keeper zone */
 		bool isInWestKeeperZone(int x, int y) const;
-		bool isInWestKeeperZone(Moveable *moveable) const;
+		bool isInWestKeeperZone(Position const & pos) const;
+		//bool isInWestKeeperZone(Moveable *moveable) const;
+
 		bool isInEastKeeperZone(int x, int y) const;
-		bool isInEastKeeperZone(Moveable *moveable) const;
+		bool isInEastKeeperZone(Position const & pos) const;
+		//bool isInEastKeeperZone(Moveable *moveable) const;
+
 		bool isInKeeperZone(int x, int y) const {
 			return isInEastKeeperZone(x, y) || isInWestKeeperZone(x, y);
 		}
+
 		bool isInKeeperZone(Position const & pos) const {
 			return isInKeeperZone(pos.x(), pos.y());
 		}
@@ -95,9 +94,7 @@ class Pitch : public PosMatrix<Moveable> {
 		// TODO DOC
 		std::vector<Position> freePositionsAround(Position &position);
 
-		/*!
-		 * @meth void Pitch::insert(Moveable *moveable)
-		 * @brief Set a moveable to its position on pitch
+		/*! Set a moveable to its position on pitch
 		 * @param moveable The moveable to place on the pitch
 		 */
 		bool insert(Moveable *moveable);

@@ -9,118 +9,132 @@ class MatchResult
 {
 public:
 	MatchResult() : 
-		_winner(), _loser(), _score(), _fameDiff(), _moneyGain(), _APGain(), _saved(false)
+		_winner(), _loser(), _score(), _winnerFameGain(0), _loserFameGain(0), 
+		_winnerMoneyGain(0),_loserMoneyGain(0), _winnerAPGain(0), _loserAPGain(0), _saved(false)
 	{}
 
 	void setTeams(std::string winner, std::string loser)
 	{
-		_winner = winner;
-		_loser = loser;
+		_winner.setOwner(winner); _loser.setOwner(loser);
+		_winner.loadInfos(); _loser.loadInfos();
 	}
 
-	void setScore(unsigned int home, unsigned int away)
+	void setScore(unsigned int score1, unsigned int score2)
 	{
-		_score[0] = home;
-		_score[1] = away;
+		if(score1 >= score2){
+			_score[0] = score1;
+			_score[1] = score2;
+		}
+		else{
+			_score[0] = score2;
+			_score[1] = score1;
+		}
 	}
 
-	void compute(bool c)
+	void setHost(std::string host)
 	{
-		Team winner(_winner), looser(_loser);
-		winner.load();
-		looser.load();
-		resolveFame(winner,looser);	
-		resolveMoney(winner,looser,c);
+		_host = host;
 	}
 
-	void save()
+	void compute(bool isChampMatch = false, int turn = 0, int totalturn = 0, int cashprize = 0)
 	{
-		if (_saved == false)
+		resolveFame();	
+		resolveMoney(isChampMatch,turn,totalturn,cashprize);
+		resolveAP();
+	}
+
+	void resolveMoney(bool isChampMatch = false, int turn = 0, int totalturn = 0, int cashprize = 0){
+		if(!isChampMatch){
+			_winnerMoneyGain = int(gameconfig::FUNDS_EARN_GAME*gameconfig::FUNDS_GAME_RATIO);
+		}
+		else{
+			_winnerMoneyGain = int(gameconfig::FUNDS_EARN_GAME*gameconfig::FUNDS_CHAMP_RATIO + cashprize/(totalturn-turn+2));
+		}
+		Team host(_host);
+		host.load();
+		int maxSpectators = host.getTribune()->getMaxSpectators();
+		int moneyGain = 0;
+		for (Installation* install : host.getInstallations())
 		{
-			Team winner(_winner), loser(_loser);
-			winner.loadInfos();
-			winner.earnFame(_fameDiff);
-			winner.getPayed(_moneyGain[0]);
-			winner.earnAcPoints(_APGain[0]);
-			loser.loadInfos();
-			loser.loseFame(_fameDiff);
-			loser.getPayed(_moneyGain[1]);
-			loser.earnAcPoints(_APGain[1]);
-			loser.save();
-			winner.save();
-			_saved = true;
+			moneyGain += install->getMatchIncome(maxSpectators);
+		}
+		if (_host == _winner.getName())
+		{
+			_winnerMoneyGain += moneyGain;
+		}
+		else
+		{
+			_loserMoneyGain = moneyGain;
 		}
 	}
-	void resolveMoney(Team &winner,Team &looser,bool champMatch){
-		if(champMatch){
-			winner.getPayed(looser.loseFunds(int(gameconfig::FUNDS_EARN_GAME*gameconfig::FUNDS_GAME_RATIO*looser.getFame())));
-		}else{
-			winner.getPayed(looser.loseFunds(int(gameconfig::FUNDS_EARN_GAME*gameconfig::FUNDS_CHAMP_RATIO*looser.getFame())));
-		}
-		winner.save();
-		looser.save();
-		
-	}
-	void resolveFame(Team &winner,Team &looser){
-		/*Method calculating the fame to be attributed to each player
-		 *based on the existing fame of the teams and the score difference
-		 */
-		int wFame = winner.getFame();
-		int lFame = looser.getFame();
-		if (wFame>lFame){//compare fame between teams
-			if ((_score[0] - _score[1])>10){//big goal difference
-				winner.earnFame(int((wFame-lFame)*0.45));
-				looser.loseFame(int((wFame-lFame)*0.45));
-			}else{
-				winner.earnFame(int((wFame-lFame)*0.15));
-				looser.loseFame(int((wFame-lFame)*0.15));
-			}
-		}else if(wFame<lFame){
-			if ((_score[0] - _score[1])>10){
-				winner.earnFame(int((lFame-wFame)*0.75));
-				looser.loseFame(int((lFame-wFame)*0.75));
-			}else{
-				winner.earnFame(int((lFame-wFame)*0.60));
-				looser.loseFame(int((lFame-wFame)*0.60));
-			}
 
-		}else{
-			if ((_score[0] - _score[1])>10){
-				winner.earnFame(int(lFame*0.45));
-				looser.loseFame(int(lFame*0.45));
-			}else{
-				winner.earnFame(int(lFame*0.15));
-				looser.loseFame(int(lFame*0.15));
-			}		
+	void resolveFame(){
+		/*
+		 * Method calculating the fame to be attributed to each player
+		 * based on the existing fame of the teams and the score difference
+		 */
+
+		int wFame = _winner.getFame();
+		int lFame = _loser.getFame();
+		//Case 1 : winner's fame >= loser's fame, fame lose/win isn't that much
+		if (wFame == lFame)
+			++wFame;
+		if (wFame>=lFame){
+			if ((_score[0] - _score[1])>=gameconfig::BIG_GOAL_DIFFERENCE){
+				_winnerFameGain = (int((gameconfig::FAME_WIN/(wFame-lFame))*0.15));
+				_loserFameGain = -(int((gameconfig::FAME_WIN/(wFame-lFame))*0.15));
+			}
+			else{
+				_winnerFameGain = (int((gameconfig::FAME_WIN/(wFame-lFame))*0.05));
+				_loserFameGain = -(int((gameconfig::FAME_WIN/(wFame-lFame))*0.05));
+			}
 		}
-		looser.save();
-		winner.save();
+		//Case 2 : winner's fame < loser's fame , fame lose/win more important
+		else if(wFame<lFame){
+			if ((_score[0] - _score[1])>=gameconfig::BIG_GOAL_DIFFERENCE){
+				_winnerFameGain = (int((gameconfig::FAME_WIN*(wFame-lFame))*0.15));
+				_loserFameGain = -(int((gameconfig::FAME_WIN*(wFame-lFame))*0.15));
+			}
+			else{
+				_winnerFameGain = (int((gameconfig::FAME_WIN*(wFame-lFame))*0.05));
+				_loserFameGain = -(int((gameconfig::FAME_WIN*(wFame-lFame))*0.05));
+			}
+		} 		
 	}
+
+	void resolveAP(){
+		_winnerAPGain = gameconfig::MATCH_WON_AP_GAIN;
+		_loserAPGain = gameconfig::MATCH_LOST_AP_GAIN;
+	}
+
 	void resolveFameDisconnection(std::string win){
-		Team winner(win);
-		winner.loadInfos();
-		winner.earnFame(gameconfig::FAME_EARN_DISCONNECT);
-		winner.save();
+		_winnerFameGain = gameconfig::FAME_EARN_DISCONNECT;
 	}
 
 	void resolveMoneyDisconnection(std::string win){
-		Team winner(win);
-		winner.loadInfos();
-		winner.getPayed(gameconfig::FUNDS_EARN_DISCONNECT);
-		winner.save();
+		_winnerMoneyGain = gameconfig::FUNDS_EARN_DISCONNECT;	
 	}
 
-	std::string getWinner() { return _winner; }
-	std::string getLoser() { return _loser; }
+	std::string getWinner() const { return _winner.getOwner(); }
+	std::string getLoser() const { return _loser.getOwner(); }
+	bool isSaved() const { return _saved; }
+	void saved() {_saved = true;}
+	unsigned int* getScore() { return _score; }
+	int getWinnerFameGain() const { return _winnerFameGain; }
+	int getLoserFameGain() const { return _loserFameGain; }
+	int getWinnerMoneyGain() const { return _winnerMoneyGain; }
+	int getLoserMoneyGain() const { return _loserMoneyGain; }
+	int getWinnerAPGain() const { return _winnerAPGain; }
+	int getLoserAPGain() const { return _loserAPGain; }
 
 private:
-	std::string _winner;
-	std::string _loser;
+	Team _winner, _loser;
 	unsigned int _score[2];
-	unsigned int _fameDiff;
-	unsigned int _moneyGain[2];
-	unsigned int _APGain[2];
+	int _winnerFameGain, _loserFameGain;
+	int _winnerMoneyGain, _loserMoneyGain;
+	int _winnerAPGain, _loserAPGain;
 	bool _saved;
+	std::string _host;
 };
 
 #endif // __MATCH_RESULT_HPP

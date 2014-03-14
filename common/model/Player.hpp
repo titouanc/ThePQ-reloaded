@@ -75,6 +75,13 @@ public:
 	void equipJersey (Jersey* jersey) 		{ _jersey = jersey; }
 	virtual void equipBat(Bat* bat) 		{}
 
+    /*! return a string for this player role 
+        ("beater", "chaser", "keeper" or "seeker") */
+    virtual std::string getRole() const {return std::string("");}
+
+    /*! return true if the player can catch/throw the quaffle */
+    virtual bool canQuaffle() const { return false; }
+
 protected:
     int _maxLife;
     int _maxMana;
@@ -88,6 +95,31 @@ protected:
 	int _chance;
 };
 
+
+/*! A base class for players that can catch and throw the quaffle */
+class PlayerQuaffle : public Player
+{
+private:
+    bool _hasQuaffle;
+public:
+    PlayerQuaffle & operator=(Player const & player);
+    PlayerQuaffle(int id, std::string username) : Player(), _hasQuaffle(false) {}
+    PlayerQuaffle(JSON::Dict const & json = JSON::Dict()) : Player(json) {
+        _hasQuaffle = ISBOOL(json.get("Q?")) && BOOL(json.get("Q?"));
+    }
+    
+    operator JSON::Dict() const {
+        JSON::Dict res = Player::operator JSON::Dict();
+        res.set("Q?", JSON::Bool(_hasQuaffle));
+        return res;
+    }
+
+    bool canQuaffle() const { return true; }
+
+    bool hasQuaffle() const {return _hasQuaffle;}
+    void retainQuaffle(){_hasQuaffle = true;}
+    void releaseQuaffle(){_hasQuaffle = false;}
+};
 
 
 /*================================BEATER==============================*/
@@ -107,39 +139,42 @@ public:
     void equipBat (Bat* bat)	{ _bat = bat; }
     Bat* getBat()				{ return _bat; }
     float shootBludger () const;
+    std::string getRole() const {return std::string("Beater");}
 private:
 	Bat* _bat;
 };
 
 /*================================CHASER===============================*/
-class Chaser : public Player 
+class Chaser : public PlayerQuaffle 
 {
 public:
-	Chaser() : Player() {}
+	Chaser() : PlayerQuaffle() {}
 	
-	Chaser(Player& player) : Player(player) {}
-	Chaser(const Chaser & chaser) : Player(chaser) {}
-	Chaser(JSON::Dict const & json) : Player(json){}
-	Chaser& operator=(Chaser const & chaser) { Player::operator=(chaser); return *this; }
+	Chaser(Player& player) : PlayerQuaffle(player) {}
+	Chaser(const Chaser & chaser) : PlayerQuaffle(chaser) {}
+	Chaser(JSON::Dict const & json) : PlayerQuaffle(json){}
+	Chaser& operator=(Chaser const & chaser) { PlayerQuaffle::operator=(chaser); return *this; }
+
     bool isChaser () const { return true; }
+    /*! Return the pass score (speed of the quaffle when throwed) */
     float pass () const;
-    float shoot () const;
+    float shoot() const;
+    std::string getRole() const {return std::string("Chaser");}
 };
 
 /*================================KEEPER================================*/
-class Keeper : public Player 
+class Keeper : public PlayerQuaffle 
 {
 public:
-	Keeper() : Player() {}
-
-	Keeper(Player& player) : Player(player) {}
-	Keeper(const Keeper & keeper) : Player(keeper) {}
-	Keeper(JSON::Dict const & json) : Player(json){}
- 	Keeper& operator=(Keeper const & keeper) { Player::operator=(keeper); return *this; }
-
+    using PlayerQuaffle::PlayerQuaffle;
+    Keeper& operator=(Keeper const & keeper) { PlayerQuaffle::operator=(keeper); return *this; }
+    Keeper& operator=(Player const & player) { PlayerQuaffle::operator=(player); return *this; }
 	bool isKeeper () const { return true; }
-    float catchBall () const;
+
+    /*! Return the pass score (speed of the quaffle when throwed) */
     float pass () const;
+    float catchBall() const;
+    std::string getRole() const {return std::string("Keeper");}
 };
 
 /*================================SEEKER================================*/
@@ -154,8 +189,11 @@ public:
     Seeker& operator=(Seeker const & seeker) { Player::operator=(seeker); return *this; }
 
 	bool isSeeker () const { return true; }
-    float catchGS () const;
 
+    /*! Return the catch golden snitch score 
+        (probability to catch a Golden Snitch) */
+    float catchGS () const;
+    std::string getRole() const {return std::string("Seeker");}
 };
 
 
