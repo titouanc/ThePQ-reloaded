@@ -122,81 +122,112 @@ void GraphicMarketManager::onSalesUpdate()
 	clear();
 
 	addTopBar(user());
-
+	int cellSize = 1100;
 	TableView & playerList = _canvas.addTableView(1, 5);
-	playerList.setPosition(100, 100);
+	playerList.setPosition((window().getSize().x - cellSize)/2, 100);
 	/* Header line */
-	TableCell & header = playerList.addTableCell(800, BUTTON_HEIGHT);
+	TableCell & header = playerList.addTableCell(cellSize, BUTTON_HEIGHT);
 	header.setBackgroundColor(BUTTON_BACKGROUND_COLOR);
 
 	Label & nameHeader = header.addLabel("Player name");
 	nameHeader.setPosition(15, BUTTON_TOP_PADDING);
 	nameHeader.setColor(BUTTON_TEXT_COLOR);
 
+	Label & strengthHeader = header.addLabel("Strength");
+	strengthHeader.setPosition(200,BUTTON_TOP_PADDING);
+	strengthHeader.setColor(BUTTON_TEXT_COLOR);
+
+	Label & velocityHeader = header.addLabel("Velocity");
+	velocityHeader.setPosition(300,BUTTON_TOP_PADDING);
+	velocityHeader.setColor(BUTTON_TEXT_COLOR);
+
+	Label & precisionHeader = header.addLabel("Precision");
+	precisionHeader.setPosition(400,BUTTON_TOP_PADDING);
+	precisionHeader.setColor(BUTTON_TEXT_COLOR);
+
+	Label & chanceHeader = header.addLabel("Chance");
+	chanceHeader.setPosition(500,BUTTON_TOP_PADDING);
+	chanceHeader.setColor(BUTTON_TEXT_COLOR);
+
 	Label & ownerHeader = header.addLabel("Owner");
-	ownerHeader.setPosition(300, BUTTON_TOP_PADDING);
+	ownerHeader.setPosition(600, BUTTON_TOP_PADDING);
 	ownerHeader.setColor(BUTTON_TEXT_COLOR);
 
 	Label & bidderHeader = header.addLabel("Bidder");
-	bidderHeader.setPosition(400, BUTTON_TOP_PADDING);
+	bidderHeader.setPosition(700, BUTTON_TOP_PADDING);
 	bidderHeader.setColor(BUTTON_TEXT_COLOR);
 
 	Label & priceHeader = header.addLabel("Next Price");
-	priceHeader.setPosition(550, BUTTON_TOP_PADDING);
+	priceHeader.setPosition(800, BUTTON_TOP_PADDING);
 	priceHeader.setColor(BUTTON_TEXT_COLOR);
 
 	Label & timeHeader = header.addLabel("Time left");
-	timeHeader.setPosition(650, BUTTON_TOP_PADDING);
+	timeHeader.setPosition(900, BUTTON_TOP_PADDING);
 	timeHeader.setColor(BUTTON_TEXT_COLOR);
 
 
 	/* Content */
 	for (Sale const & sale : getSales()){
-		TableCell & player = playerList.addTableCell(800, BUTTON_HEIGHT);
+		TableCell & player = playerList.addTableCell(cellSize, BUTTON_HEIGHT);
 		player.setBackgroundColor(sf::Color(0x00, 0x00, 0x00, 0x77));
 
 		Label & nameLabel = player.addLabel(sale.getPlayer().getName());
 		nameLabel.setPosition(15, BUTTON_TOP_PADDING);
 		nameLabel.setColor(BUTTON_TEXT_COLOR);
 
+		Label & strengthLabel = player.addLabel(sale.getPlayer().getStrength());
+		strengthLabel.setPosition(200,BUTTON_TOP_PADDING);
+		strengthLabel.setColor(BUTTON_TEXT_COLOR);
+
+		Label & velocityLabel = player.addLabel(sale.getPlayer().getVelocity());
+		velocityLabel.setPosition(300,BUTTON_TOP_PADDING);
+		velocityLabel.setColor(BUTTON_TEXT_COLOR);
+
+		Label & precisionLabel = player.addLabel(sale.getPlayer().getPrecision());
+		precisionLabel.setPosition(400,BUTTON_TOP_PADDING);
+		precisionLabel.setColor(BUTTON_TEXT_COLOR);
+
+		Label & chanceLabel = player.addLabel(sale.getPlayer().getChance());
+		chanceLabel.setPosition(500,BUTTON_TOP_PADDING);
+		chanceLabel.setColor(BUTTON_TEXT_COLOR);
+
 		if (sale.getOwner() == net::MSG::GENERATED_BY_MARKET){
 			Label & ownerLabel = player.addLabel("World");
-			ownerLabel.setPosition(300, BUTTON_TOP_PADDING);
+			ownerLabel.setPosition(600, BUTTON_TOP_PADDING);
 			ownerLabel.setColor(BUTTON_TEXT_COLOR);
 		}
 		else{
 			Label & ownerLabel = player.addLabel(sale.getOwner());
-			ownerLabel.setPosition(300, BUTTON_TOP_PADDING);
+			ownerLabel.setPosition(600, BUTTON_TOP_PADDING);
 			ownerLabel.setColor(BUTTON_TEXT_COLOR);
 		}
 		Label & bidderLabel = player.addLabel(sale.getCurrentBidder());
-		bidderLabel.setPosition(400, BUTTON_TOP_PADDING);
+		bidderLabel.setPosition(700, BUTTON_TOP_PADDING);
 		bidderLabel.setColor(BUTTON_TEXT_COLOR);
 
 		Label & bidValueLabel = player.addLabel(sale.getNextBidValue());
-		bidValueLabel.setPosition(550, BUTTON_TOP_PADDING);
+		bidValueLabel.setPosition(800, BUTTON_TOP_PADDING);
 		bidValueLabel.setColor(BUTTON_TEXT_COLOR);
 
 		Label & timeLabel = player.addLabel(sale.getTimeLeft());
-		timeLabel.setPosition(650, BUTTON_TOP_PADDING);
+		timeLabel.setPosition(900, BUTTON_TOP_PADDING);
 		timeLabel.setColor(BUTTON_TEXT_COLOR);
 
 		Button<GraphicMarketManager, int> & bidButton = player.addButton<GraphicMarketManager, int>(
 			&GraphicMarketManager::placeBid, sale.getPlayer().getMemberID(),
 			this, "BID");
-		bidButton.setPosition(800-bidButton.getWidth(), 0);
+		bidButton.setPosition(cellSize-bidButton.getWidth(), 0);
 	}
-
-	_canvas.addButton<GraphicMarketManager>(
-		&GraphicMarketManager::updateSales, this, "Update"
-	).setPosition(1000, 300);
-
-	_canvas.addButton<GraphicMarketManager>(
-		&GraphicMarketManager::displaySellablePlayers, this, "Sell a player"
-	).setPosition(1000, 350);
-
-
+	
 	addBackButton();
+	Button<GraphicMarketManager> & updateButton = _canvas.addButton<GraphicMarketManager>(&GraphicMarketManager::updateSales, this, "Update");
+	updateButton.setPosition(window().getSize().x-_backButton->getWidth()-updateButton.getWidth()-2*MARGIN, window().getSize().y-updateButton.getHeight()-MARGIN);
+
+	Button<GraphicMarketManager> & sellButton = _canvas.addButton<GraphicMarketManager>(&GraphicMarketManager::displaySellablePlayers, this, "Sell a player");
+	sellButton.setPosition(window().getSize().x-_backButton->getWidth()-updateButton.getWidth()-sellButton.getWidth() - 3*MARGIN, window().getSize().y-sellButton.getHeight()-MARGIN);
+
+
+	
 
 	redrawCanvas();
 }
