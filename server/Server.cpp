@@ -641,15 +641,20 @@ void Server::timeUpdateStadium()
 	MemoryAccess::load(users);
 	for (size_t i = 0; i < users.size(); ++i)
 	{
-		users[i].loadTeam();
-		Team & team = users[i].getTeam();
-		long int before = team.getFunds();
-		team.timeUpdate();
+		int peer_id;
+		if( (peer_id = getPeerID(users[i].getUsername())) >= 0 ){
+			Team & team = _users[peer_id]->getTeam();
+			long int before = team.getFunds();
+			team.timeUpdate();
+			long int after = team.getFunds();
+		}
+		else{
+			Team team(users[i].getUsername());
+			team.load();
+		}
 
-		long int after = team.getFunds();
-
-		cout << "[" << this << "] \033[33m" << team.getName()
-			 << "\033[0m before: " << before << "$; after: " << after << "$" << endl;
+		//cout << "[" << this << "] \033[33m" << team.getName()
+		//	 << "\033[0m before: " << before << "$; after: " << after << "$" << endl;
 	}
 }
 
@@ -935,3 +940,11 @@ void Server::joinChampionship(std::string champName, int peer_id){
 	Message status(peer_id, toSend.clone());
 	_outbox.push(status);
 }
+
+
+
+
+
+
+
+

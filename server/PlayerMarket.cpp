@@ -238,6 +238,9 @@ void PlayerMarket::handleNewBid(std::string previousBidder, std::string currentB
 	Team & currentTeam = _server->getUserByName(currentBidder)->getTeam();
 	currentTeam.buy(currentAmount);
 	currentTeam.saveInfos();
+	JSON::Dict toSend;
+	toSend.set("funds",currentTeam.getFunds());
+	_server->sendTeamInfos(toSend,_server->getPeerID(currentBidder));
 
 	if(!previousBidder.empty()){
 		User* previousUser = _server->getUserByName(previousBidder);
@@ -251,6 +254,10 @@ void PlayerMarket::handleNewBid(std::string previousBidder, std::string currentB
 			Team & previousTeam = previousUser->getTeam();
 			previousTeam.getPayed(previousAmount);
 			previousTeam.saveInfos();
+
+			JSON::Dict toSend;
+			toSend.set("funds",previousTeam.getFunds());
+			_server->sendTeamInfos(toSend,_server->getPeerID(previousBidder));
 		}
 	}
 }
