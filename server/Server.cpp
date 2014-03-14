@@ -589,6 +589,7 @@ void Server::putPlayerOnSquadPosition(const JSON::Dict &response, int peer_id){
 		position = INT(response.get(net::MSG::SQUAD_POSITION));
 	_users[peer_id]->getTeam().getSquad().putPlayerAtPosition(member_id, position);
 	sendTeamInfos(_users[peer_id]->getTeam(), peer_id);
+	MemoryAccess::save(_users[peer_id]->getTeam());
 }
 
 void Server::timeLoop()
