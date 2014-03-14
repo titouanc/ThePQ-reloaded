@@ -46,11 +46,22 @@ TEST(match_with_fixtures)
 	delete fixture;
 ENDTEST()
 
+TEST(match_moveables)
+	Squad s, t;
+	Match m(s, t);
+	ASSERT(! m.isFinished());
+
+	JSON::Dict const & res = m.getMoveables();
+	ASSERT(res.len() > 0);
+	cout << res << endl;
+ENDTEST()
+
 int main(int argc, const char **argv)
 {
 	TestFunc testSuite[] = {
 		ADDTEST(match_instance),
-		ADDTEST(match_with_fixtures)
+		ADDTEST(match_with_fixtures),
+		ADDTEST(match_moveables)
 	};
 
 	return RUN(testSuite);

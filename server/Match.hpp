@@ -118,6 +118,8 @@ public:
 	 */
 	JSON::List playStrokes();
 
+	JSON::Dict getMoveables() const;
+
 	/*! Return true if the golden snitch has been catched */
 	bool isFinished() const;
 };

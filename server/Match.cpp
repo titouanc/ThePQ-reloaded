@@ -262,6 +262,22 @@ bool Match::isFinished() const
 	return _finished;
 }
 
+JSON::Dict Match::getMoveables() const
+{
+	JSON::List squads = JSON::List();
+	for (int i=0; i<2; i++)
+		squads.append(JSON::Dict(_squads[i]));
+	
+	JSON::List balls = JSON::List();
+	balls.append(JSON::Dict(_quaffle));
+	balls.append(JSON::Dict(_snitch));
+	for (int i=0; i<2; i++)
+		balls.append(JSON::Dict(_bludgers[i]));
+
+	JSON::Dict data = {{"balls", balls}, {"squads", squads}};
+	return data;
+}
+
 /* ================== RULES ================= */
 bool Match::stayInEllipsis(Collision & collide)
 {
