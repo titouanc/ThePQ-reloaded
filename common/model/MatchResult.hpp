@@ -31,6 +31,11 @@ public:
 		}
 	}
 
+	void setHost(std::string host)
+	{
+		_host = host;
+	}
+
 	void compute(bool isChampMatch = false, int turn = 0, int totalturn = 0, int cashprize = 0)
 	{
 		resolveFame();	
@@ -45,6 +50,22 @@ public:
 		else{
 			_winnerMoneyGain = int(gameconfig::FUNDS_EARN_GAME*gameconfig::FUNDS_CHAMP_RATIO + cashprize/(totalturn-turn+2));
 		}
+		Team host(_host);
+		host.load();
+		int maxSpectators = host.getTribune()->getMaxSpectators();
+		int moneyGain = 0;
+		for (Installation* install : host.getInstallations())
+		{
+			moneyGain += install->getMatchIncome(maxSpectators);
+		}
+		if (_host == _winner.getName())
+		{
+			_winnerMoneyGain += moneyGain;
+		}
+		else
+		{
+			_loserMoneyGain = moneyGain;
+		}
 	}
 
 	void resolveFame(){
@@ -56,6 +77,8 @@ public:
 		int wFame = _winner.getFame();
 		int lFame = _loser.getFame();
 		//Case 1 : winner's fame >= loser's fame, fame lose/win isn't that much
+		if (wFame == lFame)
+			++wFame;
 		if (wFame>=lFame){
 			if ((_score[0] - _score[1])>=gameconfig::BIG_GOAL_DIFFERENCE){
 				_winnerFameGain = (int((gameconfig::FAME_WIN/(wFame-lFame))*0.15));
@@ -111,6 +134,7 @@ private:
 	int _winnerMoneyGain, _loserMoneyGain;
 	int _winnerAPGain, _loserAPGain;
 	bool _saved;
+	std::string _host;
 };
 
 #endif // __MATCH_RESULT_HPP

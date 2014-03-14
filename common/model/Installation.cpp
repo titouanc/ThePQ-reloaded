@@ -98,6 +98,11 @@ int FanShop::getIncome() const
 	// EXAMPLE ==> TODO
 	return getCurrentValue()/50;
 }
+
+int FanShop::getMatchIncome(int nbOfSpectators)
+{
+	return nbOfSpectators*gameconfig::GOODIES_PRICE;
+}
 	
 FoodStand::FoodStand(std::string owner) : Installation(owner, memory::FOOD_STAND, 500)
 {}
@@ -113,9 +118,18 @@ int FoodStand::getIncome() const
 	return 0;
 }
 
+int FoodStand::getMatchIncome(int nbOfSpectators)
+{
+	return nbOfSpectators*gameconfig::FOOD_PRICE;
+}
+
 Tribune::Tribune(std::string owner) : Installation(owner, memory::TRIBUNE, 2500, 1)
 {}
 
+int Tribune::getMaxSpectators()
+{
+	return _level*gameconfig::TRIBUNE_SPECTATORS;
+}
 
 int Tribune::getMaintenanceCost() const
 {
@@ -128,6 +142,11 @@ int Tribune::getIncome() const
 	return 0;
 }
 
+int Tribune::getMatchIncome(int nbOfSpectators)
+{
+	return nbOfSpectators*gameconfig::TICKET_PRICE;
+}
+
 MedicalCenter::MedicalCenter(std::string owner) : Installation(owner, memory::MEDIC_CENTER, 5000)
 {}
 
@@ -138,6 +157,11 @@ int MedicalCenter::getMaintenanceCost() const
 }
 
 int MedicalCenter::getIncome() const
+{
+	return 0;
+}
+
+int MedicalCenter::getMatchIncome(int nbOfSpectators)
 {
 	return 0;
 }

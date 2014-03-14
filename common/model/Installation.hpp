@@ -52,6 +52,7 @@ public:
 	virtual int getMaintenanceCost() const = 0;
 	virtual int getIncome() const = 0;
 	virtual int getMaxLevel() = 0;
+	virtual int getMatchIncome(int nbOfSpectators) = 0;
 };
 
 class FanShop : public Installation
@@ -63,6 +64,7 @@ public:
 	virtual int getMaintenanceCost() const;
 	virtual int getIncome() const;
 	virtual int getMaxLevel() { return 10; }
+	virtual int getMatchIncome(int nbOfSpectators);
 
 };
 
@@ -75,6 +77,7 @@ public:
 	virtual int getMaintenanceCost() const;
 	virtual int getIncome() const;
 	virtual int getMaxLevel() { return 10; }
+	virtual int getMatchIncome(int nbOfSpectators);
 
 };
 class Tribune : public Installation
@@ -83,9 +86,12 @@ public:
 	Tribune(std::string owner = "");
 	using Installation::Installation;
 	
+	int getMaxSpectators();
+
 	virtual int getMaintenanceCost() const;
 	virtual int getIncome() const;
 	virtual int getMaxLevel() { return 10; }
+	virtual int getMatchIncome(int nbOfSpectators);
 
 };
 class MedicalCenter : public Installation
@@ -97,7 +103,7 @@ public:
 	virtual int getMaintenanceCost() const;
 	virtual int getIncome() const;
 	virtual int getMaxLevel() { return 10; }
-
+	virtual int getMatchIncome(int nbOfSpectators);
 };
 
 #endif

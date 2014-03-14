@@ -22,12 +22,8 @@ private:
 	std::vector<Player> _players;
 	std::vector<Installation*> _installations;
 	pthread_mutex_t _changes;
-	void lockChanges() 		{ pthread_mutex_lock(&_changes); }
-	void unlockChanges() 	{ pthread_mutex_unlock(&_changes); }
 public:
 	//Team();
-	Team(std::string owner,std::string teamname);
-	Team(std::string owner, std::string teamname, int funds);
 	Team(std::string owner = "", std::string teamname=gameconfig::UNNAMED_TEAM, int funds = gameconfig::STARTING_FUNDS, int fame = gameconfig::STARTING_FAME, 
 		int acPoints=gameconfig::STARTING_AC_POINTS);
 	Team(const Team& other);
@@ -53,57 +49,78 @@ public:
 	bool fundsAvailble(int amount) { return amount <= _funds;}
 
 	void loseFame(int amount){
-		lockChanges();
+		if (pthread_mutex_lock(&_changes) != 0)
+		{
+			return;
+		}
 		if (amount>_fame)
 			_fame=0;
 		else
 			_fame-=amount;
-		unlockChanges();
+		pthread_mutex_unlock(&_changes);
 	}
 
 	int loseFunds(int amount){
-		lockChanges();
+		if (pthread_mutex_lock(&_changes) != 0)
+		{
+			return 0;
+		}
 		if(amount>_funds){
 			amount=_funds;
 			_funds=0;
 		}else{
 			_funds-=amount;
 		}
-		unlockChanges();
+		pthread_mutex_unlock(&_changes);
 		return amount;
 	}
 	
 	void earnFame(int amount){ 
-		lockChanges();
+		if (pthread_mutex_lock(&_changes) != 0)
+		{
+			return;
+		}
 		_fame+=amount;
-		unlockChanges();
+		pthread_mutex_unlock(&_changes);
 	}
 
 	void buy(int amount){
-		lockChanges();
+		if (pthread_mutex_lock(&_changes) != 0)
+		{
+			return;
+		}
 		_funds-=amount;
-		unlockChanges();
+		pthread_mutex_unlock(&_changes);
 	}
 	
 	void getPayed(int amount){
-		lockChanges();
+		if (pthread_mutex_lock(&_changes) != 0)
+		{
+			return;
+		}
 		_funds+=amount;
-		unlockChanges();
+		pthread_mutex_unlock(&_changes);
 	}
 
 	void earnAcPoints(int ap) {
-		lockChanges();
+		if (pthread_mutex_lock(&_changes) != 0)
+		{
+			return;
+		}
 		_acpoints += ap;
-		unlockChanges();
+		pthread_mutex_unlock(&_changes);
 	}
 
 	void loseAcPoints(int ap) {
-		lockChanges();
+		if (pthread_mutex_lock(&_changes) != 0)
+		{
+			return;
+		}
 		if(ap > _acpoints)
 			_acpoints = 0;
 		else
 			_acpoints -= ap;
-		unlockChanges(); 
+		pthread_mutex_unlock(&_changes);
 	}
 	
 
@@ -112,6 +129,15 @@ public:
 	
 	bool upgradeInstallation(size_t i);
 	bool downgradeInstallation(size_t i);
+	Tribune* getTribune()
+	{
+		for (size_t i = 0; i < _installations.size(); ++i)
+		{
+			if (_installations[i]->getName() == memory::TRIBUNE)
+				return dynamic_cast<Tribune*>(_installations[i]);
+		}
+		return NULL;
+	}
 
 	bool removePlayer(int id);
 	void addPlayer(Player &player);
