@@ -54,18 +54,22 @@ void MatchManager::treatDeltas(JSON::List const & deltas)
 			Position from(LIST(delta.get("from")));
 			Position to(LIST(delta.get("to")));
 
-			Moveable *toMove = _pitch.getAt(from);
-			_pitch.setAt(to, toMove);
-			_pitch.setAt(from, NULL);
-			toMove->setPosition(to);
-			cout << "MOVE " << toMove->getName() << " " 
-			     << JSON::List(from) << " -> " << JSON::List(to) << endl;
-		} else if (type == DELTA_APPEAR){
+			if (from != to){
+				Moveable *toMove = _pitch.getAt(from);
+				_pitch.setAt(to, toMove);
+				_pitch.setAt(from, NULL);
+				toMove->setPosition(to);
+				cout << "MOVE " << toMove->getName() << " " 
+			    	 << JSON::List(from) << " -> " << JSON::List(to) << endl;
+			}
+		} 
+
+		/* Quaffle throwed; appear on pitch */
+		else if (type == DELTA_APPEAR){
 			Position pos(LIST(delta.get("from")));
 			_pitch.setAt(pos, _quaffle);
 			_quaffle->setPosition(pos);
 
-			/* The quaffle appears, remove it from its holder */
 			for (std::pair<const Position,Moveable*> & it : _pitch){
 				if (it.second->getID() == INT(delta.get("mid"))){
 					PlayerQuaffle *pq = (PlayerQuaffle *) it.second;
@@ -74,8 +78,10 @@ void MatchManager::treatDeltas(JSON::List const & deltas)
 					break;
 				}
 			}
-		} else if (type == DELTA_CATCH){
-			/* The quaffle was catched by someone; give him the quaffle*/
+		} 
+
+		/* Quaffle catched; disappear from pitch */
+		else if (type == DELTA_CATCH){
 			for (std::pair<const Position,Moveable*> & it : _pitch){
 				if (it.second->getID() == INT(delta.get("mid"))){
 					PlayerQuaffle *pq = (PlayerQuaffle *) it.second;
