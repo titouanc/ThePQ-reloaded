@@ -26,6 +26,8 @@ const sf::Color UIMatch::hilightYellow(0xcc, 0xcc, 0x00, ALPHA);
 const sf::Color UIMatch::hilightRed(0xcc, 0x00, 0x00, ALPHA);
 const sf::Color UIMatch::hilightBlue(0x00, 0x00, 0xff, ALPHA);
 
+struct TextureToLoad {sf::Texture & texture; const char *path;};
+
 UIMatch::UIMatch(Pitch & pitch, const Squad & viewerSquad, int hexagonSize) : 
     sf::Drawable(),
     _pitch(pitch), 
@@ -34,26 +36,54 @@ UIMatch::UIMatch(Pitch & pitch, const Squad & viewerSquad, int hexagonSize) :
     _hexagon(circleSize(), 6), /* 6 sides regular polygon */
     _left(0), _top(0)
 {
-    sf::Texture *toLoad[] = {
-        &_grass_texture, &_sand_texture, &_goal_texture, &_bludger_texture,
-        &_quaffle_texture, &_snitch_texture,
-        &_own_chaser_texture, &_own_seeker_texture, &_own_keeper_texture, &_own_beater_texture,
-        &_other_chaser_texture, &_other_seeker_texture, &_other_keeper_texture, &_other_beater_texture,
-        &_own_chaser_quaffle_texture, &_other_chaser_quaffle_texture, &_background_texture
+    TextureToLoad toLoad[] = {
+        /* Background */
+        {_background_texture, "StarBack.png"},
+        /* Pitch */
+        {_grass_texture, "grass1.png"},
+        {_sand_texture, "sand1.png"},
+        {_goal_texture, "goal2_50.png"},
+        /* Balls */
+        {_bludger_texture, "Bludger.png"},
+        {_quaffle_texture, "Quaffle.png"},
+        {_snitch_texture, "GoldenSnitch.png"},
     };
-    const char *files[] = {
-        "grass1.png", "sand1.png", "goal2_50.png", "Bludger.png", "Quaffle.png",
-        "GoldenSnitch.png", "BluePlayer.png", "YellowPlayer.png", "GreenPlayer.png", "RedPlayer.png",
-        "BlueStripedPlayer.png", "YellowStripedPlayer.png", "GreenStripedPlayer.png", "RedStripedPlayer.png",
-        "BluePlayerWithQuaffle.png", "BlueStripedPlayerWithQuaffle.png", "StarBack.png"
-    };
-    for (int i=0; i<sizeof(toLoad)/sizeof(sf::Texture*); i++){
-        if (! toLoad[i]->loadFromFile(texturePath(files[i])))
-            throw TextureNotFound(files[i]);
+
+    for (size_t i=0; i<sizeof(toLoad)/sizeof(TextureToLoad); i++){
+        if (! toLoad[i].texture.loadFromFile(texturePath(toLoad[i].path)))
+            throw TextureNotFound(toLoad[i].path);
+    }
+    _background.setTexture(_background_texture);
+
+    const char *players[] = {"Yellow", "Red", "GreenQuaffle", "Green", "BlueQuaffle", "Blue"};
+    for (int i=0; i<6; i++){
+        std::string base(players[i]);
+        if (! _own_players_textures[i].loadFromFile(texturePath(base+"Player.png")))
+            throw TextureNotFound(base+"Player.png");
+        if (! _other_players_textures[i].loadFromFile(texturePath(base+"StripedPlayer.png")))
+            throw TextureNotFound(base+"StripedPlayer.png");
     }
 }
 
-void UIMatch::setOwnSquadDirection(){
+sf::Texture const & UIMatch::playerTexture(Player const & player) const
+{
+    /* Bank: [S, B, K*, K, C*, C] */
+    const sf::Texture *bank = _own_players_textures;
+    if (! _ownSquad.hasPlayer((Moveable *) &player))
+        bank = _other_players_textures;
+    if (player.isSeeker())
+        return bank[0];
+    if (player.isBeater())
+        return bank[1];
+
+    PlayerQuaffle & pq = (PlayerQuaffle &) player;
+    if (pq.isKeeper())
+        return (pq.hasQuaffle()) ? bank[2] : bank[3];
+    return (pq.hasQuaffle()) ? bank[4] : bank[5];
+}
+
+void UIMatch::setOwnSquadDirection()
+{
     if (_ownSquad.players[0]->getPosition().x() > 0)
         _playsOnLeftSide = false;
     else
@@ -173,47 +203,14 @@ void UIMatch::drawMoveables(sf::RenderTarget & dest) const
 
             } else if (it->second->isPlayer()){
                 Player const & player = (Player const &) *(it->second);
-                bool isOfOwnTeam = _ownSquad.hasPlayer(&(Moveable &)player);
-                if (player.isBeater()){
-                    if (isOfOwnTeam)
-                        playerSprite.setTexture(_own_beater_texture);
-                    else
-                        playerSprite.setTexture(_other_beater_texture);
-                }
-                else if (player.isSeeker()){
-                    if (isOfOwnTeam){
-                        playerSprite.setTexture(_own_seeker_texture);
-                    }
-                    else {
-                        playerSprite.setTexture(_other_seeker_texture);
-                    }
-                }
-                else if (player.isChaser()){
-                    Chaser const & chaser = (Chaser const &) player;
-                    if (isOfOwnTeam){
-                        if (chaser.hasQuaffle())
-                            playerSprite.setTexture(_own_chaser_quaffle_texture);
-                        else
-                            playerSprite.setTexture(_own_chaser_texture);
-                    }
-                    else {
-                        if (chaser.hasQuaffle())
-                            playerSprite.setTexture(_other_chaser_quaffle_texture);
-                        else
-                            playerSprite.setTexture(_other_chaser_texture);
-                    }
-                }
-                else if (player.isKeeper()){
-                    if (isOfOwnTeam)
-                        playerSprite.setTexture(_own_keeper_texture);
-                    else
-                        playerSprite.setTexture(_other_keeper_texture);
-                }
-                s = _own_chaser_texture.getSize();
+                sf::Texture const & pTexture = playerTexture(player);
+                playerSprite.setTexture(pTexture);
+                bool inMySquad = _ownSquad.hasPlayer(&(Moveable &)player);
+                
+                s = pTexture.getSize();
                 rx = (double)_size/s.x;
                 ry = (double)_size/s.y;
-                if (    ( (isOfOwnTeam)  && (!_playsOnLeftSide) )
-                    ||  ( (!isOfOwnTeam) && (_playsOnLeftSide) ) )
+                if (( inMySquad && !_playsOnLeftSide ) || ( !inMySquad && _playsOnLeftSide ))
                     rx = -rx;
                 playerSprite.setScale(sf::Vector2f(rx, ry));
                 if (rx<0)
@@ -228,8 +225,7 @@ void UIMatch::drawMoveables(sf::RenderTarget & dest) const
 
 void UIMatch::draw(sf::RenderTarget &dest, sf::RenderStates states) const
 {
-    sf::Sprite background(_background_texture);
-    dest.draw(background);
+    dest.draw(_background);
 
     sf::CircleShape sand(circleSize(), 6);
     sand.setTexture(&_sand_texture);
