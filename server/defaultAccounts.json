@@ -1,4 +1,7 @@
 {
 	"user1": "password1",
-	"user2": "password2"
+	"user2": "password2",
+	"a": "a",
+	"b": "b",
+	"c": "c"
 }
