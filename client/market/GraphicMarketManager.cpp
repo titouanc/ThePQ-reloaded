@@ -102,10 +102,16 @@ void GraphicMarketManager::askPriceForPlayer(Player *player){
 }
 
 void GraphicMarketManager::sellPlayer(Player *player){
-	int bidValue;
 	pair<int, int> range = getBidValueRange(player);
-	bidValue = stoi(_canvas.textboxWithID("Enter a price").getText());
-	if (bidValue<range.first or bidValue>range.second)
+	std::string const & text = _canvas.textboxWithID("Enter a price").getText();
+
+	const char *str = text.c_str();
+	char *endptr = NULL;
+	int bidValue = strtol(str, &endptr, 10);
+	
+	if (endptr == str || endptr == NULL)
+		displayError(text + " is not a valid price !");
+	else if (bidValue<range.first or bidValue>range.second)
 		displayError("Please enter a price between the price range!");
 	else{
 		_wait = true;
