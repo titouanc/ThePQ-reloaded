@@ -11,10 +11,10 @@ class GraphicMatchManager : public MatchManager,  public GUI::GraphicManager {
 private:
 	UIMatch _match;
 
-	Player *_selectedPlayer; /* Currently selected player, or NULL */
-	Displacement _currentMove; /* Displacement for selected player */
-	bool _throwBall;
-	Moveable *_tooltipped;
+	Player *_selectedPlayer; //!< Currently selected player, or NULL
+	Displacement _currentMove; //!< Displacement for selected player
+	bool _throwBall;  //!< Throw ball action requested (right click)
+	Moveable *_tooltipped;      //!< The tooltip is on this moveable
 
 	void treatClick(Position const & pos, bool regularClick);
 
