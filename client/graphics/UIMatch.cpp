@@ -3,6 +3,9 @@
 #include <stdexcept>
 #include <model/Ball.hpp>
 #include <model/Player.hpp>
+#include "GUIConstants.hpp"
+
+using namespace GUI;
 
 class TextureNotFound : public std::runtime_error {
     public: using std::runtime_error::runtime_error;
@@ -34,7 +37,8 @@ UIMatch::UIMatch(Pitch & pitch, const Squad & viewerSquad, int hexagonSize) :
     _ownSquad(viewerSquad),
     _size(hexagonSize), 
     _hexagon(circleSize(), 6), /* 6 sides regular polygon */
-    _left(0), _top(0)
+    _left(0), _top(0),
+    _tooltip(" ", _tooltip_font, 10), _tooltip_visible(false)
 {
     TextureToLoad toLoad[] = {
         /* Background */
@@ -63,6 +67,11 @@ UIMatch::UIMatch(Pitch & pitch, const Squad & viewerSquad, int hexagonSize) :
         if (! _other_players_textures[i].loadFromFile(texturePath(base+"StripedPlayer.png")))
             throw TextureNotFound(base+"StripedPlayer.png");
     }
+
+    if (! _tooltip_font.loadFromFile(fontPath(BODY_FONT_PATH)))
+        throw TextureNotFound(BODY_FONT_PATH);
+
+    _tooltip.setColor(sf::Color::Black);
 }
 
 sf::Texture const & UIMatch::playerTexture(Player const & player) const
@@ -266,6 +275,24 @@ void UIMatch::draw(sf::RenderTarget &dest, sf::RenderStates states) const
 
     drawHighlights(dest);
     drawMoveables(dest);
+    if (_tooltip_visible)
+        dest.draw(_tooltip);
+}
+
+void UIMatch::showTooltip(Position const & pos, std::string const & text)
+{
+    if (text.length() == 0)
+        _tooltip.setString(" "); /* sf::String bug on OSX */
+    else
+        _tooltip.setString(text);
+    Position const & dest = pitch2GUI(pos);
+    _tooltip.setPosition(dest.x(), dest.y());
+    _tooltip_visible = true;
+}
+
+void UIMatch::hideTooltip()
+{
+    _tooltip_visible = false;
 }
 
 void UIMatch::hilight(Position const & pos, const sf::Color *color)

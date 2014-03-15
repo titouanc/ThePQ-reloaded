@@ -14,6 +14,11 @@ private:
 	Player *_selectedPlayer; /* Currently selected player, or NULL */
 	Displacement _currentMove; /* Displacement for selected player */
 	bool _throwBall;
+	Moveable *_tooltipped;
+
+	void treatClick(Position const & pos, bool regularClick);
+
+	void treatTooltip(Position const & pos);
 
 	/* Return true if main loop should continue */
 	bool treatEvent(sf::Event const & ev);

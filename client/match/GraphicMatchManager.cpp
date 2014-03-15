@@ -5,7 +5,7 @@ GraphicMatchManager::GraphicMatchManager(ClientManager const & parent, GUI::Main
 	MatchManager(parent),
 	GUI::GraphicManager(controller), 
 	_match(pitch(), mySquad()), 
-	_selectedPlayer(NULL), _throwBall(false)
+	_selectedPlayer(NULL), _throwBall(false), _tooltipped(NULL)
 {}
 
 void GraphicMatchManager::redraw()
@@ -13,6 +13,107 @@ void GraphicMatchManager::redraw()
 	window().clear(sf::Color::White);
 	window().draw(_match);
 	window().display();
+}
+
+void GraphicMatchManager::treatClick(Position const & pos, bool regularClick)
+{
+	_match.clear();
+	/* Hilight clicked pos */
+	_match.hilight(pos, &UIMatch::hilightBlue);
+
+	/* find if there is someone at this position */
+	Moveable *atPos = pitch().getAt(pos);
+	if (! _selectedPlayer && atPos && atPos->isPlayer() && 
+		isMyPlayer(*((Player*)atPos))){
+		_selectedPlayer = (Player *) atPos;
+		_match.hilightAccessibles(pos, _selectedPlayer->getSpeed());
+	} 
+
+	else if (atPos == _selectedPlayer && regularClick) {
+		/* Cancel move: click on player */
+		_selectedPlayer = NULL;
+		_currentMove = Displacement();
+		_throwBall = false;
+	} 
+
+	else if (_selectedPlayer) {
+		Position lastPos = _currentMove.position() + _selectedPlayer->getPosition();
+		Position delta = pos - lastPos;
+		size_t l = delta.length()+_currentMove.length();
+
+		if (delta == Position(0, 0)){
+			if (regularClick){
+				/* Left-Click on last reached position: finish and send move */
+				sendDisplacement(*_selectedPlayer, _currentMove);
+				cout << "SENT MOVE " << JSON::List(_currentMove) << endl;
+				_selectedPlayer = NULL;
+				_currentMove = Displacement();
+				_match.clear();
+			} else {
+				/* Right-Click on last reached position: maybe throw quaffle */
+				if (_selectedPlayer->canQuaffle()){
+					PlayerQuaffle & pq = (PlayerQuaffle &) *_selectedPlayer;
+					if (pq.hasQuaffle()){
+						_throwBall = true;
+						_match.hilightAccessibles(pos, 5, &UIMatch::hilightBlue);
+					}
+				}
+			}
+		}
+
+		else if (_throwBall && delta.isDirection()){
+			sendStroke(Stroke(
+				*_selectedPlayer, _currentMove, ACT_THROW, lastPos, delta));
+			_selectedPlayer = NULL;
+			_currentMove = Displacement();
+			_throwBall = false;
+		}
+
+		else if (delta.isDirection() && l <= _selectedPlayer->getSpeed()){
+			size_t rest = _selectedPlayer->getSpeed() - l;
+			_currentMove.addMove(delta);
+			_match.clear(); /* clear hilights */
+			
+			if (_currentMove.length() < _selectedPlayer->getSpeed()){
+				_match.hilightAccessibles(pos, rest);
+			}
+			_match.hilightDisplacement(_selectedPlayer->getPosition(), _currentMove);
+		} else {
+			_selectedPlayer = NULL;
+			_currentMove = Displacement();
+			_throwBall = false;
+		}
+	}
+	redraw();
+}
+
+void GraphicMatchManager::treatTooltip(Position const & pos)
+{
+	Moveable *atPos = pitch().getAt(pos);
+	if (atPos == _tooltipped)
+		return;
+	_tooltipped = atPos;
+
+	if (! atPos){
+		_match.hideTooltip();
+	} else {
+		std::string text = atPos->getName();
+		if (atPos->isPlayer()){
+			Player & player = (Player &) *atPos;
+			text += " (";
+			text += player.getRole() + ")";
+			if (isMyPlayer(player)){
+				text += "\nClick to select";
+				if (player.canQuaffle()){
+					PlayerQuaffle & pq = (PlayerQuaffle &) player;
+					if (pq.hasQuaffle())
+						text += "\nRight-click to throw Quaffle";
+				}
+			}
+		}
+		_match.showTooltip(pos+2*Pitch::SouthEast, text);
+	}
+	redraw();
 }
 
 bool GraphicMatchManager::treatEvent(sf::Event const & ev)
@@ -27,78 +128,18 @@ bool GraphicMatchManager::treatEvent(sf::Event const & ev)
 			case sf::Keyboard::Space: redraw(); break;
 			default: break;
 		}
-	} else if (ev.type == sf::Event::MouseButtonPressed){
-		/* Click on pitch */
-		Position GUI_click = Position(ev.mouseButton.x, ev.mouseButton.y);
-		Position pos(_match.GUI2pitch(GUI_click));
-		_match.clear();
-		/* Hilight clicked pos */
-		_match.hilight(pos, &UIMatch::hilightBlue);
+	} 
 
-		/* find if there is someone at this position */
-		Moveable *atPos = pitch().getAt(pos);
-		if (! _selectedPlayer && atPos && atPos->isPlayer() && 
-			isMyPlayer(*((Player*)atPos))){
-			_selectedPlayer = (Player *) atPos;
-			_match.hilightAccessibles(pos, _selectedPlayer->getSpeed());
-		} 
+	else if (ev.type == sf::Event::MouseButtonPressed){
+		Position GUI_pos = Position(ev.mouseButton.x, ev.mouseButton.y);
+		Position pos(_match.GUI2pitch(GUI_pos));
+		treatClick(pos, ev.mouseButton.button == sf::Mouse::Left);
+	} 
 
-		else if (atPos == _selectedPlayer) {
-			/* Cancel move: click on player */
-			_selectedPlayer = NULL;
-			_currentMove = Displacement();
-			_throwBall = false;
-		} 
-
-		else if (_selectedPlayer) {
-			Position lastPos = _currentMove.position() + _selectedPlayer->getPosition();
-			Position delta = pos - lastPos;
-			size_t l = delta.length()+_currentMove.length();
-
-			if (delta == Position(0, 0)){
-				if (ev.mouseButton.button == sf::Mouse::Left){
-					/* Left-Click on last reached position: finish and send move */
-					sendDisplacement(*_selectedPlayer, _currentMove);
-					cout << "SENT MOVE " << JSON::List(_currentMove) << endl;
-					_selectedPlayer = NULL;
-					_currentMove = Displacement();
-					_match.clear();
-				} else if (ev.mouseButton.button == sf::Mouse::Right){
-					/* Right-Click on last reached position: maybe throw quaffle */
-					if (_selectedPlayer->canQuaffle()){
-						PlayerQuaffle & pq = (PlayerQuaffle &) *_selectedPlayer;
-						if (pq.hasQuaffle()){
-							_throwBall = true;
-							_match.hilightAccessibles(pos, 5, &UIMatch::hilightBlue);
-						}
-					}
-				}
-			}
-
-			else if (_throwBall && delta.isDirection()){
-				sendStroke(Stroke(
-					*_selectedPlayer, _currentMove, ACT_THROW, lastPos, delta));
-				_selectedPlayer = NULL;
-				_currentMove = Displacement();
-				_throwBall = false;
-			}
-
-			else if (delta.isDirection() && l <= _selectedPlayer->getSpeed()){
-				size_t rest = _selectedPlayer->getSpeed() - l;
-				_currentMove.addMove(delta);
-				_match.clear(); /* clear hilights */
-				
-				if (_currentMove.length() < _selectedPlayer->getSpeed()){
-					_match.hilightAccessibles(pos, rest);
-				}
-				_match.hilightDisplacement(_selectedPlayer->getPosition(), _currentMove);
-			} else {
-				_selectedPlayer = NULL;
-				_currentMove = Displacement();
-				_throwBall = false;
-			}
-		}
-		redraw();
+	else if (ev.type == sf::Event::MouseMoved){
+		Position GUI_pos = Position(ev.mouseMove.x, ev.mouseMove.y);
+		Position pos(_match.GUI2pitch(GUI_pos));
+		treatTooltip(pos);
 	}
 	return true;
 }

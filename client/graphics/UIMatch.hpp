@@ -25,6 +25,10 @@ class UIMatch : public sf::Drawable {
         sf::Texture _own_players_textures[6];
         sf::Texture _other_players_textures[6];
 
+        sf::Font _tooltip_font;
+        sf::Text _tooltip;
+        bool _tooltip_visible;
+
         /*! Hilights matrix */
         PosMatrix<const sf::Color> _hilights;
 
@@ -72,6 +76,9 @@ class UIMatch : public sf::Drawable {
 
         /*! Conform to Drawable interface */
         void draw(sf::RenderTarget &target, sf::RenderStates states=sf::RenderStates()) const;
+
+        void showTooltip(Position const & pos, std::string const & text);
+        void hideTooltip();
 
         void hilight(Position const & pos, const sf::Color *color=&hilightYellow);
         void hilightAccessibles(Position const & from, int len, const sf::Color *color=&hilightYellow);
