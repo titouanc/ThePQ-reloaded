@@ -2,6 +2,16 @@ all: server client
 
 .PHONY: common server client mrproper clean all
 
+client/graphicClient.app: client
+
+ThePQ.app: client/graphicClient.app
+	rm -rf $@
+	mkdir -p $@/Contents/MacOS/graphics $@/Contents/Frameworks
+	cp -r client/graphics/textures client/graphics/fonts $@/Contents/MacOS/graphics/
+	cp $< $@/Contents/MacOS/ThePQ
+	echo '{"host": "thepq.partou.se", "port": 32123}' > $@/Contents/MacOS/netconfig.json
+	cp -R /Library/Frameworks/SFML.framework $@/Contents/Frameworks
+
 common:
 	+make -C common
 
