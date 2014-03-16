@@ -236,6 +236,25 @@ TEST(free_position)
     ASSERT(free[3].y() == -1);
 ENDTEST()
 
+TEST(displacement_no_illegal_pos)
+    Pitch p;
+    Displacement d;
+    d.addMove(Position(-6, 0));
+
+    ASSERT(p.isValid(Position(0, 0)));
+    ASSERT(p.isValid(Position(-2, 0)));
+    ASSERT(p.isValid(Position(-4, 0)));
+    ASSERT(p.isValid(Position(-6, 0)));
+
+    ASSERT(! p.isValid(Position(-1, 0)));
+    ASSERT(! p.isValid(Position(-3, 0)));
+    ASSERT(! p.isValid(Position(-5, 0)));
+
+    for (double t=0; t<=1; t+=1.0/6){
+        ASSERT(p.isValid(d.position(t)));
+    }
+ENDTEST()
+
 int main()
 {
     TestFunc testSuite[] = {
@@ -259,7 +278,8 @@ int main()
         ADDTEST(composite_invalid_displacement),
         ADDTEST(pitch),
         ADDTEST(pitch_repr),
-        ADDTEST(free_position)
+        ADDTEST(free_position),
+        ADDTEST(displacement_no_illegal_pos)
     };
 
     return RUN(testSuite);

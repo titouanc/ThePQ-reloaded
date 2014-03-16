@@ -41,7 +41,14 @@ Position Displacement::position(double t, size_t speed) const
         } else {
             double l = t-begin;
             double relative_pos = l/(end-begin);
-            return res + _moves[i]*relative_pos;
+            if (_moves[i].y() == 0){
+                /* If we travel on a horizontal line; ensure we're not
+                   between 2 hexagons (axiom: parity line == parity column) */
+                double x = res.x() + 2*round(_moves[i].x()*(relative_pos/2));
+                return Position(x, res.y());
+            } else {
+                return res + _moves[i]*relative_pos;
+            }
         }
     }
     return res;
