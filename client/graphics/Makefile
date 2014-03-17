@@ -1,5 +1,5 @@
 PKGCONFIG = pkg-config
-OBJS = Layer.o MainController.o GraphicManager.o UIMatch.o loadPath.o
+OBJS = Layer.o MainController.o GraphicManager.o UIMatch.o loadPath.o Label.o MessageBox.o TableView.o Textbox.o
 CPPFLAGS = -I../../common
 
 LIBS = ../../common/model/libmodel.a ../../common/json/libjson.a
