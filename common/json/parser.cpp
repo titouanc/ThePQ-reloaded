@@ -1,4 +1,10 @@
-#include "json.hpp"
+#include "parser.hpp"
+#include "number.hpp"
+#include "string.hpp"
+#include "list.hpp"
+#include "dict.hpp"
+#include "error.hpp"
+
 #include <cstring>
 #include <cassert>
 #include <cmath>

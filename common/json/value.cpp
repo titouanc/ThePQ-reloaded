@@ -1,4 +1,6 @@
-#include "json.hpp"
+#include "value.hpp"
+#include "error.hpp"
+#include "parser.hpp"
 #include <sstream>
 #include <cstdlib>
 

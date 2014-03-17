@@ -1,6 +1,8 @@
 #ifndef DEFINE_JSON_DOCUMENT_HEADER
 #define DEFINE_JSON_DOCUMENT_HEADER
 
+#include "json.hpp"
+
 #include <functional>
 #include <unistd.h>
 #include <sys/file.h>

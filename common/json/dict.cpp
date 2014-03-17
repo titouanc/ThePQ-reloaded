@@ -1,13 +1,13 @@
-#include "json.hpp"
+#include "dict.hpp"
+#include "string.hpp"
+#include "error.hpp"
+#include "number.hpp"
 #include <cmath>
 
 using namespace JSON;
 
-Dict::Dict() : _content(){
-    /*Constructor for Dict object
-     *Maps a string to type Value
-    */
-}
+Dict::Dict() : _content()
+{}
 
 Dict::~Dict() 
 {
@@ -19,7 +19,6 @@ Dict::~Dict()
 
 Dict::Dict(const Dict & other) : Dict()
 {
-    /*Copy constructor*/
     for (Dict::const_iterator it=other.begin(); it!=other.end(); it++)
         setPtr(it->first, it->second->clone());
 }
@@ -82,10 +81,6 @@ void Dict::_writeTo(std::ostream & out) const
 
 bool Dict::hasKey(std::string const & key) const
 {
-    /*Method returning boolean testing key existence.
-     * returns true (key found)
-     *         false (key not found)
-     */
     return _content.find(key) != _content.end();
 }
 
@@ -105,7 +100,6 @@ void Dict::setPtr(std::string const & key, Value *ptr)
 
 void Dict::set(std::string const & key, Value const & val)
 {
-    /*Method setting the key/value pair*/
     setPtr(key, val.clone());
 }
 
@@ -132,7 +126,6 @@ Value * Dict::steal(std::string const & key)
 
 void Dict::set(std::string const & key, double val)
 {
-    /*Method setting the key value pair*/
     if (round(val) == val)
         set(key, Integer(val));
     else
@@ -141,36 +134,30 @@ void Dict::set(std::string const & key, double val)
 
 void Dict::set(std::string const & key, std::string const & val)
 {
-    /*Method setting key/value pair*/
     set(key, String(val));
 }
 
 Dict::iterator Dict::begin(void)
 {
-    /*Method returning the start of the dictionary*/
     return _content.begin();
 }
 
 Dict::iterator Dict::end(void)
 {
-    /*Method returning the end of the dictionary*/
     return _content.end();
 }
 
 Dict::const_iterator Dict::begin(void) const
 {
-    /*Method returning the start of a const dictionary*/
     return _content.begin();
 }
 
 Dict::const_iterator Dict::end(void) const
 {
-    /*Method returning the end of a constant dictionary*/
     return _content.end();
 }
 
 size_t Dict::len(void) const
 {
-    /*Method returning the size of a dictionary*/
     return _content.size();
 }
