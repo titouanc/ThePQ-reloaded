@@ -51,7 +51,7 @@ void GraphicStadiumManager::displayInstallations()
 		upgradeCostValue.setColor(BLUE_TEXT_COLOR);
 
 		current.addLabel("Downgrade refunds : ", sf::Color::White).setPosition(10, 90);
-		Label &downgradeRefundsValue = current.addLabel(user().installations[i]->getUpgradeCost());	
+		Label &downgradeRefundsValue = current.addLabel(user().installations[i]->getDowngradeRefunds());	
 		downgradeRefundsValue.setPosition(270-15-downgradeRefundsValue.getWidth(), 90);
 		downgradeRefundsValue.setColor(BLUE_TEXT_COLOR);
 
