@@ -35,6 +35,9 @@ bool GUI::GraphicManager::treatEvent(sf::Event const & event)
 	else if (event.type == sf::Event::TextEntered){
 		_controller.handleTextEntered(event);
 	}
+	else if (event.type == sf::Event::MouseMoved){
+		_controller.handleMouseMoved(event);
+	}
 	else if (event.type == sf::Event::Closed ||
 			(event.type==sf::Event::KeyPressed 
 			&& event.key.code==sf::Keyboard::Escape)){

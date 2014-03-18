@@ -18,6 +18,7 @@ namespace GUI {
 		bool handleClick(sf::Event e);
 		bool handleRightClick(sf::Event e);
 		void handleTextEntered(sf::Event e);
+		void handleMouseMoved(sf::Event e);
 		sf::RenderWindow window;
 		sf::Music mainMusic;
 	private:

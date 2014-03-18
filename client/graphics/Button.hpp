@@ -35,6 +35,8 @@ namespace GUI {
 			this->_w = (int)_text.getLocalBounds().width + 2*BUTTON_SIDE_PADDING;
 			_backgroundRect = sf::RectangleShape(sf::Vector2f(this->_w, this->_h));
 			_backgroundRect.setFillColor(color);
+			_highlightRect = _backgroundRect;
+			_highlightRect.setFillColor(sf::Color(0xff, 0xff, 0xff, 0x00));
 		}
 
 		Button(
@@ -61,6 +63,8 @@ namespace GUI {
 			this->_w = (int)_text.getLocalBounds().width + 2*BUTTON_SIDE_PADDING;
 			_backgroundRect = sf::RectangleShape(sf::Vector2f(this->_w, this->_h));
 			_backgroundRect.setFillColor(color);
+			_highlightRect = _backgroundRect;
+			_highlightRect.setFillColor(sf::Color(0xff, 0xff, 0xff, 0x00));
 		}
 
 		bool isInBounds (int x, int y) const {
@@ -72,16 +76,20 @@ namespace GUI {
 			dest.draw(_backgroundRect);
 			_text.setPosition(this->_x+BUTTON_SIDE_PADDING, this->_y+BUTTON_TOP_PADDING);
 			dest.draw(_text);
+			_highlightRect.setPosition(this->_x, this->_y);
+			dest.draw(_highlightRect);
 		}
 
 		void setWidth(int w){ 
 			this->_w = w; 
 			_backgroundRect.setSize(sf::Vector2f(this->_w, this->_h));
+			_highlightRect.setSize(sf::Vector2f(this->_w, this->_h));
 		}
 		
 		void setHeight(int h){ 
 			this->_h = h; 
 			_backgroundRect.setSize(sf::Vector2f(this->_w, this->_h));
+			_highlightRect.setSize(sf::Vector2f(this->_w, this->_h));
 		}
 
 		void setBackgroundColor(sf::Color color){
@@ -99,11 +107,21 @@ namespace GUI {
 				_text.setString(" ");
 			this->_w = (int)_text.getLocalBounds().width + 2*BUTTON_SIDE_PADDING;
 			_backgroundRect.setSize(sf::Vector2f(this->_w, this->_h));
+			_highlightRect.setSize(sf::Vector2f(this->_w, this->_h));
 		} 
+
+		void onMouseMoved(int x, int y){
+			if (isInBounds(x, y))
+				_highlightRect.setFillColor(sf::Color(0xff, 0xff, 0xff, 0x44));
+			else
+				_highlightRect.setFillColor(sf::Color(0xff, 0xff, 0xff, 0x00));
+
+		}
 	private:
 		sf::Text _text;
 		sf::Font _font;
 		sf::RectangleShape _backgroundRect;
+		sf::RectangleShape _highlightRect;
 	};
 }
 

@@ -83,3 +83,12 @@ void GUI::MainController::handleTextEntered(sf::Event e)
 	}
 	window.display();
 }
+
+void GUI::MainController::handleMouseMoved(sf::Event e)
+{
+	if (_layers.size() != 0){
+		_layers.top()->handleMouseMoved(e);
+		_layers.top()->renderTo(window);
+	}
+	window.display();
+}
