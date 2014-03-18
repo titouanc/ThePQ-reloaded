@@ -1,0 +1,15 @@
+ifeq (${SFML_INCLUDE},)
+	SFML_INCLUDE = ${HOME}/include/
+endif
+
+ifeq (${SFML_LIB},)
+	SFML_LIB = ${HOME}/lib/
+endif
+
+ifeq ($(shell uname -s),Darwin)
+	SFML_CPPFLAGS = -I/Library/Frameworks/SFML.framework/Headers/
+	SFML_LDFLAGS = -framework sfml-system -framework sfml-audio -framework sfml-window -framework sfml-graphics
+else
+	SFML_CPPFLAGS = -I${SFML_INCLUDE}
+	SFML_LDFLAGS = -L${SFML_LIB} -lsfml-system -lsfml-audio -lsfml-window -lsfml-graphics
+endif
