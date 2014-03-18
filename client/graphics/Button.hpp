@@ -111,7 +111,7 @@ namespace GUI {
 		} 
 
 		void onMouseMoved(int x, int y){
-			if (isInBounds(x, y))
+			if (isInBounds(x, y) && this->isEnabled())
 				_highlightRect.setFillColor(sf::Color(0xff, 0xff, 0xff, 0x44));
 			else
 				_highlightRect.setFillColor(sf::Color(0xff, 0xff, 0xff, 0x00));
