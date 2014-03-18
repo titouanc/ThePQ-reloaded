@@ -1,4 +1,4 @@
-PKGCONFIG = pkg-config
+include SFML.includes
 
 OBJS_GUI = user/GraphicUserManager.o stadium/GraphicStadiumManager.o match/GraphicMatchManager.o market/GraphicMarketManager.o fgame/GUIFGameManager.o team/GraphicTeamManager.o championship/GraphicChampionshipManager.o
 
@@ -10,13 +10,7 @@ OBJS = ${OBJS_CONTROLLER} ${OBJS_GUI} ${OBJS_CLI}
 
 LIBS = ../common/json/libjson.a ../common/network/libnetwork.a ../common/model/libmodel.a graphics/libgraphics.a
 
-CPPFLAGS = -I../common -I.
-
-ifeq ($(shell uname -s),Darwin)
-        CPPFLAGS += -I/Library/Frameworks/SFML.framework/Headers/
-else
-        CPPFLAGS += $(shell ${PKGCONFIG} --cflags sfml-all)
-endif
+CPPFLAGS = -I../common -I. ${SFML_CPPFLAGS}
 
 .PHONY: graphics/libgraphics.a admin/adminClient.app
  
@@ -35,8 +29,5 @@ graphics/libgraphics.a:
 	+make -C graphics/
  
 include ../Makefile.includes
-ifeq ($(shell uname -s),Darwin)
-	LDFLAGS += -framework sfml-system -framework sfml-graphics -framework sfml-window -framework sfml-audio
-else
-	LDFLAGS += $(shell ${PKGCONFIG} --libs sfml-all)
-endif
+
+LDFLAGS += ${SFML_LDFLAGS}

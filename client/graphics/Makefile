@@ -1,13 +1,10 @@
-PKGCONFIG = pkg-config
+include ../SFML.includes
+
 OBJS = Layer.o MainController.o GraphicManager.o UIMatch.o loadPath.o
 CPPFLAGS = -I../../common
 
 LIBS = ../../common/model/libmodel.a ../../common/json/libjson.a
-ifeq ($(shell uname -s),Darwin)
-	CPPFLAGS += -I/Library/Frameworks/SFML.framework/Headers/
-else
-	CPPFLAGS += $(shell ${PKGCONFIG} --cflags sfml-all)
-endif
+CPPFLAGS += ${SFML_CPPFLAGS}
 
 #all: libgraphics.a testbox.app
 all: libgraphics.a
@@ -16,8 +13,4 @@ libgraphics.a: ${OBJS}
 
 include ../../Makefile.includes
 
-ifeq ($(shell uname -s),Darwin)
-	LDFLAGS += -framework sfml-system -framework sfml-graphics -framework sfml-window -framework sfml-audio
-else
-	LDFLAGS += $(shell ${PKGCONFIG} --libs sfml-all)
-endif
+LDFLAGS += ${SFML_LDFLAGS}
