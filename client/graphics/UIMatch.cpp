@@ -4,6 +4,7 @@
 #include <model/Ball.hpp>
 #include <model/Player.hpp>
 #include "GUIConstants.hpp"
+#include <cmath>
 
 using namespace GUI;
 
@@ -237,10 +238,11 @@ void UIMatch::draw(sf::RenderTarget &dest, sf::RenderStates states) const
     dest.draw(_background);
 
     sf::CircleShape sand(circleSize(), 6);
-    sand.setTexture(&_sand_texture);
+    //sand.setTexture(&_sand_texture);
 
     sf::CircleShape grass(circleSize(), 6);
-    grass.setTexture(&_grass_texture);
+    sand.setFillColor(sf::Color::White);
+    //grass.setTexture(&_grass_texture);
 
     sf::Sprite goal(_goal_texture);
     sf::Vector2u goal_size(_goal_texture.getSize());
@@ -259,6 +261,8 @@ void UIMatch::draw(sf::RenderTarget &dest, sf::RenderStates states) const
 
                 if (_pitch.isInKeeperZone(pos)){
                     sand.setPosition(destpos.x(), destpos.y());
+                    sand.setOutlineColor(sf::Color(0x00, 0xae, 0xef, 0x44));
+                    sand.setOutlineThickness(1);
                     dest.draw(sand);
 
                     if (_pitch.isGoal(pos)){
@@ -267,6 +271,12 @@ void UIMatch::draw(sf::RenderTarget &dest, sf::RenderStates states) const
                     }
                 } else {
                     grass.setPosition(destpos.x(), destpos.y());
+                    int blue = 249;
+                    int red = 184;
+                    blue = blue-2*sqrt(abs(x))-3*sqrt(abs(y));
+                    red = red-2*sqrt(abs(x))-3*abs(abs(y));
+                    if (blue > 256) blue = 255;
+                    grass.setFillColor(sf::Color(0x05, red, blue, 0xff));
                     dest.draw(grass);
                 }
             }
