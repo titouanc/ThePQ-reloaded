@@ -13,6 +13,7 @@
 #include "AdminManager.hpp"
 #include <model/Championship.hpp>
 #include "ServerManager.hpp"
+#include "UserManager.hpp"
 
 
 using namespace std;
@@ -59,7 +60,6 @@ public:
 	User *logUserIn(const JSON::Dict &credentials, int peer_id);
     void checkTeamName(const JSON::Dict &data, int peer_id);
     void sendTeamInfos(const JSON::Dict &data, int peer_id);
-	void checkIfUserExists(string username, int peer_id);
 	void sendInstallationsList(int peer_id);
 	void upgradeInstallation(int peer_id, size_t i);
 	void downgradeInstallation(int peer_id, size_t i);
@@ -108,6 +108,7 @@ private:
     PlayerMarket *_market;
     std::deque<MatchManager*> _matches;
     ServerManager _serverMgr;
+    UserManager _userMgr;
     AdminManager _adminManager;
     std::deque<Championship*> _championships;
     std::deque<Schedule> _pendingChampMatches;

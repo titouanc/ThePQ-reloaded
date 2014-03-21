@@ -34,6 +34,7 @@ Server::Server(NetConfig const & config) :
 	_connectionManager(_inbox, _outbox, config.ip.c_str(), config.port, config.maxClients),
 	_market(new PlayerMarket(this)),_matches(), 
 	_serverMgr(_inbox, _outbox, _users, _connectionManager, _matches),
+	_userMgr(_serverMgr),
 	_adminManager(_connectionManager,this),
 	_timeTicks(0), _champsMutex(PTHREAD_MUTEX_INITIALIZER), _timeThread()
 {
@@ -281,9 +282,7 @@ void Server::treatMessage(
 	else if (ISSTR(payload)){
 		string const & data = STR(payload);
 
-		if (messageType == MSG::USER_EXISTS) {
-			checkIfUserExists(data, peer_id);
-		} else if (messageType == MSG::INSTALLATIONS_LIST){
+		if (messageType == MSG::INSTALLATIONS_LIST){
 				sendInstallationsList(peer_id);
 		} else if(messageType == MSG::CONNECTED_USERS_LIST){
 				sendConnectedUsersList(peer_id);
@@ -438,25 +437,6 @@ void Server::checkTeamName(const JSON::Dict &data, int peer_id){
 	Message status(peer_id, response.clone());
 	_outbox.push(status);
 
-}
-
-void Server::checkIfUserExists(string username, int peer_id)
-{
-	User *user = User::load(username);
-	JSON::Dict response;
-	response.set("type", MSG::STATUS);
-
-	if (user != NULL)
-		// user found
-		response.set("data", MSG::USER_EXISTS);
-	else 
-		// user not found
-		response.set("data", MSG::USER_NOT_FOUND);
-
-	Message status(peer_id, response.clone());
-	_outbox.push(status);
-
-	delete user;
 }
 
 void Server::sendInstallationsList(int peer_id)
