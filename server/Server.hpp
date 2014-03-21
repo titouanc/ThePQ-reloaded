@@ -12,6 +12,7 @@
 #include "PlayerMarket.hpp"
 #include "AdminManager.hpp"
 #include <model/Championship.hpp>
+#include "ServerManager.hpp"
 
 
 using namespace std;
@@ -106,6 +107,7 @@ private:
 	net::ConnectionManager _connectionManager;
     PlayerMarket *_market;
     std::deque<MatchManager*> _matches;
+    ServerManager _serverMgr;
     AdminManager _adminManager;
     std::deque<Championship*> _championships;
     std::deque<Schedule> _pendingChampMatches;

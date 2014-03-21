@@ -32,7 +32,9 @@ static void* runTimeLoop(void* args)
 Server::Server(NetConfig const & config) : 
 	_inbox(), _outbox(), _users(),
 	_connectionManager(_inbox, _outbox, config.ip.c_str(), config.port, config.maxClients),
-	_market(new PlayerMarket(this)),_matches(),_adminManager(_connectionManager,this),
+	_market(new PlayerMarket(this)),_matches(), 
+	_serverMgr(_inbox, _outbox, _users, _connectionManager, _matches),
+	_adminManager(_connectionManager,this),
 	_timeTicks(0), _champsMutex(PTHREAD_MUTEX_INITIALIZER), _timeThread()
 {
 	loadChampionships();
