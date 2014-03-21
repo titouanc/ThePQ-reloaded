@@ -1,4 +1,4 @@
-OBJS= Server.o MatchManager.o PlayerMarket.o AdminManager.o Match.o ServerManager.o UserManager.o StadiumManager.o
+OBJS= Server.o MatchManager.o PlayerMarket.o AdminManager.o Match.o ServerManager.o UserManager.o StadiumManager.o TeamManager.o
 LIBS = ../common/network/libnetwork.a ../common/json/libjson.a ../common/model/libmodel.a
 
 CPPFLAGS = -I../common/

@@ -15,6 +15,7 @@
 #include "ServerManager.hpp"
 #include "UserManager.hpp"
 #include "StadiumManager.hpp"
+#include "TeamManager.hpp"
 
 
 using namespace std;
@@ -57,32 +58,23 @@ public:
     /*! Create default user accounts if there is no registered user */
     void initDefaultAccounts();
 
-    void sendTeamInfos(const JSON::Dict &data, int peer_id);
-
 	void sendConnectedUsersList(int peer_id);
     void sendInvitationToPlayer(string const& username, int peer_id);
     void sendInvitationResponseToPlayer(const JSON::Dict &response, int peer_id);
-    void sendPlayersOnMarketList(int peer_id);
-    void addPlayerOnMarket(const JSON::Dict &bid, int peer_id);
-    void placeBidOnPlayer(const JSON::Dict &bid, int peer_id);
+
     /* Add/substract team infos based on int sign (if - : substract, if +, add) */
     void endOfMatchTeamInfosUpdate(std::string username, int money, int fame, int ap);
     string getRandomName();
     void collectFinishedMatches(void);
     void startMatch(int client_idA, int client_idB, bool champMatch);
-    void sendPlayersList(int peer_id);
-    void sendMarketMessage(const std::string&, const JSON::Dict&);
     void sendNotification(std::string, const JSON::Dict&);
-    void putPlayerOnSquadPosition(const JSON::Dict &response, int peer_id);
-    void swapPlayersOfSquad(const JSON::Dict &response, int peer_id);
-    int getPeerID(const std::string&);
+
     void timeLoop();
     void timeUpdateStadium();
     void timeUpdateChampionship();
     void addChampionship(const Championship&);
         /* Return a pointer to the user object with given username,
        or NULL if not connected */
-    User *getUserByName(std::string username);
     Championship* getChampionshipByName(std::string champName);
     Championship* getChampionshipByUsername(std::string username);
     size_t nbrUsersConnected(){return _users.size();}
@@ -101,11 +93,12 @@ private:
 	SharedQueue<net::Message> _inbox, _outbox;
 	map<int, User*> _users;
 	net::ConnectionManager _connectionManager;
-    PlayerMarket *_market;
     std::deque<MatchManager*> _matches;
     ServerManager _serverMgr;
     UserManager _userMgr;
     StadiumManager _stadiumMgr;
+    TeamManager _teamMgr;
+    PlayerMarket _market;
     AdminManager _adminManager;
     std::deque<Championship*> _championships;
     std::deque<Schedule> _pendingChampMatches;

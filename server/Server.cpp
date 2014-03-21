@@ -32,9 +32,9 @@ static void* runTimeLoop(void* args)
 Server::Server(NetConfig const & config) : 
 	_inbox(), _outbox(), _users(),
 	_connectionManager(_inbox, _outbox, config.ip.c_str(), config.port, config.maxClients),
-	_market(new PlayerMarket(this)),_matches(), 
+	_matches(), 
 	_serverMgr(_inbox, _outbox, _users, _connectionManager, _matches),
-	_userMgr(_serverMgr), _stadiumMgr(_serverMgr),
+	_userMgr(_serverMgr), _stadiumMgr(_serverMgr), _teamMgr(_serverMgr), _market(_serverMgr),
 	_adminManager(_connectionManager,this),
 	_timeTicks(0), _champsMutex(PTHREAD_MUTEX_INITIALIZER), _timeThread()
 {
@@ -50,7 +50,6 @@ Server::~Server()
 		(*it)->stop();
 		delete *it;
 	}
-	delete _market;
 	_matches.clear();
 }
 
@@ -251,7 +250,7 @@ void Server::treatMessage(
 				}
 				loggedIn->clearOfflineMsg();
 				loggedIn->loadTeam();
-				sendTeamInfos(loggedIn->getTeam(), peer_id);
+				_serverMgr.sendTeamInfos(loggedIn->getTeam(), peer_id);
 			}
 		}
 		else if(messageType == MSG::USER_CHOOSE_TEAMNAME)
@@ -261,22 +260,22 @@ void Server::treatMessage(
 			_userMgr.registerUser(dict, peer_id);
 
 		else if (messageType == MSG::ADD_PLAYER_ON_MARKET_QUERY)
-			addPlayerOnMarket(dict, peer_id);
+			_market.addPlayerOnMarket(dict, peer_id);
 		
 		else if (messageType == MSG::BID_ON_PLAYER_QUERY)
-			placeBidOnPlayer(dict, peer_id);
+			_market.placeBidOnPlayer(dict, peer_id);
 		
 		else if(messageType == MSG::PLAYERS_LIST)
-			sendPlayersList(peer_id);
+			_serverMgr.sendPlayersList(peer_id);
 		
 		else if(messageType == MSG::FRIENDLY_GAME_INVITATION_RESPONSE)
-				sendInvitationResponseToPlayer(dict, peer_id);	
+			sendInvitationResponseToPlayer(dict, peer_id);	
 
 		else if(messageType == MSG::PUT_PLAYER_ON_SQUAD_POSITION)
-			putPlayerOnSquadPosition(dict, peer_id);
+			_teamMgr.putPlayerOnSquadPosition(dict, peer_id);
 
 		else if(messageType == MSG::SWAP_PLAYERS_SQUAD_POSITION)
-			swapPlayersOfSquad(dict, peer_id);
+			_teamMgr.swapPlayersOfSquad(dict, peer_id);
 	} 
 
 	else if (ISSTR(payload)){
@@ -287,7 +286,7 @@ void Server::treatMessage(
 		} else if(messageType == MSG::CONNECTED_USERS_LIST){
 				sendConnectedUsersList(peer_id);
 		} else if(messageType == MSG::PLAYERS_ON_MARKET_LIST) {
-				sendPlayersOnMarketList(peer_id);
+				_market.	sendPlayersOnMarketList(peer_id);
 		} else if(messageType == MSG::FRIENDLY_GAME_USERNAME) {
 				sendInvitationToPlayer(data, peer_id);
 		} else if(messageType == MSG::JOINABLE_CHAMPIONSHIPS_LIST) {
@@ -314,7 +313,7 @@ void Server::treatMessage(
 
 void Server::endOfMatchTeamInfosUpdate(std::string username, int money, int fame, int ap)
 {
-	int peer_id = getPeerID(username);
+	int peer_id = _serverMgr.getPeerID(username);
 	if(peer_id >= 0){
 		Team & team = _users[peer_id]->getTeam();
 		(money>=0) ? team.getPayed(money) : team.buy(abs(money));		//Should never lose money
@@ -330,14 +329,6 @@ void Server::endOfMatchTeamInfosUpdate(std::string username, int money, int fame
 		(ap>=0) ? team.earnAcPoints(ap) : team.loseAcPoints(abs(ap));
 		team.saveInfos();
 	}
-}
-
-void Server::sendTeamInfos(const JSON::Dict &data, int peer_id)
-{
-	JSON::Dict response;
-	response.set("type", net::MSG::TEAM_INFOS);
-	response.set("data", data);
-	_outbox.push(Message(peer_id, response.clone()));
 }
 
 void Server::sendConnectedUsersList(int peer_id)
@@ -417,95 +408,6 @@ void Server::sendInvitationResponseToPlayer(const JSON::Dict &response, int peer
 	}
 }
 
-void Server::addPlayerOnMarket(const JSON::Dict &sale, int peer_id){
-	Message status(peer_id, _market->addPlayer(sale).clone());
-	_outbox.push(status);
-}
-
-void Server::sendPlayersOnMarketList(int peer_id){
-	Message status(peer_id, _market->allSales().clone());
-	_outbox.push(status);
-}
-
-void Server::placeBidOnPlayer(const JSON::Dict &bid, int peer_id){
-	Message status(peer_id, _market->bid(bid).clone());
-	_outbox.push(status);
-}
-
-void Server::sendPlayersList(int peer_id){
-	std::vector<Player> & players = _users[peer_id]->getTeam().getPlayers();
-	JSON::List jsonPlayers;
-	for(size_t i = 0; i<players.size();++i){
-		jsonPlayers.append(JSON::Dict(players[i]));
-	}
-	JSON::Dict toSend;
-	toSend.set("type",net::MSG::PLAYERS_LIST);
-	toSend.set("data", jsonPlayers);
-	Message status(peer_id, toSend.clone());
-	_outbox.push(status);
-}
-
-int Server::getPeerID(std::string const &username){
-	for (map<int, User*>::iterator it=_users.begin(); it!=_users.end(); it++){
-		if (it->second->getUsername() == username){
-			return it->first;
-		}
-	}
-	return -1;
-}
-
-void Server::sendMarketMessage(std::string const &username, const JSON::Dict &message){
-	JSON::Dict toSend;
-	toSend.set("type",net::MSG::MARKET_MESSAGE);
-	toSend.set("data",message);
-
-	int to_peer = getPeerID(username);
-	if (to_peer >= 0){
-		/* User currently connected to server */
-		Message status(to_peer, toSend.clone());
-		_outbox.push(status); 
-	} else {
-		User *user = User::load(username);
-		if (user != NULL){
-			user->sendOfflineMsg(toSend);
-			delete user;
-		}
-	}
-}
-
-User *Server::getUserByName(std::string username)
-{
-	std::map<int, User*>::const_iterator iter;
-	for (iter=_users.begin(); iter!=_users.end(); iter++)
-		if (username == iter->second->getUsername())
-			return iter->second;
-	return NULL;
-}
-
-void Server::putPlayerOnSquadPosition(const JSON::Dict &response, int peer_id){
-	int position = 0;
-	int member_id = 0;
-	if (ISINT(response.get(net::MSG::PLAYER_ID)))
-		member_id = INT(response.get(net::MSG::PLAYER_ID));
-	if (ISINT(response.get(net::MSG::SQUAD_POSITION)))
-		position = INT(response.get(net::MSG::SQUAD_POSITION));
-	_users[peer_id]->getTeam().getSquad().putPlayerAtPosition(member_id, position);
-	sendTeamInfos(_users[peer_id]->getTeam(), peer_id);
-	MemoryAccess::save(_users[peer_id]->getTeam());
-}
-
-void Server::swapPlayersOfSquad(const JSON::Dict &response, int peer_id){
-	int position = 0;
-	int member_id = 0;
-	if (ISINT(response.get(net::MSG::PLAYER_ID)))
-		member_id = INT(response.get(net::MSG::PLAYER_ID));
-	if (ISINT(response.get(net::MSG::SQUAD_POSITION)))
-		position = INT(response.get(net::MSG::SQUAD_POSITION));
-	_users[peer_id]->getTeam().getSquad().swapPlayers(member_id, position);
-	sendTeamInfos(_users[peer_id]->getTeam(), peer_id);
-	MemoryAccess::save(_users[peer_id]->getTeam());
-}
-
 void Server::timeLoop()
 {
 	time_t timeStart = time(NULL);
@@ -553,7 +455,7 @@ void Server::timeUpdateStadium()
 	for (size_t i = 0; i < users.size(); ++i)
 	{
 		int peer_id;
-		if( (peer_id = getPeerID(users[i].getUsername())) >= 0 ){
+		if( (peer_id = _serverMgr.getPeerID(users[i].getUsername())) >= 0 ){
 			Team & team = _users[peer_id]->getTeam();
 			before = team.getFunds();
 			team.timeUpdate();
@@ -562,7 +464,7 @@ void Server::timeUpdateStadium()
 			name = team.getName();
 			JSON::Dict toSend;
 			toSend.set("funds",team.getFunds());
-			sendTeamInfos(toSend,peer_id);
+			_serverMgr.sendTeamInfos(toSend,peer_id);
 		}
 		else{
 			Team team(users[i].getUsername());
@@ -613,10 +515,10 @@ void Server::responsePendingChampMatch(std::string response, int peer_id){
 			toOtherUser.set("data",net::MSG::CHAMPIONSHIP_MATCH_START);
 			Message toS(peer_id, toSender.clone());
 			_outbox.push(toS);
-			Message toO(getPeerID(opponent), toOtherUser.clone());
+			Message toO(_serverMgr.getPeerID(opponent), toOtherUser.clone());
 			_outbox.push(toO); 
 			endOfPending(*pending);
-			startMatch(peer_id,getPeerID(opponent),true);
+			startMatch(peer_id, _serverMgr.getPeerID(opponent),true);
 		}
 		//Case 2 : sender withdrawed from match
 		else if(response == net::MSG::CHAMPIONSHIP_MATCH_WITHDRAW){
@@ -652,7 +554,7 @@ void Server::responsePendingChampMatch(std::string response, int peer_id){
 }
 
 void Server::sendNotification(std::string username, const JSON::Dict & toSend){
-	int to_peer = getPeerID(username);
+	int to_peer = _serverMgr.getPeerID(username);
 	if (to_peer >= 0){
 		/* User currently connected to server */
 		Message status(to_peer, toSend.clone());
@@ -729,7 +631,7 @@ void Server::resolveUnplayedChampMatch(Schedule & pending){
 		toWinner.set("data",net::MSG::CHAMPIONSHIP_UNPLAYED_MATCH_WON);
 		toLoser.set("type",net::MSG::CHAMPIONSHIP_MATCH_STATUS_CHANGE);
 		toLoser.set("type",net::MSG::CHAMPIONSHIP_UNPLAYED_MATCH_LOST);
-		Message status(getPeerID(winner),toWinner.clone());
+		Message status(_serverMgr.getPeerID(winner),toWinner.clone());
 		_outbox.push(status);
 		sendNotification(loser,toLoser);
 	}

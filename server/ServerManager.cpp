@@ -18,3 +18,26 @@ void ServerManager::sendTeamInfos(const JSON::Dict &data, int peer_id)
 	response.set("data", data);
 	_outbox.push(Message(peer_id, response.clone()));
 }
+
+void ServerManager::sendPlayersList(int peer_id){
+	std::vector<Player> & players = _users[peer_id]->getTeam().getPlayers();
+	JSON::List jsonPlayers;
+	for(size_t i = 0; i<players.size();++i){
+		jsonPlayers.append(JSON::Dict(players[i]));
+	}
+	JSON::Dict toSend;
+	toSend.set("type",net::MSG::PLAYERS_LIST);
+	toSend.set("data", jsonPlayers);
+	Message status(peer_id, toSend.clone());
+	_outbox.push(status);
+}
+
+
+int ServerManager::getPeerID(std::string const &username){
+	for (map<int, User*>::iterator it=_users.begin(); it!=_users.end(); it++){
+		if (it->second->getUsername() == username){
+			return it->first;
+		}
+	}
+	return -1;
+}

@@ -8,15 +8,13 @@
 #include <model/Sale.hpp>
 #include <model/Player.hpp>
 #include <pthread.h>
-#include "Server.hpp"
+#include "ServerManager.hpp"
 
-class Server;
 class Sale;
-class PlayerMarket{
+class PlayerMarket : public ServerManager {
 	friend void * saleManager(void *); 		//Thread deleting the ended sales
 	friend void * saleGenerator(void *); 	//Thread generating players
 private:
-	Server *_server;
 	std::vector<Sale*> _sales;
 	pthread_t _manager;
 	pthread_t _generator;
@@ -34,14 +32,19 @@ private:
 	void sendMessageToUser(std::string, const JSON::Dict&);
 	void handleNewBid(std::string,std::string,int,int);
 public:
-	PlayerMarket(Server*);
+	PlayerMarket(const ServerManager& );
 	~PlayerMarket();
 	/* Functions called by server, returns what will be send to the user */
 	JSON::Dict allSales();
 	JSON::Dict addPlayer(const JSON::Dict &json);
-	JSON::Dict bid(const JSON::Dict &json);
+	JSON::Dict bidOn(const JSON::Dict &json);
 	int winningSales(std::string username);
 	int ownedSales(std::string username);
+	
+    void sendPlayersOnMarketList(int peer_id);
+    void addPlayerOnMarket(const JSON::Dict &bid, int peer_id);
+    void placeBidOnPlayer(const JSON::Dict &bid, int peer_id);
+    void sendMarketMessage(const std::string&, const JSON::Dict&);
 	
 };
 
