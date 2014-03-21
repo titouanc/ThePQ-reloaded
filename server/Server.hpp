@@ -17,6 +17,7 @@
 #include "StadiumManager.hpp"
 #include "TeamManager.hpp"
 #include "GameManager.hpp"
+#include "ChampionshipManager.hpp"
 
 
 using namespace std;
@@ -59,7 +60,6 @@ public:
     /*! Create default user accounts if there is no registered user */
     void initDefaultAccounts();
 
-
     /* Add/substract team infos based on int sign (if - : substract, if +, add) */
     void endOfMatchTeamInfosUpdate(std::string username, int money, int fame, int ap);
     string getRandomName();
@@ -69,22 +69,7 @@ public:
     void timeUpdateStadium();
     void timeUpdateChampionship();
     void addChampionship(const Championship&);
-        /* Return a pointer to the user object with given username,
-       or NULL if not connected */
-    Championship* getChampionshipByName(std::string champName);
-    Championship* getChampionshipByUsername(std::string username);
-    size_t nbrUsersConnected(){return _users.size();}
-    void loadChampionships();
-    void leaveChampionship(int);
-    void joinChampionship(std::string,int);
-    void sendChampionshipsList(int);
-    void sendJoinedChampionship(int);
-    void notifyPendingChampMatch(std::string);
-    void notifyStartingChampionship(Championship&);
-    void responsePendingChampMatch(std::string,int);
-    void resolveUnplayedChampMatch(Schedule&);
-    void endOfPending(Schedule&);
-    Schedule* getPendingMatchByUsername(std::string);
+
 private:
 	SharedQueue<net::Message> _inbox, _outbox;
 	map<int, User*> _users;
@@ -96,6 +81,7 @@ private:
     TeamManager _teamMgr;
     PlayerMarket _market;
     GameManager _gameMgr;
+    ChampionshipManager _championshipMgr;
     AdminManager _adminManager;
     std::deque<Championship*> _championships;
     std::deque<Schedule> _pendingChampMatches;

@@ -14,7 +14,6 @@ protected:
 	SharedQueue<net::Message> &_inbox, &_outbox;
 	std::map<int, User*> &_users;
 	net::ConnectionManager &_connectionManager;
-    std::deque<MatchManager*> _matches;
 
 public:
 	ServerManager(
@@ -27,8 +26,7 @@ public:
 	{}
 
 	ServerManager(const ServerManager& other) : _inbox(other._inbox), _outbox(other._outbox),
-		_users(other._users), _connectionManager(other._connectionManager), 
-		_matches(other._matches)
+		_users(other._users), _connectionManager(other._connectionManager)
 	{}
     
     User *getUserByName(std::string username);

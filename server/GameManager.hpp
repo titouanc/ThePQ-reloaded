@@ -5,10 +5,13 @@
 
 class GameManager : public ServerManager
 {
+protected:
+    std::deque<MatchManager*>& _matches;
 public:
 	using ServerManager::ServerManager;
-	GameManager(const ServerManager& parent) : ServerManager(parent){}
-	
+	GameManager(const ServerManager& parent, std::deque<MatchManager*>& matches) : 
+		ServerManager(parent), _matches(matches) {}
+
 	void sendConnectedUsersList(int peer_id);
     void sendInvitationToPlayer(string const& username, int peer_id);
     void sendInvitationResponseToPlayer(const JSON::Dict &response, int peer_id);
