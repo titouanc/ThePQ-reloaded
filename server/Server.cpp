@@ -34,7 +34,7 @@ Server::Server(NetConfig const & config) :
 	_connectionManager(_inbox, _outbox, config.ip.c_str(), config.port, config.maxClients),
 	_market(new PlayerMarket(this)),_matches(), 
 	_serverMgr(_inbox, _outbox, _users, _connectionManager, _matches),
-	_userMgr(_serverMgr),
+	_userMgr(_serverMgr), _stadiumMgr(_serverMgr),
 	_adminManager(_connectionManager,this),
 	_timeTicks(0), _champsMutex(PTHREAD_MUTEX_INITIALIZER), _timeThread()
 {
@@ -241,7 +241,7 @@ void Server::treatMessage(
 	else if (ISDICT(payload)){
 		JSON::Dict const & dict = DICT(payload);
 		if (messageType == MSG::LOGIN){
-			User *loggedIn = logUserIn(dict, peer_id);
+			User *loggedIn = _userMgr.logUserIn(dict, peer_id);
 			/* If someone successfully logged in; send his offline 
 			   messages and reset queue */
 			if (loggedIn){
@@ -255,10 +255,10 @@ void Server::treatMessage(
 			}
 		}
 		else if(messageType == MSG::USER_CHOOSE_TEAMNAME)
-			checkTeamName(dict, peer_id);
+			_userMgr.checkTeamName(dict, peer_id);
 
 		else if (messageType == MSG::REGISTER) 
-			registerUser(dict, peer_id);
+			_userMgr.registerUser(dict, peer_id);
 
 		else if (messageType == MSG::ADD_PLAYER_ON_MARKET_QUERY)
 			addPlayerOnMarket(dict, peer_id);
@@ -283,7 +283,7 @@ void Server::treatMessage(
 		string const & data = STR(payload);
 
 		if (messageType == MSG::INSTALLATIONS_LIST){
-				sendInstallationsList(peer_id);
+				_stadiumMgr.sendInstallationsList(peer_id);
 		} else if(messageType == MSG::CONNECTED_USERS_LIST){
 				sendConnectedUsersList(peer_id);
 		} else if(messageType == MSG::PLAYERS_ON_MARKET_LIST) {
@@ -305,80 +305,11 @@ void Server::treatMessage(
 	else if (ISINT(payload)) {
 		int data = INT(payload);
 		if (messageType == MSG::INSTALLATION_UPGRADE) {
-			upgradeInstallation(peer_id, data);
+			_stadiumMgr.upgradeInstallation(peer_id, data);
 		} else if (messageType == MSG::INSTALLATION_DOWNGRADE) {
-			downgradeInstallation(peer_id, data);
+			_stadiumMgr.downgradeInstallation(peer_id, data);
 		}
 	}
-}
-
-void Server::registerUser(const JSON::Dict &credentials, int peer_id)
-{
-	if (ISSTR(credentials.get(MSG::USERNAME)) && ISSTR(credentials.get(MSG::PASSWORD))){
-		std::string const & username = STR(credentials.get(MSG::USERNAME));
-		std::string const & password = STR(credentials.get(MSG::PASSWORD));
-		JSON::Dict response = JSON::Dict();
-		response.set("type", MSG::REGISTER);
-		User* newUser = User::load(username);
-		if (newUser != NULL){
-			response.set("data", MSG::USER_EXISTS);
-		} else { // User doesnt exist
-			newUser = new User(username, password);
-			newUser->createUser(); 
-			response.set("data", MSG::USER_REGISTERED);
-		}
-
-		/* Clone dict before sending, because
-		     + it should be dynamically allocated (ConnectionManager deletes it)
-		     + cloning at the end is less memory efficient, but do not leak
-		       memory if a trap/exc occurs after response allocation.
-		 */
-		Message status(peer_id, response.clone());
-		_outbox.push(status);
-		delete newUser;
-	}
-}
-
-User *Server::logUserIn(const JSON::Dict &credentials, int peer_id)
-{
-	User *res = NULL;
-	if (ISSTR(credentials.get(MSG::USERNAME)) && ISSTR(credentials.get(MSG::PASSWORD))){
-		std::string const & username = STR(credentials.get(MSG::USERNAME));
-		std::string const & password = STR(credentials.get(MSG::PASSWORD));
-
-		JSON::Dict response;
-		response.set("type", MSG::LOGIN);
-		if (getUserByName(username)){
-			response.set("data", MSG::ALREADY_LOGGED_IN);
-		} else {
-			User *user = User::load(username);
-			if (user != NULL){
-				if (user->getPassword() == password){
-					// correct password
-					// load the user's team info into Team (installations, players, funds, etc.)
-					user->loadTeam();
-					// mapping user to its peer_id to keep a list of connected users.
-					_users.insert(std::pair<int, User*>(peer_id, user));
-					if(user->getTeam().getName() == gameconfig::UNNAMED_TEAM)
-						response.set("data",MSG::USER_CHOOSE_TEAMNAME);
-					else
-					{
-						response.set("data", MSG::USER_LOGIN);
-					}
-					res = user;
-				} else {
-					// wrong password
-					delete user;
-					response.set("data", MSG::PASSWORD_ERROR);
-				}
-			} else {
-				// user not found
-				response.set("data", MSG::USER_NOT_FOUND);
-			}
-		}
-		_outbox.push(Message(peer_id, response.clone()));
-	}
-	return res;
 }
 
 void Server::endOfMatchTeamInfosUpdate(std::string username, int money, int fame, int ap)
@@ -407,73 +338,6 @@ void Server::sendTeamInfos(const JSON::Dict &data, int peer_id)
 	response.set("type", net::MSG::TEAM_INFOS);
 	response.set("data", data);
 	_outbox.push(Message(peer_id, response.clone()));
-}
-
-void Server::checkTeamName(const JSON::Dict &data, int peer_id){
-	std::vector<std::string> teamNames;
-	std::string teamname = STR(data.get(net::MSG::TEAMNAME)).value();
-	bool exists = false;
-	try{
-		MemoryAccess::load(teamNames,memory::ALL_TEAM_NAMES);
-	}
-	catch(JSON::IOError e){}
-	for(size_t i =0;i<teamNames.size();++i){
-		if(teamNames[i]==teamname)
-			exists = true;
-	}
-	JSON::Dict response;
-	response.set("type", MSG::TEAMNAME);
-	if(!exists){
-		teamNames.push_back(teamname);
-		MemoryAccess::save(teamNames,memory::ALL_TEAM_NAMES);
-		Team & team = _users[peer_id]->getTeam();
-		team.setName(teamname);
-		team.saveInfos();
-		response.set("data",MSG::TEAMNAME_REGISTERED);
-	}
-	else{
-		response.set("data",MSG::TEAMNAME_ERROR);
-	}
-	Message status(peer_id, response.clone());
-	_outbox.push(status);
-
-}
-
-void Server::sendInstallationsList(int peer_id)
-{
-	JSON::List jsonInst;
-	std::vector<Installation*> & insts = _users[peer_id]->getTeam().getInstallations();
-	for(size_t i = 0;i<insts.size();++i){
-		jsonInst.append(JSON::Dict(*insts[i]));
-	}
-	JSON::Dict msg;
-	msg.set("type", net::MSG::INSTALLATIONS_LIST);
-	msg.set("data", jsonInst);
-	_outbox.push(Message(peer_id, msg.clone()));
-}
-
-void Server::upgradeInstallation(int peer_id, size_t i)
-{
-	bool res = _users[peer_id]->getTeam().upgradeInstallation(i);
-	JSON::Dict msg;
-	msg.set("type", net::MSG::INSTALLATION_UPGRADE);
-	msg.set("data", JSON::Bool(res));
-	_outbox.push(Message(peer_id, msg.clone()));
-	JSON::Dict cache;
-	cache.set("funds",_users[peer_id]->getTeam().getFunds());
-	sendTeamInfos(cache,peer_id);
-}
-
-void Server::downgradeInstallation(int peer_id, size_t i)
-{
-	bool res = _users[peer_id]->getTeam().downgradeInstallation(i);
-	JSON::Dict msg;
-	msg.set("type", net::MSG::INSTALLATION_DOWNGRADE);
-	msg.set("data", JSON::Bool(res));
-	_outbox.push(Message(peer_id, msg.clone()));
-	JSON::Dict cache;
-	cache.set("funds",_users[peer_id]->getTeam().getFunds());
-	sendTeamInfos(cache,peer_id);
 }
 
 void Server::sendConnectedUsersList(int peer_id)

@@ -14,6 +14,7 @@
 #include <model/Championship.hpp>
 #include "ServerManager.hpp"
 #include "UserManager.hpp"
+#include "StadiumManager.hpp"
 
 
 using namespace std;
@@ -56,13 +57,8 @@ public:
     /*! Create default user accounts if there is no registered user */
     void initDefaultAccounts();
 
-	void registerUser(const JSON::Dict &credentials, int peer_id);
-	User *logUserIn(const JSON::Dict &credentials, int peer_id);
-    void checkTeamName(const JSON::Dict &data, int peer_id);
     void sendTeamInfos(const JSON::Dict &data, int peer_id);
-	void sendInstallationsList(int peer_id);
-	void upgradeInstallation(int peer_id, size_t i);
-	void downgradeInstallation(int peer_id, size_t i);
+
 	void sendConnectedUsersList(int peer_id);
     void sendInvitationToPlayer(string const& username, int peer_id);
     void sendInvitationResponseToPlayer(const JSON::Dict &response, int peer_id);
@@ -109,6 +105,7 @@ private:
     std::deque<MatchManager*> _matches;
     ServerManager _serverMgr;
     UserManager _userMgr;
+    StadiumManager _stadiumMgr;
     AdminManager _adminManager;
     std::deque<Championship*> _championships;
     std::deque<Schedule> _pendingChampMatches;

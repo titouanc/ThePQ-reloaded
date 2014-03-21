@@ -15,6 +15,9 @@ protected:
 	std::map<int, User*> &_users;
 	net::ConnectionManager &_connectionManager;
     std::deque<MatchManager*> &_matches;
+    
+    User *getUserByName(std::string username);
+    void sendTeamInfos(const JSON::Dict &data, int peer_id);
 
 public:
 	ServerManager(
