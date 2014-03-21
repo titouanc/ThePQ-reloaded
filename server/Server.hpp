@@ -4,14 +4,12 @@
 #include <string>
 #include <map>
 #include <deque>
-#include <Config.hpp>
 #include <network/ConnectionManager.hpp>
 #include <model/User.hpp>
+#include <model/Championship.hpp>
 #include <Config.hpp>
-#include "MatchManager.hpp"
 #include "PlayerMarket.hpp"
 #include "AdminManager.hpp"
-#include <model/Championship.hpp>
 #include "ServerManager.hpp"
 #include "UserManager.hpp"
 #include "StadiumManager.hpp"

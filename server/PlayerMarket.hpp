@@ -4,13 +4,11 @@
 #include <string>
 #include <vector>
 #include <json/json.hpp>
-#include <stdio.h>
 #include <model/Sale.hpp>
 #include <model/Player.hpp>
 #include <pthread.h>
 #include "ServerManager.hpp"
 
-class Sale;
 class PlayerMarket : public ServerManager {
 	friend void * saleManager(void *); 		//Thread deleting the ended sales
 	friend void * saleGenerator(void *); 	//Thread generating players

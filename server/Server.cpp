@@ -1,14 +1,8 @@
-#include <stdlib.h>
-#include <time.h>
-#include <stdexcept>
-#include <typeinfo>
+#include <ctime>
 #include <cxxabi.h>
 #include <Constants.hpp>
 #include "Server.hpp"
-#include <sys/stat.h>
-#include <unistd.h>
 #include <model/MemoryAccess.hpp>
-#include <utility>
 
 using namespace std;
 using namespace net;
