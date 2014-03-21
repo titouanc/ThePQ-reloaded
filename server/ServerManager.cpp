@@ -41,3 +41,18 @@ int ServerManager::getPeerID(std::string const &username){
 	}
 	return -1;
 }
+
+void ServerManager::sendNotification(std::string username, const JSON::Dict & toSend){
+	int to_peer = getPeerID(username);
+	if (to_peer >= 0){
+		/* User currently connected to server */
+		Message status(to_peer, toSend.clone());
+		_outbox.push(status); 
+	} else {
+		User *user = User::load(username);
+		if (user != NULL){
+			user->sendOfflineMsg(toSend);
+			delete user;
+		}
+	}
+}

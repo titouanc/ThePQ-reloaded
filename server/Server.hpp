@@ -16,6 +16,7 @@
 #include "UserManager.hpp"
 #include "StadiumManager.hpp"
 #include "TeamManager.hpp"
+#include "GameManager.hpp"
 
 
 using namespace std;
@@ -58,16 +59,11 @@ public:
     /*! Create default user accounts if there is no registered user */
     void initDefaultAccounts();
 
-	void sendConnectedUsersList(int peer_id);
-    void sendInvitationToPlayer(string const& username, int peer_id);
-    void sendInvitationResponseToPlayer(const JSON::Dict &response, int peer_id);
 
     /* Add/substract team infos based on int sign (if - : substract, if +, add) */
     void endOfMatchTeamInfosUpdate(std::string username, int money, int fame, int ap);
     string getRandomName();
     void collectFinishedMatches(void);
-    void startMatch(int client_idA, int client_idB, bool champMatch);
-    void sendNotification(std::string, const JSON::Dict&);
 
     void timeLoop();
     void timeUpdateStadium();
@@ -99,6 +95,7 @@ private:
     StadiumManager _stadiumMgr;
     TeamManager _teamMgr;
     PlayerMarket _market;
+    GameManager _gameMgr;
     AdminManager _adminManager;
     std::deque<Championship*> _championships;
     std::deque<Schedule> _pendingChampMatches;

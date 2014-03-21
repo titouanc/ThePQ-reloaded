@@ -37,6 +37,7 @@ public:
     void sendTeamInfos(const JSON::Dict &data, int peer_id);
     void sendPlayersList(int peer_id);
     int getPeerID(const std::string&);
+    void sendNotification(std::string, const JSON::Dict&);
 };
 
 
