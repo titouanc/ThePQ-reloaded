@@ -14,18 +14,16 @@ protected:
 	SharedQueue<net::Message> &_inbox, &_outbox;
 	std::map<int, User*> &_users;
 	net::ConnectionManager &_connectionManager;
-    std::deque<MatchManager*> &_matches;
+    std::deque<MatchManager*> _matches;
 
 public:
 	ServerManager(
 		SharedQueue<net::Message> &inbox,
 		SharedQueue<net::Message> &outbox,
 		std::map<int, User*> &users,
-		net::ConnectionManager &connectionManager,
-		std::deque<MatchManager*> &matches) : 
+		net::ConnectionManager &connectionManager) : 
 		_inbox(inbox), _outbox(outbox), _users(users),
-		_connectionManager(connectionManager),
-		_matches(matches)
+		_connectionManager(connectionManager)
 	{}
 
 	ServerManager(const ServerManager& other) : _inbox(other._inbox), _outbox(other._outbox),

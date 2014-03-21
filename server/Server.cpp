@@ -33,7 +33,7 @@ Server::Server(NetConfig const & config) :
 	_inbox(), _outbox(), _users(),
 	_connectionManager(_inbox, _outbox, config.ip.c_str(), config.port, config.maxClients),
 	_matches(), 
-	_serverMgr(_inbox, _outbox, _users, _connectionManager, _matches),
+	_serverMgr(_inbox, _outbox, _users, _connectionManager),
 	_userMgr(_serverMgr), _stadiumMgr(_serverMgr), _teamMgr(_serverMgr), _market(_serverMgr),
 	_gameMgr(_serverMgr),
 	_adminManager(_connectionManager,this),
