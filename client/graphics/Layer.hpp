@@ -18,7 +18,7 @@ namespace GUI {
 	class Layer {
 	public:
 		Layer(sf::Color backgroundColor=sf::Color(0xff, 0xff, 0xff, 0xff)): 
-				_inMessage(false), _backgroundColor(backgroundColor), 
+				_backgroundColor(backgroundColor), 
 				_backgroundImage(NULL), _focusedTextbox(NULL){}
 		virtual ~Layer();
 
@@ -69,7 +69,6 @@ namespace GUI {
 		sf::Color getBackgroundColor() { return _backgroundColor; }
 
 	protected:
-		bool _inMessage;
 		sf::Color _backgroundColor;
 		sf::Sprite* _backgroundImage;
 		sf::Texture _backgroundImageTexture;
