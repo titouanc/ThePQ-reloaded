@@ -18,6 +18,7 @@ Pour obtenir une référence du bon type à partir d'un pointeur sur une valeur 
 ## Shortcuts
 ### `Dict::stealMerge(const & other)`
 Vide le contenu de other et l'ajoute à self
+
 ### `Dict = {{"key", JSON::Value const &val}, ...}`
 Crée un dictionnaire alloué statiquement avec les paires données. Il faut impérativement un objet JSON pour les valeurs (pas de cast implicite). Exemple: 
 
@@ -60,14 +61,18 @@ Il est aussi possible de *voler* un objet à un conteneur (l'appelant devient al
 
 	int main(int argc, const char **argv)
 	{
-		JSON::Dict manager;
-		manager.set("name", "Titouan");
-		manager.set("level", 15);
-		manager.set("fame", 17.2);
-
-		manager.set("players_id", JSON::List());
-		LIST(manager.get("players_id")).append(13);
-		LIST(manager.get("players_id")).append(17);
+		/* Création d'un dico initialisé */
+		JSON::Dict manager = {
+			{"name", JSON::String("Titouan")},
+			{"level", JSON::Integer(15)},
+			{"fame", JSON::Float(17.2)}
+		};
+		
+		/* Création d'une liste vide */
+		JSON::List players;
+		players.append(13);
+		players.append(17);
+		manager.set("players_id", players);
 
 		cout << "Output direct: " << manager << endl;
 		
