@@ -25,8 +25,6 @@ void GUI::Layer::clear(bool clearBackground){
 		delete _clickables[i];
 	for (size_t i=0; i<_labels.size(); i++)
 		delete _labels[i];
-	for (size_t i=0; i<_tableCells.size(); i++)
-		delete _tableCells[i];
 	for (size_t i=0; i<_tableViews.size(); i++)
 		delete _tableViews[i];
 	for (size_t i=0; i<_overlayPanels.size(); i++)
@@ -35,7 +33,6 @@ void GUI::Layer::clear(bool clearBackground){
 	_clickables.clear();
 	_textboxes.clear();
 	_labels.clear();
-	_tableCells.clear(); // TODO delete
 	_tableViews.clear();
 	_overlayPanels.clear();
 }
@@ -78,10 +75,7 @@ void GUI::Layer::renderAllAttributesTo(sf::RenderTarget &dest){
 		if (!_labels[i]->isHidden())
 			_labels[i]->renderTo(dest);
 	}
-	for(unsigned i=0; i<_tableCells.size(); ++i){ // TODO delete
-		if(!_tableCells[i]->isHidden())
-			_tableCells[i]->renderTo(dest);
-	}
+	// rendering table views
 	for(unsigned i=0; i<_tableViews.size(); ++i){
 		if(!_tableViews[i]->isHidden())
 			_tableViews[i]->renderTo(dest);
@@ -182,8 +176,6 @@ void GUI::Layer::setPosition(int x, int y){
 		_clickables[i]->updateDrawPosition(dx, dy);
 	for (size_t i=0; i<_labels.size(); i++)
 		_labels[i]->updateDrawPosition(dx, dy);
-	for (size_t i=0; i<_tableCells.size(); i++)
-		_tableCells[i]->updateDrawPosition(dx, dy);
 	for (size_t i=0; i<_tableViews.size(); i++)
 		_tableViews[i]->updateDrawPosition(dx, dy);
 }
@@ -213,13 +205,6 @@ GUI::Label & GUI::Layer::addLabel(double val, sf::Color color){
 	std::stringstream converter;
 	converter << val;
 	return addLabel(converter.str());
-}
-
-GUI::TableCell & GUI::Layer::addTableCell(){
-	TableCell* res = new TableCell();
-	res->updateDrawPosition(this->_x, this->_y);
-	_tableCells.push_back(res);
-	return *res;
 }
 
 GUI::TableView & GUI::Layer::addTableView(int columns, int padding){

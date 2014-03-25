@@ -54,7 +54,6 @@ namespace GUI {
 		GUI::Textbox & addTextbox(std::string id);
 		GUI::Label & addLabel(std::string text, sf::Color color=BODY_TEXT_COLOR);
 		GUI::Label & addLabel(double val, sf::Color color=BODY_TEXT_COLOR);
-		GUI::TableCell & addTableCell();
 		GUI::TableView & addTableView(int columns=1, int padding=5);
 		sf::RectangleShape & addPanel(int w, int h, sf::Color color=sf::Color(0xff, 0xff, 0xff, 0xff));
 		sf::RectangleShape & addOverlayPanel(int w, int h, sf::Color color=sf::Color(0xff, 0xff, 0xff, 0xff));
@@ -77,7 +76,6 @@ namespace GUI {
 		std::vector<GUI::ClickableInterface*> _clickables;
 		std::map<std::string, GUI::Textbox*> _textboxes;
 		std::vector<GUI::Label*> _labels;
-		std::vector<GUI::TableCell*> _tableCells;
 		std::vector<GUI::TableView*> _tableViews;
 		std::vector<sf::RectangleShape*> _panels;
 		std::vector<sf::RectangleShape*> _overlayPanels;
