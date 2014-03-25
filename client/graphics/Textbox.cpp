@@ -2,8 +2,8 @@
 
 using namespace GUI;
 
-Textbox::Textbox(std::string id, int x, int y, int w, int h):
-	Widget(x, y, w, h, false), _id(id), _isFocused(false), 
+Textbox::Textbox(std::string id):
+	Widget(0, 0, 250, BUTTON_HEIGHT, false), _id(id), _isFocused(false), 
 	_selecter(Button<Textbox>(&Textbox::focus, this, ""))
 {
 

@@ -12,7 +12,7 @@
 namespace GUI {
 	class Textbox : public Widget {
 	public:
-		Textbox(std::string id, int x=MARGIN, int y=MARGIN, int w=250, int h=BUTTON_HEIGHT);
+		Textbox(std::string id);
 		virtual ~Textbox();
 		void renderTo(sf::RenderTarget & dest);
 
