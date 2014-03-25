@@ -3,8 +3,10 @@
 using namespace GUI;
 
 TableCell::TableCell(int w, int h, sf::Color backgroundColor) :
-	Layer(backgroundColor), Widget(0, 0, w, h, false), _backgroundRect(sf::Vector2f(w, h))
+	Layer(backgroundColor), _backgroundRect(sf::Vector2f(w, h))
 {
+	setWidth(w);
+	setHeight(h);
 	_backgroundRect.setFillColor(_backgroundColor);
 }
 

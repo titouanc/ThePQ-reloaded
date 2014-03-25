@@ -15,9 +15,10 @@ namespace GUI {
 	class TableCell;
 	class TableView;
 
-	class Layer {
+	class Layer : public Widget {
 	public:
-		Layer(sf::Color backgroundColor=sf::Color(0xff, 0xff, 0xff, 0xff)): 
+		Layer(sf::Color backgroundColor=sf::Color(0xff, 0xff, 0xff, 0xff)):
+				Widget(0, 0, 1280, 720), 
 				_backgroundColor(backgroundColor), 
 				_backgroundImage(NULL), _focusedTextbox(NULL){}
 		virtual ~Layer();
@@ -47,6 +48,7 @@ namespace GUI {
 		);
 
 		void setBackgroundImage(std::string path);
+		void setPosition(int x, int y);
 		void deleteBackgroundImage();
 
 		GUI::Textbox & addTextbox(std::string id);

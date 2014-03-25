@@ -10,7 +10,7 @@
 
 namespace GUI {
 
-	class TableCell : public Layer, public Widget {
+	class TableCell : public Layer {
 	public:
 		TableCell(int w=400, int h=100, sf::Color backgroundColor=sf::Color(0xff, 0xff, 0xff, 0xff));
 		void renderTo(sf::RenderTarget & dest);

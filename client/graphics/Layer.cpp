@@ -45,6 +45,7 @@ void GUI::Layer::renderTo(sf::RenderTarget & dest){
 		if (_backgroundColor.a != 0xff){
 			sf::RectangleShape background(sf::Vector2f(dest.getSize().x, dest.getSize().y));
 			background.setFillColor(_backgroundColor);
+			background.setPosition(_drawX, _drawY);
 			dest.draw(background);
 		}
 		else
@@ -154,6 +155,24 @@ void GUI::Layer::setBackgroundImage(string path){
 	_backgroundImage->setTexture(_backgroundImageTexture, true);
 }
 
+void GUI::Layer::setPosition(int x, int y){
+	_drawX = _drawX - _x + x; // updating drawX with new x value.
+	_drawY = _drawY - _y + y; // updating drawY with new y value.	
+	int dx = x-_x;
+	int dy = y-_y;
+	std::map<std::string, GUI::Textbox*>::iterator it;
+	for (it=_textboxes.begin(); it!=_textboxes.end(); it++)
+		it->second->updateDrawPosition(dx, dy);
+	for (size_t i=0; i<_clickables.size(); i++)
+		_clickables[i]->updateDrawPosition(dx, dy);
+	for (size_t i=0; i<_labels.size(); i++)
+		_labels[i]->updateDrawPosition(dx, dy);
+	for (size_t i=0; i<_tableCells.size(); i++)
+		_tableCells[i]->updateDrawPosition(dx, dy);
+	for (size_t i=0; i<_tableViews.size(); i++)
+		_tableViews[i]->updateDrawPosition(dx, dy);
+}
+
 void GUI::Layer::deleteBackgroundImage(){
 	if (_backgroundImage != NULL){
 		delete _backgroundImage;
@@ -163,6 +182,7 @@ void GUI::Layer::deleteBackgroundImage(){
 
 GUI::Textbox & GUI::Layer::addTextbox(string id){
 	Textbox* res = new Textbox(id);
+	res->updateDrawPosition(this->_x, this->_y);
 
 	_textboxes.insert(pair<string, Textbox*>(id, res));
 	return *res;
@@ -170,6 +190,7 @@ GUI::Textbox & GUI::Layer::addTextbox(string id){
 
 GUI::Label & GUI::Layer::addLabel(std::string text, sf::Color color){
 	Label* res = new Label(text, color);
+	res->updateDrawPosition(this->_x, this->_y);
 	_labels.push_back(res);
 	return *res;
 }
@@ -182,12 +203,14 @@ GUI::Label & GUI::Layer::addLabel(double val, sf::Color color){
 
 GUI::TableCell & GUI::Layer::addTableCell(){
 	TableCell* res = new TableCell();
+	res->updateDrawPosition(this->_x, this->_y);
 	_tableCells.push_back(res);
 	return *res;
 }
 
 GUI::TableView & GUI::Layer::addTableView(int columns, int padding){
 	TableView* res = new TableView(columns, padding);
+	res->updateDrawPosition(this->_x, this->_y);
 	_tableViews.push_back(res);
 	return *res;
 }

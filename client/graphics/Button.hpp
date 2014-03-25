@@ -68,15 +68,15 @@ namespace GUI {
 		}
 
 		bool isInBounds (int x, int y) const {
-			return ((x >=this->_x) && (x <= this->_x+this->_w) && (y >=this->_y) && (y <= this->_y+this->_h));
+			return ((x >=this->_drawX) && (x <= this->_drawX+this->_w) && (y >=this->_drawY) && (y <= this->_drawY+this->_h));
 		}
 
 		void renderTo(sf::RenderTarget & dest){
-			_backgroundRect.setPosition(this->_x, this->_y);
+			_backgroundRect.setPosition(this->_drawX, this->_drawY);
 			dest.draw(_backgroundRect);
-			_text.setPosition(this->_x+BUTTON_SIDE_PADDING, this->_y+BUTTON_TOP_PADDING);
+			_text.setPosition(this->_drawX+BUTTON_SIDE_PADDING, this->_drawY+BUTTON_TOP_PADDING);
 			dest.draw(_text);
-			_highlightRect.setPosition(this->_x, this->_y);
+			_highlightRect.setPosition(this->_drawX, this->_drawY);
 			dest.draw(_highlightRect);
 		}
 

@@ -25,18 +25,18 @@ Textbox::~Textbox()
 
 void Textbox::renderTo(sf::RenderTarget & dest)
 {
-	_backgroundRect.setPosition(_x, _y);
+	_backgroundRect.setPosition(_drawX, _drawY);
 	dest.draw(_backgroundRect);
-	_text.setPosition(_x+TEXTBOX_SIDE_PADDING, _y+TEXTBOX_TOP_PADDING);
+	_text.setPosition(_drawX+TEXTBOX_SIDE_PADDING, _drawY+TEXTBOX_TOP_PADDING);
 	sf::Text toDraw = getClippedText();
 	dest.draw(toDraw);
-	_selecter.setPosition(_x, _y);
+	_selecter.setPosition(_drawX, _drawY);
 	_selecter.renderTo(dest);
 }
 
 bool Textbox::isInBounds (int x, int y) const 
 {
-	return ((x >=_x) && (x <= _x+_w) && (y >=_y) && (y <= _y+_h));
+	return ((x >=_drawX) && (x <= _drawX+_w) && (y >=_drawY) && (y <= _drawY+_h));
 }
 
 void Textbox::updateText(sf::Event event)
