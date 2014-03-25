@@ -37,7 +37,7 @@ Label::~Label()
 
 void Label::renderTo(sf::RenderTarget & dest)
 {
-	_text.setPosition(_x, _y);
+	_text.setPosition(_drawX, _drawY);
 	dest.draw(_text);
 }
 

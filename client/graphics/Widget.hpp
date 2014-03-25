@@ -4,8 +4,9 @@
 namespace GUI{
 	class Widget {
 	public:
-		Widget(): _x(0), _y(0), _w(0), _h(0), _hidden(false){}
-		Widget(int x, int y, int w, int h, bool hidden=false): _x(x), _y(y), _w(w), _h(h), _hidden(hidden){}
+		Widget(): 	_x(0), _y(0), _w(0), _h(0), _drawX(0), _drawY(0), _hidden(false){}
+		Widget(int x, int y, int w, int h, bool hidden=false): 
+					_x(x), _y(y), _w(w), _h(h), _drawX(x), _drawY(y), _hidden(hidden){}
 		virtual void setPosition(int x, int y){
 			_drawX = _drawX - _x + x; // updating drawX with new x value.
 			_drawY = _drawY - _y + y; // updating drawY with new y value.
