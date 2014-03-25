@@ -23,6 +23,7 @@ void GUI::MainController::addLayer(Layer & layer)
 		if (layer.getBackgroundColor().a != 0xff)
 			_layers.top()->renderTo(window);
 	}
+	layer.setPosition(20, 20);
 	_layers.push(&layer);
 	layer.renderTo(window);
 }

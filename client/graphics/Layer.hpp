@@ -93,6 +93,7 @@ GUI::Button<T> & GUI::Layer::addButton(
 	sf::Color backgroundColor
 ){
 	GUI::Button<T> * toAdd = new GUI::Button<T>(callback, target, text, backgroundColor);
+	toAdd->updateDrawPosition(this->_x, this->_y);
 	_clickables.push_back((GUI::ClickableInterface*)toAdd);
 	return *toAdd;
 }
@@ -106,6 +107,7 @@ GUI::Button<T, P> & GUI::Layer::addButton(
 	sf::Color backgroundColor
 ){
 	GUI::Button<T, P> * toAdd = new GUI::Button<T, P>(callback, param, target, text, backgroundColor);
+	toAdd->updateDrawPosition(this->_x, this->_y);
 	_clickables.push_back((GUI::ClickableInterface*)toAdd);
 	return *toAdd;
 }

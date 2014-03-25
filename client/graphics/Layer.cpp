@@ -53,6 +53,7 @@ void GUI::Layer::renderTo(sf::RenderTarget & dest, bool background){
 				dest.clear(_backgroundColor);
 		}
 		else{
+			_backgroundImage->setPosition(_drawX, _drawY);
 	 		dest.draw(*_backgroundImage);
 		}
 	}
@@ -60,8 +61,13 @@ void GUI::Layer::renderTo(sf::RenderTarget & dest, bool background){
 }
 
 void GUI::Layer::renderAllAttributesTo(sf::RenderTarget &dest){		
-	for (size_t i=0; i<_panels.size(); ++i)
+	for (size_t i=0; i<_panels.size(); ++i){
+		int ox = _panels[i]->getPosition().x;
+		int oy = _panels[i]->getPosition().y;
+		_panels[i]->setPosition(ox+_drawX, oy+_drawY);
 		dest.draw(*(_panels[i]));
+		_panels[i]->setPosition(ox, oy); // resetting
+	}
 	// rendering textboxes
 	map<string, Textbox*>::iterator it = _textboxes.begin();
 	for(; it != _textboxes.end(); it++)
@@ -84,8 +90,13 @@ void GUI::Layer::renderAllAttributesTo(sf::RenderTarget &dest){
 	for(unsigned int i=0; i<_clickables.size(); ++i)
 		if (!_clickables[i]->isHidden())
 			_clickables[i]->renderTo(dest);
-	for(unsigned i=0; i<_overlayPanels.size(); ++i)
+	for(unsigned i=0; i<_overlayPanels.size(); ++i){
+		int ox = _overlayPanels[i]->getPosition().x;
+		int oy = _overlayPanels[i]->getPosition().y;
+		_overlayPanels[i]->setPosition(ox+_drawX, oy+_drawY);
 		dest.draw(*(_overlayPanels[i]));
+		_overlayPanels[i]->setPosition(ox, oy); // resetting
+	}
 
 }
 
@@ -187,7 +198,6 @@ void GUI::Layer::deleteBackgroundImage(){
 GUI::Textbox & GUI::Layer::addTextbox(string id){
 	Textbox* res = new Textbox(id);
 	res->updateDrawPosition(this->_x, this->_y);
-
 	_textboxes.insert(pair<string, Textbox*>(id, res));
 	return *res;
 }
