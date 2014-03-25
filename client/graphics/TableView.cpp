@@ -15,6 +15,12 @@ void TableCell::setBackgroundColor(sf::Color color)
 	_backgroundRect.setFillColor(color); 
 }
 
+void TableCell::drawTo(sf::RenderTarget & dest){
+	_backgroundRect.setPosition(_drawX, _drawY);
+	dest.draw(_backgroundRect);
+	renderTo(dest, false);
+}
+
 TableView::TableView(int columns, int padding) : 
 	Widget(MARGIN, MARGIN, 400, 600, false), _columnsNbr(columns), _padding(padding) 
 {}
@@ -49,7 +55,7 @@ void TableView::renderTo(sf::RenderTarget & dest)
 			x += _elements[col-1]->getWidth() + _padding;
 		y = _y + row*(_elements[0]->getHeight()) + row*_padding;
 		_elements[i]->setPosition(x, y);
-		_elements[i]->renderTo(dest, false);
+		_elements[i]->drawTo(dest);
 	}
 }
 

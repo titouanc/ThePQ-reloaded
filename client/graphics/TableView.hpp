@@ -14,7 +14,7 @@ namespace GUI {
 	public:
 		TableCell(int w=400, int h=100, sf::Color backgroundColor=sf::Color(0xff, 0xff, 0xff, 0xff));
 		void setBackgroundColor(sf::Color color);
-		
+		void drawTo(sf::RenderTarget & dest);
 	private:
 		sf::RectangleShape _backgroundRect;
 	};
