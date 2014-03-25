@@ -17,6 +17,10 @@ namespace GUI{
 			_drawX += dx;
 			_drawY += dy;
 		}
+		virtual void setDrawPosition(int x, int y){
+			_drawX = x;
+			_drawY = y;
+		}
 		virtual void centerOn(int x, int y){
 			setPosition(x-_w/2, y-_h/2);
 		}
@@ -34,10 +38,10 @@ namespace GUI{
 	protected:
 		int _x;
 		int _y;
-		int _drawX;
-		int _drawY;
 		int _w;
 		int _h;
+		int _drawX;
+		int _drawY;
 		bool _hidden;
 	};
 }
