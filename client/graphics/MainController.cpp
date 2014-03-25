@@ -20,13 +20,11 @@ GUI::MainController::~MainController()
 void GUI::MainController::addLayer(Layer & layer)
 {
 	if (_layers.size() != 0){
-		_layers.top()->deactivate();
 		if (layer.getBackgroundColor().a != 0xff)
 			_layers.top()->renderTo(window);
 	}
 	_layers.push(&layer);
 	layer.renderTo(window);
-	layer.activate();
 }
 
 void GUI::MainController::deleteTopLayer()
@@ -36,7 +34,6 @@ void GUI::MainController::deleteTopLayer()
 		// don't delete the layer that has just been popped, it will be deleted by
 		// its manager
 		if (_layers.size() != 0){
-			_layers.top()->activate();
 			_layers.top()->renderTo(window);
 		}
 	}

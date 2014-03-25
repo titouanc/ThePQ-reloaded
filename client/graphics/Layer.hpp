@@ -18,15 +18,11 @@ namespace GUI {
 	class Layer {
 	public:
 		Layer(sf::Color backgroundColor=sf::Color(0xff, 0xff, 0xff, 0xff)): 
-				_active(false), _inMessage(false), _backgroundColor(backgroundColor), 
+				_inMessage(false), _backgroundColor(backgroundColor), 
 				_backgroundImage(NULL), _focusedTextbox(NULL){}
 		virtual ~Layer();
 
 		void clear(bool clearBackground = false);
-
-		bool isActive() 	{ return _active; }
-		void activate() 	{ _active = true; }
-		void deactivate() 	{ _active = false; }
 
 		bool handleClick(int x, int y);
 		bool handleRightClick(int x, int y);
@@ -73,7 +69,7 @@ namespace GUI {
 		sf::Color getBackgroundColor() { return _backgroundColor; }
 
 	protected:
-		bool _active, _inMessage;
+		bool _inMessage;
 		sf::Color _backgroundColor;
 		sf::Sprite* _backgroundImage;
 		sf::Texture _backgroundImageTexture;
