@@ -13,8 +13,8 @@ namespace GUI{
 			_y = y;
 		}
 		virtual void updateDrawPosition(int dx, int dy){
-			_drawX = dx;
-			_drawY = dy;
+			_drawX += dx;
+			_drawY += dy;
 		}
 		virtual void centerOn(int x, int y){
 			setPosition(x-_w/2, y-_h/2);
