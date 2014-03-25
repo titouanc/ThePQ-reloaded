@@ -40,19 +40,21 @@ void GUI::Layer::clear(bool clearBackground){
 	_overlayPanels.clear();
 }
 
-void GUI::Layer::renderTo(sf::RenderTarget & dest){
-	if (_backgroundImage == NULL){
-		if (_backgroundColor.a != 0xff){
-			sf::RectangleShape background(sf::Vector2f(dest.getSize().x, dest.getSize().y));
-			background.setFillColor(_backgroundColor);
-			background.setPosition(_drawX, _drawY);
-			dest.draw(background);
+void GUI::Layer::renderTo(sf::RenderTarget & dest, bool background){
+	if (background){
+		if (_backgroundImage == NULL){
+			if (_backgroundColor.a != 0xff){
+				sf::RectangleShape background(sf::Vector2f(dest.getSize().x, dest.getSize().y));
+				background.setFillColor(_backgroundColor);
+				background.setPosition(_drawX, _drawY);
+				dest.draw(background);
+			}
+			else
+				dest.clear(_backgroundColor);
 		}
-		else
-			dest.clear(_backgroundColor);
-	}
-	else{
- 		dest.draw(*_backgroundImage);
+		else{
+	 		dest.draw(*_backgroundImage);
+		}
 	}
 	renderAllAttributesTo(dest);
 }
@@ -156,10 +158,12 @@ void GUI::Layer::setBackgroundImage(string path){
 }
 
 void GUI::Layer::setPosition(int x, int y){
-	_drawX = _drawX - _x + x; // updating drawX with new x value.
-	_drawY = _drawY - _y + y; // updating drawY with new y value.	
 	int dx = x-_x;
 	int dy = y-_y;
+	_drawX += dx; // updating drawX with new x value.
+	_drawY += dy; // updating drawY with new y value.
+	_x = x;
+	_y = y;	
 	std::map<std::string, GUI::Textbox*>::iterator it;
 	for (it=_textboxes.begin(); it!=_textboxes.end(); it++)
 		it->second->updateDrawPosition(dx, dy);

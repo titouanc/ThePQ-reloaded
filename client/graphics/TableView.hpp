@@ -13,13 +13,6 @@ namespace GUI {
 	class TableCell : public Layer {
 	public:
 		TableCell(int w=400, int h=100, sf::Color backgroundColor=sf::Color(0xff, 0xff, 0xff, 0xff));
-		void renderTo(sf::RenderTarget & dest);
-		/*! this method allows users of this class to use relative positions. 
-		 *  We can set a label position to (10, 10) and it will always be 
-		 *  at (10, 10) relatively to its cell.
-		 */
-		void renderAllAttributesTo(sf::RenderTarget &dest);
-
 		void setBackgroundColor(sf::Color color);
 		
 	private:

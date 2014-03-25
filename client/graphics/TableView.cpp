@@ -10,41 +10,6 @@ TableCell::TableCell(int w, int h, sf::Color backgroundColor) :
 	_backgroundRect.setFillColor(_backgroundColor);
 }
 
-void TableCell::renderTo(sf::RenderTarget & dest)
-{
-	_backgroundRect.setPosition(_x, _y);
-	dest.draw(_backgroundRect);
-	renderAllAttributesTo(dest);
-}
-
-void TableCell::renderAllAttributesTo(sf::RenderTarget &dest)
-{
-	// rendering clickables
-	for(unsigned int i=0; i<_clickables.size(); ++i)
-		if (!_clickables[i]->isHidden()){
-			_clickables[i]->setPosition(_clickables[i]->x()+_x, _clickables[i]->y()+_y);
-			_clickables[i]->renderTo(dest);
-			_clickables[i]->setPosition(_clickables[i]->x()-_x, _clickables[i]->y()-_y);
-		}
-	// rendering textboxes
-	std::map<std::string, Textbox*>::iterator it = _textboxes.begin();
-	for(; it != _textboxes.end(); it++)
-		if (!it->second->isHidden()){
-			it->second->setPosition(it->second->x()+_x, it->second->y()+_y);
-			it->second->renderTo(dest);
-			it->second->setPosition(it->second->x()-_x, it->second->y()-_y);
-		}
-	// rendering labels
-	for(unsigned i=0; i<_labels.size(); ++i){
-		if (!_labels[i]->isHidden()){
-			int x=_labels[i]->x()+_x, y=_labels[i]->y()+_y;
-			_labels[i]->setPosition(x, y);
-			_labels[i]->renderTo(dest);
-			_labels[i]->setPosition(_labels[i]->x()-_x, _labels[i]->y()-_y);
-		}
-	}
-}
-
 void TableCell::setBackgroundColor(sf::Color color) 
 { 
 	_backgroundRect.setFillColor(color); 
@@ -84,7 +49,7 @@ void TableView::renderTo(sf::RenderTarget & dest)
 			x += _elements[col-1]->getWidth() + _padding;
 		y = _y + row*(_elements[0]->getHeight()) + row*_padding;
 		_elements[i]->setPosition(x, y);
-		_elements[i]->renderTo(dest);
+		_elements[i]->renderTo(dest, false);
 	}
 }
 

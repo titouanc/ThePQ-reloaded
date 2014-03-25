@@ -17,7 +17,7 @@ namespace GUI {
 
 	class Layer : public Widget {
 	public:
-		Layer(sf::Color backgroundColor=sf::Color(0xff, 0xff, 0xff, 0xff)):
+		Layer(sf::Color backgroundColor=sf::Color(0xff, 0xff, 0xff, 0x00)):
 				Widget(0, 0, 1280, 720), 
 				_backgroundColor(backgroundColor), 
 				_backgroundImage(NULL), _focusedTextbox(NULL){}
@@ -27,7 +27,7 @@ namespace GUI {
 
 		bool handleClick(int x, int y);
 		bool handleRightClick(int x, int y);
-		virtual void renderTo(sf::RenderTarget & dest);
+		virtual void renderTo(sf::RenderTarget & dest, bool background=true);
 		virtual void renderAllAttributesTo(sf::RenderTarget &dest);
 
 		template <typename T> 
