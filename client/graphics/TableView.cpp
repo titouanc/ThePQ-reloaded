@@ -50,10 +50,10 @@ void TableView::renderTo(sf::RenderTarget & dest)
 	for (unsigned int i=0; i<_elements.size(); ++i){
 		int col=i%_columnsNbr, row=i/_columnsNbr;
 		if (col == 0)
-			x = _x;
+			x = _drawX;
 		else
 			x += _elements[col-1]->getWidth() + _padding;
-		y = _y + row*(_elements[0]->getHeight()) + row*_padding;
+		y = _drawY + row*(_elements[0]->getHeight()) + row*_padding;
 		_elements[i]->setPosition(x, y);
 		_elements[i]->drawTo(dest);
 	}
