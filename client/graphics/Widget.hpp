@@ -5,7 +5,7 @@ namespace GUI{
 	class Widget {
 	public:
 		Widget(): _x(0), _y(0), _w(0), _h(0), _hidden(false){}
-		Widget(int x, int y, int w, int h, bool hidden): _x(x), _y(y), _w(w), _h(h), _hidden(hidden){}
+		Widget(int x, int y, int w, int h, bool hidden=false): _x(x), _y(y), _w(w), _h(h), _hidden(hidden){}
 		virtual void setPosition(int x, int y){
 			_x = x; 
 			_y = y;
@@ -15,6 +15,8 @@ namespace GUI{
 		}
 		virtual int x() {return _x;}
 		virtual int y() {return _y;}
+		virtual int drawX() {return _drawX;}
+		virtual int drawY() {return _drawY;}
 		virtual void setWidth(int w) 	{ _w = w; }
 		virtual void setHeight(int h) 	{ _h = h; }
 		virtual int getWidth() 			{ return _w; }
@@ -25,6 +27,8 @@ namespace GUI{
 	protected:
 		int _x;
 		int _y;
+		int _drawX;
+		int _drawY;
 		int _w;
 		int _h;
 		bool _hidden;
