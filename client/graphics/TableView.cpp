@@ -34,6 +34,8 @@ TableView::~TableView()
 		delete _elements[i];
 	_elements.clear();
 	if (_header) delete _header;
+	if (_prevButton) delete _prevButton;
+	if (_nextButton) delete _nextButton;
 }
 
 TableCell & TableView::addTableCell(int w, int h, sf::Color backgroundColor)
