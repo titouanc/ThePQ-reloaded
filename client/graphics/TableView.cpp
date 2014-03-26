@@ -59,14 +59,14 @@ void TableView::renderTo(sf::RenderTarget & dest)
 	int x, y;
 	int start = _elementsPerPage*_currentPage;
 	int end = std::min(_elementsPerPage*(_currentPage+1), int(_elements.size()));
+	// Drawing header
 	if (_header){
-		// Drawing header
 		_header->setPosition(_drawX, _drawY);
 		_header->drawTo(dest);
 	}
-
-	for (unsigned int i=start; i<end; ++i){
-		int col=i%_columnsNbr, row=i/_columnsNbr;
+	// Drawing other cells
+	for (int i=start; i<end; ++i){
+		int col=(i-start)%_columnsNbr, row=(i-start)/_columnsNbr;
 		if (col == 0)
 			x = _drawX;
 		else
@@ -75,6 +75,23 @@ void TableView::renderTo(sf::RenderTarget & dest)
 		if (_header) y = y + (_elements[0]->getHeight()) + _padding;
 		_elements[i]->setPosition(x, y);
 		_elements[i]->drawTo(dest);
+	}
+	y += (_elements[0]->getHeight()) + _padding;
+	x = _drawX;
+	// Drawing pager
+	if (_elementsPerPage < int(_elements.size())){
+		_prevButton = new Button<TableView>(
+			&TableView::goToPreviousPage, this, "<");
+		_prevButton->setPosition(x, y);
+		_nextButton = new Button<TableView>(
+			&TableView::goToNextPage, this, ">");
+		_nextButton->setPosition(x+_prevButton->getWidth()+MARGIN, y);
+		_prevButton->renderTo(dest);
+		_nextButton->renderTo(dest);
+	}
+	else{
+		if (_prevButton) delete _prevButton;
+		if (_nextButton) delete _nextButton;
 	}
 }
 
@@ -85,9 +102,22 @@ bool TableView::handleClick(int x, int y)
 		res = _elements[i]->handleClick(x, y);
 		if (res) return res;
 	}
+	if (_prevButton && _prevButton->isInBounds(x, y))
+		_prevButton->triggerAction();
+	if (_nextButton && _nextButton->isInBounds(x, y))
+		_nextButton->triggerAction();
 	return false;
 }
 
 void TableView::setElementsNumberPerPage(int number){
 	_elementsPerPage = number;
+}
+
+void TableView::goToNextPage(){
+	if (_currentPage < _elements.size()/_elementsPerPage)
+		_currentPage++;
+}
+
+void TableView::goToPreviousPage(){
+	if (_currentPage > 0) _currentPage--;
 }

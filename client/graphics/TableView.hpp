@@ -36,12 +36,17 @@ namespace GUI {
 		void renderTo(sf::RenderTarget & dest);
 		bool handleClick(int x, int y);
 		void setElementsNumberPerPage(int number);
+
+		void goToNextPage();
+		void goToPreviousPage();
 	private:
 		int _columnsNbr;
 		int _padding;
 		int _elementsPerPage;
 		int _currentPage;
 		TableCell* _header;
+		Button<TableView> * _prevButton;
+		Button<TableView> * _nextButton;
 		std::vector<TableCell*> _elements;
 	};
 }
