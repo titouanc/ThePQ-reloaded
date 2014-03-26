@@ -2,7 +2,6 @@
 #define DEFINE_MATCHMANAGER_HEADER 
 
 #include <cassert>
-
 #include <sys/select.h>
 #include <deque>
 #include <model/Moveable.hpp>
@@ -12,7 +11,6 @@
 #include <model/Ball.hpp>
 #include <cstring>
 #include <model/User.hpp>
-#include <network/ConnectionManager.hpp>
 #include <model/Player.hpp>
 #include <model/Squad.hpp>
 #include <model/MatchResult.hpp>
