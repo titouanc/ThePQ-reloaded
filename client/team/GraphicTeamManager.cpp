@@ -37,8 +37,9 @@ void GraphicTeamManager::displayPlayers()
 	//_canvas.addLabel()
 	TableView & playerList = _canvas.addTableView();
 	playerList.setPosition(30, 100);
+	playerList.setElementsNumberPerPage(4);
 	/* Header line */
-	TableCell & header = playerList.addTableCell(575, 47);
+	TableCell & header = playerList.addHeader(575, 47);
 	header.addLabel("Name", sf::Color::White).setPosition(15, 10);
 	header.addLabel("Strength", sf::Color::White).setPosition(245, 10);
 	header.addLabel("Velocity", sf::Color::White).setPosition(332, 10);

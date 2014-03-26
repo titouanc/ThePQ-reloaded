@@ -22,19 +22,26 @@ namespace GUI {
 
 	class TableView : public Widget {
 	public:
-		TableView(int columns=1, int padding=5);
+		TableView(int columns=1, int padding=5, int elementsPerPage=-1);
 		virtual ~TableView();
 		TableCell & addTableCell(
 			int w=400, int h=100, 
 			sf::Color backgroundColor=sf::Color::White
 		);
+		TableCell & addHeader(
+			int w=400, int h=100, 
+			sf::Color backgroundColor=sf::Color::White
+		);
 		void append(TableCell* toAppend);
 		void renderTo(sf::RenderTarget & dest);
-
 		bool handleClick(int x, int y);
+		void setElementsNumberPerPage(int number);
 	private:
 		int _columnsNbr;
 		int _padding;
+		int _elementsPerPage;
+		int _currentPage;
+		TableCell* _header;
 		std::vector<TableCell*> _elements;
 	};
 }
