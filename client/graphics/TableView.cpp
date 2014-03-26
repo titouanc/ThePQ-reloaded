@@ -89,7 +89,7 @@ void TableView::renderTo(sf::RenderTarget & dest)
 
 	if (_prevButton) delete _prevButton;
 	if (_nextButton) delete _nextButton;
-	if (_elementsPerPage < int(_elements.size())){
+	if (_elementsPerPage != -1 && _elementsPerPage < int(_elements.size())){
 		_prevButton = new Button<TableView>(
 			&TableView::goToPreviousPage, this, "<");
 		_prevButton->setPosition(x, y);
