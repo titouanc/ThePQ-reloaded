@@ -1,4 +1,5 @@
 #include "Textbox.hpp"
+#include "Bank.hpp"
 
 using namespace GUI;
 
@@ -7,9 +8,7 @@ Textbox::Textbox(std::string id):
 	_selecter(Button<Textbox>(&Textbox::focus, this, ""))
 {
 
-	if (!_font.loadFromFile(fontPath(BODY_FONT_PATH)))
-		throw "Could not load font!";
-	_text.setFont(_font);
+	_text.setFont(FONTS.get(BODY_FONT_PATH));
 	_text.setString(id);
 	_text.setCharacterSize(TEXTBOX_TEXT_SIZE);
 	_text.setColor(TEXTBOX_TEXT_COLOR);

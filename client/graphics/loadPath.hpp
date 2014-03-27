@@ -7,4 +7,6 @@ std::string fontPath(std::string name);
 
 std::string texturePath(std::string name);
 
+std::string soundPath(std::string name);
+
 #endif

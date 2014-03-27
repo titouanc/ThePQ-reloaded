@@ -34,3 +34,8 @@ std::string texturePath(std::string name)
 {
 	return basePath() + "/textures/" + name;
 }
+
+std::string soundPath(std::string name)
+{
+	return basePath() + "/sounds/" + name;
+}

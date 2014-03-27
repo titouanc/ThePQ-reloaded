@@ -8,6 +8,7 @@
 #include <iostream>
 #include "GUIConstants.hpp"
 #include "loadPath.hpp"
+#include "Bank.hpp"
 
 namespace GUI {
 	template <typename T, typename P=int> class Button : public Clickable<T, P> {
@@ -22,10 +23,7 @@ namespace GUI {
 		{
 			this->_h = BUTTON_HEIGHT; 
 			this->_hidden = false;
-
-			if (!_font.loadFromFile(fontPath(BODY_FONT_PATH)))
-				throw "Could not load font!";
-			_text.setFont(_font);
+			_text.setFont(FONTS.get(BODY_FONT_PATH));
 			if (text.length() != 0)
 				_text.setString(text);
 			else
@@ -51,9 +49,7 @@ namespace GUI {
 			this->_h = BUTTON_HEIGHT; 
 			this->_hidden = false;
 
-			if (!_font.loadFromFile(fontPath(BODY_FONT_PATH)))
-				throw "Could not load font!";
-			_text.setFont(_font);
+			_text.setFont(FONTS.get(BODY_FONT_PATH));
 			if (text.length() != 0)
 				_text.setString(text);
 			else
@@ -119,7 +115,6 @@ namespace GUI {
 		}
 	private:
 		sf::Text _text;
-		sf::Font _font;
 		sf::RectangleShape _backgroundRect;
 		sf::RectangleShape _highlightRect;
 	};

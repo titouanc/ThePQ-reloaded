@@ -1,4 +1,4 @@
-OBJS = Layer.o MainController.o GraphicManager.o UIMatch.o loadPath.o Label.o MessageBox.o TableView.o Textbox.o
+OBJS = Layer.o MainController.o GraphicManager.o UIMatch.o loadPath.o Label.o MessageBox.o TableView.o Textbox.o Bank.o
 include ../SFML.includes
 
 CPPFLAGS = -I../../common
