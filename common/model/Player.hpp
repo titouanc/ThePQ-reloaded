@@ -10,6 +10,7 @@
 #include "Gear.hpp"
 #include "Moveable.hpp"
 #include <Constants.hpp>
+#include "Savable.hpp"
 
 class Player : public Member, public Moveable
 {
