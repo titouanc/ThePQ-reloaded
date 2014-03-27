@@ -1,4 +1,4 @@
-all: json model network
+all: json model network toolbox_test.ok
 
 .PHONY: all clean mrproper json model network
 
@@ -17,3 +17,6 @@ clean:
 
 mrproper: clean
 	for dir in network json model; do make -C $$dir mrproper; done	
+
+CPPFLAGS=-I.
+include ../Makefile.includes

@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include <sys/select.h>
 #include <sys/time.h>
+#include <string>
 
 /* Sleep for given number of seconds */
 static inline void minisleep(double secs)
@@ -42,6 +43,15 @@ static inline char *rstrip(char *str, const char *junk=STRIP_JUNK)
 static inline char *strip(char *str, const char *junk=STRIP_JUNK)
 {
 	return rstrip(lstrip(str, junk), junk);
+}
+
+static inline std::string strip(std::string str, const char *junk=STRIP_JUNK)
+{
+	if (str.length() == 0) return str;
+	unsigned int begin=0, end=str.length()-1;
+	for (; begin<str.length() && strchr(junk, str[begin]); ++begin);
+	for (; end > begin && strchr(junk, str[end]); --end);
+	return std::string(str, begin, end-begin+1);
 }
 
 #endif
