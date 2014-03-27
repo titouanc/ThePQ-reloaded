@@ -38,9 +38,8 @@ class SharedQueue {
 				pthread_cond_signal(&_cond);
 			}
 		}
-		T const & pop(void){
+		T pop(void){
 			int lock = pthread_mutex_lock(&_mutex);
-			const T * res;
 			if (lock != 0){
 				throw std::runtime_error(
 					std::string("Couldn't acquire lock: ") + strerror(lock)
@@ -48,12 +47,11 @@ class SharedQueue {
 			} else {
 				while (_queue.size() == 0)
 					pthread_cond_wait(&_cond, &_mutex);
-				T ref = _queue.front();
+				T res = _queue.front();
 				_queue.pop();
 				pthread_mutex_unlock(&_mutex);
-				res = &ref;
+				return res;
 			}
-			return *res;
 		}
 		
 		
