@@ -1,13 +1,13 @@
 #include "GraphicManager.hpp"
 #include "MessageBox.hpp"
 #include <sstream>
+#include <toolbox.hpp>
 
 void GUI::GraphicManager::run()
 {
 	while(_controller.window.isOpen() && _isRunning){
-		sf::Event event;
-		if (_controller.window.pollEvent(event))
-			treatEvent(event);
+		if (!readEvent())
+			minisleep(0.01);
 		loop();
 	}
 }
