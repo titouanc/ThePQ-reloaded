@@ -258,4 +258,9 @@ namespace SQUAD
 	static const int KEEPER = 6;
 }
 
+namespace GUI
+{
+	static const float AUTOUPDATE_STALE_TIME = 0.5; // the time between two autoupdates in seconds
+}
+
 #endif

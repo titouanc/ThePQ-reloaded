@@ -9,7 +9,8 @@ using namespace GUI;
 GraphicMarketManager::GraphicMarketManager(ClientManager const & parent, GUI::MainController &controller) : 
 	MarketManager(parent), 
 	GraphicManager(controller),
-	_wait(false)
+	_wait(false),
+	_lastUpdated(0)
 {
 	displayCanvas();
 
@@ -146,6 +147,7 @@ void GraphicMarketManager::sellPlayer(Player *player){
 void GraphicMarketManager::onSalesUpdate()
 {
 	_wait = false;
+	_lastUpdated = time(NULL);
 	clear();
 
 	addTopBar(user());
@@ -299,6 +301,7 @@ void GraphicMarketManager::onAddPlayerError(std::string const & reason)
 }
 
 void GraphicMarketManager::onLoop(){
-	updateSales();
+	if (abs(difftime(time(NULL), _lastUpdated)) > 0.5)
+		updateSales();
 }
 

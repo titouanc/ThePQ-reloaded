@@ -7,6 +7,7 @@
 #include <string>
 #include <map>
 #include <GUINotifier.hpp>
+#include <ctime>
 
 class GUIFGameManager : public FGameManager, public GUI::GraphicManager 
 {
@@ -21,6 +22,7 @@ private:
 	void onLoop();
 
 	NOTIFIABLE
+	time_t _lastUpdated;
 };
 
 
