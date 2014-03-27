@@ -5,12 +5,13 @@ using namespace std;
 using namespace GUI;
 using namespace SQUAD;
 
+/// Constructor
 GraphicTeamManager::GraphicTeamManager(
-	ClientManager const & parent, 
-	GUI::MainController &controller
-) : 
-	TeamManager(parent), 
-	GraphicManager(controller)
+		ClientManager const & parent, 
+		GUI::MainController &controller
+	) : 
+		TeamManager(parent), 
+		GraphicManager(controller)
 {
 	_canvas.setBackgroundImage(texturePath("HexBack.png"));
 	displayCanvas();
@@ -27,8 +28,12 @@ GraphicTeamManager::GraphicTeamManager(
 	}
 }
 
+/// Destructor
 GraphicTeamManager::~GraphicTeamManager(){}
 
+/**
+ *Method
+ */
 void GraphicTeamManager::displayPlayers()
 {
 	clear();
@@ -67,6 +72,9 @@ void GraphicTeamManager::displayPlayers()
 	redrawCanvas();
 }
 
+/**
+ *Method
+ */
 void GraphicTeamManager::displaySquadLabels(){
 	_canvas.addPanel(515, 500, sf::Color(0x00, 0x00, 0x00, 0x77)
 		).setPosition(650, 100);
@@ -92,6 +100,9 @@ void GraphicTeamManager::displaySquadLabels(){
 		).centerOn(900, 520);
 }
 
+/**
+ *Method
+ */
 void GraphicTeamManager::displayChangeButtons(){
 	_canvas.addButton<GraphicTeamManager, int>(
 		&GraphicTeamManager::changePlayerAt, LEFT_CHASER, this, user().squad.players[LEFT_CHASER]->getName()
@@ -120,6 +131,9 @@ void GraphicTeamManager::displayChangeButtons(){
 	redrawCanvas();
 }
 
+/**
+ *Method
+ */
 void GraphicTeamManager::changePlayerAt(int position){
 	selectPosition(position); // storing it in an instance variable
 	displayPlayers();
@@ -127,6 +141,9 @@ void GraphicTeamManager::changePlayerAt(int position){
 	displaySwapWith(position);
 }
 
+/**
+ *Method
+ */
 void GraphicTeamManager::displaySwapWith(int position){
 	if (LEFT_CHASER != position)
 		_canvas.addButton<GraphicTeamManager, int>(
@@ -190,6 +207,9 @@ void GraphicTeamManager::displaySwapWith(int position){
 	redrawCanvas();
 }
 
+/**
+ *Method displaying the available players on the interface
+ */
 void GraphicTeamManager::displayAvailablePlayers(){
 	for(size_t i=0; i<user().players.size(); ++i){
 		if (!user().squad.hasMemberID(user().players[i].getMemberID())){
@@ -200,6 +220,9 @@ void GraphicTeamManager::displayAvailablePlayers(){
 	}
 }
 
+/**
+ *Method handpling player positioning on the pitch
+ */
 void GraphicTeamManager::selectPlayer(int id){
 	putPlayerAtPosition(id, getSelectedPosition());
 	_wait = true;
@@ -207,6 +230,9 @@ void GraphicTeamManager::selectPlayer(int id){
 		readMessage();
 }
 
+/**
+ *Method handling the fwap of players old position <->new position
+ */
 void GraphicTeamManager::doSwap(int id){
 	swapPlayers(id, getSelectedPosition());
 	_wait = true;
@@ -214,11 +240,17 @@ void GraphicTeamManager::doSwap(int id){
 		readMessage();
 }
 
+/**
+ *Method reversing user chages
+ */
 void GraphicTeamManager::cancelChange(){
 	displayPlayers();
 	displayChangeButtons();
 }
 
+/**
+ *Method handling player interface
+ */
 void GraphicTeamManager::onPlayersLoad()
 {
 	displayPlayers();
@@ -226,6 +258,9 @@ void GraphicTeamManager::onPlayersLoad()
 	_wait = false;
 }
 
+/**
+ *Method handling squad interface
+ */
 void GraphicTeamManager::onSquadUpdated()
 {
 	_wait = false;

@@ -1,18 +1,32 @@
 #include "TeamManager.hpp"
 
+/// Constructor
 TeamManager::TeamManager(ClientManager const & parent) : ClientManager(parent), _selectedPosition(-1) 
 {
 
 }
 
+/**
+ *Method handling position selection
+ *@param int :  position to select
+ */
 void TeamManager::selectPosition(int position){
 	_selectedPosition = position;
 }
 
+/**
+ *Method handling position
+ *@return int : position
+ */
 int TeamManager::getSelectedPosition(){
 	return _selectedPosition;
 }
 
+/**
+ *Method handling player position change
+ *@param int : id of the player whose poisition to change
+ *@param int : new position at which to place the player
+ */
 void TeamManager::putPlayerAtPosition(int player_id, int position){
 	JSON::Dict data = {
 		{ net::MSG::PLAYER_ID, JSON::Integer(player_id) },
@@ -21,6 +35,11 @@ void TeamManager::putPlayerAtPosition(int player_id, int position){
 	say(net::MSG::PUT_PLAYER_ON_SQUAD_POSITION, data);
 }
 
+/**
+ *Method handling player swap (inside a squad)
+ *@param int : id of the player to swap
+ *@param int : position where to place the player
+ */
 void TeamManager::swapPlayers(int player_id, int position){
 	JSON::Dict data = {
 		{ net::MSG::PLAYER_ID, JSON::Integer(player_id) },
