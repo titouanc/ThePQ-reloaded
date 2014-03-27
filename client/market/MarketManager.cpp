@@ -1,5 +1,6 @@
 #include "MarketManager.hpp"
 
+///Constructor
 MarketManager::MarketManager(ClientManager const & parent) :
 	ClientManager(parent)
 {
@@ -7,6 +8,11 @@ MarketManager::MarketManager(ClientManager const & parent) :
 	loadPlayers();
 }
 
+/**
+ *Method calculating the value of a player to be placed on the market
+ *@param Player: the player whose value to be determined
+ *@return (int,int) the lower and upper bounds of the value of a player
+ */
 pair<int, int> MarketManager::getBidValueRange(Player *player){
 	int allowedRangeFromEstimatedValue = 10000; //TODO : in Constants.hpp (should do that for many others variables !)
 	pair<int, int> range;
@@ -15,10 +21,18 @@ pair<int, int> MarketManager::getBidValueRange(Player *player){
 	return range;
 }
 
+
+/**
+ *Method handling the update of the players bid values
+ */
 void MarketManager::updateSales(){
 	say(net::MSG::PLAYERS_ON_MARKET_LIST, JSON::String(""));
 }
 
+/**
+ *Method handling the bid on a player
+ *@param int : the id of the player to bid on
+*/
 void MarketManager::bidOnPlayer(int player_id){//modif
 	std::cout << "GONNA BID ON " << player_id;
 	int value = getNextBidValue(player_id);
@@ -32,6 +46,11 @@ void MarketManager::bidOnPlayer(int player_id){//modif
 	std::cout << "BID: " << data << endl;
 }
 
+/**
+ *Method handling the addition of a player on the market
+ *@param int : id of the player to be put on the market
+ *@param int : value of hte player being put on the market
+*/
 void MarketManager::addPlayerOnMarket(int player_id, int value){
 	JSON::Dict data = {
 		{ net::MSG::USERNAME, JSON::String(user().username) },
@@ -41,6 +60,9 @@ void MarketManager::addPlayerOnMarket(int player_id, int value){
 	say (net::MSG::ADD_PLAYER_ON_MARKET_QUERY, data);
 }
 
+/**
+ *Method for determining the next bid value of the player on sale 
+ */
 int MarketManager::getNextBidValue(int player_id)
 {
 	int value = -1;
@@ -52,6 +74,11 @@ int MarketManager::getNextBidValue(int player_id)
 	return value;
 }
 
+/**
+ *Method handling queries from the server
+ *@param string : type of the message to be handled (INT,STR..)
+ *@param JSON::Value : data to be treated
+ */
 void MarketManager::treatMessage(std::string const & type, JSON::Value const * data)
 {
 	if (type == net::MSG::PLAYERS_ON_MARKET_LIST){

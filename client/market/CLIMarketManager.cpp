@@ -1,9 +1,14 @@
 #include "CLIMarketManager.hpp"
 #include <match/CLIMatchManager.hpp>
+
+///Constructor
 CLIMarketManager::CLIMarketManager(ClientManager const & parent) :
 MarketManager(parent), _waitForSales(false), _waitForBid(false)
 {}
 
+/**
+ *Method starting the player market for the command line
+ */
 void CLIMarketManager::run()
 {
 	while (user().players.size() == 0){
@@ -33,6 +38,9 @@ void CLIMarketManager::run()
 	while(option != 3);
 }
 
+/**
+ *Method handling the sell of a player
+ */
 void CLIMarketManager::sellPlayer()
 {
 	showPlayers();
@@ -68,6 +76,9 @@ void CLIMarketManager::sellPlayer()
 	}
 }
 
+/**
+ *Method handling the listing of players for sale
+ */
 void CLIMarketManager::displayPlayersOnSale()
 {
 	_waitForSales = true;
@@ -81,6 +92,9 @@ void CLIMarketManager::displayPlayersOnSale()
 	cout << "=================================================" << endl;
 }
 
+/**
+ *Method showing the bidding interface
+ */
 void CLIMarketManager::showBidMenu()
 {
 	displayPlayersOnSale();
@@ -107,6 +121,9 @@ void CLIMarketManager::showBidMenu()
 	while (option != 3);
 }
 
+/**
+ *Method displaying current users players
+ */
 void CLIMarketManager::showPlayers(){
 	cout << "================ YOUR PLAYERS ================" << endl;
 	for(size_t i =0; i<user().players.size();++i){
@@ -115,6 +132,9 @@ void CLIMarketManager::showPlayers(){
 	cout << "==============================================" << endl;
 }
 
+/**
+ *Method handling bidding
+ */
 void CLIMarketManager::placeBid()
 {
 	int player_id;
@@ -133,35 +153,57 @@ void CLIMarketManager::placeBid()
 	}
 }
 
+/**
+ *Method handling a correct bid
+ *(send query to server)
+ */
 void CLIMarketManager::onBidOK()
 {
 	_waitForBid = false;
 	okMsg("Bid added");
 }
 
+/**
+ *Method handling an incorrect bid
+ *(send query to server)
+ *@param string: error message
+ */
 void CLIMarketManager::onBidError(std::string const & reason)
 {
 	_waitForBid = false;
 	errorMsg(reason);
 }
 
+/**
+ *Method handling the addition of a player on the PlayerMarket
+ */
 void CLIMarketManager::onAddPlayerOK()
 {
 	_waitForBid = false;
 	okMsg("Player put on market");
 }
 
+/**
+ *Method handling an error in the addition of a player on the PlayerMarket
+ *@param : string  error message to be sent to the server
+ */
 void CLIMarketManager::onAddPlayerError(std::string const & reason)
 {
 	_waitForBid = false;
 	errorMsg(reason);
 }
 
+/**
+ *Method handling the update of the market
+ */
 void CLIMarketManager::onSalesUpdate()
 {
 	_waitForSales = false;
 }
 
+/**
+ *Method handling the start of a match
+ */
 void CLIMarketManager::onMatchStart(){
 	CLIMatchManager match(*this); 
 	match.run();
