@@ -2,7 +2,8 @@
 #define DEFINE_BANK_HEADER
 
 #include <unordered_map>
-#include <SFML/Graphics.hpp>
+#include "SFML/Graphics.hpp"
+#include "SFML/Audio.hpp"
 #include "loadPath.hpp"
 
 template <typename T>
@@ -30,24 +31,12 @@ class FontBank : public Bank<sf::Font> {
 		std::string getPath(std::string const & name){return fontPath(name);}
 };
 
+class SoundBank : public Bank<sf::SoundBuffer> {
+	protected:
+		std::string getPath(std::string const & name){return soundPath(name);}
+};
+
 extern FontBank FONTS;
-
-/*
-class FontBank : public Bank<sf::Font> {
-	protected:
-		sf::Font const & load(std::string const & name){
-			(*this)[name] = sf::Font();
-			(*this)[name].loadFromFile(name);
-		}
-};
-
-class TextureBank : public Bank<sf::Texture> {
-	protected:
-		sf::Texture const & load(std::string const & name){
-			(*this)[name] = sf::Texture();
-			(*this)[name].loadFromFile(name);
-		}
-};
-*/
+extern SoundBank SOUNDS;
 
 #endif
