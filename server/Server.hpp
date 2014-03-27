@@ -68,6 +68,9 @@ public:
     void timeUpdateChampionship();
     void addChampionship(const Championship&);
 
+    void saleManager();
+    void saleGenerator();
+
 private:
 	SharedQueue<net::Message> _inbox, _outbox;
 	map<int, User*> _users;
@@ -87,6 +90,8 @@ private:
 
     pthread_mutex_t _champsMutex; //_championships used by 3 threads
 	pthread_t _timeThread;
+    pthread_t _manager;
+    pthread_t _generator;
 };
 
 #endif

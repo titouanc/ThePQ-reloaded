@@ -21,6 +21,37 @@ static void* runTimeLoop(void* args)
 	Server* server = (Server*) args;
 	server->timeLoop();
 	pthread_exit(NULL);
+	return NULL;
+}
+
+void * runSaleManager(void * args){
+	Server* server = (Server*) args;
+	server->saleManager();
+	pthread_exit(NULL);
+	return NULL;
+}
+
+void * runSaleGenerator(void * args){
+	Server* server = (Server*) args;
+	server->saleGenerator();
+	pthread_exit(NULL);
+	return NULL;
+}
+
+void Server::saleManager()
+{
+	while(_connectionManager.isRunning() == true){
+		sleep(1); //One iteration = --timeLeft for each sale
+		_market.timeUpdate();
+	}
+}
+
+void Server::saleGenerator()
+{
+	while(_connectionManager.isRunning() == true){
+		sleep(20);	//TODO : log, nbrUsersConnected(), etc.
+		_market.timeCreateSale();
+	}
 }
 
 Server::Server(NetConfig const & config) : 
@@ -30,7 +61,8 @@ Server::Server(NetConfig const & config) :
 	_userMgr(_serverMgr), _stadiumMgr(_serverMgr), _teamMgr(_serverMgr), _market(_serverMgr),
 	_gameMgr(_serverMgr, _matches), _championshipMgr(_gameMgr, _championships, _pendingChampMatches, _champsMutex),
 	_adminManager(_connectionManager,this),
-	_timeTicks(0), _champsMutex(PTHREAD_MUTEX_INITIALIZER), _timeThread()
+	_timeTicks(0), _champsMutex(PTHREAD_MUTEX_INITIALIZER),
+	_timeThread(), _manager(), _generator()
 {
 	_championshipMgr.loadChampionships();
 	_connectionManager.start();
@@ -71,6 +103,8 @@ void Server::run()
 	unsigned long long int tick = 0;
 	srand(time(NULL));	// rand() is used throughout some modules
 	pthread_create(&_timeThread, NULL, runTimeLoop, this);
+	pthread_create(&_manager, NULL, runSaleManager, this);
+	pthread_create(&_generator, NULL, runSaleGenerator, this);
 	while (_connectionManager.isRunning() || _inbox.available()){
 		Message const & msg = _inbox.pop();
 		try {
