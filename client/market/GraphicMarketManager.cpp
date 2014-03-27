@@ -298,3 +298,7 @@ void GraphicMarketManager::onAddPlayerError(std::string const & reason)
 	displayError(reason);
 }
 
+void GraphicMarketManager::onLoop(){
+	updateSales();
+}
+

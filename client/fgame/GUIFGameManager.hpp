@@ -18,6 +18,8 @@ private:
 	void invitePlayer(std::string playername);
 	void onUserList(JSON::List const & list);
 
+	void onLoop();
+
 	NOTIFIABLE
 };
 

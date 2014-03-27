@@ -7,7 +7,7 @@
 /*! Graphical module mixin that allows automatic handling of notifications and
     incoming messages in main event loop */
 #define NOTIFIABLE \
-virtual void loop(){readMessages();handleNotification();}\
+virtual void checkNotifications(){readMessages();handleNotification();}\
 virtual void launchMatch(){GraphicMatchManager match(*this, _controller);match.run();redrawCanvas();}\
 virtual void onOtherAccept(std::string const & user){launchMatch();}\
 virtual void onOtherDeny(std::string const & user){displayError(user + " doesn't want to play with you");}\

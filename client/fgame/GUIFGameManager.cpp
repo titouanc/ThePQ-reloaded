@@ -72,3 +72,7 @@ void GUIFGameManager::onUserList(JSON::List const & list)
 
 	redrawCanvas();
 }
+
+void GUIFGameManager::onLoop(){
+	askConnectedList();
+}

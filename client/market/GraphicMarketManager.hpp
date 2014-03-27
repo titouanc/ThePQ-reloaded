@@ -29,6 +29,7 @@ private:
 	void onAddPlayerError(std::string const & reason);
 
 	NOTIFIABLE
+	void onLoop();
 
 	bool _wait, _waitForBid;
 };
