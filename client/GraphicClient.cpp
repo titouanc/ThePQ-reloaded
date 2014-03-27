@@ -1,4 +1,5 @@
 #include "GraphicClient.hpp"
+#include <toolbox.hpp>
 
 GraphicClient::GraphicClient(NetConfig const &config) :
     _user(), _connection(config.host, config.port), _notifications(),
@@ -6,7 +7,16 @@ GraphicClient::GraphicClient(NetConfig const &config) :
 }
 
 void GraphicClient::run() {
-    _connection.run();
+	bool connected = false;
+	while (not connected){
+		try {
+			_connection.run();
+			connected = true;
+		}
+		catch (...) {
+			_gUserManager.displayMessage("Could not connect to the server.", {"Retry"});
+		}
+	}
     _gUserManager.run();
     _connection.stop();
 }

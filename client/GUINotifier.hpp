@@ -12,7 +12,7 @@ virtual void launchMatch(){GraphicMatchManager match(*this, _controller);match.r
 virtual void onOtherAccept(std::string const & user){launchMatch();}\
 virtual void onOtherDeny(std::string const & user){displayError(user + " doesn't want to play with you");}\
 virtual void onInvite(std::string const & otherUser){std::string question = otherUser + " has invited you to play a friendly game.\nAccept ?";if (confirm(question)){acceptInvitationFromUser(otherUser);launchMatch();} else {denyInvitationFromUser(otherUser);}}\
-virtual void onMessage(std::string const & message){displayMessage(message);}\
+virtual void onMessage(std::string const & message){displayOk(message);}\
 virtual void onNotificationResponse(bool success, std::string const & response, std::string const & message){(success) ? displayOk(message) : displayError(message);}\
 virtual void onMatchPending(){MessageBox m(_controller, "Next championship match is close. What do you want to do ?", {"Ready to play !", "Withdraw"});int res = m.showBox();(res==0) ? readyForMatch() : withdrawFromMatch();}\
 virtual void onMatchStart(){launchMatch();}\
