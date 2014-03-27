@@ -196,7 +196,7 @@ namespace gameconfig
 	static const int AP_GAIN_RATIO = 1;
 	static const int FAME_GAIN_RATIO = 10;
     static const int MAXAPTVAL = 100;
-    static const int FAME_WIN = 100;
+    static const int FAME_WIN = 10;
     static const int MATCH_WON_AP_GAIN = 10;
     static const int MATCH_LOST_AP_GAIN = 5;
     static const int TRIBUNE_SPECTATORS = 100;
