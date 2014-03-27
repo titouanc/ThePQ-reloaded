@@ -9,7 +9,8 @@ using namespace GUI;
 GraphicMarketManager::GraphicMarketManager(ClientManager const & parent, GUI::MainController &controller) : 
 	MarketManager(parent), 
 	GraphicManager(controller),
-	_wait(false)
+	_wait(false),
+	_lastUpdated(0)
 {
 	displayCanvas();
 
@@ -147,6 +148,7 @@ void GraphicMarketManager::sellPlayer(Player *player){
 void GraphicMarketManager::onSalesUpdate()
 {
 	_wait = false;
+	_lastUpdated = time(NULL);
 	clear();
 
 	addTopBar(user());
@@ -248,11 +250,9 @@ void GraphicMarketManager::onSalesUpdate()
 	}
 	
 	addBackButton();
-	Button<GraphicMarketManager> & updateButton = _canvas.addButton<GraphicMarketManager>(&GraphicMarketManager::updateSales, this, "Update");
-	updateButton.setPosition(window().getSize().x-_backButton->getWidth()-updateButton.getWidth()-2*MARGIN, window().getSize().y-updateButton.getHeight()-MARGIN);
 
 	Button<GraphicMarketManager> & sellButton = _canvas.addButton<GraphicMarketManager>(&GraphicMarketManager::displaySellablePlayers, this, "Sell a player");
-	sellButton.setPosition(window().getSize().x-_backButton->getWidth()-updateButton.getWidth()-sellButton.getWidth() - 3*MARGIN, window().getSize().y-sellButton.getHeight()-MARGIN);
+	sellButton.setPosition(window().getSize().x-_backButton->getWidth()-sellButton.getWidth() - 3*MARGIN, window().getSize().y-sellButton.getHeight()-MARGIN);
 
 
 	
@@ -297,5 +297,10 @@ void GraphicMarketManager::onAddPlayerError(std::string const & reason)
 {
 	_wait = false;
 	displayError(reason);
+}
+
+void GraphicMarketManager::onLoop(){
+	if (abs(difftime(time(NULL), _lastUpdated)) > GUI::AUTOUPDATE_STALE_TIME)
+		updateSales();
 }
 

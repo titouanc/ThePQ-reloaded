@@ -1,13 +1,12 @@
 #include "Label.hpp"
 #include "loadPath.hpp"
+#include "Bank.hpp"
 
 using namespace GUI;
 
 Label::Label(std::string text, sf::Color color)
 {
-	if (!_font.loadFromFile(fontPath(BODY_FONT_PATH)))
-		throw "Could not load font!";
-	_text.setFont(_font);
+	_text.setFont(FONTS.get(BODY_FONT_PATH));
 	if (text.length() != 0)
 		_text.setString(text);
 	else
@@ -20,9 +19,7 @@ Label::Label(std::string text, sf::Color color)
 
 Label::Label(int number, sf::Color color)
 {
-	if (!_font.loadFromFile(fontPath(BODY_FONT_PATH)))
-		throw "Could not load font!";
-	_text.setFont(_font);
+	_text.setFont(FONTS.get(BODY_FONT_PATH));
 	char casted[512];
 	sprintf(casted, "%d", number);
 	_text.setString(casted);
@@ -58,9 +55,7 @@ void Label::setFontSize(int fontSize)
 
 void Label::setFont(std::string path)
 {
-	if (!_font.loadFromFile(fontPath(path)))
-		throw "Could not load font!";
-	_text.setFont(_font);
+	_text.setFont(FONTS.get(path));
 }
 
 void Label::setColor(sf::Color color)

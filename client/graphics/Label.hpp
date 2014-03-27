@@ -23,7 +23,6 @@ namespace GUI {
 		void setColor(sf::Color color);
 	private:
 		sf::Text _text;
-		sf::Font _font;
 	};
 }
 

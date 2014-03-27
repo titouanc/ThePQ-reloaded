@@ -3,6 +3,7 @@
 #include "SFML/Window.hpp"
 #include <sstream>
 #include <iostream>
+#include <toolbox.hpp>
 
 using namespace std;
 using namespace GUI;
@@ -97,6 +98,10 @@ void GUI::Layer::renderAllAttributesTo(sf::RenderTarget &dest){
 bool GUI::Layer::handleClick(int x, int y){
 	for (unsigned int i=0; i<_clickables.size(); ++i){
 		if (_clickables[i]->isInBounds(x, y) && !_clickables[i]->isHidden()){
+			sf::Sound sound;
+			sound.setBuffer(SOUNDS.get("click.wav"));
+			sound.play();
+			minisleep(0.3);
 			_clickables[i]->triggerAction();
 			return true;
 		}	

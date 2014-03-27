@@ -8,7 +8,8 @@ void GUI::GraphicManager::run()
 	while(_controller.window.isOpen() && _isRunning){
 		if (!readEvent())
 			minisleep(0.01);
-		loop();
+		checkNotifications();
+		onLoop();
 	}
 }
 

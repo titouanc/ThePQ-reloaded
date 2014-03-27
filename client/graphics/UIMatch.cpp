@@ -5,6 +5,7 @@
 #include <model/Player.hpp>
 #include "GUIConstants.hpp"
 #include <cmath>
+#include "Bank.hpp"
 
 using namespace GUI;
 
@@ -39,7 +40,7 @@ UIMatch::UIMatch(Pitch & pitch, const Squad & viewerSquad, int hexagonSize) :
     _size(hexagonSize), 
     _hexagon(circleSize(), 6), /* 6 sides regular polygon */
     _left(0), _top(0),
-    _tooltip(" ", _tooltip_font, 10), _tooltip_visible(false)
+    _tooltip(" ", FONTS.get(BODY_FONT_PATH), 10), _tooltip_visible(false)
 {
     TextureToLoad toLoad[] = {
         /* Background */
@@ -68,9 +69,6 @@ UIMatch::UIMatch(Pitch & pitch, const Squad & viewerSquad, int hexagonSize) :
         if (! _other_players_textures[i].loadFromFile(texturePath(base+"StripedPlayer.png")))
             throw TextureNotFound(base+"StripedPlayer.png");
     }
-
-    if (! _tooltip_font.loadFromFile(fontPath(BODY_FONT_PATH)))
-        throw TextureNotFound(BODY_FONT_PATH);
 
     _tooltip.setColor(sf::Color::Black);
 }

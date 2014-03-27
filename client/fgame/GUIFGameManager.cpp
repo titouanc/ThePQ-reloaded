@@ -5,7 +5,7 @@ using namespace std;
 using namespace GUI;
 ///Constructor
 GUIFGameManager::GUIFGameManager(ClientManager const & parent, GUI::MainController &controller)
-		: FGameManager(parent), GraphicManager(controller)
+		: FGameManager(parent), GraphicManager(controller), _lastUpdated(0)
 {
 	askConnectedList();
 	_canvas.setBackgroundImage(texturePath("HexBack.png"));
@@ -35,6 +35,7 @@ void GUIFGameManager::invitePlayer(string playername)
  */
 void GUIFGameManager::onUserList(JSON::List const & list)
 {
+	_lastUpdated = time(NULL);
 	clear();
 	addTopBar(user());
 
@@ -66,9 +67,11 @@ void GUIFGameManager::onUserList(JSON::List const & list)
 		noPlayersLabel.setColor(sf::Color::White);
 	}
 	addBackButton();
-	Button<GUIFGameManager> & updateButton = _canvas.addButton<GUIFGameManager>(&GUIFGameManager::askConnectedList, this, "Update");
-	updateButton.setPosition(window().getSize().x-_backButton->getWidth()-updateButton.getWidth()-2*MARGIN, window().getSize().y-updateButton.getHeight()-MARGIN);
-	
 
 	redrawCanvas();
+}
+
+void GUIFGameManager::onLoop(){
+	if (abs(difftime(time(NULL), _lastUpdated)) > GUI::AUTOUPDATE_STALE_TIME)
+		askConnectedList();
 }

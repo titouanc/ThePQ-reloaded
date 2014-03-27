@@ -25,7 +25,6 @@ class UIMatch : public sf::Drawable {
         sf::Texture _own_players_textures[6];
         sf::Texture _other_players_textures[6];
 
-        sf::Font _tooltip_font;
         sf::Text _tooltip;
         bool _tooltip_visible;
 

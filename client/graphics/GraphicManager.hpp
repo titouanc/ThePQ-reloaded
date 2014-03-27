@@ -21,7 +21,8 @@ namespace GUI {
 		virtual void run();
 
 		/*! hook called at every mainloop iteration (same as event loop !!!) */
-		virtual void loop(){}
+		virtual void checkNotifications(){}
+		virtual void onLoop(){}
 
 		void deleteCanvas();
 		void displayCanvas();

@@ -33,7 +33,6 @@ namespace GUI {
 	private:
 		std::string _id;
 		sf::Text _text;
-		sf::Font _font;
 		sf::RectangleShape _backgroundRect;
 		bool _isFocused;
 		Button<Textbox> _selecter;
