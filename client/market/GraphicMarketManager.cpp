@@ -249,11 +249,9 @@ void GraphicMarketManager::onSalesUpdate()
 	}
 	
 	addBackButton();
-	Button<GraphicMarketManager> & updateButton = _canvas.addButton<GraphicMarketManager>(&GraphicMarketManager::updateSales, this, "Update");
-	updateButton.setPosition(window().getSize().x-_backButton->getWidth()-updateButton.getWidth()-2*MARGIN, window().getSize().y-updateButton.getHeight()-MARGIN);
 
 	Button<GraphicMarketManager> & sellButton = _canvas.addButton<GraphicMarketManager>(&GraphicMarketManager::displaySellablePlayers, this, "Sell a player");
-	sellButton.setPosition(window().getSize().x-_backButton->getWidth()-updateButton.getWidth()-sellButton.getWidth() - 3*MARGIN, window().getSize().y-sellButton.getHeight()-MARGIN);
+	sellButton.setPosition(window().getSize().x-_backButton->getWidth()-sellButton.getWidth() - 3*MARGIN, window().getSize().y-sellButton.getHeight()-MARGIN);
 
 
 	
@@ -301,7 +299,7 @@ void GraphicMarketManager::onAddPlayerError(std::string const & reason)
 }
 
 void GraphicMarketManager::onLoop(){
-	if (abs(difftime(time(NULL), _lastUpdated)) > 0.5)
+	if (abs(difftime(time(NULL), _lastUpdated)) > GUI::AUTOUPDATE_STALE_TIME)
 		updateSales();
 }
 

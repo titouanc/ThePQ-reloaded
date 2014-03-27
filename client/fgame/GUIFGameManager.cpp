@@ -67,9 +67,6 @@ void GUIFGameManager::onUserList(JSON::List const & list)
 		noPlayersLabel.setColor(sf::Color::White);
 	}
 	addBackButton();
-	Button<GUIFGameManager> & updateButton = _canvas.addButton<GUIFGameManager>(&GUIFGameManager::askConnectedList, this, "Update");
-	updateButton.setPosition(window().getSize().x-_backButton->getWidth()-updateButton.getWidth()-2*MARGIN, window().getSize().y-updateButton.getHeight()-MARGIN);
-	
 
 	redrawCanvas();
 }
