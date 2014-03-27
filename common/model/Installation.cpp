@@ -8,8 +8,6 @@ Installation* Installation::CAST(JSON::Dict const & json)
 	if (name == memory::FANSHOP) return new FanShop(json);
 	else if (name == memory::FOOD_STAND) return new FoodStand(json);
 	else if (name == memory::TRIBUNE) return new Tribune(json);
-	else if (name == memory::MEDIC_CENTER) return new MedicalCenter(json);
-	// WHAT TODO ?
 	return NULL;
 }
 
@@ -140,23 +138,4 @@ int Tribune::getIncome() const
 int Tribune::getMatchIncome(int nbOfSpectators)
 {
 	return nbOfSpectators*gameconfig::TICKET_PRICE;
-}
-
-MedicalCenter::MedicalCenter(std::string owner) : Installation(owner, memory::MEDIC_CENTER, 5000)
-{}
-
-int MedicalCenter::getMaintenanceCost() const
-{
-	// EXAMPLE ==> TODO
-	return getCurrentValue()/50;	
-}
-
-int MedicalCenter::getIncome() const
-{
-	return 0;
-}
-
-int MedicalCenter::getMatchIncome(int nbOfSpectators)
-{
-	return 0;
 }

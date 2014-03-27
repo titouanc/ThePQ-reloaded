@@ -48,7 +48,7 @@ class SharedQueue {
 			} else {
 				while (_queue.size() == 0)
 					pthread_cond_wait(&_cond, &_mutex);
-				T & ref = _queue.front();
+				T ref = _queue.front();
 				_queue.pop();
 				pthread_mutex_unlock(&_mutex);
 				res = &ref;

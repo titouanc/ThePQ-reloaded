@@ -28,14 +28,6 @@ public:
     operator JSON::Dict() const;
     Player& operator=(Player const & player);
 
-    /* To delete; unused */
-   	void recoverLife() 				{ _lifeBar = _maxLife;}
-	void loseLife (int damage)		{ (damage > _lifeBar) ? _lifeBar = 0 : _lifeBar -= damage; }
-	void recoverMana ()				{ _manaBar = _maxMana; }
-	void loseMana (int mana)		{ (mana > _manaBar) ? _manaBar = 0 : _manaBar -= mana; }
-	int getRemainingLife() const	{ return _lifeBar; }
-	int getRemainingMana() const	{ return _manaBar; }
-
 	/* Name handlers */
 	std::string getName() const    	{ return Member::getName(); }
     void setName(string name) { _name = name; }
@@ -83,10 +75,7 @@ public:
     virtual bool canQuaffle() const { return false; }
 
 protected:
-    int _maxLife;
-    int _maxMana;
-	int _lifeBar;
-	int _manaBar;
+
 	Broomstick * _broomstick;
     Jersey * _jersey;
 	int _strength;

@@ -8,6 +8,7 @@
 #include "Label.hpp"
 #include "TableView.hpp"
 #include "../UserData.hpp"
+#include <vector>
 
 namespace GUI {
 	class GraphicManager {
@@ -30,7 +31,7 @@ namespace GUI {
 
 		void displayError(std::string errorMessage);
 		void displayOk(std::string okMessage);
-		void displayMessage(std::string message);
+		void displayMessage(std::string message, std::vector<std::string> options);
 		int confirm(std::string message);
 
 		void updateBudget(int newBudget);
