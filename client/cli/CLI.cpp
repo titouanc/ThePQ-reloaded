@@ -10,7 +10,7 @@ void CLI::prompt() const
 void CLI::clScreen() const {
 	cout << "\033[2J\033[1;1H";
 }
-
+///such beautiful splashscreen
 void CLI::splashScreen() const
 {
 	clScreen();
@@ -37,6 +37,7 @@ void CLI::splashScreen() const
 	cout << "			Welcome to The Pro Quidditch Manager 2014!" << endl;
 }
 
+///Method showing a heartworming goodbye message from the coding team
 void CLI::goodBye() const 
 {
 	cout << "\033[2J\033[1;1H";
@@ -46,6 +47,7 @@ void CLI::goodBye() const
 	cout <<  "                 =========================            " << endl;
 }
 
+///override for error message
 std::ostream & CLI::errorMsg(std::string const & message) const
 {
 	cout << "\033[1;31mError:\033[0m ";
@@ -54,6 +56,7 @@ std::ostream & CLI::errorMsg(std::string const & message) const
 	return cout;
 }
 
+///override for ok message
 std::ostream & CLI::okMsg(std::string const & message) const
 {
 	cout << "\033[1;32mOK:\033[0m ";
