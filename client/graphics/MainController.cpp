@@ -86,5 +86,4 @@ void GUI::MainController::handleMouseMoved(sf::Event e)
 	if (_layers.size() != 0)
 		_layers.top()->handleMouseMoved(e);
 	renderTopLayer();
-	window.display();
 }
