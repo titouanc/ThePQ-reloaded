@@ -83,8 +83,8 @@ void GUI::GraphicManager::displayOk(std::string okMessage){
 	m.showBox();
 }
 
-void GUI::GraphicManager::displayMessage(std::string message){
-	MessageBox m(_controller, message, {"OK"});
+void GUI::GraphicManager::displayMessage(std::string message, std::vector<std::string> options){
+	MessageBox m(_controller, message, options);
 	m.showBox();
 }
 
