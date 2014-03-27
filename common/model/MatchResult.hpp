@@ -76,30 +76,11 @@ public:
 
 		int wFame = _winner.getFame();
 		int lFame = _loser.getFame();
-		//Case 1 : winner's fame >= loser's fame, fame lose/win isn't that much
-		if (wFame == lFame)
-			++wFame;
-		if (wFame>=lFame){
-			if ((_score[0] - _score[1])>=gameconfig::BIG_GOAL_DIFFERENCE){
-				_winnerFameGain = (int((gameconfig::FAME_WIN/(wFame-lFame))*0.15));
-				_loserFameGain = -(int((gameconfig::FAME_WIN/(wFame-lFame))*0.15));
-			}
-			else{
-				_winnerFameGain = (int((gameconfig::FAME_WIN/(wFame-lFame))*0.05));
-				_loserFameGain = -(int((gameconfig::FAME_WIN/(wFame-lFame))*0.05));
-			}
-		}
-		//Case 2 : winner's fame < loser's fame , fame lose/win more important
-		else if(wFame<lFame){
-			if ((_score[0] - _score[1])>=gameconfig::BIG_GOAL_DIFFERENCE){
-				_winnerFameGain = (int((gameconfig::FAME_WIN*(wFame-lFame))*0.15));
-				_loserFameGain = -(int((gameconfig::FAME_WIN*(wFame-lFame))*0.15));
-			}
-			else{
-				_winnerFameGain = (int((gameconfig::FAME_WIN*(wFame-lFame))*0.05));
-				_loserFameGain = -(int((gameconfig::FAME_WIN*(wFame-lFame))*0.05));
-			}
-		} 		
+		double fameRatio = lFame/wFame;
+		double goalRatio = ((_score[0] - _score[1] >= gameconfig::BIG_GOAL_DIFFERENCE) ? 1.5 : 1.0);
+		int fameGain = fameRatio*goalRatio*gameconfig::FAME_WIN;
+		_winnerFameGain = fameGain;
+		_loserFameGain = -fameGain; 		
 	}
 
 	void resolveAP(){
