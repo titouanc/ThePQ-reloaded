@@ -5,6 +5,7 @@
 using namespace std;
 using namespace GUI;
 
+///Constructor
 GraphicMarketManager::GraphicMarketManager(ClientManager const & parent, GUI::MainController &controller) : 
 	MarketManager(parent), 
 	GraphicManager(controller),
@@ -16,7 +17,9 @@ GraphicMarketManager::GraphicMarketManager(ClientManager const & parent, GUI::Ma
 
 	updateSales();
 }
-
+/**
+ *Method handling the market update
+ */
 void GraphicMarketManager::updateSales()
 {
 	MarketManager::updateSales();
@@ -27,6 +30,10 @@ void GraphicMarketManager::updateSales()
 	}
 }
 
+/**
+ *Method handling bidding on a player
+ *@param int: id of the player to bid on
+ */
 void GraphicMarketManager::placeBid(int playerID)
 {
 	_wait=true;
@@ -35,6 +42,9 @@ void GraphicMarketManager::placeBid(int playerID)
 		readMessage();
 }
 
+/**
+ *Method displaying the players available foor sale
+ */
 void GraphicMarketManager::displaySellablePlayers()
 {
 	clear();
@@ -90,6 +100,10 @@ void GraphicMarketManager::displaySellablePlayers()
 	redrawCanvas();
 }
 
+/**
+ *Method handling the bidding on a player
+ *@param Player: player to bid on
+ */
 void GraphicMarketManager::askPriceForPlayer(Player *player){
 	Textbox & priceTextbox = _canvas.addTextbox("Enter a price");
 	priceTextbox.setPosition(800, 350);
@@ -101,6 +115,10 @@ void GraphicMarketManager::askPriceForPlayer(Player *player){
 	redrawCanvas();
 }
 
+/**
+ *Method handling the sale of a player on the PlayerMarket
+ *@param Player : player to sell 
+ */
 void GraphicMarketManager::sellPlayer(Player *player){
 	pair<int, int> range = getBidValueRange(player);
 	std::string const & text = _canvas.textboxWithID("Enter a price").getText();
@@ -122,6 +140,9 @@ void GraphicMarketManager::sellPlayer(Player *player){
 	}
 }
 
+/**
+ *Method handling the update of the Marketplace
+ */
 void GraphicMarketManager::onSalesUpdate()
 {
 	_wait = false;
@@ -237,13 +258,19 @@ void GraphicMarketManager::onSalesUpdate()
 
 	redrawCanvas();
 }
-
+/**
+ *Method handling a correct bid
+ */
 void GraphicMarketManager::onBidOK()
 {
 	_wait = false;
 	updateSales();
 }
 
+/**
+ *Method handling an incorrect bid
+ *@param string : error message 
+ */
 void GraphicMarketManager::onBidError(std::string const & err)
 {
 	_wait = false;
@@ -251,6 +278,9 @@ void GraphicMarketManager::onBidError(std::string const & err)
 	updateSales();
 }
 
+/**
+ *Method handling correct addition of player on the market
+ */
 void GraphicMarketManager::onAddPlayerOK()
 {
 	updateSales();
@@ -258,6 +288,10 @@ void GraphicMarketManager::onAddPlayerOK()
 		readMessage();
 }
 
+/**
+ *Method handling error on addition of player on the market
+ *@param string: error message
+ */
 void GraphicMarketManager::onAddPlayerError(std::string const & reason)
 {
 	_wait = false;

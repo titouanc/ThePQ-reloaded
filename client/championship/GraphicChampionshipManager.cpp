@@ -2,7 +2,8 @@
 #include <string>
 
 using namespace GUI;
-GraphicChampionshipManager::GraphicChampionshipManager(ClientManager const & parent, GUI::MainController & controller) :
+///constructor
+ GraphicChampionshipManager::GraphicChampionshipManager(ClientManager const & parent, GUI::MainController & controller) :
 	ChampionshipManager(parent),
 	GraphicManager(controller),
 	_wait(false)
@@ -14,6 +15,9 @@ GraphicChampionshipManager::GraphicChampionshipManager(ClientManager const & par
 	updateChampionships();
 }
 
+/**
+ *Method handling championship information
+ */
 void GraphicChampionshipManager::updateChampionships(){
 	_wait = true;
 	ChampionshipManager::loadChampionships();
@@ -23,6 +27,10 @@ void GraphicChampionshipManager::updateChampionships(){
 	}
 }
 
+/**
+ *Method handling events for current championship
+ *based on server queries
+ */
 void GraphicChampionshipManager::updateCurrentChampionship(){
 	_wait = true;
 	ChampionshipManager::joinedChampionship();
@@ -32,10 +40,16 @@ void GraphicChampionshipManager::updateCurrentChampionship(){
 	}
 }
 
+/**
+ *Method disabling the wait flag due to championship being loaded 
+ */
 void GraphicChampionshipManager::onJoinedChampionship(){
 	_wait = false;
 }
 
+/**
+ *Method enabling the wait flag due to leaving championship(meanwhile handling queries from server)
+ */
 void GraphicChampionshipManager::leaveChampionship(){
 	_wait = true;
 	ChampionshipManager::leaveCurrentChampionship();
@@ -45,12 +59,19 @@ void GraphicChampionshipManager::leaveChampionship(){
 	}
 }
 
+/**
+ *Method handling the exit status from a championship (disabling the wait flag)
+ */
 void GraphicChampionshipManager::onLeaveChampionship(bool success, std::string const & message){
 	_wait = false;
 	(success) ? displayOk(message) : displayError(message);
 	updateChampionships();
 }
 
+/**
+ *Method handling the connection to a championship
+ * @param : the name of the championship to join
+ */
 void GraphicChampionshipManager::joinChampionship(std::string name){
 	_wait = true;
 	ChampionshipManager::joinChampionship(name);
@@ -60,12 +81,20 @@ void GraphicChampionshipManager::joinChampionship(std::string name){
 	}
 }
 
+/**
+ *Method handling success of championship entry
+ * @param : boolean representing the status of the entry
+ * @param : string representing the message to display
+ */
 void GraphicChampionshipManager::onJoinChampionship(bool success, std::string const & message){
 	_wait = false;
 	(success) ? displayOk(message) : displayError(message);
 	updateChampionships();
 }
 
+/**
+ *Method displaying ongoing championships
+ */
 void GraphicChampionshipManager::seeCurrentChampionship(){
 
 	clear();
@@ -161,6 +190,9 @@ void GraphicChampionshipManager::seeCurrentChampionship(){
 	redrawCanvas();	
 }
 
+/**
+ *Method displaying running/enlisting championships
+ */
 void GraphicChampionshipManager::onChampionshipsLoad(){
 	_wait = false;
 	clear();

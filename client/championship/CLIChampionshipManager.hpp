@@ -8,6 +8,7 @@
 class CLIChampionshipManager : public ChampionshipManager, public CLI{
 public:
 	using ChampionshipManager::ChampionshipManager;
+	///constructor
 	CLIChampionshipManager(ClientManager const & parent);
 	void run();
 private:

@@ -7,8 +7,11 @@ _admin()
 	
 }
 
+/**
+*Method starting the admin interface
+*/
 void AdminClient::run(){
-	/*Method starting the admin interface*/
+	
 	std::cout<<"Welcome. This is the admin client for The Pro Quidditch Manager 2014."<<std::endl;
 	while(_isRunning){
 		if(_admin.isLogged()){
@@ -21,8 +24,12 @@ void AdminClient::run(){
 	std::cout<<"Quitting the admin client."<<std::endl;
 }
 
+
+/**
+ *Method displaying the administration menu
+ */
 void AdminClient::showAdminMenu(){
-	/*Method displaying the administration menu*/
+	
 	Menu _menu;
 	_menu.addToDisplay("   - create a championship\n");
 	_menu.addToDisplay("   - quit\n");
@@ -61,8 +68,11 @@ bool AdminClient::showBaseMenu(){
 	return res;
 }
 
+/**
+ *Method showing the administrator login menu
+ */
 void AdminClient::showIdentifyMenu(){	
-	/*Method showing the administrator login menu*/
+	
 	std::string username = Menu::askForUserData("Username : ");
 	std::string password = Menu::askForUserData("Password : ");
 	
@@ -82,10 +92,12 @@ void AdminClient::showIdentifyMenu(){
 	}
 }
 
+/**
+ *Method sending the admin credentials to the server.
+ * Credential errors are handled by specific exceptions
+ */
 void AdminClient::loginAdmin(std::string username, std::string password){
-	/*Method sending the admin credentials to the server.
-	 * Credential errors are handled by specific exceptions
-	*/
+	
 	JSON::Dict toSend, data;
 	data.set(net::MSG::USERNAME, username);
 	data.set(net::MSG::PASSWORD, password);
@@ -118,8 +130,11 @@ void AdminClient::loginAdmin(std::string username, std::string password){
 	delete serverMessage;
 }
 
+/**
+ *Method handling the logout of the admin user
+ */
 void AdminClient::logoutAdmin(){
-	/*Method handling the logout of the admin user*/
+	
 	_admin.logout();
 	JSON::Dict toSend;
 	toSend.set("type",net::MSG::DISCONNECT);
@@ -128,8 +143,11 @@ void AdminClient::logoutAdmin(){
 	_connection.send(toSend);
 }
 
+/**
+ *Method showing the interface for a championship constructor
+ */
 void AdminClient::showCreateChampionshipMenu(){	
-	/*Method showing the interface for a championship constructor*/
+	
 	std::cout << "\n\033[1m\033[33mCreating championship :\033[0m"<<std::endl;
 	std::cout<<"Championship name : ";
 	std::string champName;
@@ -137,16 +155,19 @@ void AdminClient::showCreateChampionshipMenu(){
 		std::getline(cin,champName);
 	}
 	int nbTurns = 0;
+	///verify championship turns are valid
 	while(nbTurns <=1 || nbTurns > gameconfig::MAX_CHAMPIONSHIP_TURNS){
 		std::cout << "Number of turns (between 2 and " << gameconfig::MAX_CHAMPIONSHIP_TURNS <<") : "; 
 		cin >> nbTurns;
 	}
 	int cashprize = -1;
+	///configure championship cashprize
 	while(cashprize < 0){
 		std::cout << "Cashprize (> 0) : ";
 		cin >> cashprize;
 	}
 	int fame =-1;
+	///configure championship fame gain
 	while(fame<0){
 		std::cout << "Fame (> 0) : ";
 		cin >> fame;
@@ -160,9 +181,11 @@ void AdminClient::showCreateChampionshipMenu(){
 	}
 }
 
-
+/**
+ *Method creating a championship
+ */
 void AdminClient::createChampionship(std::string name, int nbTurns, int cash, int fame){
-	/*Method creating a championship*/
+	
 	JSON::Dict toSend;
 	toSend.set("type",net::MSG::CHAMPIONSHIP_CREATION);
 	JSON::Dict data;

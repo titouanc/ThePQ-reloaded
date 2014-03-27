@@ -10,7 +10,7 @@
 struct NetConfig : public Config {
     std::string host;
     unsigned short port;
-
+    ///constructor
     NetConfig() : Config("netconfig.json"), host("127.0.0.1"), port(32123){}
     void fromDict(JSON::Dict const & json){
         if (ISSTR(json.get("host")))
@@ -18,6 +18,7 @@ struct NetConfig : public Config {
         if (ISINT(json.get("port")))
             port = INT(json.get("port"));
     }
+    ///operator overloading
     operator JSON::Dict() const{
         JSON::Dict res;
         res.set("host", host);
@@ -34,6 +35,7 @@ private:
 	UserData _admin;
 
 public:
+    ///constructor
 	AdminClient(const NetConfig&);
 	void run();
 	void showAdminMenu();

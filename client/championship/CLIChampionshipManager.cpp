@@ -4,9 +4,11 @@
 CLIChampionshipManager::CLIChampionshipManager(ClientManager const & parent) : 
 ChampionshipManager(parent), _waitForChamps(false), _waitForJoin(false)
 {}
-
+/**
+ *Method starting the championship interface
+ */
 void CLIChampionshipManager::run(){
-	/*Method starting the championship interface*/
+	
 	Menu _menu;
 	_menu.addToDisplay("   - join a championship\n");
 	_menu.addToDisplay("   - access your championship\n");
@@ -30,8 +32,11 @@ void CLIChampionshipManager::run(){
 	while(option != 3);
 }
 
+/**
+ *Method handling a championship inscription
+ */
 void CLIChampionshipManager::joinChampionshipMenu(){
-	/*Method handling a championship inscription*/
+	
 	displayChampionships();
 	std::cout << "Enter the name of the championship you wish to join : ";
 	std::string champName;
@@ -53,8 +58,11 @@ void CLIChampionshipManager::joinChampionshipMenu(){
 		std::cout << "\033[1;31mError\033[0m : championship name not correct." << std::endl;
 }
 
+/**
+ *Method displaying possible actions in the current championship
+ */
 void CLIChampionshipManager::currentChampionshipMenu(){
-	/*Method displaying possible actions in the current championship*/
+	
 	displayCurrentChampionship();
 	Menu _menu;
 	_menu.addToDisplay("   - leave your championship\n");
@@ -79,8 +87,11 @@ void CLIChampionshipManager::currentChampionshipMenu(){
 	while(option != 2);
 }
 
+/**
+ *Method displaying the current state of the championship (users,teams...)
+ */
 void CLIChampionshipManager::displayCurrentChampionship(){
-	/*Method displaying the current state of the championship (users,teams...)*/
+	
 	_waitForChamps = true;
 	joinedChampionship();
 	while (_waitForChamps)
@@ -92,8 +103,11 @@ void CLIChampionshipManager::displayCurrentChampionship(){
 		std::cout << "Your championship :\n" << user().joinedChamp << std::endl;
 }
 
+/**
+ *Method listing all available championships
+ */
 void CLIChampionshipManager::displayChampionships(){
-	/*Method listing all available championships*/
+	
 	_waitForChamps = true;
 	loadChampionships();
 	while (_waitForChamps)
@@ -105,27 +119,44 @@ void CLIChampionshipManager::displayChampionships(){
 	std::cout << "===============================================" << std::endl;
 }
 
+/**
+ *Method handling the entry in a championship
+ */
 void CLIChampionshipManager::onJoinChampionship(bool success, const std::string & msg){
-	/*Method handling the entry in a championship*/
+	
 	_waitForJoin = false;
 	(success) ? okMsg(msg) : errorMsg(msg);
 	
 }
 
+/**
+ *Method handling the unsubscription from a championship
+ */
 void CLIChampionshipManager::onLeaveChampionship(bool success, const std::string & msg){
-	/*Method handling the unsubscription from a championship*/
+	
 	_waitForJoin = false;
 	(success) ? okMsg(msg) : errorMsg(msg);
 }
 
+/**
+ *Method setting the flag not to wait for a championship if
+ *the championship is being loaded
+ */
 void CLIChampionshipManager::onChampionshipsLoad(){
 	_waitForChamps = false;
 }
 
+/**
+ *Method setting the flag not to wait for a championship if
+ *a championship is joined 
+ */
 void CLIChampionshipManager::onJoinedChampionship(){
 	_waitForChamps = false;
 }
 
+/**
+ *Method starting a match in a championship
+ */
 void CLIChampionshipManager::onMatchStart(){
 	CLIMatchManager match(*this); 
 	match.run();

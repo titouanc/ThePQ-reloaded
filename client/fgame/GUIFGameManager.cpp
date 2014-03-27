@@ -3,7 +3,7 @@
 
 using namespace std;
 using namespace GUI;
-
+///Constructor
 GUIFGameManager::GUIFGameManager(ClientManager const & parent, GUI::MainController &controller)
 		: FGameManager(parent), GraphicManager(controller)
 {
@@ -14,6 +14,10 @@ GUIFGameManager::GUIFGameManager(ClientManager const & parent, GUI::MainControll
 	readMessages();
 }
 
+/**
+ *Method handling player invitation to game
+ *@param string: the player whom to send the invite
+*/
 void GUIFGameManager::invitePlayer(string playername)
 {
 	sendInvitation(playername);
@@ -25,6 +29,10 @@ void GUIFGameManager::invitePlayer(string playername)
 	redrawCanvas();
 }
 
+/**
+ *Method displaying connected users list
+ *@param : JSON::List list of connected players
+ */
 void GUIFGameManager::onUserList(JSON::List const & list)
 {
 	clear();

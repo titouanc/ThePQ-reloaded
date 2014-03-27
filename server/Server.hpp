@@ -4,14 +4,18 @@
 #include <string>
 #include <map>
 #include <deque>
-#include <Config.hpp>
 #include <network/ConnectionManager.hpp>
 #include <model/User.hpp>
+#include <model/Championship.hpp>
 #include <Config.hpp>
-#include "MatchManager.hpp"
 #include "PlayerMarket.hpp"
 #include "AdminManager.hpp"
-#include <model/Championship.hpp>
+#include "ServerManager.hpp"
+#include "UserManager.hpp"
+#include "StadiumManager.hpp"
+#include "TeamManager.hpp"
+#include "GameManager.hpp"
+#include "ChampionshipManager.hpp"
 
 
 using namespace std;
@@ -54,58 +58,28 @@ public:
     /*! Create default user accounts if there is no registered user */
     void initDefaultAccounts();
 
-	void registerUser(const JSON::Dict &credentials, int peer_id);
-	User *logUserIn(const JSON::Dict &credentials, int peer_id);
-    void checkTeamName(const JSON::Dict &data, int peer_id);
-    void sendTeamInfos(const JSON::Dict &data, int peer_id);
-	void checkIfUserExists(string username, int peer_id);
-	void sendInstallationsList(int peer_id);
-	void upgradeInstallation(int peer_id, size_t i);
-	void downgradeInstallation(int peer_id, size_t i);
-	void sendConnectedUsersList(int peer_id);
-    void sendInvitationToPlayer(string const& username, int peer_id);
-    void sendInvitationResponseToPlayer(const JSON::Dict &response, int peer_id);
-    void sendPlayersOnMarketList(int peer_id);
-    void addPlayerOnMarket(const JSON::Dict &bid, int peer_id);
-    void placeBidOnPlayer(const JSON::Dict &bid, int peer_id);
     /* Add/substract team infos based on int sign (if - : substract, if +, add) */
     void endOfMatchTeamInfosUpdate(std::string username, int money, int fame, int ap);
     string getRandomName();
     void collectFinishedMatches(void);
-    void startMatch(int client_idA, int client_idB, bool champMatch);
-    void sendPlayersList(int peer_id);
-    void sendMarketMessage(const std::string&, const JSON::Dict&);
-    void sendNotification(std::string, const JSON::Dict&);
-    void putPlayerOnSquadPosition(const JSON::Dict &response, int peer_id);
-    void swapPlayersOfSquad(const JSON::Dict &response, int peer_id);
-    int getPeerID(const std::string&);
+
     void timeLoop();
     void timeUpdateStadium();
     void timeUpdateChampionship();
     void addChampionship(const Championship&);
-        /* Return a pointer to the user object with given username,
-       or NULL if not connected */
-    User *getUserByName(std::string username);
-    Championship* getChampionshipByName(std::string champName);
-    Championship* getChampionshipByUsername(std::string username);
-    size_t nbrUsersConnected(){return _users.size();}
-    void loadChampionships();
-    void leaveChampionship(int);
-    void joinChampionship(std::string,int);
-    void sendChampionshipsList(int);
-    void sendJoinedChampionship(int);
-    void notifyPendingChampMatch(std::string);
-    void notifyStartingChampionship(Championship&);
-    void responsePendingChampMatch(std::string,int);
-    void resolveUnplayedChampMatch(Schedule&);
-    void endOfPending(Schedule&);
-    Schedule* getPendingMatchByUsername(std::string);
+
 private:
 	SharedQueue<net::Message> _inbox, _outbox;
 	map<int, User*> _users;
 	net::ConnectionManager _connectionManager;
-    PlayerMarket *_market;
     std::deque<MatchManager*> _matches;
+    ServerManager _serverMgr;
+    UserManager _userMgr;
+    StadiumManager _stadiumMgr;
+    TeamManager _teamMgr;
+    PlayerMarket _market;
+    GameManager _gameMgr;
+    ChampionshipManager _championshipMgr;
     AdminManager _adminManager;
     std::deque<Championship*> _championships;
     std::deque<Schedule> _pendingChampMatches;

@@ -7,7 +7,9 @@
 
 class GraphicChampionshipManager : public ChampionshipManager, public GUI::GraphicManager{
 public:
+	///constructor
 	GraphicChampionshipManager(ClientManager const & parent, GUI::MainController &controller);
+	///destructor
 	~GraphicChampionshipManager(){}
 private:
 

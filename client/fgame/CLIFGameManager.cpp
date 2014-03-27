@@ -8,17 +8,25 @@
 #include <iostream>
 
 using namespace std;
-
+///Constructor
 CLIFGameManager::CLIFGameManager(ClientManager const & parent) : 
 FGameManager(parent)
 {}
 
+/**
+ *Method handling invitation for players
+ */
 void CLIFGameManager::showChooseUserMenu()
 {
 	string userInput = Menu::askForUserData("Enter a username to send an invitation to another user : ");
 	sendInvitation(userInput);
 	cout << "Please wait for " << userInput << " to answer to your invitation..." << endl;
 }
+
+/**
+ *Method handling a friendly match display
+ *@return : false if no game invitation
+*/
 
 bool CLIFGameManager::showFriendlyMatchMenu()
 {
@@ -44,6 +52,9 @@ bool CLIFGameManager::showFriendlyMatchMenu()
 	return true;
 }
 
+/**
+ *Method displaying connected users
+ */
 void CLIFGameManager::onUserList(JSON::List const & list)
 {
 	cout << "\033[1mConnected users: \033[0m";
@@ -56,6 +67,9 @@ void CLIFGameManager::onUserList(JSON::List const & list)
 	_pending--;
 }
 
+/**
+ *Method handling a friendly game
+ */
 void CLIFGameManager::run()
 {
 	_pending = 0;
@@ -68,6 +82,10 @@ void CLIFGameManager::run()
 	while(showFriendlyMatchMenu());
 }
 
+/**
+ *Method handling accept token for friendly game
+ *@param : string name of the player who accepted the game
+ */
 void CLIFGameManager::onOtherAccept(std::string const & name)
 {
 	cout << "\033[1m" << name 
@@ -76,6 +94,10 @@ void CLIFGameManager::onOtherAccept(std::string const & name)
 	onMatchStart();
 }
 
+/**
+ *Method handling token for friendly game
+ *@param : string name of the player who denied the game
+ */
 void CLIFGameManager::onOtherDeny(std::string const & name)
 {
 	cout << "\033[1m" << name 
@@ -83,6 +105,10 @@ void CLIFGameManager::onOtherDeny(std::string const & name)
 	_pending--;
 }
 
+/**
+ *Method handling inexisting user
+ *@param : string name of the player (not found)
+ */
 void CLIFGameManager::onUserNotFound(std::string const & name)
 {
 	cout << "\033[1m" << name 
@@ -90,6 +116,9 @@ void CLIFGameManager::onUserNotFound(std::string const & name)
 	_pending--;
 }
 
+/**
+ *Method handling the start of a match
+ */
 void CLIFGameManager::onMatchStart(){
 	CLIMatchManager match(*this); 
 	match.run();
