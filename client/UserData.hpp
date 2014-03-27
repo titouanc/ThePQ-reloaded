@@ -59,7 +59,7 @@ struct UserData
 	std::string username;
 	std::string teamname;
 	int funds;
-	int acPoints;//new addition
+	int acPoints;
 	int fame;
 };
 

@@ -120,7 +120,7 @@ void TableView::setElementsNumberPerPage(int number){
 }
 
 void TableView::goToNextPage(){
-	if (_currentPage < _elements.size()/_elementsPerPage)
+	if (_currentPage < int(_elements.size())/_elementsPerPage)
 		_currentPage++;
 }
 
