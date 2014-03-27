@@ -94,16 +94,5 @@ public:
 	virtual int getMatchIncome(int nbOfSpectators);
 
 };
-class MedicalCenter : public Installation
-{
-public:
-	MedicalCenter(std::string owner = "");
-	using Installation::Installation;
-	
-	virtual int getMaintenanceCost() const;
-	virtual int getIncome() const;
-	virtual int getMaxLevel() { return 10; }
-	virtual int getMatchIncome(int nbOfSpectators);
-};
 
 #endif

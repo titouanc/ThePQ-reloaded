@@ -10,67 +10,13 @@
 #include <utility>
 
 
-PlayerMarket::PlayerMarket(const ServerManager & parent): ServerManager(parent), _sales(),
-_manager(), _generator(), _runManager(true), _runGenerator(true), _locker(PTHREAD_MUTEX_INITIALIZER) {
+PlayerMarket::PlayerMarket(const ServerManager & parent): ServerManager(parent), _sales(), _locker(PTHREAD_MUTEX_INITIALIZER) {
 	MemoryAccess::load(_sales);
-	startManager();
-	startGenerator();
 }
 
 PlayerMarket::~PlayerMarket(){
-	_runManager = false;
-	_runGenerator = false;
 	for(size_t i=0;i<_sales.size();++i){
 		delete _sales[i];
-	}
-}
-
-void * saleManager(void * p){
-	PlayerMarket *market = static_cast<PlayerMarket*>(p);
-	while(market->_runManager){
-		sleep(1); //One iteration = --timeLeft for each sale
-		if(pthread_mutex_lock(&(market->_locker)) != 0)
-			throw "Couldn't acquire lock for PlayerMarket";
-		for(size_t i = 0; i<market->_sales.size();++i){
-			Sale & sale = *(market->_sales[i]);
-			sale.decTime();
-			if(sale.getTimeLeft()==0){
-				sale.resolveEndOfTurn();
-				if(sale.isOver()){
-					market->resolveEndOfSale(&sale);
-					MemoryAccess::removeObject(sale);
-					delete market->_sales[i];
-					market->_sales.erase(market->_sales.begin()+i);
-				}
-			}
-		}
-		pthread_mutex_unlock(&(market->_locker));
-	}
-	return NULL;
-}
-
-void * saleGenerator(void * p){
-	RandomNameGenerator gen;
-	PlayerMarket *market = static_cast<PlayerMarket*>(p);
-	while(market->_runGenerator){
-		sleep(20);	//TODO : log, nbrUsersConnected(), etc.
-		Player generated;
-		generated.setName(gen.getRandomName());
-		generated.setMemberID();
-		market->createSale(generated.getMemberID(), generated.estimatedValue(), generated, net::MSG::GENERATED_BY_MARKET);
-	}
-	return NULL;
-}
-
-void PlayerMarket::startManager(){
-	if(pthread_create(&_manager, NULL, saleManager, this) != 0){
-		throw "Error occured when creating manager thread";
-	}
-}
-
-void PlayerMarket::startGenerator(){
-	if(pthread_create(&_generator, NULL, saleGenerator, this) != 0){
-		throw "Error occured when creating generator thread";
 	}
 }
 
@@ -318,4 +264,33 @@ void PlayerMarket::sendMarketMessage(std::string const &username, const JSON::Di
 			delete user;
 		}
 	}
+}
+
+void PlayerMarket::timeUpdate()
+{
+	if(pthread_mutex_lock(&_locker) != 0)
+		throw "Couldn't acquire lock for PlayerMarket";
+	for(size_t i = 0; i<_sales.size();++i){
+		Sale & sale = *(_sales[i]);
+		sale.decTime();
+		if(sale.getTimeLeft()==0){
+			sale.resolveEndOfTurn();
+			if(sale.isOver()){
+				resolveEndOfSale(&sale);
+				MemoryAccess::removeObject(sale);
+				delete _sales[i];
+				_sales.erase(_sales.begin()+i);
+			}
+		}
+	}
+	pthread_mutex_unlock(&_locker);
+}
+
+void PlayerMarket::timeCreateSale()
+{
+	RandomNameGenerator gen;
+	Player generated;
+	generated.setName(gen.getRandomName());
+	generated.setMemberID();
+	createSale(generated.getMemberID(), generated.estimatedValue(), generated, net::MSG::GENERATED_BY_MARKET);
 }
