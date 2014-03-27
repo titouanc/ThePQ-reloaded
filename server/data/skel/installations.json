@@ -1,5 +1,4 @@
 [
-	{"baseValue": 5000, "level": 0, "name": "Medical Center", "refundRatio": 0.5}, 
 	{"baseValue": 10000, "level": 0, "name": "Fan Shop", "refundRatio": 0.5},
 	{"baseValue": 10000, "level": 0, "name": "Food Stand", "refundRatio": 0.5},
 	{"baseValue": 20000, "level": 1, "name": "Tribune", "refundRatio": 0.5}
