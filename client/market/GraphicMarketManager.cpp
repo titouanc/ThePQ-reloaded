@@ -17,6 +17,7 @@ GraphicMarketManager::GraphicMarketManager(ClientManager const & parent, GUI::Ma
 
 	updateSales();
 }
+
 /**
  *Method handling the market update
  */

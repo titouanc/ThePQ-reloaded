@@ -1,6 +1,7 @@
 #include "GraphicMatchManager.hpp"
 #include <toolbox.hpp>
 
+///Constructor
 GraphicMatchManager::GraphicMatchManager(ClientManager const & parent, GUI::MainController & controller) :
 	MatchManager(parent),
 	GUI::GraphicManager(controller), 
@@ -8,6 +9,9 @@ GraphicMatchManager::GraphicMatchManager(ClientManager const & parent, GUI::Main
 	_selectedPlayer(NULL), _throwBall(false), _tooltipped(NULL)
 {}
 
+/**
+ *
+ */
 void GraphicMatchManager::redraw()
 {
 	window().clear(sf::Color::White);
@@ -15,6 +19,9 @@ void GraphicMatchManager::redraw()
 	window().display();
 }
 
+/**
+ *Method
+ */
 void GraphicMatchManager::treatClick(Position const & pos, bool regularClick)
 {
 	_match.clear();
@@ -87,6 +94,9 @@ void GraphicMatchManager::treatClick(Position const & pos, bool regularClick)
 	redraw();
 }
 
+/**
+ *Method
+ */
 void GraphicMatchManager::treatTooltip(Position const & pos)
 {
 	Moveable *atPos = pitch().getAt(pos);
@@ -116,6 +126,9 @@ void GraphicMatchManager::treatTooltip(Position const & pos)
 	redraw();
 }
 
+/**
+ *Method
+ */
 bool GraphicMatchManager::treatEvent(sf::Event const & ev)
 {
 	if (ev.type == sf::Event::Closed)
@@ -144,6 +157,9 @@ bool GraphicMatchManager::treatEvent(sf::Event const & ev)
 	return true;
 }
 
+/**
+ *Method handling the gui for a match
+ */
 void GraphicMatchManager::run()
 {
 	cout << "ENTER GraphicMatchManager::run" << endl;
@@ -169,16 +185,25 @@ void GraphicMatchManager::run()
 	cout << "LEAVE GraphicMatchManager::run" << endl;
 }
 
+/**
+ *Method handling the squads placement / attack direction
+ */
 void GraphicMatchManager::onSquadsInitialized()
 {
 	_match.setOwnSquadDirection();
 }
 
+/**
+ *Method handling the refresh for the game surface
+ */
 void GraphicMatchManager::onPitchChange()
 {
 	redraw();
 }
 
+/**
+ *Method handling game states (provides shinny infos in the cli)
+ */
 void GraphicMatchManager::onStateChange()
 {
 	cout << "CHANGE STATE: ";
