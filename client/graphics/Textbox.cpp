@@ -1,5 +1,6 @@
 #include "Textbox.hpp"
 #include "Bank.hpp"
+#include <toolbox.hpp>
 
 using namespace GUI;
 
@@ -84,7 +85,7 @@ void Textbox::setText(std::string text)
 
 std::string Textbox::getText() 
 {
-	return std::string(_text.getString());
+	return strip(std::string(_text.getString()));
 }
 
 void Textbox::clearText() 

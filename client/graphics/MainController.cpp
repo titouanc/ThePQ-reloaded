@@ -2,7 +2,9 @@
 
 using namespace GUI;
 
-GUI::MainController::MainController(): window(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "The Pro Quidditch")
+GUI::MainController::MainController(): window(	sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), 
+												"The Pro Quidditch", 
+												sf::Style::Titlebar|sf::Style::Close)
 {
 	window.setFramerateLimit(60);
 	window.clear(sf::Color(0xff, 0xff, 0xff, 0xff));
