@@ -4,35 +4,42 @@
 
 using namespace std;
 
-TEST(strip_string)
+TEST(strip_stripped_string)
 	string a = "Bonjour";
-	cout << "strip : " << strip(a) << "|END" << endl;
 	ASSERT(strip(a) == "Bonjour");
+ENDTEST()
+
+TEST(rstrip_string)
 	string b = "Bonjour ";
-	cout << "strip : " << strip(b) << "|END" << endl;
 	ASSERT(strip(b) == "Bonjour");
-	ASSERT(b == "Bonjour ")
-	string c = "Bonjour      ";
-	cout << "strip : " << strip(c) << "|END" << endl;
-	ASSERT(strip(c) == "Bonjour");
-	string d = "   Bonjour ";
-	cout << "strip : " << strip(d) << "|END" << endl;
+	ASSERT(b == "Bonjour "); /* Original string doesn't change */
+	b = "Bonjour      ";
+	ASSERT(strip(b) == "Bonjour");
+ENDTEST()
+
+TEST(lstrip_string)
+	string d = "   Bonjour";
 	ASSERT(strip(d) == "Bonjour");
+ENDTEST()
+
+TEST(strip_empty_string)
 	string e = " ";
-	cout << "strip : " << strip(e) << "|END" << endl;
 	ASSERT(strip(e) == "");
+ENDTEST()
+
+TEST(strip_string_with_inner_junk)
 	string f = "   B onjou r ";
-	cout << "strip : " << strip(f) << "|END" << endl;
 	ASSERT(strip(f) == "B onjou r");
-	string g = "";
-	cout << "strip : " << strip(g) << "|END" << endl;
-	ASSERT(strip(g) == "");
 ENDTEST()
 
 int main()
 {
     TestFunc testSuite[] = {
-    	ADDTEST(strip_string),
+    	ADDTEST(strip_stripped_string),
+    	ADDTEST(rstrip_string),
+    	ADDTEST(lstrip_string),
+    	ADDTEST(strip_empty_string),
+    	ADDTEST(strip_string_with_inner_junk)
     };
 
     return RUN(testSuite);
