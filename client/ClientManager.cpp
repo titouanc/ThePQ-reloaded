@@ -1,25 +1,61 @@
 #include "ClientManager.hpp"
 
+/// Constructor
+ClientManager::ClientManager(
+	net::ClientConnectionManager & connection, 
+	UserData & user,
+	std::queue<JSON::Dict> & notifications
+) : 
+_connection(connection), _user(user), _notifications(notifications)
+{}
+
+/// Constructor
+ClientManager::ClientManager(ClientManager const & other) : 
+_connection(other._connection), _user(other._user), 
+_notifications(other._notifications)
+{}
+
+/**
+  *Method handling a connection to the server
+  *@return a client connection manager
+  */
 net::ClientConnectionManager & ClientManager::connection() const 
 {
 	return _connection;
 }
 
+/**
+  *Method getting user data
+  *@return a reference to the current user
+  */
 UserData & ClientManager::user() const
 {
 	return _user;
 }
 
+/**
+  *Method calculating number of available notifications
+  *@return integer representing total number of available notifications
+  */
 int ClientManager::getNbNotifications() const
 {
 	return (int)_notifications.size();
 }
 
+/**
+  *Method getting the notifications
+  *@return a queu containing all the notifications
+  */
 std::queue<JSON::Dict> & ClientManager::notifications() const
 {
 	return _notifications;
 }
 
+/**
+  *Method handling communication with the server
+  *@param string : type of the message to send
+  *@param JSON::Value : message to send
+  */
 void ClientManager::say(std::string const & type, JSON::Value const & data)
 {
 	JSON::Dict msg = {
@@ -29,6 +65,11 @@ void ClientManager::say(std::string const & type, JSON::Value const & data)
 	_connection.send(msg);
 }
 
+/**
+  *Method handling queries from the server
+  *@param string : type of the query
+  *@param JSON::Value : query to handle
+  */
 void ClientManager::treatMessage(std::string const & type, JSON::Value const * data)
 {
 	if(type == net::MSG::TEAM_INFOS){
@@ -90,6 +131,9 @@ void ClientManager::treatMessage(std::string const & type, JSON::Value const * d
 	}
 }
 
+/**
+  *Method retrieving users players
+  */
 void ClientManager::loadPlayers()
 {
 	while (!user().isLogged())
@@ -100,6 +144,9 @@ void ClientManager::loadPlayers()
 	say(net::MSG::PLAYERS_LIST, data);
 }
 
+/**
+  *Method parsing querie
+  */
 void ClientManager::readMessage()
 {
 	JSON::Value * msg = _connection.popMessage();
@@ -110,12 +157,18 @@ void ClientManager::readMessage()
     delete msg;
 }
 
+/**
+  *Method parsing all available queries and dispatching them to handlers
+  */
 void ClientManager::readMessages() 
 {
     while (_connection.hasMessage())
     	readMessage();
 }
 
+/**
+  *Method treating available notifications
+  */
 void ClientManager::handleNotification(){
 	if(! _notifications.empty()){
 		JSON::Dict popped = _notifications.front();
@@ -142,6 +195,9 @@ void ClientManager::handleNotification(){
 	}
 }
 
+/**
+  *Method handling the end of an auction
+  */
 std::string ClientManager::onEndOfSale(JSON::Dict const & json)
 {
 	std::stringstream res;
@@ -167,6 +223,11 @@ std::string ClientManager::onEndOfSale(JSON::Dict const & json)
 	return res.str();
 }
 
+/**
+  *Method presenting the final match report
+  *@param JSON::Dict : match report to handle
+  *@return string final report of the championship
+  */
 std::string ClientManager::onMatchRapport(JSON::Dict const & json){
 	std::stringstream res;
 	std::string matchType;
@@ -201,6 +262,11 @@ std::string ClientManager::onMatchRapport(JSON::Dict const & json){
 	return res.str();
 }
 
+/**
+  *Method handling an unplayed game
+  *@param string : message to be handled
+  *@return string : result of the 
+  */
 std::string ClientManager::onUnplayedMatch(std::string const & msg){
 	std::stringstream res;
 	res << "Message : championship match has ended." << endl;
@@ -219,6 +285,11 @@ std::string ClientManager::onUnplayedMatch(std::string const & msg){
 	return res.str();
 }
 
+/**
+  *Method handling championship stages
+  *@param string : message from server regarding status
+  *@return new status of the championship (win/start)
+  */
 std::string ClientManager::onChampionshipStatusChange(std::string const & msg){
 	std::stringstream res;
 	if (msg == net::MSG::CHAMPIONSHIP_STARTED){
@@ -234,14 +305,24 @@ std::string ClientManager::onChampionshipStatusChange(std::string const & msg){
 	return res.str();
 }
 
+/**
+  *Method quering server with ok to start match token
+  */
 void ClientManager::readyForMatch(){
 	say(net::MSG::CHAMPIONSHIP_MATCH_PENDING_RESPONSE,JSON::String(net::MSG::CHAMPIONSHIP_MATCH_READY));
 }
 
+/**
+  *Method quering server with <withdraw> from championship token
+  */
 void ClientManager::withdrawFromMatch(){
 	say(net::MSG::CHAMPIONSHIP_MATCH_PENDING_RESPONSE,JSON::String(net::MSG::CHAMPIONSHIP_MATCH_WITHDRAW));
 }
 
+/**
+  *Method handling invitation agreement from other user
+  *@param string : user whose invitation is accepted 
+  */
 void ClientManager::acceptInvitationFromUser(std::string const & username){
 	JSON::Dict data = {
 		{ "username", JSON::String(username) },
@@ -250,6 +331,10 @@ void ClientManager::acceptInvitationFromUser(std::string const & username){
 	say (net::MSG::FRIENDLY_GAME_INVITATION_RESPONSE, data);
 }
 
+/**
+  *Method handling refusal from other user
+  *@param string : user whose invitation is refused
+  */
 void ClientManager::denyInvitationFromUser(std::string const & username){
 	JSON::Dict data {
 		{ "username", JSON::String(username) },
@@ -258,6 +343,9 @@ void ClientManager::denyInvitationFromUser(std::string const & username){
 	say(net::MSG::FRIENDLY_GAME_INVITATION_RESPONSE, data);
 }
 
+/**
+  *Method loading team info in class atributes
+  */
 void ClientManager::onTeamInfo(JSON::Dict const & json)
 {
 	if (ISSTR(json.get(net::MSG::USERNAME)))
@@ -282,15 +370,3 @@ void ClientManager::onTeamInfo(JSON::Dict const & json)
 	onTeamInfoChange();
 }
 
-ClientManager::ClientManager(
-	net::ClientConnectionManager & connection, 
-	UserData & user,
-	std::queue<JSON::Dict> & notifications
-) : 
-_connection(connection), _user(user), _notifications(notifications)
-{}
-
-ClientManager::ClientManager(ClientManager const & other) : 
-_connection(other._connection), _user(other._user), 
-_notifications(other._notifications)
-{}
