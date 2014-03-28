@@ -184,7 +184,7 @@ void CLIUserManager::showManagementMenu()
 
 
 /**
- *Method
+ *Method displaying the team name
  */
 void CLIUserManager::onAskTeamName()
 {
@@ -193,7 +193,7 @@ void CLIUserManager::onAskTeamName()
 }
 
 /**
- *Method
+ *Method handling a succesfull login
  */
 void CLIUserManager::onLoginOK()
 {
@@ -203,7 +203,8 @@ void CLIUserManager::onLoginOK()
 }
 
 /**
- *Method
+ *Method handling a login error
+ *@param string : error message
  */
 void CLIUserManager::onLoginError(std::string const & error)
 {
@@ -212,7 +213,7 @@ void CLIUserManager::onLoginError(std::string const & error)
 }
 
 /**
- *Method
+ *Method handling a valid registration
  */
 void CLIUserManager::onRegisterUserOK()
 {
@@ -221,7 +222,8 @@ void CLIUserManager::onRegisterUserOK()
 }
 
 /**
- *Method
+ *Method handling user registration error
+ *@param string : data causing fault
  */
 void CLIUserManager::onRegisterUserError(std::string const & data)
 {
@@ -231,7 +233,7 @@ void CLIUserManager::onRegisterUserError(std::string const & data)
 }
 
 /**
- *Method
+ *Method handling a correct team name 
  */
 void CLIUserManager::onTeamNameOK()
 {
@@ -241,7 +243,8 @@ void CLIUserManager::onTeamNameOK()
 }
 
 /**
- *Method
+ *Method handling team naming error
+ *@param string : error message
  */
 void CLIUserManager::onTeamNameError(std::string const & reason)
 {
@@ -251,7 +254,7 @@ void CLIUserManager::onTeamNameError(std::string const & reason)
 }
 
 /**
- *Method
+ *Method handling notifications
  */
 void CLIUserManager::askForNotificationHandling()
 {
@@ -289,7 +292,8 @@ void CLIUserManager::askForNotificationHandling()
 }
 
 /**
- *Method
+ *Method handling invites from other users
+ *@param string : name of the user inviting you to a game
  */
 void CLIUserManager::onInvite(std::string const & user)
 {
@@ -321,7 +325,7 @@ void CLIUserManager::onInvite(std::string const & user)
 }
 
 /**
- *Method
+ *Method handling pre match jiggles
  */
 void CLIUserManager::onMatchPending(){
 	cout << "Your next championship match is close. What do you want to do ?" << endl;
@@ -350,7 +354,10 @@ void CLIUserManager::onMatchPending(){
 }
 
 /**
- *Method
+ *Method handling notification queries from server
+ *@param bool : oddly enough it's just for looks
+ *@param string : response of the other player
+ *@param string : message to display
  */
 void CLIUserManager::onNotificationResponse(bool success, std::string const & response,std::string const & msg){
 	//If opponent hasn't responded yet, wait until he does
@@ -360,14 +367,15 @@ void CLIUserManager::onNotificationResponse(bool success, std::string const & re
 }
 
 /**
- *Method
+ *Method displaying a message
+ *@param string : message to be displayed
  */
 void CLIUserManager::onMessage(std::string const & message){
 	cout << message << endl;
 }
 
 /**
- *Method
+ *Method starting a match
  */
 void CLIUserManager::onMatchStart(){
 	CLIMatchManager match(*this); 
