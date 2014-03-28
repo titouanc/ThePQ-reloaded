@@ -61,7 +61,7 @@ bool Pitch::inEllipsis(Position position)
 
 bool Pitch::inEllipsis(Moveable *moveable) const
 {
-	/*Method checking position is inside the pitch*/
+	/* Method checking position is inside the pitch*/
 	return inEllipsis(moveable->getPosition().x(), moveable->getPosition().y());
 }
 
@@ -125,7 +125,7 @@ void Pitch::setAt(int x, int y, Moveable *moveable)
 
 bool Pitch::insert(Moveable *moveable)
 {
-	/*Method checking position is correct insisde the pitch
+	/* Method checking position is correct insisde the pitch
 	 * and setting at position <<<x,y>>> if position is valid
 	 */
 	Position const & pos = moveable->getPosition();
@@ -138,7 +138,7 @@ bool Pitch::insert(Moveable *moveable)
 
 std::ostream & operator<<(std::ostream & out, Pitch const & pitch)
 {
-	/*Method for writing to the outputstream*/
+	/* Method for writing to the outputstream*/
 	for (int y=pitch.ymax()-1; y>=pitch.ymin(); y--){
 		for (int x=pitch.xmin(); x<pitch.xmax(); x++){
 			if (abs(x%2) != abs(y%2 )|| ! pitch.inEllipsis(x, y)){

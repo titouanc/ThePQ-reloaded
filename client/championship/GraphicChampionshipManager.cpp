@@ -16,7 +16,7 @@ using namespace GUI;
 }
 
 /**
- *Method handling championship information
+ * Method handling championship information
  */
 void GraphicChampionshipManager::updateChampionships(){
 	_wait = true;
@@ -28,7 +28,7 @@ void GraphicChampionshipManager::updateChampionships(){
 }
 
 /**
- *Method handling events for current championship
+ * Method handling events for current championship
  *based on server queries
  */
 void GraphicChampionshipManager::updateCurrentChampionship(){
@@ -41,14 +41,14 @@ void GraphicChampionshipManager::updateCurrentChampionship(){
 }
 
 /**
- *Method disabling the wait flag due to championship being loaded 
+ * Method disabling the wait flag due to championship being loaded 
  */
 void GraphicChampionshipManager::onJoinedChampionship(){
 	_wait = false;
 }
 
 /**
- *Method enabling the wait flag due to leaving championship(meanwhile handling queries from server)
+ * Method enabling the wait flag due to leaving championship(meanwhile handling queries from server)
  */
 void GraphicChampionshipManager::leaveChampionship(){
 	_wait = true;
@@ -60,7 +60,7 @@ void GraphicChampionshipManager::leaveChampionship(){
 }
 
 /**
- *Method handling the exit status from a championship (disabling the wait flag)
+ * Method handling the exit status from a championship (disabling the wait flag)
  */
 void GraphicChampionshipManager::onLeaveChampionship(bool success, std::string const & message){
 	_wait = false;
@@ -69,7 +69,7 @@ void GraphicChampionshipManager::onLeaveChampionship(bool success, std::string c
 }
 
 /**
- *Method handling the connection to a championship
+ * Method handling the connection to a championship
  * @param : the name of the championship to join
  */
 void GraphicChampionshipManager::joinChampionship(std::string name){
@@ -82,7 +82,7 @@ void GraphicChampionshipManager::joinChampionship(std::string name){
 }
 
 /**
- *Method handling success of championship entry
+ * Method handling success of championship entry
  * @param : boolean representing the status of the entry
  * @param : string representing the message to display
  */
@@ -93,7 +93,7 @@ void GraphicChampionshipManager::onJoinChampionship(bool success, std::string co
 }
 
 /**
- *Method displaying ongoing championships
+ * Method displaying ongoing championships
  */
 void GraphicChampionshipManager::seeCurrentChampionship(){
 
@@ -191,7 +191,7 @@ void GraphicChampionshipManager::seeCurrentChampionship(){
 }
 
 /**
- *Method displaying running/enlisting championships
+ * Method displaying running/enlisting championships
  */
 void GraphicChampionshipManager::onChampionshipsLoad(){
 	_wait = false;

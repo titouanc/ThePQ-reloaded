@@ -1,9 +1,15 @@
 #include "CLIStadiumManager.hpp"
 #include <match/CLIMatchManager.hpp>
+
+///Constructor
 CLIStadiumManager::CLIStadiumManager(ClientManager const & parent) : 
 StadiumManager(parent)
 {}
 
+/**
+ * Method handling the stadium manager
+ *all options are delegated to theyr respective handlers
+ */
 void CLIStadiumManager::run()
 {
 	clScreen();
@@ -39,6 +45,9 @@ void CLIStadiumManager::run()
 	while (option != 3);
 }
 
+/**
+ * Method handling the display of a users installations
+ */
 void CLIStadiumManager::printInstallationsList()
 {
 	clScreen();
@@ -58,6 +67,9 @@ void CLIStadiumManager::printInstallationsList()
 	cout << endl << endl <<endl;
 }
 
+/**
+ * Method handling the upgrade interface
+ */
 void CLIStadiumManager::showUpgradeInstallation()
 {
 	size_t choice;
@@ -75,6 +87,9 @@ void CLIStadiumManager::showUpgradeInstallation()
 	}
 }
 
+/**
+ * Method handling the downgrade interface for the installations
+ */
 void CLIStadiumManager::showDowngradeInstallation()
 {
 	size_t choice;
@@ -92,6 +107,11 @@ void CLIStadiumManager::showDowngradeInstallation()
 	}
 }
 
+/**
+ * Method handling server queries
+ * @param string : type of the query
+ * @param JSON::Value : the query
+ */
 void CLIStadiumManager::treatMessage(std::string const & type, JSON::Value const * data)
 {
 	StadiumManager::treatMessage(type, data);
@@ -102,6 +122,9 @@ void CLIStadiumManager::treatMessage(std::string const & type, JSON::Value const
 	_pending--;
 }
 
+/**
+ * Method handling the start of a game
+ */
 void CLIStadiumManager::onMatchStart(){
 	CLIMatchManager match(*this); 
 	match.run();

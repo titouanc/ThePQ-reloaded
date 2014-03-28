@@ -10,10 +10,14 @@
 #include <Constants.hpp>
 using namespace std;
 
+///Constructor
 CLIUserManager::CLIUserManager(ClientManager const & parent) : 
 UserManager(parent), _waitForNotificationResponse(false)
 {}
 
+/**
+ * Method handling the command line interface
+ */
 void CLIUserManager::run()
 {
 	/* user menu */
@@ -47,6 +51,9 @@ void CLIUserManager::run()
 	goodBye();
 }
 
+/**
+ * Method displaying the login menu
+ */
 void CLIUserManager::showLoginMenu()
 {	
 	string username = Menu::askForUserData("Username : ");
@@ -57,6 +64,9 @@ void CLIUserManager::showLoginMenu()
 	_pending++;
 }
 
+/**
+ * Method handling firs login 
+ */
 void CLIUserManager::showTeamNameMenu()
 {
 	cout << "Hey, it's the first time you log in ! Please, pick up a name for your team." << endl;
@@ -65,6 +75,9 @@ void CLIUserManager::showTeamNameMenu()
 	_pending++;
 }
 
+/**
+ * Method displaying the registration interface
+ */
 void CLIUserManager::showRegisterMenu()
 {
 	string username = Menu::askForUserData("Pick a username : ");
@@ -83,6 +96,9 @@ void CLIUserManager::showRegisterMenu()
 	_pending++;
 }
 
+/**
+ * Method displaying the main menu
+ */
 void CLIUserManager::showMainMenu()
 {
 	readMessages();
@@ -132,7 +148,9 @@ void CLIUserManager::showMainMenu()
 	while (option != 6);
 }
 
-/* Management menu */
+/**
+ * Method displaying the management menu
+ */
 void CLIUserManager::showManagementMenu()
 {
 	CLIStadiumManager stadiumManager(*this);
@@ -162,13 +180,21 @@ void CLIUserManager::showManagementMenu()
 	while (option != 3);
 }
 
-/* HOOKS */
+/*********** HOOKS ***********/
+
+
+/**
+ * Method displaying the team name
+ */
 void CLIUserManager::onAskTeamName()
 {
 	_pending--;
 	showTeamNameMenu();
 }
 
+/**
+ * Method handling a succesfull login
+ */
 void CLIUserManager::onLoginOK()
 {
 	_pending--;
@@ -176,18 +202,29 @@ void CLIUserManager::onLoginOK()
 	showMainMenu();
 }
 
+/**
+ * Method handling a login error
+ * @param string : error message
+ */
 void CLIUserManager::onLoginError(std::string const & error)
 {
 	_pending--;
 	errorMsg(error);
 }
 
+/**
+ * Method handling a valid registration
+ */
 void CLIUserManager::onRegisterUserOK()
 {
 	_pending--;
 	okMsg("You have successfully registered! You can now login.");
 }
 
+/**
+ * Method handling user registration error
+ * @param string : data causing fault
+ */
 void CLIUserManager::onRegisterUserError(std::string const & data)
 {
 	_pending--;
@@ -195,6 +232,9 @@ void CLIUserManager::onRegisterUserError(std::string const & data)
 	showRegisterMenu();
 }
 
+/**
+ * Method handling a correct team name 
+ */
 void CLIUserManager::onTeamNameOK()
 {
 	_pending--;
@@ -202,6 +242,10 @@ void CLIUserManager::onTeamNameOK()
 	showMainMenu();
 }
 
+/**
+ * Method handling team naming error
+ * @param string : error message
+ */
 void CLIUserManager::onTeamNameError(std::string const & reason)
 {
 	_pending--;
@@ -209,6 +253,9 @@ void CLIUserManager::onTeamNameError(std::string const & reason)
 	showTeamNameMenu();
 }
 
+/**
+ * Method handling notifications
+ */
 void CLIUserManager::askForNotificationHandling()
 {
 	readMessages();
@@ -244,6 +291,10 @@ void CLIUserManager::askForNotificationHandling()
 	while (option!=3);
 }
 
+/**
+ * Method handling invites from other users
+ * @param string : name of the user inviting you to a game
+ */
 void CLIUserManager::onInvite(std::string const & user)
 {
 	cout << user << " invited you to a game" << endl;
@@ -273,6 +324,9 @@ void CLIUserManager::onInvite(std::string const & user)
 	while(! ok);
 }
 
+/**
+ * Method handling pre match jiggles
+ */
 void CLIUserManager::onMatchPending(){
 	cout << "Your next championship match is close. What do you want to do ?" << endl;
 	Menu _menu;
@@ -299,6 +353,12 @@ void CLIUserManager::onMatchPending(){
 		readMessage();
 }
 
+/**
+ * Method handling notification queries from server
+ * @param bool : oddly enough it's just for looks
+ * @param string : response of the other player
+ * @param string : message to display
+ */
 void CLIUserManager::onNotificationResponse(bool success, std::string const & response,std::string const & msg){
 	//If opponent hasn't responded yet, wait until he does
 	if(response != net::MSG::CHAMPIONSHIP_MATCH_WAIT)
@@ -306,10 +366,17 @@ void CLIUserManager::onNotificationResponse(bool success, std::string const & re
 	(success) ? okMsg(msg) : errorMsg(msg);
 }
 
+/**
+ * Method displaying a message
+ * @param string : message to be displayed
+ */
 void CLIUserManager::onMessage(std::string const & message){
 	cout << message << endl;
 }
 
+/**
+ * Method starting a match
+ */
 void CLIUserManager::onMatchStart(){
 	CLIMatchManager match(*this); 
 	match.run();

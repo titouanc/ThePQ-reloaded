@@ -83,7 +83,7 @@ Value *JSON::load(const char *filename){
 }
 
 Value *JSON::load(std::string filename){
-	/*Method used for reading from <<filename>>*/
+	/* Method used for reading from <<filename>>*/
 	return JSON::load(filename.c_str());
 }
 

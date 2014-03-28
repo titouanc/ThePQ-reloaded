@@ -8,6 +8,7 @@
 using namespace std;
 using namespace GUI;
 
+///who doesn't love a good define here and there :)
 #define USERNAME_TEXTBOX_ID "Username"
 #define PASSWORD_TEXTBOX_ID "Password"
 #define NEW_USERNAME_TEXTBOX_ID "New Username"
@@ -15,12 +16,13 @@ using namespace GUI;
 #define NEW_PASSWORD_CONFIRMATION_TEXTBOX_ID "Confirm Password"
 #define TEAM_NAME_TEXTBOX_ID "Team Name"
 
+///Conctructor
 GraphicUserManager::GraphicUserManager(
-    net::ClientConnectionManager& connection, 
-    UserData& user, 
-    std::queue<JSON::Dict> & notifications, 
-    GUI::MainController &controller
-) : 
+	    net::ClientConnectionManager& connection, 
+    	UserData& user, 
+    	std::queue<JSON::Dict> & notifications, 
+    	GUI::MainController &controller
+	) : 
     UserManager(connection, user, notifications), 
     GraphicManager(controller)
 {
@@ -29,6 +31,9 @@ GraphicUserManager::GraphicUserManager(
 	displayChoice();
 }
 
+ /**
+  * Method handling the registration interface
+  */
 void GraphicUserManager::displayChoice()
 {
 	clear();
@@ -46,6 +51,9 @@ void GraphicUserManager::displayChoice()
 	redrawCanvas();
 }
 
+/**
+  * Method handling the login form interface
+  */
 void GraphicUserManager::displayLoginForm()
 {
 	clear();
@@ -60,6 +68,9 @@ void GraphicUserManager::displayLoginForm()
 	redrawCanvas();
 }
 
+/**
+  * Method handling the registration interface
+  */
 void GraphicUserManager::displayRegisterForm()
 {
 	clear();
@@ -75,6 +86,9 @@ void GraphicUserManager::displayRegisterForm()
 	redrawCanvas();
 }
 
+/**
+  * Method handling the team configuration interface
+  */
 void GraphicUserManager::displayTeamNameForm()
 {
 	clear();
@@ -90,6 +104,9 @@ void GraphicUserManager::displayTeamNameForm()
 	redrawCanvas();
 }
 
+/**
+  * Method handling the main menu interface
+  */
 void GraphicUserManager::displayMainMenu()
 {
 	clear();
@@ -123,7 +140,10 @@ void GraphicUserManager::displayMainMenu()
 	redrawCanvas();
 }
 
-/* BUTTONS CALLBACKS */
+/******* BUTTONS CALLBACKS ******/
+/**
+  * Method handling the login service
+  */
 void GraphicUserManager::submitLoginForm()
 {
 	GUI::Textbox & userTextbox = _canvas.textboxWithID(USERNAME_TEXTBOX_ID);
@@ -136,6 +156,9 @@ void GraphicUserManager::submitLoginForm()
 	}
 }
 
+/**
+  * Method handling the registartion service
+  */
 void GraphicUserManager::submitRegisterForm()
 {
 	GUI::Textbox & userTextbox = _canvas.textboxWithID(USERNAME_TEXTBOX_ID);
@@ -154,6 +177,9 @@ void GraphicUserManager::submitRegisterForm()
 	}
 }
 
+/**
+  * Method
+  */
 void GraphicUserManager::submitTeamNameForm()
 {
 	GUI::Textbox & textbox = _canvas.textboxWithID(TEAM_NAME_TEXTBOX_ID);
@@ -165,6 +191,9 @@ void GraphicUserManager::submitTeamNameForm()
 	}
 }
 
+/**
+  * Method handling the stadium interface
+  */
 void GraphicUserManager::goToStadium()
 {
 	GraphicStadiumManager stadium(*this, _controller);
@@ -173,6 +202,9 @@ void GraphicUserManager::goToStadium()
 	displayMainMenu();
 }
 
+/**
+  * Method handling the market interface
+  */
 void GraphicUserManager::goToMarket()
 {
 	GraphicMarketManager market(*this, _controller);
@@ -181,6 +213,9 @@ void GraphicUserManager::goToMarket()
 	displayMainMenu();
 }
 
+/**
+  * Method handling the friendly game interface
+  */
 void GraphicUserManager::goToFriendlyGame()
 {
 	GUIFGameManager game(*this, _controller);
@@ -189,6 +224,9 @@ void GraphicUserManager::goToFriendlyGame()
 	displayMainMenu();
 }
 
+/**
+  * Method handling the player management interface
+  */
 void GraphicUserManager::goToPlayers()
 {
 	GraphicTeamManager market(*this, _controller);
@@ -197,6 +235,9 @@ void GraphicUserManager::goToPlayers()
 	displayMainMenu();
 }
 
+/**
+  * Method handling the championship interface
+  */
 void GraphicUserManager::goToChampionships()
 {
 	GraphicChampionshipManager champ(*this, _controller);
@@ -206,13 +247,21 @@ void GraphicUserManager::goToChampionships()
 }
 
 
-/* HOOKS */
+/******* HOOKS *******/
+
+/**
+  * Method handling a valid login
+  */
 void GraphicUserManager::onLoginOK()
 {
 	displayMainMenu();
 	_wait = false;
 }
 
+/**
+  * Method handling a login error
+  * @param string :  error message to be displayed
+  */
 void GraphicUserManager::onLoginError(std::string const & err)
 {
 	displayChoice();
@@ -220,29 +269,46 @@ void GraphicUserManager::onLoginError(std::string const & err)
 	_wait = false;
 }
 
+/**
+  * Method handling valid team credentials
+  */
 void GraphicUserManager::onTeamNameOK()
 {
 	onLoginOK();
 }
 
+/**
+  * Method handling team credentials error
+  * @param string : error message to be displayed
+  */
 void GraphicUserManager::onTeamNameError(std::string const & err)
 {
 	displayError(err);
 	_wait = false;
 }
 
+/**
+  * Method handling a valid registration
+  */
 void GraphicUserManager::onRegisterUserOK()
 {
 	displayLoginForm();
 	_wait = false;
 }
 
+/**
+  * Method handling an invalid registration
+  * @param string : error message to be displayed 
+  */
 void GraphicUserManager::onRegisterUserError(std::string const & err)
 {
 	displayError(err);
 	_wait = false;
 }
 
+/**
+  * Method handling team credentials setup
+  */
 void GraphicUserManager::onAskTeamName()
 {
 	displayTeamNameForm();

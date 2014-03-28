@@ -8,7 +8,8 @@ void GUI::GraphicManager::run()
 	while(_controller.window.isOpen() && _isRunning){
 		if (!readEvent())
 			minisleep(0.01);
-		loop();
+		checkNotifications();
+		onLoop();
 	}
 }
 
@@ -74,6 +75,9 @@ void GUI::GraphicManager::redrawCanvas()
 }
 
 void GUI::GraphicManager::displayError(std::string errorMessage){
+	sf::Sound sound;
+	sound.setBuffer(SOUNDS.get("error.wav"));
+	sound.play();
 	MessageBox m(_controller, "Error : "+errorMessage, {"OK"});
 	m.showBox();
 }

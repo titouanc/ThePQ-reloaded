@@ -15,7 +15,7 @@ Displacement::Displacement(JSON::List const & list) : Displacement()
 
 Position Displacement::position(double t, size_t speed) const 
 {
-    /*Method returning the calculated position*/
+    /* Method returning the calculated position*/
     assert(0 <= t && t <= 1);
 
     Position res;
@@ -56,19 +56,19 @@ Position Displacement::position(double t, size_t speed) const
 
 Position Displacement::position(double t, Position const & initial) const
 {
-    /*Method returning the updated position*/
+    /* Method returning the updated position*/
     return initial+position(t, length());
 }
 
 Position Displacement::position(double t, Moveable const & moveable) const 
 {
-    /*Method returning the updated position*/
+    /* Method returning the updated position*/
     return moveable.getPosition()+position(t, moveable.getSpeed());
 }
 
 void Displacement::addMove(Position const & move) 
 {
-    /*Method for adding a move to the move queue*/
+    /* Method for adding a move to the move queue*/
     if (! move.isDirection())
         throw NotADirection(((JSON::List)move).dumps());
     _moves.push_back(move);
@@ -77,13 +77,13 @@ void Displacement::addMove(Position const & move)
 
 size_t Displacement::count(void) const 
 {
-    /*Method returning the number of queued moves*/
+    /* Method returning the number of queued moves*/
     return _moves.size();
 }
 
 Displacement::operator JSON::List(void) const 
 {
-    /*Method for serializing Displacement to a JSON list*/
+    /* Method for serializing Displacement to a JSON list*/
     JSON::List res;
     for (size_t i=0; i<count(); i++)
         res.append((JSON::List)_moves[i]);
@@ -92,6 +92,6 @@ Displacement::operator JSON::List(void) const
 
 unsigned int Displacement::length(void) const 
 {
-    /*Method for calculating the total distance of the moves*/
+    /* Method for calculating the total distance of the moves*/
     return _totalLength;
 }

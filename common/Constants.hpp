@@ -1,6 +1,10 @@
 #ifndef __CONSTANTS_HPP
 #define __CONSTANTS_HPP
 #include <string>
+/**
+ * @brief Header containing all predetermined messages to be sent over the network
+ * and all the constants used for the game interactions
+ */
 namespace net
 {
 	// NETWORK MESSAGES --------------------------------------------------------
@@ -256,6 +260,11 @@ namespace SQUAD
 	static const int RIGHT_BEATER = 4;
 	static const int SEEKER = 5;
 	static const int KEEPER = 6;
+}
+
+namespace GUI
+{
+	static const float AUTOUPDATE_STALE_TIME = 0.5; // the time between two autoupdates in seconds
 }
 
 #endif

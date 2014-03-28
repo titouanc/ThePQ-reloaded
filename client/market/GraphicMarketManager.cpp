@@ -9,7 +9,8 @@ using namespace GUI;
 GraphicMarketManager::GraphicMarketManager(ClientManager const & parent, GUI::MainController &controller) : 
 	MarketManager(parent), 
 	GraphicManager(controller),
-	_wait(false)
+	_wait(false),
+	_lastUpdated(0)
 {
 	displayCanvas();
 
@@ -17,8 +18,9 @@ GraphicMarketManager::GraphicMarketManager(ClientManager const & parent, GUI::Ma
 
 	updateSales();
 }
+
 /**
- *Method handling the market update
+ * Method handling the market update
  */
 void GraphicMarketManager::updateSales()
 {
@@ -31,8 +33,8 @@ void GraphicMarketManager::updateSales()
 }
 
 /**
- *Method handling bidding on a player
- *@param int: id of the player to bid on
+ * Method handling bidding on a player
+ * @param int: id of the player to bid on
  */
 void GraphicMarketManager::placeBid(int playerID)
 {
@@ -43,7 +45,7 @@ void GraphicMarketManager::placeBid(int playerID)
 }
 
 /**
- *Method displaying the players available foor sale
+ * Method displaying the players available foor sale
  */
 void GraphicMarketManager::displaySellablePlayers()
 {
@@ -101,8 +103,8 @@ void GraphicMarketManager::displaySellablePlayers()
 }
 
 /**
- *Method handling the bidding on a player
- *@param Player: player to bid on
+ * Method handling the bidding on a player
+ * @param Player: player to bid on
  */
 void GraphicMarketManager::askPriceForPlayer(Player *player){
 	Textbox & priceTextbox = _canvas.addTextbox("Enter a price");
@@ -116,8 +118,8 @@ void GraphicMarketManager::askPriceForPlayer(Player *player){
 }
 
 /**
- *Method handling the sale of a player on the PlayerMarket
- *@param Player : player to sell 
+ * Method handling the sale of a player on the PlayerMarket
+ * @param Player : player to sell 
  */
 void GraphicMarketManager::sellPlayer(Player *player){
 	pair<int, int> range = getBidValueRange(player);
@@ -141,11 +143,12 @@ void GraphicMarketManager::sellPlayer(Player *player){
 }
 
 /**
- *Method handling the update of the Marketplace
+ * Method handling the update of the Marketplace
  */
 void GraphicMarketManager::onSalesUpdate()
 {
 	_wait = false;
+	_lastUpdated = time(NULL);
 	clear();
 
 	addTopBar(user());
@@ -247,11 +250,9 @@ void GraphicMarketManager::onSalesUpdate()
 	}
 	
 	addBackButton();
-	Button<GraphicMarketManager> & updateButton = _canvas.addButton<GraphicMarketManager>(&GraphicMarketManager::updateSales, this, "Update");
-	updateButton.setPosition(window().getSize().x-_backButton->getWidth()-updateButton.getWidth()-2*MARGIN, window().getSize().y-updateButton.getHeight()-MARGIN);
 
 	Button<GraphicMarketManager> & sellButton = _canvas.addButton<GraphicMarketManager>(&GraphicMarketManager::displaySellablePlayers, this, "Sell a player");
-	sellButton.setPosition(window().getSize().x-_backButton->getWidth()-updateButton.getWidth()-sellButton.getWidth() - 3*MARGIN, window().getSize().y-sellButton.getHeight()-MARGIN);
+	sellButton.setPosition(window().getSize().x-_backButton->getWidth()-sellButton.getWidth() - 3*MARGIN, window().getSize().y-sellButton.getHeight()-MARGIN);
 
 
 	
@@ -259,7 +260,7 @@ void GraphicMarketManager::onSalesUpdate()
 	redrawCanvas();
 }
 /**
- *Method handling a correct bid
+ * Method handling a correct bid
  */
 void GraphicMarketManager::onBidOK()
 {
@@ -268,8 +269,8 @@ void GraphicMarketManager::onBidOK()
 }
 
 /**
- *Method handling an incorrect bid
- *@param string : error message 
+ * Method handling an incorrect bid
+ * @param string : error message 
  */
 void GraphicMarketManager::onBidError(std::string const & err)
 {
@@ -279,7 +280,7 @@ void GraphicMarketManager::onBidError(std::string const & err)
 }
 
 /**
- *Method handling correct addition of player on the market
+ * Method handling correct addition of player on the market
  */
 void GraphicMarketManager::onAddPlayerOK()
 {
@@ -289,12 +290,17 @@ void GraphicMarketManager::onAddPlayerOK()
 }
 
 /**
- *Method handling error on addition of player on the market
- *@param string: error message
+ * Method handling error on addition of player on the market
+ * @param string: error message
  */
 void GraphicMarketManager::onAddPlayerError(std::string const & reason)
 {
 	_wait = false;
 	displayError(reason);
+}
+
+void GraphicMarketManager::onLoop(){
+	if (abs(difftime(time(NULL), _lastUpdated)) > GUI::AUTOUPDATE_STALE_TIME)
+		updateSales();
 }
 

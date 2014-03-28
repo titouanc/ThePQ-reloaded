@@ -7,6 +7,7 @@
 #include <string>
 #include <map>
 #include <GUINotifier.hpp>
+#include <ctime>
 
 class GUIFGameManager : public FGameManager, public GUI::GraphicManager 
 {
@@ -18,7 +19,10 @@ private:
 	void invitePlayer(std::string playername);
 	void onUserList(JSON::List const & list);
 
+	void onLoop();
+
 	NOTIFIABLE
+	time_t _lastUpdated;
 };
 
 

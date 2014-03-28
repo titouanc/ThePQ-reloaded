@@ -4,6 +4,7 @@
 #include <graphics/GraphicManager.hpp>
 #include "MarketManager.hpp"
 #include <GUINotifier.hpp>
+#include <ctime>
 
 class GraphicMarketManager : public MarketManager, public GUI::GraphicManager 
 {
@@ -29,8 +30,10 @@ private:
 	void onAddPlayerError(std::string const & reason);
 
 	NOTIFIABLE
+	void onLoop();
 
 	bool _wait, _waitForBid;
+	time_t _lastUpdated;
 };
 
 

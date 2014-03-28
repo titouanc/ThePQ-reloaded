@@ -4,10 +4,11 @@
 using namespace std;
 using namespace GUI;
 
+///Constructor
 GraphicStadiumManager::GraphicStadiumManager(
-	ClientManager const & parent, 
-	GUI::MainController &controller
-) : 
+			ClientManager const & parent, 
+			GUI::MainController &controller
+	) : 
 	StadiumManager(parent), 
 	GraphicManager(controller)
 {
@@ -21,6 +22,9 @@ GraphicStadiumManager::GraphicStadiumManager(
 	}
 }
 
+/**
+ * Method handling installation interface
+ */
 void GraphicStadiumManager::displayInstallations()
 {
 	
@@ -82,6 +86,10 @@ void GraphicStadiumManager::displayInstallations()
 	redrawCanvas();
 }
 
+/**
+ * Method handling upgrades of an installation
+ * @param int : id of the installation
+ */
 void GraphicStadiumManager::doUpgrade(int installation){
 	upgradeInstallation(installation);
 	_wait = true;
@@ -89,6 +97,10 @@ void GraphicStadiumManager::doUpgrade(int installation){
 		readMessage();
 }
 
+/**
+ * Method handling the downgrade of an installations
+ * @param int : id of the installation
+ */
 void GraphicStadiumManager::doDowngrade(int installation){
 	downgradeInstallation(installation);
 	_wait = true;
@@ -96,6 +108,9 @@ void GraphicStadiumManager::doDowngrade(int installation){
 		readMessage();
 }
 
+/**
+ * Method handling the interface for the installations
+ */
 void GraphicStadiumManager::onInstallationsLoad()
 {
 	_wait = false;

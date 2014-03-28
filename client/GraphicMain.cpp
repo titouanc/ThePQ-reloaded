@@ -2,6 +2,10 @@
 #include <unistd.h>
 #include <cstring>
 
+/**
+ * Method standing as a pseudo main
+ *reduces code clutter
+ */
 int protected_main(int argc, char const *argv[])
 {
 	bool has_chdir = false;

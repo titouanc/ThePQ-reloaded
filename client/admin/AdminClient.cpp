@@ -8,8 +8,8 @@ _admin()
 }
 
 /**
-*Method starting the admin interface
-*/
+ * Method starting the admin interface
+ */
 void AdminClient::run(){
 	
 	std::cout<<"Welcome. This is the admin client for The Pro Quidditch Manager 2014."<<std::endl;
@@ -26,7 +26,7 @@ void AdminClient::run(){
 
 
 /**
- *Method displaying the administration menu
+ * Method displaying the administration menu
  */
 void AdminClient::showAdminMenu(){
 	
@@ -48,7 +48,10 @@ void AdminClient::showAdminMenu(){
 	}
 	while(option!=2);
 }
-
+/**
+ * Method displaying the menu
+ * @return continue exit status
+ */
 bool AdminClient::showBaseMenu(){
 	Menu _menu;
 	_menu.addToDisplay("   - identify\n");
@@ -69,7 +72,7 @@ bool AdminClient::showBaseMenu(){
 }
 
 /**
- *Method showing the administrator login menu
+ * Method showing the administrator login menu
  */
 void AdminClient::showIdentifyMenu(){	
 	
@@ -93,7 +96,7 @@ void AdminClient::showIdentifyMenu(){
 }
 
 /**
- *Method sending the admin credentials to the server.
+ * Method sending the admin credentials to the server.
  * Credential errors are handled by specific exceptions
  */
 void AdminClient::loginAdmin(std::string username, std::string password){
@@ -131,7 +134,7 @@ void AdminClient::loginAdmin(std::string username, std::string password){
 }
 
 /**
- *Method handling the logout of the admin user
+ * Method handling the logout of the admin user
  */
 void AdminClient::logoutAdmin(){
 	
@@ -144,7 +147,7 @@ void AdminClient::logoutAdmin(){
 }
 
 /**
- *Method showing the interface for a championship constructor
+ * Method showing the interface for a championship constructor
  */
 void AdminClient::showCreateChampionshipMenu(){	
 	
@@ -182,7 +185,7 @@ void AdminClient::showCreateChampionshipMenu(){
 }
 
 /**
- *Method creating a championship
+ * Method creating a championship
  */
 void AdminClient::createChampionship(std::string name, int nbTurns, int cash, int fame){
 	

@@ -10,19 +10,19 @@ String::~String()//Destructor for String object
 
 Type String::type(void) const 
 {
-	/*Method returning the type of the object*/
+	/* Method returning the type of the object*/
 	return String_t;
 }
 
 Value * String::clone(void) const 
 {
-	/*Method returning a pointer to the content of object String*/
+	/* Method returning a pointer to the content of object String*/
 	return new String(value());
 }
 
 void String::_writeTo(std::ostream & out) const 
 {
-	/*Method for putting <<out>> to the 
+	/* Method for putting <<out>> to the 
 	 *ofstream buffer
 	 *eg buff: "\ _content \"
 	 *out<<buff
@@ -49,6 +49,6 @@ void String::_writeTo(std::ostream & out) const
 
 std::string const & String::value(void) const 
 {
-	/*Method returning a const reference du the value of String*/
+	/* Method returning a const reference du the value of String*/
 	return _content;
 }

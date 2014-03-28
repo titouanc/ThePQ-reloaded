@@ -8,7 +8,8 @@ GUI::MainController::MainController(): window(	sf::VideoMode(WINDOW_WIDTH, WINDO
 {
 	window.setFramerateLimit(60);
 	window.clear(sf::Color(0xff, 0xff, 0xff, 0xff));
-	if (mainMusic.openFromFile("musictest.ogg"))
+	
+	if (mainMusic.openFromFile("graphics/sounds/startup.wav"))
 	{
 		mainMusic.play();
 	}

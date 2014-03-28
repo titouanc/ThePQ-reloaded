@@ -15,6 +15,6 @@ void Training::selectTraining(trainingType aTraining){
 
 }
 void Training::selectDuration(size_t time,TrainingGroup aGroup){
-	/*Method allowing multiple trainings with set settings*/
+	/* Method allowing multiple trainings with set settings*/
 
 }

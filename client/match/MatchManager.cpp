@@ -5,6 +5,11 @@
 
 using namespace net;
 
+
+/**
+ * Method handling ball placement on the pitch
+ * @param JSON::List : list of all the balls for a game
+ */
 void MatchManager::treatBalls(JSON::List const & balls)
 {
 	Quaffle *q = new Quaffle(DICT(balls[0]));
@@ -19,6 +24,10 @@ void MatchManager::treatBalls(JSON::List const & balls)
 	onPitchChange();
 }
 
+/**
+ * Method handling squad placement on the pitch depending on the user
+ * @param JSON::List : list of the squads 
+ */
 void MatchManager::treatSquads(JSON::List const & squads)
 {
 	Squad sq1(DICT(squads[0]));
@@ -44,6 +53,10 @@ void MatchManager::treatSquads(JSON::List const & squads)
 	onPitchChange();
 }
 
+/**
+ * Method handling movements on the pitch
+ * @param JSON::List : list of all the movements to be treated 
+ */
 void MatchManager::treatDeltas(JSON::List const & deltas)
 {
 	for (size_t i=0; i<deltas.len(); i++){
@@ -94,11 +107,12 @@ void MatchManager::treatDeltas(JSON::List const & deltas)
 	}
 	onPitchChange();
 }
-
+///Constructor
 MatchManager::MatchManager(ClientManager const & other) 
 : ClientManager(other), _state(CREATED), _quaffle(NULL)
 {}
 
+///Destructor
 MatchManager::~MatchManager()
 {
 	for (Pitch::iterator it=_pitch.begin(); it!=_pitch.end();){
@@ -111,6 +125,11 @@ MatchManager::~MatchManager()
 	}
 }
 
+/**
+ * Method handling server queries
+ * @param string : type of the query
+ * @param JSON::Value : queries to be treated
+ */
 void MatchManager::treatMessage(std::string const & type, JSON::Value const * data)
 {
 	cout << "TREAT MESSAGE " << type << endl;
@@ -149,11 +168,19 @@ void MatchManager::treatMessage(std::string const & type, JSON::Value const * da
 		onError(STR(data));
 }
 
+/**
+ * Method
+ */
 void MatchManager::sendStroke(Stroke const & stroke)
 {
 	say(MSG::MATCH_STROKE, JSON::Dict(stroke));
 }
 
+/**
+ * Method handlind queries to the server
+ * @param Player : target of the query
+ * @param Displacement : query to send
+ */
 void MatchManager::sendDisplacement(Player const & player, Displacement const & move)
 {
 	JSON::Dict msg = {
@@ -163,6 +190,11 @@ void MatchManager::sendDisplacement(Player const & player, Displacement const & 
 	say(MSG::MATCH_STROKE, msg);
 }
 
+/**
+ * Method handling player ownership
+ * @param Player : player whose ownership is checked
+ * @return bool : ownership status of player
+ */
 bool MatchManager::isMyPlayer(Player const & player) const
 {
 	for (int i=0; i<7; i++)

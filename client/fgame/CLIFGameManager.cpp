@@ -14,7 +14,7 @@ FGameManager(parent)
 {}
 
 /**
- *Method handling invitation for players
+ * Method handling invitation for players
  */
 void CLIFGameManager::showChooseUserMenu()
 {
@@ -24,8 +24,8 @@ void CLIFGameManager::showChooseUserMenu()
 }
 
 /**
- *Method handling a friendly match display
- *@return : false if no game invitation
+ * Method handling a friendly match display
+ * @return : false if no game invitation
 */
 
 bool CLIFGameManager::showFriendlyMatchMenu()
@@ -53,7 +53,7 @@ bool CLIFGameManager::showFriendlyMatchMenu()
 }
 
 /**
- *Method displaying connected users
+ * Method displaying connected users
  */
 void CLIFGameManager::onUserList(JSON::List const & list)
 {
@@ -68,7 +68,7 @@ void CLIFGameManager::onUserList(JSON::List const & list)
 }
 
 /**
- *Method handling a friendly game
+ * Method handling a friendly game
  */
 void CLIFGameManager::run()
 {
@@ -83,8 +83,8 @@ void CLIFGameManager::run()
 }
 
 /**
- *Method handling accept token for friendly game
- *@param : string name of the player who accepted the game
+ * Method handling accept token for friendly game
+ * @param : string name of the player who accepted the game
  */
 void CLIFGameManager::onOtherAccept(std::string const & name)
 {
@@ -95,8 +95,8 @@ void CLIFGameManager::onOtherAccept(std::string const & name)
 }
 
 /**
- *Method handling token for friendly game
- *@param : string name of the player who denied the game
+ * Method handling token for friendly game
+ * @param : string name of the player who denied the game
  */
 void CLIFGameManager::onOtherDeny(std::string const & name)
 {
@@ -106,8 +106,8 @@ void CLIFGameManager::onOtherDeny(std::string const & name)
 }
 
 /**
- *Method handling inexisting user
- *@param : string name of the player (not found)
+ * Method handling inexisting user
+ * @param : string name of the player (not found)
  */
 void CLIFGameManager::onUserNotFound(std::string const & name)
 {
@@ -117,7 +117,7 @@ void CLIFGameManager::onUserNotFound(std::string const & name)
 }
 
 /**
- *Method handling the start of a match
+ * Method handling the start of a match
  */
 void CLIFGameManager::onMatchStart(){
 	CLIMatchManager match(*this); 
