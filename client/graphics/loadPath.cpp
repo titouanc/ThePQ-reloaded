@@ -25,17 +25,17 @@ static std::string basePath(void)
 	return std::string(BASE_RESOURCES_PATH);
 }
 
-std::string fontPath(std::string name)
+std::string fontPath(std::string const & name)
 {
 	return basePath() + "/fonts/" + name;
 }
 
-std::string texturePath(std::string name)
+std::string texturePath(std::string const & name)
 {
 	return basePath() + "/textures/" + name;
 }
 
-std::string soundPath(std::string name)
+std::string soundPath(std::string const & name)
 {
 	return basePath() + "/sounds/" + name;
 }
