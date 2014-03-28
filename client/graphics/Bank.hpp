@@ -6,17 +6,25 @@
 #include "SFML/Audio.hpp"
 #include "loadPath.hpp"
 
-template <typename T>
+typedef std::string(*PathBuilder)(std::string const &);
+
+/*! Lazy resource manager. Load objects from files on demand, and keep them 
+ *  for all program life; therefore allowing multiple modules to share them.
+ * @param T type of loaded objects (should define T::loadFromFile(std::string const &))
+ * @param F a path builder function (map resource name => path on disk)
+ */
+template <typename T, PathBuilder F>
 class Bank : public std::unordered_map<std::string, T> {
-	protected:
-		virtual std::string getPath(std::string const & name){return name;}
+	private:
+		/*! load specified object from file */
 		T const & load(std::string const & name){
 			(*this)[name] = T();
-			(*this)[name].loadFromFile(getPath(name));
+			(*this)[name].loadFromFile(F(name));
 			return (*this)[name];
 		}
 	public:
 		typedef typename std::unordered_map<std::string, T>::iterator iterator;
+		/*! If specified resource is not in memory, load it first; then return it */
 		T const & get(std::string const & name){
 			iterator it = this->find(name);
 			if (it != this->end())
@@ -26,17 +34,13 @@ class Bank : public std::unordered_map<std::string, T> {
 		}
 };
 
-class FontBank : public Bank<sf::Font> {
-	protected:
-		std::string getPath(std::string const & name){return fontPath(name);}
-};
+/*! GUI fonts */
+extern Bank<sf::Font, fontPath> FONTS;
 
-class SoundBank : public Bank<sf::SoundBuffer> {
-	protected:
-		std::string getPath(std::string const & name){return soundPath(name);}
-};
+/*! GUI sounds */
+extern Bank<sf::SoundBuffer, soundPath> SOUNDS;
 
-extern FontBank FONTS;
-extern SoundBank SOUNDS;
+/*! GUI textures */
+extern Bank<sf::Texture, texturePath> TEXTURES;
 
 #endif
