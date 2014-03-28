@@ -3,7 +3,7 @@
 #include <cstring>
 
 /**
- *Method standing as a pseudo main
+ * Method standing as a pseudo main
  *reduces code clutter
  */
 int protected_main(int argc, char const *argv[])

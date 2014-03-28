@@ -15,8 +15,8 @@ GUIFGameManager::GUIFGameManager(ClientManager const & parent, GUI::MainControll
 }
 
 /**
- *Method handling player invitation to game
- *@param string: the player whom to send the invite
+ * Method handling player invitation to game
+ * @param string: the player whom to send the invite
 */
 void GUIFGameManager::invitePlayer(string playername)
 {
@@ -30,8 +30,8 @@ void GUIFGameManager::invitePlayer(string playername)
 }
 
 /**
- *Method displaying connected users list
- *@param : JSON::List list of connected players
+ * Method displaying connected users list
+ * @param : JSON::List list of connected players
  */
 void GUIFGameManager::onUserList(JSON::List const & list)
 {

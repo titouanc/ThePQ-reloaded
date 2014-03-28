@@ -10,16 +10,16 @@ TrainingGroup::TrainingGroup(){
 }
 
 void TrainingGroup::train(){
-	/*Method*/
+	/* Method*/
 
 }
 
 void TrainingGroup::AddCoach(Coach aCoach){
-	/*Method for adding coach to group*/
+	/* Method for adding coach to group*/
 }
 
 void TrainingGroup::removeCoach(Coach aCoach){
-	/*Method for removing coach from group*/
+	/* Method for removing coach from group*/
 
 }
 
@@ -28,11 +28,11 @@ list<Coach> TrainingGroup::getCoaches(){
 }
 
 void TrainingGroup::addPlayer(Player::aPlayer){
-	/*Method for adding players to the group*/
+	/* Method for adding players to the group*/
 }
 
 void TrainingGroup::removePlayer (Player aPlayer){
-	/*Method for removing players from the group*/
+	/* Method for removing players from the group*/
 
 }
 

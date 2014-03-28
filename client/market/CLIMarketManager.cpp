@@ -7,7 +7,7 @@ MarketManager(parent), _waitForSales(false), _waitForBid(false)
 {}
 
 /**
- *Method starting the player market for the command line
+ * Method starting the player market for the command line
  */
 void CLIMarketManager::run()
 {
@@ -39,7 +39,7 @@ void CLIMarketManager::run()
 }
 
 /**
- *Method handling the sell of a player
+ * Method handling the sell of a player
  */
 void CLIMarketManager::sellPlayer()
 {
@@ -77,7 +77,7 @@ void CLIMarketManager::sellPlayer()
 }
 
 /**
- *Method handling the listing of players for sale
+ * Method handling the listing of players for sale
  */
 void CLIMarketManager::displayPlayersOnSale()
 {
@@ -93,7 +93,7 @@ void CLIMarketManager::displayPlayersOnSale()
 }
 
 /**
- *Method showing the bidding interface
+ * Method showing the bidding interface
  */
 void CLIMarketManager::showBidMenu()
 {
@@ -122,7 +122,7 @@ void CLIMarketManager::showBidMenu()
 }
 
 /**
- *Method displaying current users players
+ * Method displaying current users players
  */
 void CLIMarketManager::showPlayers(){
 	cout << "================ YOUR PLAYERS ================" << endl;
@@ -133,7 +133,7 @@ void CLIMarketManager::showPlayers(){
 }
 
 /**
- *Method handling bidding
+ * Method handling bidding
  */
 void CLIMarketManager::placeBid()
 {
@@ -154,7 +154,7 @@ void CLIMarketManager::placeBid()
 }
 
 /**
- *Method handling a correct bid
+ * Method handling a correct bid
  *(send query to server)
  */
 void CLIMarketManager::onBidOK()
@@ -164,9 +164,9 @@ void CLIMarketManager::onBidOK()
 }
 
 /**
- *Method handling an incorrect bid
+ * Method handling an incorrect bid
  *(send query to server)
- *@param string: error message
+ * @param string: error message
  */
 void CLIMarketManager::onBidError(std::string const & reason)
 {
@@ -175,7 +175,7 @@ void CLIMarketManager::onBidError(std::string const & reason)
 }
 
 /**
- *Method handling the addition of a player on the PlayerMarket
+ * Method handling the addition of a player on the PlayerMarket
  */
 void CLIMarketManager::onAddPlayerOK()
 {
@@ -184,8 +184,8 @@ void CLIMarketManager::onAddPlayerOK()
 }
 
 /**
- *Method handling an error in the addition of a player on the PlayerMarket
- *@param : string  error message to be sent to the server
+ * Method handling an error in the addition of a player on the PlayerMarket
+ * @param : string  error message to be sent to the server
  */
 void CLIMarketManager::onAddPlayerError(std::string const & reason)
 {
@@ -194,7 +194,7 @@ void CLIMarketManager::onAddPlayerError(std::string const & reason)
 }
 
 /**
- *Method handling the update of the market
+ * Method handling the update of the market
  */
 void CLIMarketManager::onSalesUpdate()
 {
@@ -202,7 +202,7 @@ void CLIMarketManager::onSalesUpdate()
 }
 
 /**
- *Method handling the start of a match
+ * Method handling the start of a match
  */
 void CLIMarketManager::onMatchStart(){
 	CLIMatchManager match(*this); 

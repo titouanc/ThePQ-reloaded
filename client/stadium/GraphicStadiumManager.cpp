@@ -23,7 +23,7 @@ GraphicStadiumManager::GraphicStadiumManager(
 }
 
 /**
- *Method handling installation interface
+ * Method handling installation interface
  */
 void GraphicStadiumManager::displayInstallations()
 {
@@ -87,8 +87,8 @@ void GraphicStadiumManager::displayInstallations()
 }
 
 /**
- *Method handling upgrades of an installation
- *@param int : id of the installation
+ * Method handling upgrades of an installation
+ * @param int : id of the installation
  */
 void GraphicStadiumManager::doUpgrade(int installation){
 	upgradeInstallation(installation);
@@ -98,8 +98,8 @@ void GraphicStadiumManager::doUpgrade(int installation){
 }
 
 /**
- *Method handling the downgrade of an installations
- *@param int : id of the installation
+ * Method handling the downgrade of an installations
+ * @param int : id of the installation
  */
 void GraphicStadiumManager::doDowngrade(int installation){
 	downgradeInstallation(installation);
@@ -109,7 +109,7 @@ void GraphicStadiumManager::doDowngrade(int installation){
 }
 
 /**
- *Method handling the interface for the installations
+ * Method handling the interface for the installations
  */
 void GraphicStadiumManager::onInstallationsLoad()
 {

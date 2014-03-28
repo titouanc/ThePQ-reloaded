@@ -8,7 +8,7 @@ CLITeamManager::CLITeamManager(ClientManager const & parent) : TeamManager(paren
 {}
 
 /**
- *Method handling the team management interface
+ * Method handling the team management interface
  */
 void CLITeamManager::run()
 {
@@ -45,7 +45,7 @@ void CLITeamManager::run()
 }
 
 /**
- *Method displaying the teams players
+ * Method displaying the teams players
  */
 void CLITeamManager::showPlayers(){
 	cout << "\033[2J\033[1;1H";
@@ -57,7 +57,7 @@ void CLITeamManager::showPlayers(){
 }
 
 /**
- *Method displaying the users squad
+ * Method displaying the users squad
  */
 void CLITeamManager::showSquad()
 {
@@ -74,7 +74,7 @@ void CLITeamManager::showSquad()
 }
 
 /**
- *Method handling user input for a players position
+ * Method handling user input for a players position
  */
 void CLITeamManager::showSelectPosition()
 {
@@ -90,7 +90,7 @@ void CLITeamManager::showSelectPosition()
 }
 
 /**
- *Method handling player position on pitch
+ * Method handling player position on pitch
  */
 void CLITeamManager::showSelectPlayer()
 {
@@ -107,7 +107,7 @@ void CLITeamManager::showSelectPlayer()
 }
 
 /**
- *Method handling a player swap (squad <-> team)
+ * Method handling a player swap (squad <-> team)
  */
 void CLITeamManager::showSwapPlayer()
 {
@@ -123,7 +123,7 @@ void CLITeamManager::showSwapPlayer()
 }
 
 /**
- *Method handling the match start
+ * Method handling the match start
  */
 void CLITeamManager::onMatchStart(){
 	CLIMatchManager match(*this); 

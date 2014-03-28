@@ -32,7 +32,7 @@ GraphicTeamManager::GraphicTeamManager(
 GraphicTeamManager::~GraphicTeamManager(){}
 
 /**
- *Method
+ * Method
  */
 void GraphicTeamManager::displayPlayers()
 {
@@ -73,7 +73,7 @@ void GraphicTeamManager::displayPlayers()
 }
 
 /**
- *Method
+ * Method
  */
 void GraphicTeamManager::displaySquadLabels(){
 	_canvas.addPanel(515, 500, sf::Color(0x00, 0x00, 0x00, 0x77)
@@ -101,7 +101,7 @@ void GraphicTeamManager::displaySquadLabels(){
 }
 
 /**
- *Method
+ * Method
  */
 void GraphicTeamManager::displayChangeButtons(){
 	_canvas.addButton<GraphicTeamManager, int>(
@@ -132,7 +132,7 @@ void GraphicTeamManager::displayChangeButtons(){
 }
 
 /**
- *Method
+ * Method
  */
 void GraphicTeamManager::changePlayerAt(int position){
 	selectPosition(position); // storing it in an instance variable
@@ -142,7 +142,7 @@ void GraphicTeamManager::changePlayerAt(int position){
 }
 
 /**
- *Method
+ * Method
  */
 void GraphicTeamManager::displaySwapWith(int position){
 	if (LEFT_CHASER != position)
@@ -208,7 +208,7 @@ void GraphicTeamManager::displaySwapWith(int position){
 }
 
 /**
- *Method displaying the available players on the interface
+ * Method displaying the available players on the interface
  */
 void GraphicTeamManager::displayAvailablePlayers(){
 	for(size_t i=0; i<user().players.size(); ++i){
@@ -221,7 +221,7 @@ void GraphicTeamManager::displayAvailablePlayers(){
 }
 
 /**
- *Method handpling player positioning on the pitch
+ * Method handpling player positioning on the pitch
  */
 void GraphicTeamManager::selectPlayer(int id){
 	putPlayerAtPosition(id, getSelectedPosition());
@@ -231,7 +231,7 @@ void GraphicTeamManager::selectPlayer(int id){
 }
 
 /**
- *Method handling the fwap of players old position <->new position
+ * Method handling the fwap of players old position <->new position
  */
 void GraphicTeamManager::doSwap(int id){
 	swapPlayers(id, getSelectedPosition());
@@ -241,7 +241,7 @@ void GraphicTeamManager::doSwap(int id){
 }
 
 /**
- *Method reversing user chages
+ * Method reversing user chages
  */
 void GraphicTeamManager::cancelChange(){
 	displayPlayers();
@@ -249,7 +249,7 @@ void GraphicTeamManager::cancelChange(){
 }
 
 /**
- *Method handling player interface
+ * Method handling player interface
  */
 void GraphicTeamManager::onPlayersLoad()
 {
@@ -259,7 +259,7 @@ void GraphicTeamManager::onPlayersLoad()
 }
 
 /**
- *Method handling squad interface
+ * Method handling squad interface
  */
 void GraphicTeamManager::onSquadUpdated()
 {

@@ -1,6 +1,10 @@
 #ifndef __CONSTANTS_HPP
 #define __CONSTANTS_HPP
 #include <string>
+/**
+ * @brief Header containing all predetermined messages to be sent over the network
+ * and all the constants used for the game interactions
+ */
 namespace net
 {
 	// NETWORK MESSAGES --------------------------------------------------------

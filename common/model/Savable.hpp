@@ -31,8 +31,8 @@ public:
 			try 
 			{
 				JSON::Value * json = JSON::load(ID_PATH);
-				JSON::Integer const & cpt = INT(json);
-				_ID = (int)cpt;
+				JSON::Integer  & cpt = INT(json);
+				_ID = (int) cpt;
 				delete json;
 			}
 			catch (JSON::IOError & e)

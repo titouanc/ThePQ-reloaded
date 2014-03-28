@@ -3,7 +3,7 @@
 
 using namespace std;
 /**
- *Method handling name translations for ease of use
+ * Method handling name translations for ease of use
 */
 std::string humanExcName(const char *name)
 {
@@ -22,7 +22,7 @@ Client::Client(NetConfig const &config) : 	_user(), _notifications(), _connectio
 Client::~Client()
 {}
 /**
- *Method starting the client and linked managers
+ * Method starting the client and linked managers
 */
 void Client::run()
 {

@@ -6,7 +6,7 @@ CLIChampionshipManager::CLIChampionshipManager(ClientManager const & parent) :
 ChampionshipManager(parent), _waitForChamps(false), _waitForJoin(false)
 {}
 /**
- *Method starting the championship interface
+ * Method starting the championship interface
  */
 void CLIChampionshipManager::run(){
 	
@@ -34,7 +34,7 @@ void CLIChampionshipManager::run(){
 }
 
 /**
- *Method handling a championship inscription
+ * Method handling a championship inscription
  */
 void CLIChampionshipManager::joinChampionshipMenu(){
 	
@@ -60,7 +60,7 @@ void CLIChampionshipManager::joinChampionshipMenu(){
 }
 
 /**
- *Method displaying possible actions in the current championship
+ * Method displaying possible actions in the current championship
  */
 void CLIChampionshipManager::currentChampionshipMenu(){
 	
@@ -89,7 +89,7 @@ void CLIChampionshipManager::currentChampionshipMenu(){
 }
 
 /**
- *Method displaying the current state of the championship (users,teams...)
+ * Method displaying the current state of the championship (users,teams...)
  */
 void CLIChampionshipManager::displayCurrentChampionship(){
 	
@@ -105,7 +105,7 @@ void CLIChampionshipManager::displayCurrentChampionship(){
 }
 
 /**
- *Method listing all available championships
+ * Method listing all available championships
  */
 void CLIChampionshipManager::displayChampionships(){
 	
@@ -121,7 +121,7 @@ void CLIChampionshipManager::displayChampionships(){
 }
 
 /**
- *Method handling the entry in a championship
+ * Method handling the entry in a championship
  */
 void CLIChampionshipManager::onJoinChampionship(bool success, const std::string & msg){
 	
@@ -131,7 +131,7 @@ void CLIChampionshipManager::onJoinChampionship(bool success, const std::string 
 }
 
 /**
- *Method handling the unsubscription from a championship
+ * Method handling the unsubscription from a championship
  */
 void CLIChampionshipManager::onLeaveChampionship(bool success, const std::string & msg){
 	
@@ -140,23 +140,23 @@ void CLIChampionshipManager::onLeaveChampionship(bool success, const std::string
 }
 
 /**
- *Method setting the flag not to wait for a championship if
- *the championship is being loaded
+ * Method setting the flag not to wait for a championship if
+ * the championship is being loaded
  */
 void CLIChampionshipManager::onChampionshipsLoad(){
 	_waitForChamps = false;
 }
 
 /**
- *Method setting the flag not to wait for a championship if
- *a championship is joined 
+ * Method setting the flag not to wait for a championship if
+ * a championship is joined 
  */
 void CLIChampionshipManager::onJoinedChampionship(){
 	_waitForChamps = false;
 }
 
 /**
- *Method starting a match in a championship
+ * Method starting a match in a championship
  */
 void CLIChampionshipManager::onMatchStart(){
 	CLIMatchManager match(*this); 

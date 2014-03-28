@@ -32,7 +32,7 @@ GraphicUserManager::GraphicUserManager(
 }
 
  /**
-  *Method handling the registration interface
+  * Method handling the registration interface
   */
 void GraphicUserManager::displayChoice()
 {
@@ -52,7 +52,7 @@ void GraphicUserManager::displayChoice()
 }
 
 /**
-  *Method handling the login form interface
+  * Method handling the login form interface
   */
 void GraphicUserManager::displayLoginForm()
 {
@@ -69,7 +69,7 @@ void GraphicUserManager::displayLoginForm()
 }
 
 /**
-  *Method handling the registration interface
+  * Method handling the registration interface
   */
 void GraphicUserManager::displayRegisterForm()
 {
@@ -87,7 +87,7 @@ void GraphicUserManager::displayRegisterForm()
 }
 
 /**
-  *Method handling the team configuration interface
+  * Method handling the team configuration interface
   */
 void GraphicUserManager::displayTeamNameForm()
 {
@@ -105,7 +105,7 @@ void GraphicUserManager::displayTeamNameForm()
 }
 
 /**
-  *Method handling the main menu interface
+  * Method handling the main menu interface
   */
 void GraphicUserManager::displayMainMenu()
 {
@@ -142,7 +142,7 @@ void GraphicUserManager::displayMainMenu()
 
 /******* BUTTONS CALLBACKS ******/
 /**
-  *Method handling the login service
+  * Method handling the login service
   */
 void GraphicUserManager::submitLoginForm()
 {
@@ -157,7 +157,7 @@ void GraphicUserManager::submitLoginForm()
 }
 
 /**
-  *Method handling the registartion service
+  * Method handling the registartion service
   */
 void GraphicUserManager::submitRegisterForm()
 {
@@ -178,7 +178,7 @@ void GraphicUserManager::submitRegisterForm()
 }
 
 /**
-  *Method
+  * Method
   */
 void GraphicUserManager::submitTeamNameForm()
 {
@@ -192,7 +192,7 @@ void GraphicUserManager::submitTeamNameForm()
 }
 
 /**
-  *Method handling the stadium interface
+  * Method handling the stadium interface
   */
 void GraphicUserManager::goToStadium()
 {
@@ -203,7 +203,7 @@ void GraphicUserManager::goToStadium()
 }
 
 /**
-  *Method handling the market interface
+  * Method handling the market interface
   */
 void GraphicUserManager::goToMarket()
 {
@@ -214,7 +214,7 @@ void GraphicUserManager::goToMarket()
 }
 
 /**
-  *Method handling the friendly game interface
+  * Method handling the friendly game interface
   */
 void GraphicUserManager::goToFriendlyGame()
 {
@@ -225,7 +225,7 @@ void GraphicUserManager::goToFriendlyGame()
 }
 
 /**
-  *Method handling the player management interface
+  * Method handling the player management interface
   */
 void GraphicUserManager::goToPlayers()
 {
@@ -236,7 +236,7 @@ void GraphicUserManager::goToPlayers()
 }
 
 /**
-  *Method handling the championship interface
+  * Method handling the championship interface
   */
 void GraphicUserManager::goToChampionships()
 {
@@ -250,7 +250,7 @@ void GraphicUserManager::goToChampionships()
 /******* HOOKS *******/
 
 /**
-  *Method handling a valid login
+  * Method handling a valid login
   */
 void GraphicUserManager::onLoginOK()
 {
@@ -259,8 +259,8 @@ void GraphicUserManager::onLoginOK()
 }
 
 /**
-  *Method handling a login error
-  *@param string :  error message to be displayed
+  * Method handling a login error
+  * @param string :  error message to be displayed
   */
 void GraphicUserManager::onLoginError(std::string const & err)
 {
@@ -270,7 +270,7 @@ void GraphicUserManager::onLoginError(std::string const & err)
 }
 
 /**
-  *Method handling valid team credentials
+  * Method handling valid team credentials
   */
 void GraphicUserManager::onTeamNameOK()
 {
@@ -278,8 +278,8 @@ void GraphicUserManager::onTeamNameOK()
 }
 
 /**
-  *Method handling team credentials error
-  *@param string : error message to be displayed
+  * Method handling team credentials error
+  * @param string : error message to be displayed
   */
 void GraphicUserManager::onTeamNameError(std::string const & err)
 {
@@ -288,7 +288,7 @@ void GraphicUserManager::onTeamNameError(std::string const & err)
 }
 
 /**
-  *Method handling a valid registration
+  * Method handling a valid registration
   */
 void GraphicUserManager::onRegisterUserOK()
 {
@@ -297,8 +297,8 @@ void GraphicUserManager::onRegisterUserOK()
 }
 
 /**
-  *Method handling an invalid registration
-  *@param string : error message to be displayed 
+  * Method handling an invalid registration
+  * @param string : error message to be displayed 
   */
 void GraphicUserManager::onRegisterUserError(std::string const & err)
 {
@@ -307,7 +307,7 @@ void GraphicUserManager::onRegisterUserError(std::string const & err)
 }
 
 /**
-  *Method handling team credentials setup
+  * Method handling team credentials setup
   */
 void GraphicUserManager::onAskTeamName()
 {

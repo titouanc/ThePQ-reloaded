@@ -16,8 +16,8 @@ _notifications(other._notifications)
 {}
 
 /**
-  *Method handling a connection to the server
-  *@return a client connection manager
+  * Method handling a connection to the server
+  * @return a client connection manager
   */
 net::ClientConnectionManager & ClientManager::connection() const 
 {
@@ -25,8 +25,8 @@ net::ClientConnectionManager & ClientManager::connection() const
 }
 
 /**
-  *Method getting user data
-  *@return a reference to the current user
+  * Method getting user data
+  * @return a reference to the current user
   */
 UserData & ClientManager::user() const
 {
@@ -34,8 +34,8 @@ UserData & ClientManager::user() const
 }
 
 /**
-  *Method calculating number of available notifications
-  *@return integer representing total number of available notifications
+  * Method calculating number of available notifications
+  * @return integer representing total number of available notifications
   */
 int ClientManager::getNbNotifications() const
 {
@@ -43,8 +43,8 @@ int ClientManager::getNbNotifications() const
 }
 
 /**
-  *Method getting the notifications
-  *@return a queu containing all the notifications
+  * Method getting the notifications
+  * @return a queu containing all the notifications
   */
 std::queue<JSON::Dict> & ClientManager::notifications() const
 {
@@ -52,9 +52,9 @@ std::queue<JSON::Dict> & ClientManager::notifications() const
 }
 
 /**
-  *Method handling communication with the server
-  *@param string : type of the message to send
-  *@param JSON::Value : message to send
+  * Method handling communication with the server
+  * @param string : type of the message to send
+  * @param JSON::Value : message to send
   */
 void ClientManager::say(std::string const & type, JSON::Value const & data)
 {
@@ -66,9 +66,9 @@ void ClientManager::say(std::string const & type, JSON::Value const & data)
 }
 
 /**
-  *Method handling queries from the server
-  *@param string : type of the query
-  *@param JSON::Value : query to handle
+  * Method handling queries from the server
+  * @param string : type of the query
+  * @param JSON::Value : query to handle
   */
 void ClientManager::treatMessage(std::string const & type, JSON::Value const * data)
 {
@@ -132,7 +132,7 @@ void ClientManager::treatMessage(std::string const & type, JSON::Value const * d
 }
 
 /**
-  *Method retrieving users players
+  * Method retrieving users players
   */
 void ClientManager::loadPlayers()
 {
@@ -145,7 +145,7 @@ void ClientManager::loadPlayers()
 }
 
 /**
-  *Method parsing querie
+  * Method parsing querie
   */
 void ClientManager::readMessage()
 {
@@ -158,7 +158,7 @@ void ClientManager::readMessage()
 }
 
 /**
-  *Method parsing all available queries and dispatching them to handlers
+  * Method parsing all available queries and dispatching them to handlers
   */
 void ClientManager::readMessages() 
 {
@@ -167,7 +167,7 @@ void ClientManager::readMessages()
 }
 
 /**
-  *Method treating available notifications
+  * Method treating available notifications
   */
 void ClientManager::handleNotification(){
 	if(! _notifications.empty()){
@@ -196,7 +196,7 @@ void ClientManager::handleNotification(){
 }
 
 /**
-  *Method handling the end of an auction
+  * Method handling the end of an auction
   */
 std::string ClientManager::onEndOfSale(JSON::Dict const & json)
 {
@@ -224,9 +224,9 @@ std::string ClientManager::onEndOfSale(JSON::Dict const & json)
 }
 
 /**
-  *Method presenting the final match report
-  *@param JSON::Dict : match report to handle
-  *@return string final report of the championship
+  * Method presenting the final match report
+  * @param JSON::Dict : match report to handle
+  * @return string final report of the championship
   */
 std::string ClientManager::onMatchRapport(JSON::Dict const & json){
 	std::stringstream res;
@@ -263,9 +263,9 @@ std::string ClientManager::onMatchRapport(JSON::Dict const & json){
 }
 
 /**
-  *Method handling an unplayed game
-  *@param string : message to be handled
-  *@return string : result of the 
+  * Method handling an unplayed game
+  * @param string : message to be handled
+  * @return string : result of the 
   */
 std::string ClientManager::onUnplayedMatch(std::string const & msg){
 	std::stringstream res;
@@ -286,9 +286,9 @@ std::string ClientManager::onUnplayedMatch(std::string const & msg){
 }
 
 /**
-  *Method handling championship stages
-  *@param string : message from server regarding status
-  *@return new status of the championship (win/start)
+  * Method handling championship stages
+  * @param string : message from server regarding status
+  * @return new status of the championship (win/start)
   */
 std::string ClientManager::onChampionshipStatusChange(std::string const & msg){
 	std::stringstream res;
@@ -306,22 +306,22 @@ std::string ClientManager::onChampionshipStatusChange(std::string const & msg){
 }
 
 /**
-  *Method quering server with ok to start match token
+  * Method quering server with ok to start match token
   */
 void ClientManager::readyForMatch(){
 	say(net::MSG::CHAMPIONSHIP_MATCH_PENDING_RESPONSE,JSON::String(net::MSG::CHAMPIONSHIP_MATCH_READY));
 }
 
 /**
-  *Method quering server with <withdraw> from championship token
+  * Method quering server with <withdraw> from championship token
   */
 void ClientManager::withdrawFromMatch(){
 	say(net::MSG::CHAMPIONSHIP_MATCH_PENDING_RESPONSE,JSON::String(net::MSG::CHAMPIONSHIP_MATCH_WITHDRAW));
 }
 
 /**
-  *Method handling invitation agreement from other user
-  *@param string : user whose invitation is accepted 
+  * Method handling invitation agreement from other user
+  * @param string : user whose invitation is accepted 
   */
 void ClientManager::acceptInvitationFromUser(std::string const & username){
 	JSON::Dict data = {
@@ -332,8 +332,8 @@ void ClientManager::acceptInvitationFromUser(std::string const & username){
 }
 
 /**
-  *Method handling refusal from other user
-  *@param string : user whose invitation is refused
+  * Method handling refusal from other user
+  * @param string : user whose invitation is refused
   */
 void ClientManager::denyInvitationFromUser(std::string const & username){
 	JSON::Dict data {
@@ -344,7 +344,7 @@ void ClientManager::denyInvitationFromUser(std::string const & username){
 }
 
 /**
-  *Method loading team info in class atributes
+  * Method loading team info in class atributes
   */
 void ClientManager::onTeamInfo(JSON::Dict const & json)
 {

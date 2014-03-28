@@ -42,21 +42,21 @@ int Installation::getCurrentValue() const {
 }
 
 int Installation::getValueAtLevel(int level) const {
-	/*Method returning an integer representing the value of the 
+	/* Method returning an integer representing the value of the 
 	*installation at the next level
 	*/
 	return level ? (_baseValue * pow(2, level+1)) : 0;
 }
 
 int Installation::getUpgradeCost() const{
-	/*Method returning an integer representing the cost of an upgrade to
+	/* Method returning an integer representing the cost of an upgrade to
 	 *the next level. 
 	 */
 	return getValueAtLevel(_level+1) - getCurrentValue();
 }
 
 int Installation::getDowngradeRefunds() const {
-	/*Method returning an integer representing the
+	/* Method returning an integer representing the
 	 *funds that will be refunded when downgraded by 1 level. 
 	 */
 	int res = 0;
@@ -66,14 +66,14 @@ int Installation::getDowngradeRefunds() const {
 }
 
 void Installation::upgrade(){
-	/*Method upgrading the installation (level and currentValue)*/
+	/* Method upgrading the installation (level and currentValue)*/
 	if (_level < getMaxLevel()){
 		_level++;
 	}
 }
 
 void Installation::downgrade(){
-	/*Method downgrading the installation (level and currentValue)*/
+	/* Method downgrading the installation (level and currentValue)*/
 	if (_level > 0){
 		_level--;
 	}

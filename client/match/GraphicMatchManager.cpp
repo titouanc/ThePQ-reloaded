@@ -20,7 +20,7 @@ void GraphicMatchManager::redraw()
 }
 
 /**
- *Method
+ * Method
  */
 void GraphicMatchManager::treatClick(Position const & pos, bool regularClick)
 {
@@ -95,7 +95,7 @@ void GraphicMatchManager::treatClick(Position const & pos, bool regularClick)
 }
 
 /**
- *Method
+ * Method
  */
 void GraphicMatchManager::treatTooltip(Position const & pos)
 {
@@ -127,7 +127,7 @@ void GraphicMatchManager::treatTooltip(Position const & pos)
 }
 
 /**
- *Method
+ * Method
  */
 bool GraphicMatchManager::treatEvent(sf::Event const & ev)
 {
@@ -158,7 +158,7 @@ bool GraphicMatchManager::treatEvent(sf::Event const & ev)
 }
 
 /**
- *Method handling the gui for a match
+ * Method handling the gui for a match
  */
 void GraphicMatchManager::run()
 {
@@ -186,7 +186,7 @@ void GraphicMatchManager::run()
 }
 
 /**
- *Method handling the squads placement / attack direction
+ * Method handling the squads placement / attack direction
  */
 void GraphicMatchManager::onSquadsInitialized()
 {
@@ -194,7 +194,7 @@ void GraphicMatchManager::onSquadsInitialized()
 }
 
 /**
- *Method handling the refresh for the game surface
+ * Method handling the refresh for the game surface
  */
 void GraphicMatchManager::onPitchChange()
 {
@@ -202,7 +202,7 @@ void GraphicMatchManager::onPitchChange()
 }
 
 /**
- *Method handling game states (provides shinny infos in the cli)
+ * Method handling game states (provides shinny infos in the cli)
  */
 void GraphicMatchManager::onStateChange()
 {

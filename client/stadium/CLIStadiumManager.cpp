@@ -7,7 +7,7 @@ StadiumManager(parent)
 {}
 
 /**
- *Method handling the stadium manager
+ * Method handling the stadium manager
  *all options are delegated to theyr respective handlers
  */
 void CLIStadiumManager::run()
@@ -46,7 +46,7 @@ void CLIStadiumManager::run()
 }
 
 /**
- *Method handling the display of a users installations
+ * Method handling the display of a users installations
  */
 void CLIStadiumManager::printInstallationsList()
 {
@@ -68,7 +68,7 @@ void CLIStadiumManager::printInstallationsList()
 }
 
 /**
- *Method handling the upgrade interface
+ * Method handling the upgrade interface
  */
 void CLIStadiumManager::showUpgradeInstallation()
 {
@@ -88,7 +88,7 @@ void CLIStadiumManager::showUpgradeInstallation()
 }
 
 /**
- *Method handling the downgrade interface for the installations
+ * Method handling the downgrade interface for the installations
  */
 void CLIStadiumManager::showDowngradeInstallation()
 {
@@ -108,9 +108,9 @@ void CLIStadiumManager::showDowngradeInstallation()
 }
 
 /**
- *Method handling server queries
- *@param string : type of the query
- *@param JSON::Value : the query
+ * Method handling server queries
+ * @param string : type of the query
+ * @param JSON::Value : the query
  */
 void CLIStadiumManager::treatMessage(std::string const & type, JSON::Value const * data)
 {
@@ -123,7 +123,7 @@ void CLIStadiumManager::treatMessage(std::string const & type, JSON::Value const
 }
 
 /**
- *Method handling the start of a game
+ * Method handling the start of a game
  */
 void CLIStadiumManager::onMatchStart(){
 	CLIMatchManager match(*this); 

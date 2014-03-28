@@ -1,7 +1,7 @@
 #include "CLIMatchManager.hpp"
 
 /**
- *Method handling the current player to move on the pitch
+ * Method handling the current player to move on the pitch
  */
 void CLIMatchManager::selectPlayer()
 {
@@ -23,7 +23,7 @@ void CLIMatchManager::selectPlayer()
 }
 
 /**
- *Method handling the match
+ * Method handling the match
  *built-in methods handle player and game specific actions
  */
 void CLIMatchManager::run()
@@ -40,7 +40,7 @@ void CLIMatchManager::run()
 }
 
 /**
- *Method handling the state of the match
+ * Method handling the state of the match
  *it provides infos to the user regarding the current game(created,ready,timeout,finished)
  */
 void CLIMatchManager::onStateChange()
@@ -59,7 +59,7 @@ void CLIMatchManager::onStateChange()
 }
 
 /**
- *Method handling the update of the pitch (game surface)
+ * Method handling the update of the pitch (game surface)
  */
 void CLIMatchManager::onPitchChange()
 {
@@ -67,8 +67,8 @@ void CLIMatchManager::onPitchChange()
 }
 
 /**
- *Method handling errors
- *@param string : error message
+ * Method handling errors
+ * @param string : error message
  */
 void CLIMatchManager::onError(std::string const & info)
 {
@@ -76,9 +76,9 @@ void CLIMatchManager::onError(std::string const & info)
 }
 
 /**
- *Method handling color correction for selected player
- *@param Player : player whose color should be updated
- *@return string : ANSI color code corresponding to player type
+ * Method handling color correction for selected player
+ * @param Player : player whose color should be updated
+ * @return string : ANSI color code corresponding to player type
  */
 std::string CLIMatchManager::colorPlayerLetter(Player const & player)
 {
@@ -97,9 +97,9 @@ std::string CLIMatchManager::colorPlayerLetter(Player const & player)
 
 /* Return a colored star for a ball */
 /**
- *Method handling color correction for a ball on the pitch
- *@param Ball : ball whose color should be changed
- *@return string : ANSI color code coreespondig to ball type
+ * Method handling color correction for a ball on the pitch
+ * @param Ball : ball whose color should be changed
+ * @return string : ANSI color code coreespondig to ball type
  */
 std::string CLIMatchManager::colorBallLetter(Ball const & ball)
 {
@@ -114,7 +114,7 @@ std::string CLIMatchManager::colorBallLetter(Ball const & ball)
 }
 
 /**
- *Method handling the display of the game surface
+ * Method handling the display of the game surface
  */
 void CLIMatchManager::displayPitch()
 {
@@ -162,8 +162,8 @@ void CLIMatchManager::displayPitch()
 }
 
 /**
- *Method handling the next direction in which the selected player should move
- *@param Player : player whose direction should be treated 
+ * Method handling the next direction in which the selected player should move
+ * @param Player : player whose direction should be treated 
  */
 void CLIMatchManager::selectDirectionForPlayer(Player *player)
 {

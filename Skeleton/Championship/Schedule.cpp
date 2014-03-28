@@ -8,7 +8,7 @@ Schedule::Schedule(){
 }
 
 ChampionshipGame[] Schedule::getGames (){
-	/*Method returning the schedule of the games*/
+	/* Method returning the schedule of the games*/
 }
 
 Schedule::~Schedule(){

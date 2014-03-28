@@ -9,7 +9,7 @@ FGameManager::FGameManager(ClientManager const & parent) : ClientManager(parent)
 {}
 
 /**
- *Method sending queries to the server (connected users)
+ * Method sending queries to the server (connected users)
  */
 void FGameManager::askConnectedList()
 {
@@ -17,8 +17,8 @@ void FGameManager::askConnectedList()
 }
 
 /**
- *Method sending friendly game invitation 
- *@param : string the player to whom the invitation is destined
+ * Method sending friendly game invitation 
+ * @param : string the player to whom the invitation is destined
  */
 void FGameManager::sendInvitation(std::string const & name)
 {
@@ -26,9 +26,9 @@ void FGameManager::sendInvitation(std::string const & name)
 }
 
 /**
- *Method that handles server queries
- *@param : string type of the message (INT, STR..)
- *@param : JSON::Value the received message
+ * Method that handles server queries
+ * @param : string type of the message (INT, STR..)
+ * @param : JSON::Value the received message
  */
 void FGameManager::treatMessage(std::string const & type, JSON::Value const * data)
 {

@@ -7,25 +7,25 @@ TeamManager::TeamManager(ClientManager const & parent) : ClientManager(parent), 
 }
 
 /**
- *Method handling position selection
- *@param int :  position to select
+ * Method handling position selection
+ * @param int :  position to select
  */
 void TeamManager::selectPosition(int position){
 	_selectedPosition = position;
 }
 
 /**
- *Method handling position
- *@return int : position
+ * Method handling position
+ * @return int : position
  */
 int TeamManager::getSelectedPosition(){
 	return _selectedPosition;
 }
 
 /**
- *Method handling player position change
- *@param int : id of the player whose poisition to change
- *@param int : new position at which to place the player
+ * Method handling player position change
+ * @param int : id of the player whose poisition to change
+ * @param int : new position at which to place the player
  */
 void TeamManager::putPlayerAtPosition(int player_id, int position){
 	JSON::Dict data = {
@@ -36,9 +36,9 @@ void TeamManager::putPlayerAtPosition(int player_id, int position){
 }
 
 /**
- *Method handling player swap (inside a squad)
- *@param int : id of the player to swap
- *@param int : position where to place the player
+ * Method handling player swap (inside a squad)
+ * @param int : id of the player to swap
+ * @param int : position where to place the player
  */
 void TeamManager::swapPlayers(int player_id, int position){
 	JSON::Dict data = {

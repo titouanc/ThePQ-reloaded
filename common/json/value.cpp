@@ -17,7 +17,7 @@ using namespace JSON;
 
 std::string Value::dumps(void) const
 {
-	/*Method for dumping to the ofstream*/
+	/* Method for dumping to the ofstream*/
 	std::stringstream res;
 	this->_writeTo(res);
 	return res.str();
@@ -25,7 +25,7 @@ std::string Value::dumps(void) const
 
 void Value::save(const char *filename) const
 {
-	/*Method for saving to <<filename>>*/
+	/* Method for saving to <<filename>>*/
 	int fd;
 
 	fd = open(filename, O_WRONLY|O_CREAT|O_TRUNC, 0644);
@@ -63,6 +63,6 @@ void Value::save(const char *filename) const
 
 void Value::save(std::string const & filename) const 
 {
-	/*Method for saving a dump to <<filename>>*/
+	/* Method for saving a dump to <<filename>>*/
 	save(filename.c_str());
 }

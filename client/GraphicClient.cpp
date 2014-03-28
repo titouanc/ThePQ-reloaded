@@ -8,7 +8,7 @@ GraphicClient::GraphicClient(NetConfig const &config) :
 }
 
 /**
- *Method starting the graphic instance
+ * Method starting the graphic instance
  */
 void GraphicClient::run() {
 	bool connected = false;

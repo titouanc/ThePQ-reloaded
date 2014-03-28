@@ -5,7 +5,7 @@ StadiumManager::StadiumManager(ClientManager const & parent) : ClientManager(par
 {}
 
 /**
- *Method handling the queries to the server for the installations
+ * Method handling the queries to the server for the installations
  */
 void StadiumManager::loadInstallations()
 {
@@ -13,7 +13,7 @@ void StadiumManager::loadInstallations()
 }
 
 /**
- *Method handling queries to the server for upgrades of installations
+ * Method handling queries to the server for upgrades of installations
  */
 void StadiumManager::upgradeInstallation(size_t i)
 {
@@ -21,7 +21,7 @@ void StadiumManager::upgradeInstallation(size_t i)
 }
 
 /**
- *Method handling queries to the server for downgrades of installations
+ * Method handling queries to the server for downgrades of installations
  */
 void StadiumManager::downgradeInstallation(size_t i)
 {
@@ -29,9 +29,9 @@ void StadiumManager::downgradeInstallation(size_t i)
 }
 
 /**
- *Method handling queries from the server
- *@param string : type of the query
- *@param JSON::Value : query from the server
+ * Method handling queries from the server
+ * @param string : type of the query
+ * @param JSON::Value : query from the server
  */
 void StadiumManager::treatMessage(std::string const & type, JSON::Value const * data)
 {
@@ -55,7 +55,7 @@ void StadiumManager::treatMessage(std::string const & type, JSON::Value const * 
 }
 
 /**
- *Method handling upgrades of installations
+ * Method handling upgrades of installations
  */
 void StadiumManager::onUpgradeInstallation(bool success)
 {
@@ -63,7 +63,7 @@ void StadiumManager::onUpgradeInstallation(bool success)
 }
 
 /**
- *Method handling downgrades of installations
+ * Method handling downgrades of installations
  */
 void StadiumManager::onDowngradeInstallation()
 {

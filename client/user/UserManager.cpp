@@ -8,9 +8,9 @@ UserManager::UserManager(ClientManager const & parent) : ClientManager(parent)
 }
 
 /**
-  *Method handling user login
-  *@param string : username for the account
-  *@param string : password for the account
+  * Method handling user login
+  * @param string : username for the account
+  * @param string : password for the account
   */
 void UserManager::loginUser(std::string username, std::string password)
 {
@@ -22,7 +22,7 @@ void UserManager::loginUser(std::string username, std::string password)
 }
 
 /**
-  *Method handling user logout from the server
+  * Method handling user logout from the server
   */
 void UserManager::logoutUser()
 {
@@ -31,9 +31,9 @@ void UserManager::logoutUser()
 }
 
 /**
-  *Method handling team credentials setup for current user
-  *@param string : username for which to setup the credentials
-  *@param string : team credentials for current user
+  * Method handling team credentials setup for current user
+  * @param string : username for which to setup the credentials
+  * @param string : team credentials for current user
   */
 void UserManager::chooseTeamName(std::string username, std::string teamname)
 {
@@ -45,9 +45,9 @@ void UserManager::chooseTeamName(std::string username, std::string teamname)
 }
 
 /**
-  *Method handling a users registration to the database
-  *@param string : username of the account
-  *@param string : password of the account
+  * Method handling a users registration to the database
+  * @param string : username of the account
+  * @param string : password of the account
   */
 void UserManager::registerUser(std::string username, std::string password)
 {
@@ -59,8 +59,8 @@ void UserManager::registerUser(std::string username, std::string password)
 }
 
 /**
-  *Method checking for duplicate user 
-  *@param string : username to check against the database
+  * Method checking for duplicate user 
+  * @param string : username to check against the database
   */
 void UserManager::doesUserExist(std::string username)
 {
@@ -68,9 +68,9 @@ void UserManager::doesUserExist(std::string username)
 }
 
 /**
-  *Method handling server queries
-  *@param string : type of the query
-  *@param JSON::Value : query to be handled
+  * Method handling server queries
+  * @param string : type of the query
+  * @param JSON::Value : query to be handled
   */
 void UserManager::treatMessage(std::string const & type, JSON::Value const * data)
 {

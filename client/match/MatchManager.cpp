@@ -7,8 +7,8 @@ using namespace net;
 
 
 /**
- *Method handling ball placement on the pitch
- *@param JSON::List : list of all the balls for a game
+ * Method handling ball placement on the pitch
+ * @param JSON::List : list of all the balls for a game
  */
 void MatchManager::treatBalls(JSON::List const & balls)
 {
@@ -25,8 +25,8 @@ void MatchManager::treatBalls(JSON::List const & balls)
 }
 
 /**
- *Method handling squad placement on the pitch depending on the user
- *@param JSON::List : list of the squads 
+ * Method handling squad placement on the pitch depending on the user
+ * @param JSON::List : list of the squads 
  */
 void MatchManager::treatSquads(JSON::List const & squads)
 {
@@ -54,8 +54,8 @@ void MatchManager::treatSquads(JSON::List const & squads)
 }
 
 /**
- *Method handling movements on the pitch
- *@param JSON::List : list of all the movements to be treated 
+ * Method handling movements on the pitch
+ * @param JSON::List : list of all the movements to be treated 
  */
 void MatchManager::treatDeltas(JSON::List const & deltas)
 {
@@ -126,9 +126,9 @@ MatchManager::~MatchManager()
 }
 
 /**
- *Method handling server queries
- *@param string : type of the query
- *@param JSON::Value : queries to be treated
+ * Method handling server queries
+ * @param string : type of the query
+ * @param JSON::Value : queries to be treated
  */
 void MatchManager::treatMessage(std::string const & type, JSON::Value const * data)
 {
@@ -169,7 +169,7 @@ void MatchManager::treatMessage(std::string const & type, JSON::Value const * da
 }
 
 /**
- *Method
+ * Method
  */
 void MatchManager::sendStroke(Stroke const & stroke)
 {
@@ -177,9 +177,9 @@ void MatchManager::sendStroke(Stroke const & stroke)
 }
 
 /**
- *Method handlind queries to the server
- *@param Player : target of the query
- *@param Displacement : query to send
+ * Method handlind queries to the server
+ * @param Player : target of the query
+ * @param Displacement : query to send
  */
 void MatchManager::sendDisplacement(Player const & player, Displacement const & move)
 {
@@ -191,9 +191,9 @@ void MatchManager::sendDisplacement(Player const & player, Displacement const & 
 }
 
 /**
- *Method handling player ownership
- *@param Player : player whose ownership is checked
- *@return bool : ownership status of player
+ * Method handling player ownership
+ * @param Player : player whose ownership is checked
+ * @return bool : ownership status of player
  */
 bool MatchManager::isMyPlayer(Player const & player) const
 {
