@@ -75,6 +75,9 @@ void GUI::GraphicManager::redrawCanvas()
 }
 
 void GUI::GraphicManager::displayError(std::string errorMessage){
+	sf::Sound sound;
+	sound.setBuffer(SOUNDS.get("error.wav"));
+	sound.play();
 	MessageBox m(_controller, "Error : "+errorMessage, {"OK"});
 	m.showBox();
 }
