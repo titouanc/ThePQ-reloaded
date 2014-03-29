@@ -24,3 +24,15 @@ void TeamManager::swapPlayersOfSquad(const JSON::Dict &response, int peer_id){
 	sendTeamInfos(_users[peer_id]->getTeam(), peer_id);
 	MemoryAccess::save(_users[peer_id]->getTeam());
 }
+
+void TeamManager::upgradePlayerAbility(const JSON::Dict &response, int peer_id){
+	int member_id = 0;
+	int ability = 0;
+	if (ISINT(response.get(net::MSG::PLAYER_ID)))
+		member_id = INT(response.get(net::MSG::PLAYER_ID));
+	if (ISINT(response.get(net::MSG::ABILITY)))
+		ability = INT(response.get(net::MSG::ABILITY));
+	_users[peer_id]->getTeam().getSquad().upgradePlayerAbility(member_id,ability);
+	sendTeamInfos(_users[peer_id]->getTeam(), peer_id);
+	MemoryAccess::save(_users[peer_id]->getTeam());
+}

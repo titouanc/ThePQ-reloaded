@@ -26,6 +26,11 @@ private:
 	void onSquadUpdated();
 	bool _wait;
 
+	void incVelocity(int player);
+	void incStrength(int player);
+	void incChance(int player);
+	void incPrecision(int player);
+	void drawUpgradeButton(int x, int y,int player, int ability);
 	NOTIFIABLE
 };
 

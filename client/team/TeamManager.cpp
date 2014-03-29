@@ -36,6 +36,19 @@ void TeamManager::putPlayerAtPosition(int player_id, int position){
 }
 
 /**
+ * Method allowing for the upgrade of a players ability
+ * @param int : id of the player whose ability to be upgraded
+ * @param int : id of the ability to be upgraded
+*/
+void TeamManager::upgradePlayerAbility(int player_id, int ability){
+	JSON::Dict data = {
+		{net::MSG::PLAYER_ID,JSON::Integer(player_id) },
+		{net::MSG::ABILITY, JSON::Integer(ability)}
+	};
+	say(net::MSG::UPGRADE_PLAYER_ABILITY, data);
+}
+
+/**
  * Method handling player swap (inside a squad)
  * @param int : id of the player to swap
  * @param int : position where to place the player

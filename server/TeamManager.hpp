@@ -11,6 +11,7 @@ public:
 
     void putPlayerOnSquadPosition(const JSON::Dict &response, int peer_id);
     void swapPlayersOfSquad(const JSON::Dict &response, int peer_id);
+    void upgradePlayerAbility(const JSON::Dict &response, int peer_id);
 };
 
 #endif // __TEAM_MANAGER_HPP

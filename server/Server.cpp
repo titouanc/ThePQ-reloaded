@@ -255,6 +255,9 @@ void Server::treatMessage(
 
 		else if(messageType == MSG::SWAP_PLAYERS_SQUAD_POSITION)
 			_teamMgr.swapPlayersOfSquad(dict, peer_id);
+		
+		else if(messageType == MSG::UPGRADE_PLAYER_ABILITY)
+			_teamMgr.upgradePlayerAbility(dict, peer_id);
 	} 
 
 	else if (ISSTR(payload)){

@@ -55,6 +55,7 @@ public:
 	void improveStrength (int added) 		{ _strength+=added; }
 	void improveVelocity (int added) 		{ _velocity+=added; }
 	void improvePrecision (int added) 		{ _precision+=added; }
+    void improveChance (int added)         { _chance+=added; }
 
 	/* Utility */
 	int estimatedValue(){ return (_strength+_velocity+_precision+_chance)*1000;}

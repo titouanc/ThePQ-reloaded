@@ -170,6 +170,33 @@ struct Squad {
         }
     }
 
+    void upgradePlayerAbility(int member_id, int ability){
+        int pos = 0;
+        for(int i=0; i<7; i++){
+            if(players[i]->getMemberID() == member_id)
+                pos=i;
+        }
+        switch(ability){
+            case 0:{
+                players[pos]->improveStrength(1);
+                break;
+            }
+            case 1:{
+                players[pos]->improveVelocity(1);
+                break;
+            }
+            case 2:{
+                players[pos]->improvePrecision(1);
+                break;
+            }
+            case 3:{
+                players[pos]->improveChance(1);
+                break;
+            }
+            default: break;
+        }
+    }
+
     // Chaser convertToChaser(Player& player, Jersey& jersey, Broomstick& broom){
     //     Chaser chaser;
     //     chaser.setStrength(player.getStrength());

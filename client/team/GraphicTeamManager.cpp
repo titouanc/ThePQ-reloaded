@@ -28,6 +28,31 @@ GraphicTeamManager::GraphicTeamManager(
 	}
 }
 
+void GraphicTeamManager::incVelocity(int player){
+	cout<<user().players[player].getName()<<" velocity: "<<user().players[player].getVelocity()<<endl;
+	user().players[player].improveVelocity(1);
+	cout<< "new velocity: "<<user().players[player].getVelocity()<<endl;
+	upgradePlayerAbility(user().players[player].getMemberID(),1);
+	cout<<"Bazinga1\n";
+	redrawCanvas();
+}
+
+void GraphicTeamManager::incStrength(int  player){
+	user().players[player].improveStrength(1);
+	cout<<"Bazinga2\n";
+	redrawCanvas();
+}
+void GraphicTeamManager::incChance(int  player){
+	user().players[player].improveChance(1);
+	cout<<"Bazinga3\n";
+	redrawCanvas();
+}
+void GraphicTeamManager::incPrecision(int player){
+	user().players[player].improvePrecision(1);
+	cout<<"Bazinga4\n";
+	redrawCanvas();
+}
+
 /// Destructor
 GraphicTeamManager::~GraphicTeamManager(){}
 
@@ -37,32 +62,49 @@ GraphicTeamManager::~GraphicTeamManager(){}
 void GraphicTeamManager::displayPlayers()
 {
 	clear();
-
 	addTopBar(user());
 	//_canvas.addLabel()
 	TableView & playerList = _canvas.addTableView();
 	playerList.setPosition(30, 100);
 	playerList.setElementsNumberPerPage(9);
 	/* Header line */
-	TableCell & header = playerList.addHeader(575, 47);
+	TableCell & header = playerList.addHeader(715, 47);
 	header.addLabel("Name", sf::Color::White).setPosition(15, 10);
 	header.addLabel("Strength", sf::Color::White).setPosition(245, 10);
-	header.addLabel("Velocity", sf::Color::White).setPosition(332, 10);
-	header.addLabel("Precision",sf::Color::White).setPosition(410,10);
-	header.addLabel("Chance",sf::Color::White).setPosition(495,10);
+	header.addLabel("Velocity", sf::Color::White).setPosition(382, 10);
+	header.addLabel("Precision",sf::Color::White).setPosition(495,10);
+	header.addLabel("Chance",sf::Color::White).setPosition(595,10);
 	header.setBackgroundColor(BUTTON_BACKGROUND_COLOR);
-
+	int acPoints=user().acPoints;
 	/* Content */
+	int height = 170,cter=0;
 	for (Player & player : user().players){
-		TableCell & playerCell = playerList.addTableCell(575, 47, sf::Color(0xee, 0xee, 0xee, 0xff));
+		TableCell & playerCell = playerList.addTableCell(715, 47, sf::Color(0xe0, 0xe0, 0xe0, 0xff));
 		playerCell.setBackgroundColor(sf::Color(0x00, 0x00, 0x00, 0x77));
-		playerCell.addLabel(player.getName(), sf::Color::White).setPosition(25, 10);;
+		playerCell.addLabel(player.getName(), sf::Color::White
+			).setPosition(25, 10);
 		playerCell.addLabel(player.getStrength(), sf::Color::White
-			).setPosition(270, 10);
+			).setPosition(245, 10);
+		playerCell.addLabel(std::to_string(player.getStrength()+1), sf::Color::Yellow
+			).setPosition(280, 10);
+		if(acPoints>player.getStrength()+1)	drawUpgradeButton(350,height,cter,0);
 		playerCell.addLabel(player.getVelocity(), sf::Color::White
-			).setPosition(356, 10);
-		playerCell.addLabel(player.getPrecision(), sf::Color::White).setPosition(445,10);
-		playerCell.addLabel(player.getChance(), sf::Color::White).setPosition(520,10);
+			).setPosition(382, 10);
+		playerCell.addLabel(std::to_string(player.getVelocity()+1), sf::Color::Yellow
+			).setPosition(417, 10);
+		if(acPoints>player.getVelocity()+1)	drawUpgradeButton(487,height,cter,1);
+		playerCell.addLabel(player.getPrecision(), sf::Color::White
+			).setPosition(495,10);
+		playerCell.addLabel(std::to_string(player.getPrecision()+1), sf::Color::Yellow
+			).setPosition(528, 10);
+		if(acPoints>player.getPrecision()+1)	drawUpgradeButton(598,height,cter,2);
+		playerCell.addLabel(player.getChance(), sf::Color::White
+			).setPosition(595,10);
+		playerCell.addLabel(std::to_string(player.getChance()+1), sf::Color::Yellow
+			).setPosition(628, 10);
+		if(acPoints>player.getChance()+1)	drawUpgradeButton(698,height,cter,3);
+		height+=52;
+		cter+=1;
 	}
 
 	displaySquadLabels();
@@ -72,32 +114,72 @@ void GraphicTeamManager::displayPlayers()
 	redrawCanvas();
 }
 
+void GraphicTeamManager::drawUpgradeButton(int x, int y,int player,int ability){
+	switch (ability){
+	case 0: {
+		Button<GraphicTeamManager> &strUp = _canvas.addButton<GraphicTeamManager>(
+			&GraphicTeamManager::incStrength,player, this, "");
+		strUp.setPosition(x, y);
+		strUp.setWidth(10);
+		strUp.setHeight(10);
+		strUp.setBackgroundColor(sf::Color::Red);
+		break;}
+	case 1: {
+		Button<GraphicTeamManager> &strUp1 = _canvas.addButton<GraphicTeamManager>(
+			&GraphicTeamManager::incVelocity,player, this, "");
+		strUp1.setPosition(x, y);
+		strUp1.setWidth(10);
+		strUp1.setHeight(10);
+		strUp1.setBackgroundColor(sf::Color::Red);
+		break;}
+	case 2: {
+		Button<GraphicTeamManager> &strUp2 = _canvas.addButton<GraphicTeamManager>(
+			&GraphicTeamManager::incPrecision,player, this, "");
+		strUp2.setPosition(x, y);
+		strUp2.setWidth(10);
+		strUp2.setHeight(10);
+		strUp2.setBackgroundColor(sf::Color::Red);
+		break;}
+	case 3: {
+		Button<GraphicTeamManager> &strUp3 = _canvas.addButton<GraphicTeamManager>(
+			&GraphicTeamManager::incChance,player, this, "");
+		strUp3.setPosition(x, y);
+		strUp3.setWidth(10);
+		strUp3.setHeight(10);
+		strUp3.setBackgroundColor(sf::Color::Red);
+		break;}
+	default:
+		break;
+	}
+	
+}
+
 /**
  * Method
  */
 void GraphicTeamManager::displaySquadLabels(){
 	_canvas.addPanel(515, 500, sf::Color(0x00, 0x00, 0x00, 0x77)
-		).setPosition(650, 100);
+		).setPosition(750, 100);
 
 	_canvas.addLabel("Your Squad", BLUE_TEXT_COLOR
-		).centerOn(900, 120);
+		).centerOn(1000, 120);
 
 	_canvas.addLabel("Left Chaser", sf::Color::White
-		).centerOn(755, 160);
+		).centerOn(855, 160);
 	_canvas.addLabel("Center Chaser", sf::Color::White
-		).centerOn(900, 250);
+		).centerOn(1000, 250);
 	_canvas.addLabel("Right Chaser", sf::Color::White
-		).centerOn(1045, 160);
+		).centerOn(1145, 160);
 
 	_canvas.addLabel("Left Beater", sf::Color::White
-		).centerOn(800, 340);
+		).centerOn(900, 340);
 	_canvas.addLabel("Right Beater", sf::Color::White
-		).centerOn(999, 340);
+		).centerOn(1099, 340);
 
 	_canvas.addLabel("Seeker", sf::Color::White
-		).centerOn(900, 430);
+		).centerOn(1000, 430);
 	_canvas.addLabel("Keeper", sf::Color::White
-		).centerOn(900, 520);
+		).centerOn(1000, 520);
 }
 
 /**
@@ -106,27 +188,27 @@ void GraphicTeamManager::displaySquadLabels(){
 void GraphicTeamManager::displayChangeButtons(){
 	_canvas.addButton<GraphicTeamManager, int>(
 		&GraphicTeamManager::changePlayerAt, LEFT_CHASER, this, user().squad.players[LEFT_CHASER]->getName()
-	).centerOn(755, 205);
+	).centerOn(855, 205);
 	_canvas.addButton<GraphicTeamManager, int>(
 		&GraphicTeamManager::changePlayerAt, CENTER_CHASER, this, user().squad.players[CENTER_CHASER]->getName()
-	).centerOn(900, 295);
+	).centerOn(1000, 295);
 	_canvas.addButton<GraphicTeamManager, int>(
 		&GraphicTeamManager::changePlayerAt, RIGHT_CHASER, this, user().squad.players[RIGHT_CHASER]->getName()
-	).centerOn(1045, 205);
+	).centerOn(1145, 205);
 
 	_canvas.addButton<GraphicTeamManager, int>(
 		&GraphicTeamManager::changePlayerAt, LEFT_BEATER, this, user().squad.players[LEFT_BEATER]->getName()
-	).centerOn(800, 385);
+	).centerOn(900, 385);
 	_canvas.addButton<GraphicTeamManager, int>(
 		&GraphicTeamManager::changePlayerAt, RIGHT_BEATER, this, user().squad.players[RIGHT_BEATER]->getName()
-	).centerOn(999, 385);
+	).centerOn(1099, 385);
 
 	_canvas.addButton<GraphicTeamManager, int>(
 		&GraphicTeamManager::changePlayerAt, SEEKER, this, user().squad.players[SEEKER]->getName()
-	).centerOn(900, 475);
+	).centerOn(1000, 475);
 	_canvas.addButton<GraphicTeamManager, int>(
 		&GraphicTeamManager::changePlayerAt, KEEPER, this, user().squad.players[KEEPER]->getName()
-	).centerOn(900, 565);
+	).centerOn(1000, 565);
 
 	redrawCanvas();
 }
@@ -148,61 +230,61 @@ void GraphicTeamManager::displaySwapWith(int position){
 	if (LEFT_CHASER != position)
 		_canvas.addButton<GraphicTeamManager, int>(
 			&GraphicTeamManager::doSwap, user().squad.players[LEFT_CHASER]->getMemberID(), this, "Swap"
-		).centerOn(755, 205);
+		).centerOn(855, 205);
 	else
 		_canvas.addButton<GraphicTeamManager>(
 			&GraphicTeamManager::cancelChange, this, "Cancel"
-		).centerOn(755, 205);
+		).centerOn(855, 205);
 	if (CENTER_CHASER != position)
 		_canvas.addButton<GraphicTeamManager, int>(
 			&GraphicTeamManager::doSwap, user().squad.players[CENTER_CHASER]->getMemberID(), this, "Swap"
-		).centerOn(900, 295);
+		).centerOn(1000, 295);
 	else
 		_canvas.addButton<GraphicTeamManager>(
 			&GraphicTeamManager::cancelChange, this, "Cancel"
-		).centerOn(900, 295);
+		).centerOn(1000, 295);
 	if (RIGHT_CHASER != position)
 		_canvas.addButton<GraphicTeamManager, int>(
 			&GraphicTeamManager::doSwap, user().squad.players[RIGHT_CHASER]->getMemberID(), this, "Swap"
-		).centerOn(1045, 205);
+		).centerOn(1145, 205);
 	else
 		_canvas.addButton<GraphicTeamManager>(
 			&GraphicTeamManager::cancelChange, this, "Cancel"
-		).centerOn(1045, 205);
+		).centerOn(1145, 205);
 
 	if (LEFT_BEATER != position)
 		_canvas.addButton<GraphicTeamManager, int>(
 			&GraphicTeamManager::doSwap, user().squad.players[LEFT_BEATER]->getMemberID(), this, "Swap"
-		).centerOn(800, 385);
+		).centerOn(900, 385);
 	else
 		_canvas.addButton<GraphicTeamManager>(
 			&GraphicTeamManager::cancelChange, this, "Cancel"
-		).centerOn(800, 385);
+		).centerOn(900, 385);
 	if (RIGHT_BEATER != position)
 		_canvas.addButton<GraphicTeamManager, int>(
 			&GraphicTeamManager::doSwap, user().squad.players[RIGHT_BEATER]->getMemberID(), this, "Swap"
-		).centerOn(999, 385);
+		).centerOn(1099, 385);
 	else
 		_canvas.addButton<GraphicTeamManager>(
 			&GraphicTeamManager::cancelChange, this, "Cancel"
-		).centerOn(999, 385);
+		).centerOn(1099, 385);
 
 	if (SEEKER != position)
 		_canvas.addButton<GraphicTeamManager, int>(
 			&GraphicTeamManager::doSwap, user().squad.players[SEEKER]->getMemberID(), this, "Swap"
-		).centerOn(900, 475);
+		).centerOn(1000, 475);
 	else
 		_canvas.addButton<GraphicTeamManager>(
 			&GraphicTeamManager::cancelChange, this, "Cancel"
-		).centerOn(900, 475);
+		).centerOn(1000, 475);
 	if (KEEPER != position)
 		_canvas.addButton<GraphicTeamManager, int>(
 			&GraphicTeamManager::doSwap, user().squad.players[KEEPER]->getMemberID(), this, "Swap"
-		).centerOn(900, 565);
+		).centerOn(1000, 565);
 	else
 		_canvas.addButton<GraphicTeamManager>(
 			&GraphicTeamManager::cancelChange, this, "Cancel"
-		).centerOn(900, 565);
+		).centerOn(1000, 565);
 
 	redrawCanvas();
 }
@@ -231,7 +313,7 @@ void GraphicTeamManager::selectPlayer(int id){
 }
 
 /**
- * Method handling the fwap of players old position <->new position
+ * Method handling the swap of players old position <->new position
  */
 void GraphicTeamManager::doSwap(int id){
 	swapPlayers(id, getSelectedPosition());

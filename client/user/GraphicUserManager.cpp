@@ -8,7 +8,7 @@
 using namespace std;
 using namespace GUI;
 
-///who doesn't love a good define here and there :)
+/// who doesn't love a good define here and there :)
 #define USERNAME_TEXTBOX_ID "Username"
 #define PASSWORD_TEXTBOX_ID "Password"
 #define NEW_USERNAME_TEXTBOX_ID "New Username"
@@ -16,7 +16,7 @@ using namespace GUI;
 #define NEW_PASSWORD_CONFIRMATION_TEXTBOX_ID "Confirm Password"
 #define TEAM_NAME_TEXTBOX_ID "Team Name"
 
-///Conctructor
+/// Conctructor
 GraphicUserManager::GraphicUserManager(
 	    net::ClientConnectionManager& connection, 
     	UserData& user, 
