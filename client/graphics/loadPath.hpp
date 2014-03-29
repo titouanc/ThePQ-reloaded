@@ -3,10 +3,10 @@
 
 #include <string>
 
-std::string fontPath(std::string name);
+std::string fontPath(std::string const & name);
 
-std::string texturePath(std::string name);
+std::string texturePath(std::string const & name);
 
-std::string soundPath(std::string name);
+std::string soundPath(std::string const & name);
 
 #endif
