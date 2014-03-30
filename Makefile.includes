@@ -10,7 +10,7 @@ endif
 
 # Set C++ compiler options if not defined
 ifeq (${CXXFLAGS},)
-	CXXFLAGS = -std=c++11 -pedantic -Wall -Wextra -Wswitch-default -Wno-unused-parameter -pthread
+	CXXFLAGS = -std=c++11 -pedantic -pthread -Wall -Wextra -Wswitch-default -Wno-unused-parameter -Woverloaded-virtual -Wunreachable-code -Wstack-protector -fstack-protector -pipe -O3
 endif
 
 # Set C++ linker options if not defined
