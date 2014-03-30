@@ -26,7 +26,7 @@ GraphicUserManager::GraphicUserManager(
     UserManager(connection, user, notifications), 
     GraphicManager(controller)
 {
-	_canvas.setBackgroundImage(texturePath("SplashScreenBG.png"));
+	_canvas.setBackgroundImage("SplashScreenBG.png");
 	displayCanvas();
 	displayChoice();
 }
@@ -93,7 +93,7 @@ void GraphicUserManager::displayTeamNameForm()
 {
 	clear();
 
-	_canvas.setBackgroundImage(texturePath("HexBack.png"));
+	_canvas.setBackgroundImage("HexBack.png");
 	
 	int center = _controller.window.getSize().x/2; 
 	_canvas.addTextbox(TEAM_NAME_TEXTBOX_ID).setPosition(center-185, 315);
@@ -113,7 +113,7 @@ void GraphicUserManager::displayMainMenu()
 
 	addTopBar(user());
 
-	_canvas.setBackgroundImage(texturePath("HexBack.png"));
+	_canvas.setBackgroundImage("HexBack.png");
 	
 	_canvas.addButton<GraphicUserManager>(
 		&GraphicUserManager::goToPlayers, this, "Team management"

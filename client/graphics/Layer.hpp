@@ -71,8 +71,7 @@ namespace GUI {
 
 	protected:
 		sf::Color _backgroundColor;
-		sf::Sprite* _backgroundImage;
-		sf::Texture _backgroundImageTexture;
+		sf::Sprite *_backgroundImage;
 		std::vector<GUI::ClickableInterface*> _clickables;
 		std::map<std::string, GUI::Textbox*> _textboxes;
 		std::vector<GUI::Label*> _labels;

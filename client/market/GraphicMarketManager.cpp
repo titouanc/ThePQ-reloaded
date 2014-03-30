@@ -14,7 +14,7 @@ GraphicMarketManager::GraphicMarketManager(ClientManager const & parent, GUI::Ma
 {
 	displayCanvas();
 
-	_canvas.setBackgroundImage(texturePath("HexBack.png"));
+	_canvas.setBackgroundImage("HexBack.png");
 
 	updateSales();
 }

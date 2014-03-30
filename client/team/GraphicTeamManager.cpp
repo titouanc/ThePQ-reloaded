@@ -13,7 +13,7 @@ GraphicTeamManager::GraphicTeamManager(
 		TeamManager(parent), 
 		GraphicManager(controller)
 {
-	_canvas.setBackgroundImage(texturePath("HexBack.png"));
+	_canvas.setBackgroundImage("HexBack.png");
 	displayCanvas();
 	if (user().players.size() > 0){
 		displayPlayers();

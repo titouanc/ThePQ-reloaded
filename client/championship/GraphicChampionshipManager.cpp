@@ -10,7 +10,7 @@ using namespace GUI;
 {
 	displayCanvas();
 
-	_canvas.setBackgroundImage(texturePath("HexBack.png"));
+	_canvas.setBackgroundImage("HexBack.png");
 
 	updateChampionships();
 }

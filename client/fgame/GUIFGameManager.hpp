@@ -25,5 +25,4 @@ private:
 	time_t _lastUpdated;
 };
 
-
 #endif

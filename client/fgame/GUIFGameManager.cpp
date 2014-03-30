@@ -8,7 +8,7 @@ GUIFGameManager::GUIFGameManager(ClientManager const & parent, GUI::MainControll
 		: FGameManager(parent), GraphicManager(controller), _lastUpdated(0)
 {
 	askConnectedList();
-	_canvas.setBackgroundImage(texturePath("HexBack.png"));
+	_canvas.setBackgroundImage("HexBack.png");
 
 	displayCanvas();
 	readMessages();
@@ -24,7 +24,7 @@ void GUIFGameManager::invitePlayer(string playername)
 	Button<GUIFGameManager, string> * inviteButton = inviteButtons[playername];
 	inviteButton->disable();
 	inviteButton->setBackgroundColor(sf::Color(0xcc, 0xcc, 0xcc, 0xff));
-	inviteButton->setText("Invited");
+	//inviteButton->setText("Invited");
 	inviteButton->setPosition(350-inviteButton->getWidth(), 0);
 	redrawCanvas();
 }

@@ -12,7 +12,7 @@ GraphicStadiumManager::GraphicStadiumManager(
 	StadiumManager(parent), 
 	GraphicManager(controller)
 {
-	_canvas.setBackgroundImage(texturePath("HexBack.png"));
+	_canvas.setBackgroundImage("HexBack.png");
 	displayCanvas();
 	loadInstallations();
 	_wait = true;
