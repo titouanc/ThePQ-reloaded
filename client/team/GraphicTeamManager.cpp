@@ -28,28 +28,52 @@ GraphicTeamManager::GraphicTeamManager(
 	}
 }
 
+/**
+ * Method incresing the velocity of a player
+ * @param int : id of the player whose velocity to be upgraded
+ */
 void GraphicTeamManager::incVelocity(int player){
-	cout<<user().players[player].getName()<<" velocity: "<<user().players[player].getVelocity()<<endl;
-	user().players[player].improveVelocity(1);
+	//user().players[player].improveVelocity(1);
 	cout<< "new velocity: "<<user().players[player].getVelocity()<<endl;
 	upgradePlayerAbility(user().players[player].getMemberID(),1);
-	cout<<"Bazinga1\n";
+	onPlayersLoad();
+	onTeamInfoChange();
 	redrawCanvas();
 }
 
+/**
+ * Method incresing the strength of a player
+ * @param int : id of the player whose strength to be upgraded
+ */
 void GraphicTeamManager::incStrength(int  player){
-	user().players[player].improveStrength(1);
-	cout<<"Bazinga2\n";
+	//user().players[player].improveStrength(1);
+	upgradePlayerAbility(user().players[player].getMemberID(),1);
+	onPlayersLoad();
+	onTeamInfoChange();
 	redrawCanvas();
 }
+
+/**
+ * Method incresing the chance of a player
+ * @param int : id of the player whose chance to be upgraded
+ */
 void GraphicTeamManager::incChance(int  player){
-	user().players[player].improveChance(1);
-	cout<<"Bazinga3\n";
+	//user().players[player].improveChance(1);
+	upgradePlayerAbility(user().players[player].getMemberID(),1);
+	onPlayersLoad();
+	onTeamInfoChange();
 	redrawCanvas();
 }
+
+/**
+ * Method incresing the precision of a player
+ * @param int : id of the player whose precision to be upgraded
+ */
 void GraphicTeamManager::incPrecision(int player){
-	user().players[player].improvePrecision(1);
-	cout<<"Bazinga4\n";
+	//user().players[player].improvePrecision(1);
+	upgradePlayerAbility(user().players[player].getMemberID(),1);
+	onPlayersLoad();
+	onTeamInfoChange();
 	redrawCanvas();
 }
 
@@ -57,7 +81,7 @@ void GraphicTeamManager::incPrecision(int player){
 GraphicTeamManager::~GraphicTeamManager(){}
 
 /**
- * Method
+ * Method displaying players and their abilities
  */
 void GraphicTeamManager::displayPlayers()
 {
@@ -87,22 +111,22 @@ void GraphicTeamManager::displayPlayers()
 			).setPosition(245, 10);
 		playerCell.addLabel(std::to_string(player.getStrength()+1), sf::Color::Yellow
 			).setPosition(280, 10);
-		if(acPoints>player.getStrength()+1)	drawUpgradeButton(350,height,cter,0);
+		if(acPoints>player.getStrength()+1 && player.getStrength()<100)	drawUpgradeButton(350,height,cter,0);
 		playerCell.addLabel(player.getVelocity(), sf::Color::White
 			).setPosition(382, 10);
 		playerCell.addLabel(std::to_string(player.getVelocity()+1), sf::Color::Yellow
 			).setPosition(417, 10);
-		if(acPoints>player.getVelocity()+1)	drawUpgradeButton(487,height,cter,1);
+		if(acPoints>player.getVelocity()+1 && player.getVelocity()<100)	drawUpgradeButton(487,height,cter,1);
 		playerCell.addLabel(player.getPrecision(), sf::Color::White
 			).setPosition(495,10);
 		playerCell.addLabel(std::to_string(player.getPrecision()+1), sf::Color::Yellow
 			).setPosition(528, 10);
-		if(acPoints>player.getPrecision()+1)	drawUpgradeButton(598,height,cter,2);
+		if(acPoints>player.getPrecision()+1 && player.getPrecision()<100)	drawUpgradeButton(598,height,cter,2);
 		playerCell.addLabel(player.getChance(), sf::Color::White
 			).setPosition(595,10);
 		playerCell.addLabel(std::to_string(player.getChance()+1), sf::Color::Yellow
 			).setPosition(628, 10);
-		if(acPoints>player.getChance()+1)	drawUpgradeButton(698,height,cter,3);
+		if(acPoints>player.getChance()+1 && player.getChance()<100)	drawUpgradeButton(698,height,cter,3);
 		height+=52;
 		cter+=1;
 	}

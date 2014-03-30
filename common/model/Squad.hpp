@@ -170,30 +170,39 @@ struct Squad {
         }
     }
 
-    void upgradePlayerAbility(int member_id, int ability){
+    int upgradePlayerAbility(int member_id, int ability){
         int pos = 0;
         for(int i=0; i<7; i++){
-            if(players[i]->getMemberID() == member_id)
+            if(players[i]->getMemberID() == member_id){
                 pos=i;
+                break;
+            }
         }
         switch(ability){
             case 0:{
                 players[pos]->improveStrength(1);
+                return players[pos]->getStrength();
                 break;
             }
             case 1:{
                 players[pos]->improveVelocity(1);
+                return players[pos]->getVelocity();
                 break;
             }
             case 2:{
                 players[pos]->improvePrecision(1);
+                return players[pos]->getPrecision();
                 break;
             }
             case 3:{
                 players[pos]->improveChance(1);
+                return players[pos]->getChance();
                 break;
             }
-            default: break;
+            default:{
+                return -1;
+                break;
+            }
         }
     }
 
