@@ -1,22 +1,23 @@
-all: json model network toolbox_test.ok
+SUBDIRS = json model network tests
+all: ${SUBDIRS}
 
-.PHONY: all clean mrproper json model network
+.PHONY: all clean mrproper ${SUBDIRS}
 
 json:
-	+make -C json
+	+make -C $@
+
+tests:
+	+make -C $@
 
 model: json
-	+make -C model
+	+make -C $@
 
 network: json
-	+make -C network
+	+make -C $@
 
 clean:
 	rm -f *.ok
-	for dir in network json model; do make -C $$dir clean; done
+	for dir in ${SUBDIRS}; do make -C $$dir clean; done
 
 mrproper: clean
-	for dir in network json model; do make -C $$dir mrproper; done	
-
-CPPFLAGS=-I.
-include ../Makefile.includes
+	for dir in ${SUBDIRS}; do make -C $$dir mrproper; done
