@@ -11,6 +11,7 @@ GUI::MainController::MainController(): window(	sf::VideoMode(WINDOW_WIDTH, WINDO
 	
 	if (mainMusic.openFromFile(soundPath("futura.ogg")))
 	{
+		mainMusic.setLoop(true);
 		mainMusic.play();
 	}
 }
