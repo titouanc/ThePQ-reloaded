@@ -34,6 +34,9 @@ void TeamManager::upgradePlayerAbility(const JSON::Dict &response, int peer_id){
 		ability = INT(response.get(net::MSG::ABILITY));
 	int decAC=_users[peer_id]->getTeam().getSquad().upgradePlayerAbility(member_id,ability);
 	_users[peer_id]->getTeam().loseAcPoints(decAC);
+	
 	sendTeamInfos(_users[peer_id]->getTeam(), peer_id);
 	MemoryAccess::save(_users[peer_id]->getTeam());
+	cout<<"######################"<<endl;
+
 }

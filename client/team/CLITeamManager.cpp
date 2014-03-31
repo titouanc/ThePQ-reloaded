@@ -15,6 +15,7 @@ void CLITeamManager::run()
 	Menu _menu;
 	_menu.addToDisplay("	- Put player at the selected position");
 	_menu.addToDisplay("	- Swap player at the selected position with another player");
+	_menu.addToDisplay("	- Upgrade player abilities");
 	_menu.addToDisplay("	- Quit to management menu\n");
 	int option;
 	_pending = 0;
@@ -37,7 +38,11 @@ void CLITeamManager::run()
 			case 2:
 				cout << "\033[2J\033[1;1H";
 				showSwapPlayer();
+			case 3:
+				showPlayerAttributes();
+				break;
 			default:
+				cout << "\033[2J\033[1;1H";			
 				break;
 		}
 	}
@@ -128,4 +133,18 @@ void CLITeamManager::showSwapPlayer()
 void CLITeamManager::onMatchStart(){
 	CLIMatchManager match(*this); 
 	match.run();
+}
+
+void CLITeamManager::showPlayerAttributes(){
+	cout << "\033[2J\033[1;1H";
+	cout << "**********Your players and their attributes**********"<<endl;
+	cout << endl << "Strength	"<<"Velocity	"<< "Precision	"<<"Chance	"<<"ID	"<<"Name"<<endl;
+	int i(0);
+	for(Player &player : user().players){
+		cout << player.getStrength() <<"  \033[33m" << player.getStrength()+1 << "\033[0m" << "		" << player.getVelocity() <<"		"
+			<< player.getPrecision() << "		" << player.getChance() << "	"
+			<< i << "	" <<player.getName()<<endl;
+		i++;
+	}
+
 }

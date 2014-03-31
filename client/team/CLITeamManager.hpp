@@ -16,7 +16,7 @@ public:
 	virtual void showSelectPlayer();
 	virtual void showSwapPlayer();
 	virtual void onMatchStart();
-
+	void showPlayerAttributes();
 	bool isPlayerInTeam(int player_id)
 	{
 		for (size_t i = 0; i < user().players.size(); ++i)

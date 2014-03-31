@@ -33,7 +33,7 @@ GraphicTeamManager::GraphicTeamManager(
  * @param int : id of the player whose velocity to be upgraded
  */
 void GraphicTeamManager::incVelocity(int player){
-	//user().players[player].improveVelocity(1);
+	user().players[player].improveVelocity(1);
 	cout<< "new velocity: "<<user().players[player].getVelocity()<<endl;
 	upgradePlayerAbility(user().players[player].getMemberID(),1);
 	onPlayersLoad();
@@ -46,7 +46,7 @@ void GraphicTeamManager::incVelocity(int player){
  * @param int : id of the player whose strength to be upgraded
  */
 void GraphicTeamManager::incStrength(int  player){
-	//user().players[player].improveStrength(1);
+	user().players[player].improveStrength(1);
 	upgradePlayerAbility(user().players[player].getMemberID(),1);
 	onPlayersLoad();
 	onTeamInfoChange();
@@ -58,7 +58,7 @@ void GraphicTeamManager::incStrength(int  player){
  * @param int : id of the player whose chance to be upgraded
  */
 void GraphicTeamManager::incChance(int  player){
-	//user().players[player].improveChance(1);
+	user().players[player].improveChance(1);
 	upgradePlayerAbility(user().players[player].getMemberID(),1);
 	onPlayersLoad();
 	onTeamInfoChange();
@@ -70,7 +70,7 @@ void GraphicTeamManager::incChance(int  player){
  * @param int : id of the player whose precision to be upgraded
  */
 void GraphicTeamManager::incPrecision(int player){
-	//user().players[player].improvePrecision(1);
+	user().players[player].improvePrecision(1);
 	upgradePlayerAbility(user().players[player].getMemberID(),1);
 	onPlayersLoad();
 	onTeamInfoChange();
@@ -142,34 +142,34 @@ void GraphicTeamManager::drawUpgradeButton(int x, int y,int player,int ability){
 	switch (ability){
 	case 0: {
 		Button<GraphicTeamManager> &strUp = _canvas.addButton<GraphicTeamManager>(
-			&GraphicTeamManager::incStrength,player, this, "");
+			&GraphicTeamManager::incStrength,player, this, "+");
 		strUp.setPosition(x, y);
-		strUp.setWidth(10);
-		strUp.setHeight(10);
+		strUp.setWidth(15);
+		strUp.setHeight(15);
 		strUp.setBackgroundColor(sf::Color::Red);
 		break;}
 	case 1: {
 		Button<GraphicTeamManager> &strUp1 = _canvas.addButton<GraphicTeamManager>(
-			&GraphicTeamManager::incVelocity,player, this, "");
+			&GraphicTeamManager::incVelocity,player, this, "+");
 		strUp1.setPosition(x, y);
-		strUp1.setWidth(10);
-		strUp1.setHeight(10);
+		strUp1.setWidth(15);
+		strUp1.setHeight(15);
 		strUp1.setBackgroundColor(sf::Color::Red);
 		break;}
 	case 2: {
 		Button<GraphicTeamManager> &strUp2 = _canvas.addButton<GraphicTeamManager>(
-			&GraphicTeamManager::incPrecision,player, this, "");
+			&GraphicTeamManager::incPrecision,player, this, "+");
 		strUp2.setPosition(x, y);
-		strUp2.setWidth(10);
-		strUp2.setHeight(10);
+		strUp2.setWidth(15);
+		strUp2.setHeight(15);
 		strUp2.setBackgroundColor(sf::Color::Red);
 		break;}
 	case 3: {
 		Button<GraphicTeamManager> &strUp3 = _canvas.addButton<GraphicTeamManager>(
-			&GraphicTeamManager::incChance,player, this, "");
+			&GraphicTeamManager::incChance,player, this, "+");
 		strUp3.setPosition(x, y);
-		strUp3.setWidth(10);
-		strUp3.setHeight(10);
+		strUp3.setWidth(15);
+		strUp3.setHeight(15);
 		strUp3.setBackgroundColor(sf::Color::Red);
 		break;}
 	default:

@@ -44,6 +44,7 @@ void CLIUserManager::run()
 				showRegisterMenu();
 				break;
 			default:
+				cout << "\033[2J\033[1;1H";
 				break;
 		}
 	}
@@ -174,6 +175,7 @@ void CLIUserManager::showManagementMenu()
 				teamManager.run();
 				break;
 			default:
+				cout << "\033[2J\033[1;1H";
 				break;
 		}
 	}
