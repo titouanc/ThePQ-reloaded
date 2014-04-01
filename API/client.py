@@ -13,6 +13,7 @@ class Client(object):
         self.session = {}
 
     def __send(self, obj):
+        # Python2 and 3 have different encoding idioms
         if version[0] == '2':
             dumped = bytes(json.dumps(obj))
         else:
@@ -40,19 +41,51 @@ class Client(object):
     def say(self, type, data):
         self.__send({"type": str(type), "data": data})
 
-    def login(self, username, password):
-        self.say(K['LOGIN'], {K['USERNAME']: username, K['PASSWORD']: password})
-        done = False
-        msg = self.waitFor(K['LOGIN'])
-        if msg['data'] != K['USER_LOGIN']:
-            return False
-        self.session['username'] = username
-
+    def __waitTeamInfos(self):
         msg = self.waitFor(K['TEAM_INFOS'])
         self.session['team'] = msg['data']
         return True
 
+    def login(self, username, password):
+        self.say(K['LOGIN'], {K['USERNAME']: str(username), K['PASSWORD']: str(password)})
+        msg = self.waitFor(K['LOGIN'])
+        if msg['data'] != K['USER_LOGIN']:
+            return False
+        self.session['username'] = str(username)
+        return self.__waitTeamInfos()
+
+    def logout(self):
+        self.say(K['DISCONNECT'], "")
+        self.session = {}
+
+    def register(self, username, password, teamname):
+        self.say(K['REGISTER'], {K['USERNAME']: str(username), K['PASSWORD']: str(password)})
+        msg = self.waitFor(K['REGISTER'])
+        if msg['data'] != K['USER_REGISTERED']:
+            return False
+
+        # Register team name
+        self.say(K['LOGIN'], {K['USERNAME']: str(username), K['PASSWORD']: str(password)})
+        msg = self.waitFor(K['LOGIN'])
+        if msg['data'] != K['USER_CHOOSE_TEAMNAME']:
+            return False
+
+        self.session['username'] = str(username)
+        self.say(K['USER_CHOOSE_TEAMNAME'], {K['TEAMNAME']: str(teamname), K['USERNAME']: str(username)})
+        return self.__waitTeamInfos()
+
+
+
 if __name__ == "__main__":
+    from time import time
+
     c = Client("localhost", 32123)
-    print(c.login("a", "a"))
+    username = "U"+str(time())
+
+    print(c.register(username, username, username))
+    print(c.session)
+
+    print("Logout")
+    c.logout()
+    print(c.login(username, username))
     print(c.session)
