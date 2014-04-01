@@ -15,7 +15,6 @@ public:
 	GUIFGameManager(ClientManager const & parent, GUI::MainController &controller);
 	~GUIFGameManager(){}
 private:
-	std::map<std::string, GUI::Button<GUIFGameManager, string>*> inviteButtons;
 	void invitePlayer(std::string playername);
 	void onUserList(JSON::List const & list);
 
