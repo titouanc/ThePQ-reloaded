@@ -59,7 +59,7 @@ void TableView::append(TableCell* toAppend)
 
 void TableView::renderTo(sf::RenderTarget & dest)
 {
-	int x, y;
+	int x=0, y=0;
 	int start = _elementsPerPage*_currentPage;
 	int end = std::min(_elementsPerPage*(_currentPage+1), int(_elements.size()));
 	if (_elementsPerPage == -1) {
