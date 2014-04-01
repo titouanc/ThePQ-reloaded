@@ -21,12 +21,6 @@ GUIFGameManager::GUIFGameManager(ClientManager const & parent, GUI::MainControll
 void GUIFGameManager::invitePlayer(string playername)
 {
 	sendInvitation(playername);
-	Button<GUIFGameManager, string> * inviteButton = inviteButtons[playername];
-	inviteButton->disable();
-	inviteButton->setBackgroundColor(sf::Color(0xcc, 0xcc, 0xcc, 0xff));
-	//inviteButton->setText("Invited");
-	inviteButton->setPosition(350-inviteButton->getWidth(), 0);
-	redrawCanvas();
 }
 
 /**
@@ -58,7 +52,6 @@ void GUIFGameManager::onUserList(JSON::List const & list)
 			Button<GUIFGameManager, string> & inviteButton = current.addButton<GUIFGameManager, string>(
 				&GUIFGameManager::invitePlayer, STR(list[i]).value(), this, "Invite");
 			inviteButton.setPosition(350-inviteButton.getWidth(), 0);
-			inviteButtons.insert(pair<string, GUI::Button<GUIFGameManager, string>*>(STR(list[i]).value(), &inviteButton));
 		}
 	}
 	else{
