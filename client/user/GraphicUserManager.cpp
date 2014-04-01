@@ -135,12 +135,29 @@ void GraphicUserManager::displayMainMenu()
 		&GraphicUserManager::goToChampionships, this, "Championships"
 	).setPosition(100, 450);
 
-	addBackButton("Exit").setPosition(100, 550);
+	_canvas.addButton<GraphicUserManager>(
+		&GraphicUserManager::displayCredits, this, "Credits"
+	).setPosition(1000, 500);
+
+	addBackButton("Exit").setPosition(1000, 550);
 	
 	redrawCanvas();
 }
 
 /******* BUTTONS CALLBACKS ******/
+void GraphicUserManager::displayCredits()
+{
+	displayMessage(
+		"The Pro Quidditch Manager\n"
+		"Anthony Caccia, Antoine Carpentier, Titouan Christophe,\n"
+		"Jerome Hellinckx, Florentin Hennecker, Mircea Mudura\n"
+		"Music: \n"
+		"   Quidditch Futura by MattendrizZ\n"
+		"   Marvelous Space Adventures by jANUS",
+		{"close"}
+	);
+}
+
 /**
   * Method handling the login service
   */
