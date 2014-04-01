@@ -1,4 +1,11 @@
+"""
+Python API for the Pro Quidditch Manager
+http://xkcd.com/353/
+"""
+
 from parse_constants  import parse_constants
+from player import Player
+
 from socket import *
 from struct import pack, unpack
 from sys import version
@@ -52,6 +59,16 @@ class Client(object):
         self.session['team'] = msg['data']
         return True
 
+    def getPlayers(self):
+        self.say(K['PLAYERS_LIST'], {K['USERNAME']: self.session['username']})
+        msg = self.waitFor(K['PLAYERS_LIST'])
+        return [Player(p) for p in msg['data']]
+
+    def connectedUsers(self):
+        self.say(K['CONNECTED_USERS_LIST'], "")
+        msg = self.waitFor(K['CONNECTED_USERS_LIST'])
+        return msg['data']
+
     def getFunds(self):
         if 'team' in self.session and 'funds' in self.session['team']:
             return self.session['team']['funds']
@@ -84,19 +101,22 @@ class Client(object):
         self.say(K['USER_CHOOSE_TEAMNAME'], {K['TEAMNAME']: str(teamname), K['USERNAME']: str(username)})
         return self.__waitTeamInfos()
 
-
+    def squad(self):
+        return {
+            'chasers': [Player(p) for p in self.session['team']['squad']['chasers']],
+            'beaters': [Player(p) for p in self.session['team']['squad']['beaters']],
+            'seeker': Player(self.session['team']['squad']['seeker']),
+            'keeper': Player(self.session['team']['squad']['keeper']),
+        }
 
 if __name__ == "__main__":
     from time import time
 
     c = Client("localhost", 32123)
-    username = "U"+str(time())
-
-    print(c.register(username, username, username))
-    print(c.session)
-
-    print("Logout")
-    c.logout()
-    print(c.login(username, username))
+    print(c.login("a", "a"))
     print(c.session)
     print("Funds:", c.getFunds())
+    print(c.connectedUsers())
+
+    print(c.squad())
+    print(c.getPlayers())
