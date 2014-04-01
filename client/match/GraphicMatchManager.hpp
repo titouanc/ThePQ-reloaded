@@ -24,6 +24,7 @@ private:
 	bool treatEvent(sf::Event const & ev);
 public:
 	GraphicMatchManager(ClientManager const & parent, GUI::MainController & controller); 
+	virtual ~GraphicMatchManager();
 	
 	/* Redraw pitch on window */
 	void redraw();

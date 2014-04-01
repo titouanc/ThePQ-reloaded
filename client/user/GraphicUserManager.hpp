@@ -20,6 +20,7 @@ private:
 	void displayMainMenu();
 
 	/* Buttons methods */
+	void displayCredits();
 	void submitLoginForm();
 	void submitRegisterForm();
 	void submitTeamNameForm();
