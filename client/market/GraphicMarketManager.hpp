@@ -34,6 +34,7 @@ private:
 
 	bool _wait, _waitForBid;
 	time_t _lastUpdated;
+	bool _isSellingPlayer;
 };
 
 

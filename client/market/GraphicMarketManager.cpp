@@ -10,7 +10,8 @@ GraphicMarketManager::GraphicMarketManager(ClientManager const & parent, GUI::Ma
 	MarketManager(parent), 
 	GraphicManager(controller),
 	_wait(false),
-	_lastUpdated(0)
+	_lastUpdated(0), 
+	_isSellingPlayer(false)
 {
 	displayCanvas();
 
@@ -50,6 +51,7 @@ void GraphicMarketManager::placeBid(int playerID)
 void GraphicMarketManager::displaySellablePlayers()
 {
 	clear();
+	_isSellingPlayer = true;
 
 	addTopBar(user());
 
@@ -149,6 +151,7 @@ void GraphicMarketManager::onSalesUpdate()
 {
 	_wait = false;
 	_lastUpdated = time(NULL);
+	_isSellingPlayer = false;
 	clear();
 
 	addTopBar(user());
@@ -300,7 +303,8 @@ void GraphicMarketManager::onAddPlayerError(std::string const & reason)
 }
 
 void GraphicMarketManager::onLoop(){
-	if (abs(difftime(time(NULL), _lastUpdated)) > GUI::AUTOUPDATE_STALE_TIME)
-		updateSales();
+	if (!_isSellingPlayer)
+		if (abs(difftime(time(NULL), _lastUpdated)) > GUI::AUTOUPDATE_STALE_TIME)
+			updateSales();
 }
 
