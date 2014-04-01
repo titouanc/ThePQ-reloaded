@@ -105,4 +105,7 @@ if __name__ == "__main__":
     i = Installations(c)
     i.show()
     i.upgrade("Food Stand")
+    print("Funds:", c.getFunds())
+    i.downgrade("Tribune")
+    print("Funds:", c.getFunds())
     i.show()

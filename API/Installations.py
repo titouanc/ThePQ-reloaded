@@ -18,7 +18,6 @@ class Installations:
 			print("  Level :", installation['level'], "| Upgrade cost : to compute.")
 
 	def upgrade(self, toUpgrade):
-		found = False
 		for i in range(len(self.installations)):
 			if self.installations[i]['name'] == toUpgrade:
 				self.client.say(K['INSTALLATION_UPGRADE'], i)
@@ -30,3 +29,17 @@ class Installations:
 				else:
 					print("Could not upgrade "+toUpgrade+". Check your spelling or your budget.")
 					return False
+
+	def downgrade(self, toDowngrade):
+		for i in range(len(self.installations)):
+			if self.installations[i]['name'] == toDowngrade:
+				self.client.say(K['INSTALLATION_DOWNGRADE'], i)
+				msg = self.client.waitFor(K['INSTALLATION_DOWNGRADE'])
+				if msg['data'] == True:
+					self.update()
+					print("Downgrade successful!")
+					return True
+				else:
+					print("Could not downgrade "+toDowngrade+".")
+					return False
+
