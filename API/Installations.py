@@ -10,7 +10,6 @@ class Installations:
 	def update(self):
 		self.client.say(K['INSTALLATIONS_LIST'], "")
 		self.installations = self.client.waitFor(K['INSTALLATIONS_LIST'])['data']
-		print(self.installations)
 
 	def show(self):
 		print("Your installations : ")
@@ -24,7 +23,6 @@ class Installations:
 			if self.installations[i]['name'] == toUpgrade:
 				self.client.say(K['INSTALLATION_UPGRADE'], i)
 				msg = self.client.waitFor(K['INSTALLATION_UPGRADE'])
-				print(msg)
 				if msg['data'] == True:
 					self.update()
 					print("Upgrade successful!")
