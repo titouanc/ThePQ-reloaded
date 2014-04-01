@@ -18,7 +18,7 @@ GUI::MainController::MainController(): window(	sf::VideoMode(WINDOW_WIDTH, WINDO
 
 GUI::MainController::~MainController()
 {
-
+	mainMusic.stop();
 }
 
 void GUI::MainController::addLayer(Layer & layer)

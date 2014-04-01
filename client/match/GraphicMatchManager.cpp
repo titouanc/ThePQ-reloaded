@@ -7,7 +7,22 @@ GraphicMatchManager::GraphicMatchManager(ClientManager const & parent, GUI::Main
 	GUI::GraphicManager(controller), 
 	_match(pitch(), mySquad()), 
 	_selectedPlayer(NULL), _throwBall(false), _tooltipped(NULL)
-{}
+{
+	controller.mainMusic.stop();
+	if (controller.mainMusic.openFromFile(soundPath("MarvelousSpaceAdventures.ogg"))){
+		controller.mainMusic.setLoop(true);
+		controller.mainMusic.play();
+	}
+}
+
+GraphicMatchManager::~GraphicMatchManager()
+{
+	_controller.mainMusic.stop();
+	if (_controller.mainMusic.openFromFile(soundPath("futura.ogg"))){
+		_controller.mainMusic.setLoop(true);
+		_controller.mainMusic.play();
+	}
+}
 
 /**
  *
