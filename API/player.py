@@ -6,3 +6,7 @@ class Player(object):
         self.precision = attrs.get('precision', 0)
         self.strength = attrs.get('strength', 0)
         self.velocity = attrs.get('velocity', 0)
+        self.attrs = attrs
+
+    def __repr__(self):
+    	return "<#%d %s>"%(self.memberID, self.name)
