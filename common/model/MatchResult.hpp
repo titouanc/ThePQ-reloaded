@@ -88,13 +88,13 @@ public:
 		_loserAPGain = gameconfig::MATCH_LOST_AP_GAIN;
 	}
 
-	void resolveFameDisconnection(std::string win){
-		_winnerFameGain = gameconfig::FAME_EARN_DISCONNECT;
-	}
+	// void resolveFameDisconnection(std::string win){
+	// 	_winnerFameGain = gameconfig::FAME_EARN_DISCONNECT;
+	// }
 
-	void resolveMoneyDisconnection(std::string win){
-		_winnerMoneyGain = gameconfig::FUNDS_EARN_DISCONNECT;	
-	}
+	// void resolveMoneyDisconnection(std::string win){
+	// 	_winnerMoneyGain = gameconfig::FUNDS_EARN_DISCONNECT;	
+	// }
 
 	std::string getWinner() const { return _winner.getOwner(); }
 	std::string getLoser() const { return _loser.getOwner(); }
