@@ -35,8 +35,14 @@ class Client(object):
     def waitFor(self, type):
         while True:
             msg = self.__recv()
-            if 'type' in msg and msg['type'] == str(type):
-                return msg
+            if 'type' in msg:
+                if msg['type'] == str(type):
+                    return msg
+                elif msg['type'] == K['TEAM_INFOS']:
+                    if 'team' in self.session:
+                        self.session['team'].update(msg['data'])
+                    else:
+                        self.session['team'] = {}
 
     def say(self, type, data):
         self.__send({"type": str(type), "data": data})
@@ -45,6 +51,10 @@ class Client(object):
         msg = self.waitFor(K['TEAM_INFOS'])
         self.session['team'] = msg['data']
         return True
+
+    def getFunds(self):
+        if 'team' in self.session and 'funds' in self.session['team']:
+            return self.session['team']['funds']
 
     def login(self, username, password):
         self.say(K['LOGIN'], {K['USERNAME']: str(username), K['PASSWORD']: str(password)})
@@ -89,3 +99,4 @@ if __name__ == "__main__":
     c.logout()
     print(c.login(username, username))
     print(c.session)
+    print("Funds:", c.getFunds())
