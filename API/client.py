@@ -11,6 +11,8 @@ from struct import pack, unpack
 from sys import version
 import json
 
+from Installations import *
+
 K = parse_constants("../common/Constants.hpp")
 
 class Client(object):
@@ -120,3 +122,10 @@ if __name__ == "__main__":
 
     print(c.squad())
     print(c.getPlayers())
+    i = Installations(c)
+    i.show()
+    i.upgrade("Food Stand")
+    print("Funds:", c.getFunds())
+    i.downgrade("Tribune")
+    print("Funds:", c.getFunds())
+    i.show()
