@@ -10,3 +10,5 @@ def parse_constants(filename):
 			if match:
 				res[match.group(1)] = match.group(2)
 	return res
+
+K = parse_constants("../common/Constants.hpp")
