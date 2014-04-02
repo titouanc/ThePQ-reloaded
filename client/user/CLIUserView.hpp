@@ -1,13 +1,13 @@
 #ifndef __CLI_USER_MANAGER_HPP
 #define __CLI_USER_MANAGER_HPP
 
-#include "UserManager.hpp"
+#include "UserController.hpp"
 #include <cli/CLI.hpp>
 
-class CLIUserManager : public UserManager, public CLI {
+class CLIUserView : public UserController, public CLI {
 public:
-	using UserManager::UserManager;
-	CLIUserManager(ClientController const & parent);
+	using UserController::UserController;
+	CLIUserView(ClientController const & parent);
 	virtual void run();
 	void showLoginMenu();
 	void showRegisterMenu();

@@ -1,4 +1,4 @@
-#include "CLIUserManager.hpp"
+#include "CLIUserView.hpp"
 #include <cli/Menu.hpp>
 #include <stadium/CLIStadiumView.hpp>
 #include <team/CLITeamView.hpp>
@@ -11,14 +11,14 @@
 using namespace std;
 
 ///Constructor
-CLIUserManager::CLIUserManager(ClientController const & parent) : 
-UserManager(parent), _waitForNotificationResponse(false)
+CLIUserView::CLIUserView(ClientController const & parent) : 
+UserController(parent), _waitForNotificationResponse(false)
 {}
 
 /**
  * Method handling the command line interface
  */
-void CLIUserManager::run()
+void CLIUserView::run()
 {
 	/* user menu */
 	splashScreen();
@@ -54,7 +54,7 @@ void CLIUserManager::run()
 /**
  * Method displaying the login menu
  */
-void CLIUserManager::showLoginMenu()
+void CLIUserView::showLoginMenu()
 {	
 	string username = Menu::askForUserData("Username : ");
 	string password = Menu::askForUserData("Password : ");
@@ -67,7 +67,7 @@ void CLIUserManager::showLoginMenu()
 /**
  * Method handling firs login 
  */
-void CLIUserManager::showTeamNameMenu()
+void CLIUserView::showTeamNameMenu()
 {
 	cout << "Hey, it's the first time you log in ! Please, pick up a name for your team." << endl;
 	string teamname = Menu::askForUserData("Teamname : ");
@@ -78,7 +78,7 @@ void CLIUserManager::showTeamNameMenu()
 /**
  * Method displaying the registration interface
  */
-void CLIUserManager::showRegisterMenu()
+void CLIUserView::showRegisterMenu()
 {
 	string username = Menu::askForUserData("Pick a username : ");
 	// cout << "Please wait..." << endl;
@@ -99,7 +99,7 @@ void CLIUserManager::showRegisterMenu()
 /**
  * Method displaying the main menu
  */
-void CLIUserManager::showMainMenu()
+void CLIUserView::showMainMenu()
 {
 	readMessages();
 	CLIMarketView marketManager(*this);
@@ -151,7 +151,7 @@ void CLIUserManager::showMainMenu()
 /**
  * Method displaying the management menu
  */
-void CLIUserManager::showManagementMenu()
+void CLIUserView::showManagementMenu()
 {
 	CLIStadiumView stadiumManager(*this);
 	CLITeamView teamManager(*this);
@@ -186,7 +186,7 @@ void CLIUserManager::showManagementMenu()
 /**
  * Method displaying the team name
  */
-void CLIUserManager::onAskTeamName()
+void CLIUserView::onAskTeamName()
 {
 	_pending--;
 	showTeamNameMenu();
@@ -195,7 +195,7 @@ void CLIUserManager::onAskTeamName()
 /**
  * Method handling a succesfull login
  */
-void CLIUserManager::onLoginOK()
+void CLIUserView::onLoginOK()
 {
 	_pending--;
 	okMsg("Login successful");
@@ -206,7 +206,7 @@ void CLIUserManager::onLoginOK()
  * Method handling a login error
  * @param string : error message
  */
-void CLIUserManager::onLoginError(std::string const & error)
+void CLIUserView::onLoginError(std::string const & error)
 {
 	_pending--;
 	errorMsg(error);
@@ -215,7 +215,7 @@ void CLIUserManager::onLoginError(std::string const & error)
 /**
  * Method handling a valid registration
  */
-void CLIUserManager::onRegisterUserOK()
+void CLIUserView::onRegisterUserOK()
 {
 	_pending--;
 	okMsg("You have successfully registered! You can now login.");
@@ -225,7 +225,7 @@ void CLIUserManager::onRegisterUserOK()
  * Method handling user registration error
  * @param string : data causing fault
  */
-void CLIUserManager::onRegisterUserError(std::string const & data)
+void CLIUserView::onRegisterUserError(std::string const & data)
 {
 	_pending--;
 	errorMsg("The username you chose already exists. Please pick another one");
@@ -235,7 +235,7 @@ void CLIUserManager::onRegisterUserError(std::string const & data)
 /**
  * Method handling a correct team name 
  */
-void CLIUserManager::onTeamNameOK()
+void CLIUserView::onTeamNameOK()
 {
 	_pending--;
 	okMsg("Team name accepted");
@@ -246,7 +246,7 @@ void CLIUserManager::onTeamNameOK()
  * Method handling team naming error
  * @param string : error message
  */
-void CLIUserManager::onTeamNameError(std::string const & reason)
+void CLIUserView::onTeamNameError(std::string const & reason)
 {
 	_pending--;
 	errorMsg(reason);
@@ -256,7 +256,7 @@ void CLIUserManager::onTeamNameError(std::string const & reason)
 /**
  * Method handling notifications
  */
-void CLIUserManager::askForNotificationHandling()
+void CLIUserView::askForNotificationHandling()
 {
 	readMessages();
 	Menu _menu;
@@ -295,7 +295,7 @@ void CLIUserManager::askForNotificationHandling()
  * Method handling invites from other users
  * @param string : name of the user inviting you to a game
  */
-void CLIUserManager::onInvite(std::string const & user)
+void CLIUserView::onInvite(std::string const & user)
 {
 	cout << user << " invited you to a game" << endl;
 	Menu _menu;
@@ -327,7 +327,7 @@ void CLIUserManager::onInvite(std::string const & user)
 /**
  * Method handling pre match jiggles
  */
-void CLIUserManager::onMatchPending(){
+void CLIUserView::onMatchPending(){
 	cout << "Your next championship match is close. What do you want to do ?" << endl;
 	Menu _menu;
 	_menu.addToDisplay("   - ready to play !\n");
@@ -359,7 +359,7 @@ void CLIUserManager::onMatchPending(){
  * @param string : response of the other player
  * @param string : message to display
  */
-void CLIUserManager::onNotificationResponse(bool success, std::string const & response,std::string const & msg){
+void CLIUserView::onNotificationResponse(bool success, std::string const & response,std::string const & msg){
 	//If opponent hasn't responded yet, wait until he does
 	if(response != net::MSG::CHAMPIONSHIP_MATCH_WAIT)
 		_waitForNotificationResponse = false;
@@ -370,14 +370,14 @@ void CLIUserManager::onNotificationResponse(bool success, std::string const & re
  * Method displaying a message
  * @param string : message to be displayed
  */
-void CLIUserManager::onMessage(std::string const & message){
+void CLIUserView::onMessage(std::string const & message){
 	cout << message << endl;
 }
 
 /**
  * Method starting a match
  */
-void CLIUserManager::onMatchStart(){
+void CLIUserView::onMatchStart(){
 	CLIMatchView match(*this); 
 	match.run();
 }

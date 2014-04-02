@@ -1,4 +1,4 @@
-#include "user/GraphicUserManager.hpp"
+#include "user/GraphicUserView.hpp"
 #include "UserData.hpp"
 #include <network/ClientConnectionManager.hpp>
 #include <Config.hpp>
@@ -32,5 +32,5 @@ private:
     net::ClientConnectionManager _connection;
     std::queue<JSON::Dict> _notifications;
     GUI::MainController _controller;
-    GraphicUserManager _gUserManager;
+    GraphicUserView _gUserController;
 };

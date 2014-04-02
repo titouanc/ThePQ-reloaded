@@ -7,7 +7,7 @@
 #include <ClientController.hpp>
 #include <pthread.h>
 
-class UserManager : public ClientController
+class UserController : public ClientController
 {
 protected:
 	/*! attempt to login */
@@ -45,7 +45,7 @@ protected:
 	virtual void onTeamNameError(std::string const & reason) {}
 public:
 	using ClientController::ClientController;
-	UserManager(ClientController const & parent);
+	UserController(ClientController const & parent);
 };
 
 #endif // __USER_MANAGER_HPP

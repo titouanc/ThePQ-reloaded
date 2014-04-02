@@ -36,7 +36,7 @@ public:
 private:
     UserData _user;
     net::ClientConnectionManager _connection;
-    UserManager _userManager;
+    UserController _userManager;
     TextBox* userNameTB;
     TextBox* passWordTB;
 

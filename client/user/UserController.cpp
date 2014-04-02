@@ -1,9 +1,9 @@
-#include "UserManager.hpp"
+#include "UserController.hpp"
 #include <Constants.hpp>
 #include <unistd.h>
 
 /// Constructor
-UserManager::UserManager(ClientController const & parent) : ClientController(parent)
+UserController::UserController(ClientController const & parent) : ClientController(parent)
 {
 }
 
@@ -12,7 +12,7 @@ UserManager::UserManager(ClientController const & parent) : ClientController(par
   * @param string : username for the account
   * @param string : password for the account
   */
-void UserManager::loginUser(std::string username, std::string password)
+void UserController::loginUser(std::string username, std::string password)
 {
 	JSON::Dict credentials = {
 		{ net::MSG::USERNAME, JSON::String(username) },
@@ -24,7 +24,7 @@ void UserManager::loginUser(std::string username, std::string password)
 /**
   * Method handling user logout from the server
   */
-void UserManager::logoutUser()
+void UserController::logoutUser()
 {
 	say (net::MSG::DISCONNECT, JSON::String(""));
 	user().logout();
@@ -35,7 +35,7 @@ void UserManager::logoutUser()
   * @param string : username for which to setup the credentials
   * @param string : team credentials for current user
   */
-void UserManager::chooseTeamName(std::string username, std::string teamname)
+void UserController::chooseTeamName(std::string username, std::string teamname)
 {
 	JSON::Dict data = {
 		{ net::MSG::TEAMNAME, JSON::String(teamname) },
@@ -49,7 +49,7 @@ void UserManager::chooseTeamName(std::string username, std::string teamname)
   * @param string : username of the account
   * @param string : password of the account
   */
-void UserManager::registerUser(std::string username, std::string password)
+void UserController::registerUser(std::string username, std::string password)
 {
 	JSON::Dict credentials = {
 		{ net::MSG::USERNAME, JSON::String(username) },
@@ -62,7 +62,7 @@ void UserManager::registerUser(std::string username, std::string password)
   * Method checking for duplicate user 
   * @param string : username to check against the database
   */
-void UserManager::doesUserExist(std::string username)
+void UserController::doesUserExist(std::string username)
 {
 	say(net::MSG::USER_EXISTS, JSON::String(username));
 }
@@ -72,7 +72,7 @@ void UserManager::doesUserExist(std::string username)
   * @param string : type of the query
   * @param JSON::Value : query to be handled
   */
-void UserManager::treatMessage(std::string const & type, JSON::Value const * data)
+void UserController::treatMessage(std::string const & type, JSON::Value const * data)
 {
 	if (! ISSTR(data))
 		return;

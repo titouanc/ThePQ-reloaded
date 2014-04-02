@@ -3,14 +3,14 @@
 
 #include <network/ClientConnectionManager.hpp>
 #include <graphics/GraphicManager.hpp>
-#include "UserManager.hpp"
+#include "UserController.hpp"
 #include <GUINotifier.hpp>
 
-class GraphicUserManager : public UserManager, public GUI::GraphicManager 
+class GraphicUserView : public UserController, public GUI::GraphicManager 
 {
 public:
-	GraphicUserManager(net::ClientConnectionManager& connection, UserData& user, std::queue<JSON::Dict> & notifications, GUI::MainController &controller);
-	~GraphicUserManager(){}
+	GraphicUserView(net::ClientConnectionManager& connection, UserData& user, std::queue<JSON::Dict> & notifications, GUI::MainController &controller);
+	~GraphicUserView(){}
 private:
 	/* Display methods */
 	void displayChoice();	// choice between login and register

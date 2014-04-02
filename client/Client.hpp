@@ -11,7 +11,7 @@
 #include <Config.hpp>
 #include <network/ClientConnectionManager.hpp>
 #include <queue>
-#include "user/CLIUserManager.hpp"
+#include "user/CLIUserView.hpp"
 #include "UserData.hpp"
 #include <json/json.hpp>
 
@@ -48,7 +48,7 @@ private:
 	
 	// Managers
 	net::ClientConnectionManager _connection;
-	CLIUserManager _userManager;
+	CLIUserView _userManager;
 	
 	// CLI
 	bool _isRunning;
