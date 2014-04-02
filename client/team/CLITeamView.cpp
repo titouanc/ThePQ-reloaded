@@ -20,6 +20,7 @@ void CLITeamView::run()
 	_pending = 0;
 	do
 	{
+		clScreen();
 		do {
 			minisleep(0.1);
 			readMessages();
@@ -31,11 +32,9 @@ void CLITeamView::run()
 		switch(option)
 		{
 			case 1:
-				cout << "\033[2J\033[1;1H";
 				showSelectPlayer();
 				break;
 			case 2:
-				cout << "\033[2J\033[1;1H";
 				showSwapPlayer();
 			default:
 				break;
@@ -48,7 +47,6 @@ void CLITeamView::run()
  * Method displaying the teams players
  */
 void CLITeamView::showPlayers(){
-	cout << "\033[2J\033[1;1H";
 	cout << "		================ YOUR PLAYERS ================" << endl;
 	for(size_t i =0; i<user().players.size();++i){
 		cout <<"	"<< user().players[i] << endl;
@@ -61,7 +59,6 @@ void CLITeamView::showPlayers(){
  */
 void CLITeamView::showSquad()
 {
-	cout << "\033[2J\033[1;1H";
 	cout << "================ YOUR SQUAD ==================" << endl;
 	cout << LEFT_CHASER << " - \033[34mLeft Chaser\033[0m : 		" << user().squad.players[LEFT_CHASER]->getName() << " - ID: " << user().squad.players[LEFT_CHASER]->getMemberID() << endl;
 	cout << CENTER_CHASER << " - \033[34mCenter Chaser\033[0m : 		" << user().squad.players[CENTER_CHASER]->getName() << " - ID: " << user().squad.players[CENTER_CHASER]->getMemberID() << endl;

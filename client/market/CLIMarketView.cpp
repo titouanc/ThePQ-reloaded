@@ -43,6 +43,7 @@ void CLIMarketView::run()
  */
 void CLIMarketView::sellPlayer()
 {
+	clScreen();
 	showPlayers();
 	int player_id, bidValue;
 	bool found = false;
@@ -85,6 +86,7 @@ void CLIMarketView::displayPlayersOnSale()
 	updateSales();
 	while (_waitForSales)
 		readMessage();
+	clScreen();
 	cout << "================ PLAYERS ON SALE ================" << endl;
 	for(size_t i=0;i<getSales().size();++i){
 		std::cout<<getSales()[i]<<std::endl;

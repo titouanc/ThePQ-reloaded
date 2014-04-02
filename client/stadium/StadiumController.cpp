@@ -42,7 +42,8 @@ void StadiumController::treatMessage(std::string const & type, JSON::Value const
 	}
 	else if (type == net::MSG::INSTALLATION_DOWNGRADE)
 	{
-		onDowngradeInstallation();
+		if (ISBOOL(data))
+			onDowngradeInstallation(BOOL(data));
 	}
 	else if (type == net::MSG::INSTALLATIONS_LIST)
 	{
@@ -59,14 +60,16 @@ void StadiumController::treatMessage(std::string const & type, JSON::Value const
  */
 void StadiumController::onUpgradeInstallation(bool success)
 {
-	loadInstallations();
+	if (success == true)
+		loadInstallations();
 }
 
 /**
  * Method handling downgrades of installations
  */
-void StadiumController::onDowngradeInstallation()
+void StadiumController::onDowngradeInstallation(bool success)
 {
-	loadInstallations();
+	if (success == true)
+		loadInstallations();
 }
 

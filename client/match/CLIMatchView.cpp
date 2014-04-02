@@ -28,7 +28,6 @@ void CLIMatchView::selectPlayer()
  */
 void CLIMatchView::run()
 {
-	cout << "CLIMatchView started" << endl;
 	while (state() != READY)
 		readMessage();
 	while (state() != FINISHED){
@@ -36,7 +35,6 @@ void CLIMatchView::run()
 		displayPitch();
 		selectPlayer();
 	}
-	cout << "CLIMatchView ended" << endl;
 }
 
 /**

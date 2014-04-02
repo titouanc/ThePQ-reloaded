@@ -21,7 +21,7 @@ protected:
 	/* received an installation upgrade response */
 	virtual void onUpgradeInstallation(bool);
 	/* received an installation downgrade response */
-	virtual void onDowngradeInstallation();
+	virtual void onDowngradeInstallation(bool);
 	/* received installations list : put it in user().installations */
 	virtual void onInstallationsLoad(){}
 public:

@@ -6,7 +6,7 @@ ClientController::ClientController(
 	UserData & user,
 	std::queue<JSON::Dict> & notifications
 ) : 
-_connection(connection), _user(user), _notifications(notifications)
+_connection(connection), _user(user), _notifications(notifications), _pending(0)
 {}
 
 /// Constructor
