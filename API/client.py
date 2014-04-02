@@ -3,7 +3,7 @@ Python API for the Pro Quidditch Manager
 http://xkcd.com/353/
 """
 
-from parse_constants  import parse_constants
+from parse_constants  import K
 from player import Player
 
 from socket import *
@@ -12,8 +12,6 @@ from sys import version
 import json
 
 from Installations import *
-
-K = parse_constants("../common/Constants.hpp")
 
 class Client(object):
     def __init__(self, host, port):
@@ -64,7 +62,7 @@ class Client(object):
     def getPlayers(self):
         self.say(K['PLAYERS_LIST'], {K['USERNAME']: self.session['username']})
         msg = self.waitFor(K['PLAYERS_LIST'])
-        return [Player(p) for p in msg['data']]
+        return [Player(self, p) for p in msg['data']]
 
     def connectedUsers(self):
         self.say(K['CONNECTED_USERS_LIST'], "")
@@ -105,11 +103,15 @@ class Client(object):
 
     def squad(self):
         return {
-            'chasers': [Player(p) for p in self.session['team']['squad']['chasers']],
-            'beaters': [Player(p) for p in self.session['team']['squad']['beaters']],
-            'seeker': Player(self.session['team']['squad']['seeker']),
-            'keeper': Player(self.session['team']['squad']['keeper']),
+            'chasers': [Player(self, p) for p in self.session['team']['squad']['chasers']],
+            'beaters': [Player(self, p) for p in self.session['team']['squad']['beaters']],
+            'seeker': Player(self, self.session['team']['squad']['seeker']),
+            'keeper': Player(self, self.session['team']['squad']['keeper']),
         }
+
+    @property
+    def username(self):
+        return self.session['username']
 
 if __name__ == "__main__":
     from time import time
@@ -129,3 +131,6 @@ if __name__ == "__main__":
     i.downgrade("Tribune")
     print("Funds:", c.getFunds())
     i.show()
+
+    p = c.getPlayers()[-1]
+    print("Selling", p, " -> ", p.sell(21500))
