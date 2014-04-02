@@ -18,7 +18,6 @@ private:
 	void doDowngrade(int installation);
 	
 	void onInstallationsLoad();
-	bool _wait;
 	NOTIFIABLE
 };
 

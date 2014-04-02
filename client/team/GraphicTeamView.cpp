@@ -20,7 +20,6 @@ GraphicTeamView::GraphicTeamView(
 		displayChangeButtons();
 	} else {
 		loadPlayers();
-		_wait = true;
 		while (_wait){
 			readMessages();
 			readEvent();

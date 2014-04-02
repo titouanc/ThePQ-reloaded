@@ -27,13 +27,13 @@ void CLIUserView::run()
 	_menu.addToDisplay("   - register\n");
 	_menu.addToDisplay("   - quit\n");
 	int option;
-	_pending = 0;
+	_wait = false;
 	do {
 		do {
 			minisleep(0.1);
 			readMessages();
 		}
-		while(_pending > 0);
+		while(_wait == true);
 		option = _menu.run();
 		switch(option)
 		{
@@ -61,7 +61,7 @@ void CLIUserView::showLoginMenu()
 	cout << "Please wait..." << endl;
 	cout << endl;
 	loginUser(username, password);
-	_pending++;
+	_wait = true;
 }
 
 /**
@@ -72,7 +72,7 @@ void CLIUserView::showTeamNameMenu()
 	cout << "Hey, it's the first time you log in ! Please, pick up a name for your team." << endl;
 	string teamname = Menu::askForUserData("Teamname : ");
 	chooseTeamName(user().username,teamname);
-	_pending++;
+	_wait = true;
 }
 
 /**
@@ -93,7 +93,7 @@ void CLIUserView::showRegisterMenu()
 	}
 	cout << "Please wait..." << endl;
 	registerUser(username, password);
-	_pending++;
+	_wait = true;
 }
 
 /**
@@ -188,7 +188,7 @@ void CLIUserView::showManagementMenu()
  */
 void CLIUserView::onAskTeamName()
 {
-	_pending--;
+	_wait = false;
 	showTeamNameMenu();
 }
 
@@ -197,7 +197,7 @@ void CLIUserView::onAskTeamName()
  */
 void CLIUserView::onLoginOK()
 {
-	_pending--;
+	_wait = false;
 	okMsg("Login successful");
 	showMainMenu();
 }
@@ -208,7 +208,7 @@ void CLIUserView::onLoginOK()
  */
 void CLIUserView::onLoginError(std::string const & error)
 {
-	_pending--;
+	_wait = false;
 	errorMsg(error);
 }
 
@@ -217,7 +217,7 @@ void CLIUserView::onLoginError(std::string const & error)
  */
 void CLIUserView::onRegisterUserOK()
 {
-	_pending--;
+	_wait = false;
 	okMsg("You have successfully registered! You can now login.");
 }
 
@@ -227,7 +227,7 @@ void CLIUserView::onRegisterUserOK()
  */
 void CLIUserView::onRegisterUserError(std::string const & data)
 {
-	_pending--;
+	_wait = false;
 	errorMsg("The username you chose already exists. Please pick another one");
 	showRegisterMenu();
 }
@@ -237,7 +237,7 @@ void CLIUserView::onRegisterUserError(std::string const & data)
  */
 void CLIUserView::onTeamNameOK()
 {
-	_pending--;
+	_wait = false;
 	okMsg("Team name accepted");
 	showMainMenu();
 }
@@ -248,7 +248,7 @@ void CLIUserView::onTeamNameOK()
  */
 void CLIUserView::onTeamNameError(std::string const & reason)
 {
-	_pending--;
+	_wait = false;
 	errorMsg(reason);
 	showTeamNameMenu();
 }

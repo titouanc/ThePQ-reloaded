@@ -23,7 +23,6 @@ private:
 	void onLeaveChampionship(bool, std::string const &);
 	void seeCurrentChampionship();
 	NOTIFIABLE
-	bool _wait;
 };
 
 #endif

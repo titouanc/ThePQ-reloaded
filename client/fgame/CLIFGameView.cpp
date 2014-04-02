@@ -40,11 +40,11 @@ bool CLIFGameView::showFriendlyMatchMenu()
 	{
 		case 1:
 			askConnectedList();
-			_pending++;
+			_wait = true;
 			break;
 		case 2:
 			showChooseUserMenu();
-			_pending++;
+			_wait = true;
 			break;
 		default:
 			return false;
@@ -64,7 +64,7 @@ void CLIFGameView::onUserList(JSON::List const & list)
 		cout << STR(list[i]).value();
 	}
 	cout << endl;
-	_pending--;
+	_wait = false;
 }
 
 /**
@@ -72,12 +72,12 @@ void CLIFGameView::onUserList(JSON::List const & list)
  */
 void CLIFGameView::run()
 {
-	_pending = 0;
+	_wait = false;
 	do{
 		do {
 			minisleep(0.1);
 			readMessages();
-		} while (_pending > 0);
+		} while (_wait == true);
 	}
 	while(showFriendlyMatchMenu());
 }
@@ -90,7 +90,7 @@ void CLIFGameView::onOtherAccept(std::string const & name)
 {
 	cout << "\033[1m" << name 
 		 << " \033[32mhas accepted to play a friendly game !\033[0m" << endl;
-	_pending--;
+	_wait = false;
 	onMatchStart();
 }
 
@@ -102,7 +102,7 @@ void CLIFGameView::onOtherDeny(std::string const & name)
 {
 	cout << "\033[1m" << name 
 		 << " \033[33mdoesn't want to play a friendly game now !\033[0m" << endl;
-	_pending--;
+	_wait = false;
 }
 
 /**
@@ -113,7 +113,7 @@ void CLIFGameView::onUserNotFound(std::string const & name)
 {
 	cout << "\033[1m" << name 
 		 << " \033[31mnot found !\033[0m" << endl;
-	_pending--;
+	_wait = false;
 }
 
 /**

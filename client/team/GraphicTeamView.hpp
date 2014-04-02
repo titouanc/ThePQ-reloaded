@@ -24,7 +24,6 @@ private:
 
 	void onPlayersLoad();
 	void onSquadUpdated();
-	bool _wait;
 
 	NOTIFIABLE
 };

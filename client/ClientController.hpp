@@ -26,6 +26,8 @@ class ClientController {
 		/*! Return notifications queue */
 		std::queue<JSON::Dict> & notifications() const;
 
+		bool _wait;
+
 		/*! Shortcut to send {"type": "<type>", "data": <data>} */
 		void say(std::string const & type, JSON::Value const & data);
 
