@@ -9,7 +9,7 @@ class CLIMarketManager : public MarketManager, public CLI
 {
 public:
 	using MarketManager::MarketManager;
-	CLIMarketManager(ClientManager const & parent);
+	CLIMarketManager(ClientController const & parent);
 	void run();
 private:
 	void placeBid();

@@ -1,11 +1,11 @@
 #ifndef __CHAMP_MANAGER_HPP
 #define __CHAMP_MANAGER_HPP
 
-#include <ClientManager.hpp>
+#include <ClientController.hpp>
 #include <cli/Menu.hpp>
 #include <model/Championship.hpp>
 
-class ChampionshipManager : public ClientManager
+class ChampionshipController : public ClientController
 {
 protected:
 	std::vector<Championship> _champs;
@@ -30,8 +30,8 @@ protected:
 	/// received current joined champ, put in joinedChamp if !NULL
 	virtual void onJoinedChampionship(){}
 public:
-	using ClientManager::ClientManager;
-	ChampionshipManager(ClientManager const & parent);
+	using ClientController::ClientController;
+	ChampionshipController(ClientController const & parent);
 };
 
 #endif

@@ -8,7 +8,7 @@ class CLITeamManager : public TeamManager, public CLI
 {
 public:
 	using TeamManager::TeamManager;
-	CLITeamManager(ClientManager const & parent);
+	CLITeamManager(ClientController const & parent);
 	void run();
 	virtual void showPlayers();
 	virtual void showSquad();

@@ -23,7 +23,7 @@ private:
 	/* Return true if main loop should continue */
 	bool treatEvent(sf::Event const & ev);
 public:
-	GraphicMatchManager(ClientManager const & parent, GUI::MainController & controller); 
+	GraphicMatchManager(ClientController const & parent, GUI::MainController & controller); 
 	virtual ~GraphicMatchManager();
 	
 	/* Redraw pitch on window */

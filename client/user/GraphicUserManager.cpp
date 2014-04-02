@@ -3,7 +3,7 @@
 #include <market/GraphicMarketManager.hpp>
 #include <fgame/GUIFGameManager.hpp>
 #include <team/GraphicTeamManager.hpp>
-#include <championship/GraphicChampionshipManager.hpp>
+#include <championship/GraphicChampionshipView.hpp>
 
 using namespace std;
 using namespace GUI;
@@ -257,7 +257,7 @@ void GraphicUserManager::goToPlayers()
   */
 void GraphicUserManager::goToChampionships()
 {
-	GraphicChampionshipManager champ(*this, _controller);
+	GraphicChampionshipView champ(*this, _controller);
 	champ.run();
 	deleteCanvas();
 	displayMainMenu();

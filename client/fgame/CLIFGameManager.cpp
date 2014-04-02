@@ -9,7 +9,7 @@
 
 using namespace std;
 ///Constructor
-CLIFGameManager::CLIFGameManager(ClientManager const & parent) : 
+CLIFGameManager::CLIFGameManager(ClientController const & parent) : 
 FGameManager(parent)
 {}
 

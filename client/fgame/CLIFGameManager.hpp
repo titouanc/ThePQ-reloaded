@@ -9,7 +9,7 @@ class CLIFGameManager : public FGameManager, public CLI {
 	private:
 	public:
 		using FGameManager::FGameManager;
-		CLIFGameManager(ClientManager const & parent);
+		CLIFGameManager(ClientController const & parent);
 
 		void showChooseUserMenu();
 		bool showFriendlyMatchMenu();

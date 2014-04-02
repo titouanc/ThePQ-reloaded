@@ -7,7 +7,7 @@ using namespace SQUAD;
 
 /// Constructor
 GraphicTeamManager::GraphicTeamManager(
-		ClientManager const & parent, 
+		ClientController const & parent, 
 		GUI::MainController &controller
 	) : 
 		TeamManager(parent), 

@@ -1,10 +1,10 @@
-#include "GraphicChampionshipManager.hpp"
+#include "GraphicChampionshipView.hpp"
 #include <string>
 
 using namespace GUI;
 ///constructor
- GraphicChampionshipManager::GraphicChampionshipManager(ClientManager const & parent, GUI::MainController & controller) :
-	ChampionshipManager(parent),
+ GraphicChampionshipView::GraphicChampionshipView(ClientController const & parent, GUI::MainController & controller) :
+	ChampionshipController(parent),
 	GraphicManager(controller),
 	_wait(false)
 {
@@ -18,9 +18,9 @@ using namespace GUI;
 /**
  * Method handling championship information
  */
-void GraphicChampionshipManager::updateChampionships(){
+void GraphicChampionshipView::updateChampionships(){
 	_wait = true;
-	ChampionshipManager::loadChampionships();
+	ChampionshipController::loadChampionships();
 	while(_wait){
 		readEvent();
 		readMessages();
@@ -31,9 +31,9 @@ void GraphicChampionshipManager::updateChampionships(){
  * Method handling events for current championship
  *based on server queries
  */
-void GraphicChampionshipManager::updateCurrentChampionship(){
+void GraphicChampionshipView::updateCurrentChampionship(){
 	_wait = true;
-	ChampionshipManager::joinedChampionship();
+	ChampionshipController::joinedChampionship();
 	while(_wait){
 		readEvent();
 		readMessages();
@@ -43,16 +43,16 @@ void GraphicChampionshipManager::updateCurrentChampionship(){
 /**
  * Method disabling the wait flag due to championship being loaded 
  */
-void GraphicChampionshipManager::onJoinedChampionship(){
+void GraphicChampionshipView::onJoinedChampionship(){
 	_wait = false;
 }
 
 /**
  * Method enabling the wait flag due to leaving championship(meanwhile handling queries from server)
  */
-void GraphicChampionshipManager::leaveChampionship(){
+void GraphicChampionshipView::leaveChampionship(){
 	_wait = true;
-	ChampionshipManager::leaveCurrentChampionship();
+	ChampionshipController::leaveCurrentChampionship();
 	while(_wait){
 		readEvent();
 		readMessages();
@@ -62,7 +62,7 @@ void GraphicChampionshipManager::leaveChampionship(){
 /**
  * Method handling the exit status from a championship (disabling the wait flag)
  */
-void GraphicChampionshipManager::onLeaveChampionship(bool success, std::string const & message){
+void GraphicChampionshipView::onLeaveChampionship(bool success, std::string const & message){
 	_wait = false;
 	(success) ? displayOk(message) : displayError(message);
 	updateChampionships();
@@ -72,9 +72,9 @@ void GraphicChampionshipManager::onLeaveChampionship(bool success, std::string c
  * Method handling the connection to a championship
  * @param : the name of the championship to join
  */
-void GraphicChampionshipManager::joinChampionship(std::string name){
+void GraphicChampionshipView::joinChampionship(std::string name){
 	_wait = true;
-	ChampionshipManager::joinChampionship(name);
+	ChampionshipController::joinChampionship(name);
 	while(_wait){
 		readEvent();
 		readMessages();
@@ -86,7 +86,7 @@ void GraphicChampionshipManager::joinChampionship(std::string name){
  * @param : boolean representing the status of the entry
  * @param : string representing the message to display
  */
-void GraphicChampionshipManager::onJoinChampionship(bool success, std::string const & message){
+void GraphicChampionshipView::onJoinChampionship(bool success, std::string const & message){
 	_wait = false;
 	(success) ? displayOk(message) : displayError(message);
 	updateChampionships();
@@ -95,7 +95,7 @@ void GraphicChampionshipManager::onJoinChampionship(bool success, std::string co
 /**
  * Method displaying ongoing championships
  */
-void GraphicChampionshipManager::seeCurrentChampionship(){
+void GraphicChampionshipView::seeCurrentChampionship(){
 
 	clear();
 
@@ -184,8 +184,8 @@ void GraphicChampionshipManager::seeCurrentChampionship(){
 		}
 		
 	}
-	Button<GraphicChampionshipManager> & backButton = _canvas.addButton<GraphicChampionshipManager>(
-		&GraphicChampionshipManager::updateChampionships, this, "Back");
+	Button<GraphicChampionshipView> & backButton = _canvas.addButton<GraphicChampionshipView>(
+		&GraphicChampionshipView::updateChampionships, this, "Back");
 	backButton.setPosition(window().getSize().x-backButton.getWidth()-MARGIN, window().getSize().y-backButton.getHeight()-MARGIN);
 	redrawCanvas();	
 }
@@ -193,7 +193,7 @@ void GraphicChampionshipManager::seeCurrentChampionship(){
 /**
  * Method displaying running/enlisting championships
  */
-void GraphicChampionshipManager::onChampionshipsLoad(){
+void GraphicChampionshipView::onChampionshipsLoad(){
 	_wait = false;
 	clear();
 	addTopBar(user());
@@ -245,8 +245,8 @@ void GraphicChampionshipManager::onChampionshipsLoad(){
 		fameLabel.setPosition(655, 10);
 		fameLabel.setColor(BLUE_TEXT_COLOR);
 
-		Button<GraphicChampionshipManager, std::string> & joinButton = champCell.addButton<GraphicChampionshipManager, std::string>(
-			&GraphicChampionshipManager::joinChampionship, champ.getName(),
+		Button<GraphicChampionshipView, std::string> & joinButton = champCell.addButton<GraphicChampionshipView, std::string>(
+			&GraphicChampionshipView::joinChampionship, champ.getName(),
 			this, "JOIN");
 		joinButton.setPosition(850-joinButton.getWidth(), 0);
 		if(! user().joinedChamp.getName().empty()){
@@ -254,16 +254,16 @@ void GraphicChampionshipManager::onChampionshipsLoad(){
 			joinButton.setBackgroundColor(sf::Color(0xcc, 0xcc, 0xcc, 0xff));
 		}
 	}
-	_canvas.addButton<GraphicChampionshipManager>(
-		&GraphicChampionshipManager::updateChampionships, this, "Update"
+	_canvas.addButton<GraphicChampionshipView>(
+		&GraphicChampionshipView::updateChampionships, this, "Update"
 	).setPosition(1000, 300);
 	
-	Button<GraphicChampionshipManager> & myChampButton = _canvas.addButton<GraphicChampionshipManager>(
-		&GraphicChampionshipManager::seeCurrentChampionship, this, "My championship");
+	Button<GraphicChampionshipView> & myChampButton = _canvas.addButton<GraphicChampionshipView>(
+		&GraphicChampionshipView::seeCurrentChampionship, this, "My championship");
 	myChampButton.setPosition(1000, 350);
 
-	Button<GraphicChampionshipManager> & leaveChampButton = _canvas.addButton<GraphicChampionshipManager>(
-		&GraphicChampionshipManager::leaveChampionship, this, "Leave championship");
+	Button<GraphicChampionshipView> & leaveChampButton = _canvas.addButton<GraphicChampionshipView>(
+		&GraphicChampionshipView::leaveChampionship, this, "Leave championship");
 	leaveChampButton.setPosition(1000, 400);
 
 	if(user().joinedChamp.getName().empty()){

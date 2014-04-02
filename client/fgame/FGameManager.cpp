@@ -5,7 +5,7 @@
 using namespace net;
  
 ///Constructor
-FGameManager::FGameManager(ClientManager const & parent) : ClientManager(parent)
+FGameManager::FGameManager(ClientController const & parent) : ClientController(parent)
 {}
 
 /**

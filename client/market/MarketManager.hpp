@@ -3,11 +3,11 @@
 
 #include <vector>
 #include <model/Sale.hpp>
-#include <ClientManager.hpp>
+#include <ClientController.hpp>
 #include <cli/Menu.hpp>
 #include <Exception.hpp>
 
-class MarketManager : public ClientManager
+class MarketManager : public ClientController
 {
 private:
 	std::vector<Sale> _sales;
@@ -41,8 +41,8 @@ protected:
 	/* Failed to add player on market */
 	virtual void onAddPlayerError(std::string const & err){}
 public:
-	using ClientManager::ClientManager;
-	MarketManager(ClientManager const & parent);
+	using ClientController::ClientController;
+	MarketManager(ClientController const & parent);
 };
 
 #endif // __MARKET_MANAGER_HPP

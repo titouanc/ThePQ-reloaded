@@ -4,7 +4,7 @@
 using namespace std;
 using namespace GUI;
 ///Constructor
-GUIFGameManager::GUIFGameManager(ClientManager const & parent, GUI::MainController &controller)
+GUIFGameManager::GUIFGameManager(ClientController const & parent, GUI::MainController &controller)
 		: FGameManager(parent), GraphicManager(controller), _lastUpdated(0)
 {
 	askConnectedList();

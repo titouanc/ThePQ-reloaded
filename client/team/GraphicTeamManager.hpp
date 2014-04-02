@@ -7,7 +7,7 @@
 
 class GraphicTeamManager : public TeamManager, public GUI::GraphicManager {
 public:
-	GraphicTeamManager(ClientManager const & parent, GUI::MainController &controller);
+	GraphicTeamManager(ClientController const & parent, GUI::MainController &controller);
 	~GraphicTeamManager();
 private:
 	void displayPlayers();

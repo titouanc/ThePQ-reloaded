@@ -2,7 +2,7 @@
 #include <toolbox.hpp>
 
 ///Constructor
-GraphicMatchManager::GraphicMatchManager(ClientManager const & parent, GUI::MainController & controller) :
+GraphicMatchManager::GraphicMatchManager(ClientController const & parent, GUI::MainController & controller) :
 	MatchManager(parent),
 	GUI::GraphicManager(controller), 
 	_match(pitch(), mySquad()), 

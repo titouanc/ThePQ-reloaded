@@ -1,15 +1,15 @@
 #ifndef __CLICHAMPMANAGER__HPP
 #define __CLICHAMPMANAGER__HPP
 
-#include "ChampionshipManager.hpp"
+#include "ChampionshipController.hpp"
 #include <cli/Menu.hpp>
 #include <cli/CLI.hpp>
 
-class CLIChampionshipManager : public ChampionshipManager, public CLI{
+class CLIChampionshipView : public ChampionshipController, public CLI{
 public:
-	using ChampionshipManager::ChampionshipManager;
+	using ChampionshipController::ChampionshipController;
 	///constructor
-	CLIChampionshipManager(ClientManager const & parent);
+	CLIChampionshipView(ClientController const & parent);
 	void run();
 private:
 	bool _waitForChamps;

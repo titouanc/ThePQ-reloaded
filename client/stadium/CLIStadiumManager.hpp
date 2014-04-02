@@ -8,7 +8,7 @@
 class CLIStadiumManager : public StadiumManager, public CLI {
 public:
 	using StadiumManager::StadiumManager;
-	CLIStadiumManager(ClientManager const & parent);
+	CLIStadiumManager(ClientController const & parent);
 	virtual void run();
 
 private:

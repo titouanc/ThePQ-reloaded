@@ -2,7 +2,7 @@
 #include <match/CLIMatchManager.hpp>
 
 ///Constructor
-CLIStadiumManager::CLIStadiumManager(ClientManager const & parent) : 
+CLIStadiumManager::CLIStadiumManager(ClientController const & parent) : 
 StadiumManager(parent)
 {}
 

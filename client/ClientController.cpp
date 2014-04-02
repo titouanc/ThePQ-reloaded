@@ -1,7 +1,7 @@
-#include "ClientManager.hpp"
+#include "ClientController.hpp"
 
 /// Constructor
-ClientManager::ClientManager(
+ClientController::ClientController(
 	net::ClientConnectionManager & connection, 
 	UserData & user,
 	std::queue<JSON::Dict> & notifications
@@ -10,7 +10,7 @@ _connection(connection), _user(user), _notifications(notifications)
 {}
 
 /// Constructor
-ClientManager::ClientManager(ClientManager const & other) : 
+ClientController::ClientController(ClientController const & other) : 
 _connection(other._connection), _user(other._user), 
 _notifications(other._notifications)
 {}
@@ -19,7 +19,7 @@ _notifications(other._notifications)
   * Method handling a connection to the server
   * @return a client connection manager
   */
-net::ClientConnectionManager & ClientManager::connection() const 
+net::ClientConnectionManager & ClientController::connection() const 
 {
 	return _connection;
 }
@@ -28,7 +28,7 @@ net::ClientConnectionManager & ClientManager::connection() const
   * Method getting user data
   * @return a reference to the current user
   */
-UserData & ClientManager::user() const
+UserData & ClientController::user() const
 {
 	return _user;
 }
@@ -37,7 +37,7 @@ UserData & ClientManager::user() const
   * Method calculating number of available notifications
   * @return integer representing total number of available notifications
   */
-int ClientManager::getNbNotifications() const
+int ClientController::getNbNotifications() const
 {
 	return (int)_notifications.size();
 }
@@ -46,7 +46,7 @@ int ClientManager::getNbNotifications() const
   * Method getting the notifications
   * @return a queu containing all the notifications
   */
-std::queue<JSON::Dict> & ClientManager::notifications() const
+std::queue<JSON::Dict> & ClientController::notifications() const
 {
 	return _notifications;
 }
@@ -56,7 +56,7 @@ std::queue<JSON::Dict> & ClientManager::notifications() const
   * @param string : type of the message to send
   * @param JSON::Value : message to send
   */
-void ClientManager::say(std::string const & type, JSON::Value const & data)
+void ClientController::say(std::string const & type, JSON::Value const & data)
 {
 	JSON::Dict msg = {
 		{"type", JSON::String(type)},
@@ -70,7 +70,7 @@ void ClientManager::say(std::string const & type, JSON::Value const & data)
   * @param string : type of the query
   * @param JSON::Value : query to handle
   */
-void ClientManager::treatMessage(std::string const & type, JSON::Value const * data)
+void ClientController::treatMessage(std::string const & type, JSON::Value const * data)
 {
 	if(type == net::MSG::TEAM_INFOS){
 		if(ISDICT((data))){
@@ -134,7 +134,7 @@ void ClientManager::treatMessage(std::string const & type, JSON::Value const * d
 /**
   * Method retrieving users players
   */
-void ClientManager::loadPlayers()
+void ClientController::loadPlayers()
 {
 	while (!user().isLogged())
 		readMessages();
@@ -147,12 +147,12 @@ void ClientManager::loadPlayers()
 /**
   * Method parsing querie
   */
-void ClientManager::readMessage()
+void ClientController::readMessage()
 {
 	JSON::Value * msg = _connection.popMessage();
     JSON::Dict const & dict = DICT(msg);
     std::string messageType = STR(dict.get("type"));
-    ClientManager::treatMessage(messageType, dict.get("data"));
+    ClientController::treatMessage(messageType, dict.get("data"));
     this->treatMessage(messageType, dict.get("data")); /* virtuelle */
     delete msg;
 }
@@ -160,7 +160,7 @@ void ClientManager::readMessage()
 /**
   * Method parsing all available queries and dispatching them to handlers
   */
-void ClientManager::readMessages() 
+void ClientController::readMessages() 
 {
     while (_connection.hasMessage())
     	readMessage();
@@ -169,7 +169,7 @@ void ClientManager::readMessages()
 /**
   * Method treating available notifications
   */
-void ClientManager::handleNotification(){
+void ClientController::handleNotification(){
 	if(! _notifications.empty()){
 		JSON::Dict popped = _notifications.front();
 		_notifications.pop();
@@ -198,7 +198,7 @@ void ClientManager::handleNotification(){
 /**
   * Method handling the end of an auction
   */
-std::string ClientManager::onEndOfSale(JSON::Dict const & json)
+std::string ClientController::onEndOfSale(JSON::Dict const & json)
 {
 	std::stringstream res;
 	res << "\nMessage : a sale has ended." << endl;
@@ -228,7 +228,7 @@ std::string ClientManager::onEndOfSale(JSON::Dict const & json)
   * @param JSON::Dict : match report to handle
   * @return string final report of the championship
   */
-std::string ClientManager::onMatchRapport(JSON::Dict const & json){
+std::string ClientController::onMatchRapport(JSON::Dict const & json){
 	std::stringstream res;
 	std::string matchType;
 	res << "Match rapport" << endl << endl;
@@ -267,7 +267,7 @@ std::string ClientManager::onMatchRapport(JSON::Dict const & json){
   * @param string : message to be handled
   * @return string : result of the 
   */
-std::string ClientManager::onUnplayedMatch(std::string const & msg){
+std::string ClientController::onUnplayedMatch(std::string const & msg){
 	std::stringstream res;
 	res << "Message : championship match has ended." << endl;
 	if(msg == net::MSG::CHAMPIONSHIP_UNPLAYED_MATCH_WON){
@@ -290,7 +290,7 @@ std::string ClientManager::onUnplayedMatch(std::string const & msg){
   * @param string : message from server regarding status
   * @return new status of the championship (win/start)
   */
-std::string ClientManager::onChampionshipStatusChange(std::string const & msg){
+std::string ClientController::onChampionshipStatusChange(std::string const & msg){
 	std::stringstream res;
 	if (msg == net::MSG::CHAMPIONSHIP_STARTED){
 		res << "\nMessage : the championship you joined has started." << endl;
@@ -308,14 +308,14 @@ std::string ClientManager::onChampionshipStatusChange(std::string const & msg){
 /**
   * Method quering server with ok to start match token
   */
-void ClientManager::readyForMatch(){
+void ClientController::readyForMatch(){
 	say(net::MSG::CHAMPIONSHIP_MATCH_PENDING_RESPONSE,JSON::String(net::MSG::CHAMPIONSHIP_MATCH_READY));
 }
 
 /**
   * Method quering server with <withdraw> from championship token
   */
-void ClientManager::withdrawFromMatch(){
+void ClientController::withdrawFromMatch(){
 	say(net::MSG::CHAMPIONSHIP_MATCH_PENDING_RESPONSE,JSON::String(net::MSG::CHAMPIONSHIP_MATCH_WITHDRAW));
 }
 
@@ -323,7 +323,7 @@ void ClientManager::withdrawFromMatch(){
   * Method handling invitation agreement from other user
   * @param string : user whose invitation is accepted 
   */
-void ClientManager::acceptInvitationFromUser(std::string const & username){
+void ClientController::acceptInvitationFromUser(std::string const & username){
 	JSON::Dict data = {
 		{ "username", JSON::String(username) },
 		{ "answer", JSON::String(net::MSG::FRIENDLY_GAME_INVITATION_ACCEPT) }
@@ -335,7 +335,7 @@ void ClientManager::acceptInvitationFromUser(std::string const & username){
   * Method handling refusal from other user
   * @param string : user whose invitation is refused
   */
-void ClientManager::denyInvitationFromUser(std::string const & username){
+void ClientController::denyInvitationFromUser(std::string const & username){
 	JSON::Dict data {
 		{ "username", JSON::String(username) },
 		{ "answer", JSON::String(net::MSG::FRIENDLY_GAME_INVITATION_DENY) }
@@ -346,7 +346,7 @@ void ClientManager::denyInvitationFromUser(std::string const & username){
 /**
   * Method loading team info in class atributes
   */
-void ClientManager::onTeamInfo(JSON::Dict const & json)
+void ClientController::onTeamInfo(JSON::Dict const & json)
 {
 	if (ISSTR(json.get(net::MSG::USERNAME)))
 		_user.username = STR(json.get(net::MSG::USERNAME)).value();

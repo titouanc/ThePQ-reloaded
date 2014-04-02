@@ -9,7 +9,7 @@
 class GraphicStadiumManager : public StadiumManager, public GUI::GraphicManager 
 {
 public:
-	GraphicStadiumManager(ClientManager const & parent, GUI::MainController &controller);
+	GraphicStadiumManager(ClientController const & parent, GUI::MainController &controller);
 	~GraphicStadiumManager(){}
 private:
 	void displayInstallations();
