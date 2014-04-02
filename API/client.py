@@ -14,10 +14,24 @@ import json
 from Installations import *
 
 class Client(object):
-    def __init__(self, host, port):
+    DEFAULT_HOST, DEFAULT_PORT = "localhost", 32123
+
+    @classmethod
+    def connect(klass, username, password, host=DEFAULT_HOST, port=DEFAULT_PORT):
+        res = klass(host, port)
+        if res.login(username, password):
+            return res
+
+    def __init__(self, host=DEFAULT_HOST, port=DEFAULT_PORT):
         self.sock = socket(AF_INET, SOCK_STREAM)
         self.sock.connect((host, port))
         self.session = {}
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        self.sock.close()
 
     def __send(self, obj):
         # Python2 and 3 have different encoding idioms
@@ -101,7 +115,7 @@ class Client(object):
         self.say(K['USER_CHOOSE_TEAMNAME'], {K['TEAMNAME']: str(teamname), K['USERNAME']: str(username)})
         return self.__waitTeamInfos()
 
-    def squad(self):
+    def getSquad(self):
         return {
             'chasers': [Player(self, p) for p in self.session['team']['squad']['chasers']],
             'beaters': [Player(self, p) for p in self.session['team']['squad']['beaters']],
@@ -122,7 +136,7 @@ if __name__ == "__main__":
     print("Funds:", c.getFunds())
     print(c.connectedUsers())
 
-    print(c.squad())
+    print(c.getSquad())
     print(c.getPlayers())
     i = Installations(c)
     i.show()
