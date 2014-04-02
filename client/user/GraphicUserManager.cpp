@@ -1,7 +1,7 @@
 #include "GraphicUserManager.hpp"
 #include <stadium/GraphicStadiumManager.hpp>
 #include <market/GraphicMarketManager.hpp>
-#include <fgame/GUIFGameManager.hpp>
+#include <fgame/GraphicFGameView.hpp>
 #include <team/GraphicTeamManager.hpp>
 #include <championship/GraphicChampionshipView.hpp>
 
@@ -235,7 +235,7 @@ void GraphicUserManager::goToMarket()
   */
 void GraphicUserManager::goToFriendlyGame()
 {
-	GUIFGameManager game(*this, _controller);
+	GraphicFGameView game(*this, _controller);
 	game.run();
 	deleteCanvas();
 	displayMainMenu();

@@ -3,17 +3,17 @@
 
 #include <network/ClientConnectionManager.hpp>
 #include <graphics/GraphicManager.hpp>
-#include "FGameManager.hpp"
+#include "FGameController.hpp"
 #include <string>
 #include <map>
 #include <GUINotifier.hpp>
 #include <ctime>
 
-class GUIFGameManager : public FGameManager, public GUI::GraphicManager 
+class GraphicFGameView : public FGameController, public GUI::GraphicManager 
 {
 public:
-	GUIFGameManager(ClientController const & parent, GUI::MainController &controller);
-	~GUIFGameManager(){}
+	GraphicFGameView(ClientController const & parent, GUI::MainController &controller);
+	~GraphicFGameView(){}
 private:
 	void invitePlayer(std::string playername);
 	void onUserList(JSON::List const & list);

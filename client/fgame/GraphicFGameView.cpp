@@ -1,11 +1,11 @@
-#include "GUIFGameManager.hpp"
+#include "GraphicFGameView.hpp"
 #include <match/GraphicMatchManager.hpp>
 
 using namespace std;
 using namespace GUI;
 ///Constructor
-GUIFGameManager::GUIFGameManager(ClientController const & parent, GUI::MainController &controller)
-		: FGameManager(parent), GraphicManager(controller), _lastUpdated(0)
+GraphicFGameView::GraphicFGameView(ClientController const & parent, GUI::MainController &controller)
+		: FGameController(parent), GraphicManager(controller), _lastUpdated(0)
 {
 	askConnectedList();
 	_canvas.setBackgroundImage("HexBack.png");
@@ -18,7 +18,7 @@ GUIFGameManager::GUIFGameManager(ClientController const & parent, GUI::MainContr
  * Method handling player invitation to game
  * @param string: the player whom to send the invite
 */
-void GUIFGameManager::invitePlayer(string playername)
+void GraphicFGameView::invitePlayer(string playername)
 {
 	sendInvitation(playername);
 }
@@ -27,7 +27,7 @@ void GUIFGameManager::invitePlayer(string playername)
  * Method displaying connected users list
  * @param : JSON::List list of connected players
  */
-void GUIFGameManager::onUserList(JSON::List const & list)
+void GraphicFGameView::onUserList(JSON::List const & list)
 {
 	_lastUpdated = time(NULL);
 	clear();
@@ -49,8 +49,8 @@ void GUIFGameManager::onUserList(JSON::List const & list)
 			Label & nameLabel = current.addLabel(STR(list[i]).value());
 			nameLabel.setPosition(15, 7);
 			nameLabel.setColor(sf::Color(0xee, 0xee, 0xee, 0xff));
-			Button<GUIFGameManager, string> & inviteButton = current.addButton<GUIFGameManager, string>(
-				&GUIFGameManager::invitePlayer, STR(list[i]).value(), this, "Invite");
+			Button<GraphicFGameView, string> & inviteButton = current.addButton<GraphicFGameView, string>(
+				&GraphicFGameView::invitePlayer, STR(list[i]).value(), this, "Invite");
 			inviteButton.setPosition(350-inviteButton.getWidth(), 0);
 		}
 	}
@@ -64,7 +64,7 @@ void GUIFGameManager::onUserList(JSON::List const & list)
 	redrawCanvas();
 }
 
-void GUIFGameManager::onLoop(){
+void GraphicFGameView::onLoop(){
 	if (abs(difftime(time(NULL), _lastUpdated)) > GUI::AUTOUPDATE_STALE_TIME)
 		askConnectedList();
 }

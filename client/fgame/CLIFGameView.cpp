@@ -1,4 +1,4 @@
-#include "CLIFGameManager.hpp"
+#include "CLIFGameView.hpp"
 #include <cli/CLI.hpp>
 #include <match/CLIMatchManager.hpp>
 
@@ -9,14 +9,14 @@
 
 using namespace std;
 ///Constructor
-CLIFGameManager::CLIFGameManager(ClientController const & parent) : 
-FGameManager(parent)
+CLIFGameView::CLIFGameView(ClientController const & parent) : 
+FGameController(parent)
 {}
 
 /**
  * Method handling invitation for players
  */
-void CLIFGameManager::showChooseUserMenu()
+void CLIFGameView::showChooseUserMenu()
 {
 	string userInput = Menu::askForUserData("Enter a username to send an invitation to another user : ");
 	sendInvitation(userInput);
@@ -28,7 +28,7 @@ void CLIFGameManager::showChooseUserMenu()
  * @return : false if no game invitation
 */
 
-bool CLIFGameManager::showFriendlyMatchMenu()
+bool CLIFGameView::showFriendlyMatchMenu()
 {
 	Menu _menu;
 	_menu.addToDisplay("   - list all connected players\n");
@@ -55,7 +55,7 @@ bool CLIFGameManager::showFriendlyMatchMenu()
 /**
  * Method displaying connected users
  */
-void CLIFGameManager::onUserList(JSON::List const & list)
+void CLIFGameView::onUserList(JSON::List const & list)
 {
 	cout << "\033[1mConnected users: \033[0m";
 	for (size_t i=0; i<list.len(); i++){
@@ -70,7 +70,7 @@ void CLIFGameManager::onUserList(JSON::List const & list)
 /**
  * Method handling a friendly game
  */
-void CLIFGameManager::run()
+void CLIFGameView::run()
 {
 	_pending = 0;
 	do{
@@ -86,7 +86,7 @@ void CLIFGameManager::run()
  * Method handling accept token for friendly game
  * @param : string name of the player who accepted the game
  */
-void CLIFGameManager::onOtherAccept(std::string const & name)
+void CLIFGameView::onOtherAccept(std::string const & name)
 {
 	cout << "\033[1m" << name 
 		 << " \033[32mhas accepted to play a friendly game !\033[0m" << endl;
@@ -98,7 +98,7 @@ void CLIFGameManager::onOtherAccept(std::string const & name)
  * Method handling token for friendly game
  * @param : string name of the player who denied the game
  */
-void CLIFGameManager::onOtherDeny(std::string const & name)
+void CLIFGameView::onOtherDeny(std::string const & name)
 {
 	cout << "\033[1m" << name 
 		 << " \033[33mdoesn't want to play a friendly game now !\033[0m" << endl;
@@ -109,7 +109,7 @@ void CLIFGameManager::onOtherDeny(std::string const & name)
  * Method handling inexisting user
  * @param : string name of the player (not found)
  */
-void CLIFGameManager::onUserNotFound(std::string const & name)
+void CLIFGameView::onUserNotFound(std::string const & name)
 {
 	cout << "\033[1m" << name 
 		 << " \033[31mnot found !\033[0m" << endl;
@@ -119,7 +119,7 @@ void CLIFGameManager::onUserNotFound(std::string const & name)
 /**
  * Method handling the start of a match
  */
-void CLIFGameManager::onMatchStart(){
+void CLIFGameView::onMatchStart(){
 	CLIMatchManager match(*this); 
 	match.run();
 }

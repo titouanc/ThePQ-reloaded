@@ -3,7 +3,7 @@
 #include <stadium/CLIStadiumManager.hpp>
 #include <team/CLITeamManager.hpp>
 #include <market/CLIMarketManager.hpp>
-#include <fgame/CLIFGameManager.hpp>
+#include <fgame/CLIFGameView.hpp>
 #include <championship/CLIChampionshipView.hpp>
 #include <match/CLIMatchManager.hpp>
 #include <iostream>
@@ -103,7 +103,7 @@ void CLIUserManager::showMainMenu()
 {
 	readMessages();
 	CLIMarketManager marketManager(*this);
-	CLIFGameManager friendlyGame(*this);
+	CLIFGameView friendlyGame(*this);
 	CLIChampionshipView champManager(*this);
 	cout << "\033[2J\033[1;1H";
 	Menu _menu;

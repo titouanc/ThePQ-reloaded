@@ -1,15 +1,15 @@
 #ifndef DEFINE_CLIFGAMEMANAGER_HEADER
 #define DEFINE_CLIFGAMEMANAGER_HEADER 
 
-#include "FGameManager.hpp"
+#include "FGameController.hpp"
 #include <cli/CLI.hpp>
 
 /* Command line friendly game manager */
-class CLIFGameManager : public FGameManager, public CLI {
+class CLIFGameView : public FGameController, public CLI {
 	private:
 	public:
-		using FGameManager::FGameManager;
-		CLIFGameManager(ClientController const & parent);
+		using FGameController::FGameController;
+		CLIFGameView(ClientController const & parent);
 
 		void showChooseUserMenu();
 		bool showFriendlyMatchMenu();

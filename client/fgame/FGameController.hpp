@@ -4,7 +4,7 @@
 #include <ClientController.hpp>
 
 /* Friendly game manager */
-class FGameManager : public ClientController {
+class FGameController : public ClientController {
 	protected:
 		/* Asks for connected users list */
 		void askConnectedList();
@@ -24,7 +24,7 @@ class FGameManager : public ClientController {
 		virtual void onUserNotFound(std::string const &){}
 	public:
 		using ClientController::ClientController;
-		FGameManager(ClientController const & parent);
+		FGameController(ClientController const & parent);
 };
 
 #endif
