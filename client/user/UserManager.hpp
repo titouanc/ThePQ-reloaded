@@ -4,10 +4,10 @@
 #include <string>
 #include <cli/Menu.hpp>
 #include <Exception.hpp>
-#include <ClientManager.hpp>
+#include <ClientController.hpp>
 #include <pthread.h>
 
-class UserManager : public ClientManager
+class UserManager : public ClientController
 {
 protected:
 	/*! attempt to login */
@@ -44,8 +44,8 @@ protected:
 	/*! Triggered when team name is rejected */
 	virtual void onTeamNameError(std::string const & reason) {}
 public:
-	using ClientManager::ClientManager;
-	UserManager(ClientManager const & parent);
+	using ClientController::ClientController;
+	UserManager(ClientController const & parent);
 };
 
 #endif // __USER_MANAGER_HPP

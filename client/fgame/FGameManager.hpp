@@ -1,10 +1,10 @@
 #ifndef DEFINE_FGAMEMANAGER_HEADER
 #define DEFINE_FGAMEMANAGER_HEADER
 
-#include <ClientManager.hpp>
+#include <ClientController.hpp>
 
 /* Friendly game manager */
-class FGameManager : public ClientManager {
+class FGameManager : public ClientController {
 	protected:
 		/* Asks for connected users list */
 		void askConnectedList();
@@ -23,8 +23,8 @@ class FGameManager : public ClientManager {
 		/* Other user not found */
 		virtual void onUserNotFound(std::string const &){}
 	public:
-		using ClientManager::ClientManager;
-		FGameManager(ClientManager const & parent);
+		using ClientController::ClientController;
+		FGameManager(ClientController const & parent);
 };
 
 #endif

@@ -1,14 +1,14 @@
 #ifndef DEFINE_MATCHMANAGER_HEADER
 #define DEFINE_MATCHMANAGER_HEADER
 
-#include <ClientManager.hpp>
+#include <ClientController.hpp>
 #include <model/Pitch.hpp>
 #include <model/Squad.hpp>
 #include <model/Ball.hpp>
 #include <model/Displacement.hpp>
 #include <model/Stroke.hpp>
 
-class MatchManager : public ClientManager {
+class MatchManager : public ClientController {
 	public:
 		typedef enum {CREATED, READY, PROMPT, TIMEOUT, FINISHED} State;
 				
@@ -48,8 +48,8 @@ class MatchManager : public ClientManager {
 		void treatMessage(std::string const & type, JSON::Value const * msg);
 
 	public:
-		using ClientManager::ClientManager;
-		MatchManager(ClientManager const & other);
+		using ClientController::ClientController;
+		MatchManager(ClientController const & other);
 		virtual ~MatchManager();
 
 };

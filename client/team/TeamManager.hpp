@@ -4,13 +4,13 @@
 #include <vector>
 #include <UserData.hpp>
 #include <cli/Menu.hpp>
-#include <ClientManager.hpp>
+#include <ClientController.hpp>
 
-class TeamManager : public ClientManager
+class TeamManager : public ClientController
 {
 public:
-	using ClientManager::ClientManager;
-	TeamManager(ClientManager const & parent);
+	using ClientController::ClientController;
+	TeamManager(ClientController const & parent);
 	void selectPosition(int position);
 	int getSelectedPosition();
 protected:

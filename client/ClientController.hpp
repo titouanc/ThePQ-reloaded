@@ -7,7 +7,7 @@
 #include <string>
 #include <queue>
 
-class ClientManager {
+class ClientController {
 	private:
 		net::ClientConnectionManager & _connection;
 		UserData & _user;
@@ -33,7 +33,7 @@ class ClientManager {
 		virtual void treatMessage(std::string const & type, JSON::Value const * data);
 
 		/*! Pop message from incoming queue and treat it (first with 
-		   ClientManager::treatMessage; then with <Subclass>::treatMessage;) 
+		   ClientController::treatMessage; then with <Subclass>::treatMessage;) 
 		   BLOCKING METHOD !!! */
 		void readMessage();
 
@@ -101,14 +101,14 @@ class ClientManager {
 		   object (might be not initialised), and a queue to put all 
 		   notifications for user. A ClientController can empty this queue and
 		   show its content to the user. */
-		ClientManager(
+		ClientController(
 			net::ClientConnectionManager & connection, 
 			UserData & user, 
 			std::queue<JSON::Dict> & notifications
 		);
 
 		/* Copy constructor: init userdata and connection from parent */
-		ClientManager(ClientManager const & parent);
+		ClientController(ClientController const & parent);
 };
 
 #endif

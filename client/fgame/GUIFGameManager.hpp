@@ -12,7 +12,7 @@
 class GUIFGameManager : public FGameManager, public GUI::GraphicManager 
 {
 public:
-	GUIFGameManager(ClientManager const & parent, GUI::MainController &controller);
+	GUIFGameManager(ClientController const & parent, GUI::MainController &controller);
 	~GUIFGameManager(){}
 private:
 	void invitePlayer(std::string playername);

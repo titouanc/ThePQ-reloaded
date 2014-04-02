@@ -3,7 +3,7 @@
 #include <unistd.h>
 
 /// Constructor
-UserManager::UserManager(ClientManager const & parent) : ClientManager(parent)
+UserManager::UserManager(ClientController const & parent) : ClientController(parent)
 {
 }
 

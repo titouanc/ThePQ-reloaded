@@ -9,7 +9,7 @@
 class GraphicMarketManager : public MarketManager, public GUI::GraphicManager 
 {
 public:
-	GraphicMarketManager(ClientManager const & parent, GUI::MainController &controller);
+	GraphicMarketManager(ClientController const & parent, GUI::MainController &controller);
 	~GraphicMarketManager(){}
 
 	void test(int data){

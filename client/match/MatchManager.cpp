@@ -108,8 +108,8 @@ void MatchManager::treatDeltas(JSON::List const & deltas)
 	onPitchChange();
 }
 ///Constructor
-MatchManager::MatchManager(ClientManager const & other) 
-: ClientManager(other), _state(CREATED), _quaffle(NULL)
+MatchManager::MatchManager(ClientController const & other) 
+: ClientController(other), _state(CREATED), _quaffle(NULL)
 {}
 
 ///Destructor

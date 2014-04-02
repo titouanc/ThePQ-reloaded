@@ -2,11 +2,11 @@
 #define __STADIUM_MANAGER_HPP
 
 #include <vector>
-#include <ClientManager.hpp>
+#include <ClientController.hpp>
 #include <cli/Menu.hpp>
 #include <model/Installation.hpp>
 
-class StadiumManager : public ClientManager
+class StadiumManager : public ClientController
 {
 protected:
 	/* attempt to upgrade an installation */
@@ -25,8 +25,8 @@ protected:
 	/* received installations list : put it in user().installations */
 	virtual void onInstallationsLoad(){}
 public:
-	using ClientManager::ClientManager;
-	StadiumManager(ClientManager const & parent);
+	using ClientController::ClientController;
+	StadiumManager(ClientController const & parent);
 };
 
 #endif // __STADIUM_MANAGER_HPP

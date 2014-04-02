@@ -4,7 +4,7 @@
 using namespace SQUAD;
 
 /// Constructor
-CLITeamManager::CLITeamManager(ClientManager const & parent) : TeamManager(parent)
+CLITeamManager::CLITeamManager(ClientController const & parent) : TeamManager(parent)
 {}
 
 /**

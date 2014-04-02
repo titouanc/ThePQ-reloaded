@@ -6,7 +6,7 @@ using namespace GUI;
 
 ///Constructor
 GraphicStadiumManager::GraphicStadiumManager(
-			ClientManager const & parent, 
+			ClientController const & parent, 
 			GUI::MainController &controller
 	) : 
 	StadiumManager(parent), 

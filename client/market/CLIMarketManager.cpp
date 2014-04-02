@@ -2,7 +2,7 @@
 #include <match/CLIMatchManager.hpp>
 
 ///Constructor
-CLIMarketManager::CLIMarketManager(ClientManager const & parent) :
+CLIMarketManager::CLIMarketManager(ClientController const & parent) :
 MarketManager(parent), _waitForSales(false), _waitForBid(false)
 {}
 

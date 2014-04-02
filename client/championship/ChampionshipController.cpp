@@ -1,29 +1,29 @@
-#include "ChampionshipManager.hpp"
+#include "ChampionshipController.hpp"
 
-ChampionshipManager::ChampionshipManager(ClientManager const & parent) : ClientManager(parent)
+ChampionshipController::ChampionshipController(ClientController const & parent) : ClientController(parent)
 {}
 
-void ChampionshipManager::loadChampionships()
+void ChampionshipController::loadChampionships()
 {
 	say(net::MSG::JOINABLE_CHAMPIONSHIPS_LIST, JSON::String(""));
 }
 
-void ChampionshipManager::joinChampionship(std::string champName)
+void ChampionshipController::joinChampionship(std::string champName)
 {
 	say(net::MSG::JOIN_CHAMPIONSHIP, JSON::String(champName));
 }
 
-void ChampionshipManager::joinedChampionship()
+void ChampionshipController::joinedChampionship()
 {
 	say(net::MSG::JOINED_CHAMPIONSHIP, JSON::String(""));
 }
 
-void ChampionshipManager::leaveCurrentChampionship()
+void ChampionshipController::leaveCurrentChampionship()
 {
 	say(net::MSG::LEAVE_CHAMPIONSHIP, JSON::String(""));
 }
 
-void ChampionshipManager::treatMessage(std::string const & type, JSON::Value const * data)
+void ChampionshipController::treatMessage(std::string const & type, JSON::Value const * data)
 {
 	if (type == net::MSG::JOIN_CHAMPIONSHIP)
 	{

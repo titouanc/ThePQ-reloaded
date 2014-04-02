@@ -4,14 +4,14 @@
 #include <team/CLITeamManager.hpp>
 #include <market/CLIMarketManager.hpp>
 #include <fgame/CLIFGameManager.hpp>
-#include <championship/CLIChampionshipManager.hpp>
+#include <championship/CLIChampionshipView.hpp>
 #include <match/CLIMatchManager.hpp>
 #include <iostream>
 #include <Constants.hpp>
 using namespace std;
 
 ///Constructor
-CLIUserManager::CLIUserManager(ClientManager const & parent) : 
+CLIUserManager::CLIUserManager(ClientController const & parent) : 
 UserManager(parent), _waitForNotificationResponse(false)
 {}
 
@@ -104,7 +104,7 @@ void CLIUserManager::showMainMenu()
 	readMessages();
 	CLIMarketManager marketManager(*this);
 	CLIFGameManager friendlyGame(*this);
-	CLIChampionshipManager champManager(*this);
+	CLIChampionshipView champManager(*this);
 	cout << "\033[2J\033[1;1H";
 	Menu _menu;
 	_menu.addToDisplay("   - manage your team and stadium\n");

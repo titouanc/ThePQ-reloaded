@@ -1,7 +1,7 @@
 #include "TeamManager.hpp"
 
 /// Constructor
-TeamManager::TeamManager(ClientManager const & parent) : ClientManager(parent), _selectedPosition(-1) 
+TeamManager::TeamManager(ClientController const & parent) : ClientController(parent), _selectedPosition(-1) 
 {
 
 }

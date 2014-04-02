@@ -3,14 +3,14 @@
 
 #include <GUINotifier.hpp>
 #include <graphics/GraphicManager.hpp>
-#include "ChampionshipManager.hpp"
+#include "ChampionshipController.hpp"
 
-class GraphicChampionshipManager : public ChampionshipManager, public GUI::GraphicManager{
+class GraphicChampionshipView : public ChampionshipController, public GUI::GraphicManager{
 public:
 	///constructor
-	GraphicChampionshipManager(ClientManager const & parent, GUI::MainController &controller);
+	GraphicChampionshipView(ClientController const & parent, GUI::MainController &controller);
 	///destructor
-	~GraphicChampionshipManager(){}
+	~GraphicChampionshipView(){}
 private:
 
 	void updateChampionships();

@@ -1,10 +1,10 @@
 include SFML.includes
 
-OBJS_GUI = user/GraphicUserManager.o stadium/GraphicStadiumManager.o match/GraphicMatchManager.o market/GraphicMarketManager.o fgame/GUIFGameManager.o team/GraphicTeamManager.o championship/GraphicChampionshipManager.o
+OBJS_GUI = user/GraphicUserManager.o stadium/GraphicStadiumManager.o match/GraphicMatchManager.o market/GraphicMarketManager.o fgame/GUIFGameManager.o team/GraphicTeamManager.o championship/GraphicChampionshipView.o
 
-OBJS_CLI = cli/CLI.o cli/Menu.o user/CLIUserManager.o stadium/CLIStadiumManager.o team/CLITeamManager.o market/CLIMarketManager.o match/CLIMatchManager.o fgame/CLIFGameManager.o championship/CLIChampionshipManager.o
+OBJS_CLI = cli/CLI.o cli/Menu.o user/CLIUserManager.o stadium/CLIStadiumManager.o team/CLITeamManager.o market/CLIMarketManager.o match/CLIMatchManager.o fgame/CLIFGameManager.o championship/CLIChampionshipView.o
 
-OBJS_CONTROLLER = user/UserManager.o stadium/StadiumManager.o team/TeamManager.o market/MarketManager.o match/MatchManager.o fgame/FGameManager.o ClientManager.o championship/ChampionshipManager.o
+OBJS_CONTROLLER = user/UserManager.o stadium/StadiumManager.o team/TeamManager.o market/MarketManager.o match/MatchManager.o fgame/FGameManager.o ClientController.o championship/ChampionshipController.o
 
 OBJS = ${OBJS_CONTROLLER} ${OBJS_GUI} ${OBJS_CLI}
 

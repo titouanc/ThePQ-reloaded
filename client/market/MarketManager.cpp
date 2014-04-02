@@ -1,8 +1,8 @@
 #include "MarketManager.hpp"
 
 ///Constructor
-MarketManager::MarketManager(ClientManager const & parent) :
-	ClientManager(parent)
+MarketManager::MarketManager(ClientController const & parent) :
+	ClientController(parent)
 {
 	updateSales();
 	loadPlayers();

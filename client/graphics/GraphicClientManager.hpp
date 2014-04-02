@@ -22,13 +22,13 @@ struct NetConfig : public Config {
     }
 };
 
-class GraphicClientManager : public GraphicManager {
+class GraphicClientController : public GraphicManager {
 public:
-    GraphicClientManager(NetConfig const &config, MainController &c) : GraphicManager(c),
+    GraphicClientController(NetConfig const &config, MainController &c) : GraphicManager(c),
     _user(), _connection(config.host, config.port), _userManager(_connection, _user){
         userNameTB = _canvas.addTextBox("Username");
         passWordTB = _canvas.addTextBox("Password");
-        _canvas.addButton<GraphicClientManager>(&GraphicClientManager::logIn, this, "Log in");
+        _canvas.addButton<GraphicClientController>(&GraphicClientController::logIn, this, "Log in");
         displayCanvas();
         run();
     }

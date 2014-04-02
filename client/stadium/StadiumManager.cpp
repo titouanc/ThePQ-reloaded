@@ -1,7 +1,7 @@
 #include "StadiumManager.hpp"
 
 ///Constructor
-StadiumManager::StadiumManager(ClientManager const & parent) : ClientManager(parent)
+StadiumManager::StadiumManager(ClientController const & parent) : ClientController(parent)
 {}
 
 /**

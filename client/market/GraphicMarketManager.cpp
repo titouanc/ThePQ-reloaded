@@ -6,7 +6,7 @@ using namespace std;
 using namespace GUI;
 
 ///Constructor
-GraphicMarketManager::GraphicMarketManager(ClientManager const & parent, GUI::MainController &controller) : 
+GraphicMarketManager::GraphicMarketManager(ClientController const & parent, GUI::MainController &controller) : 
 	MarketManager(parent), 
 	GraphicManager(controller),
 	_wait(false),
