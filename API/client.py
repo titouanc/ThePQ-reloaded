@@ -51,7 +51,7 @@ class Client(object):
                     if 'team' in self.session:
                         self.session['team'].update(msg['data'])
                     else:
-                        self.session['team'] = {}
+                        self.session['team'] = msg['data']
 
     def say(self, type, data):
         self.__send({"type": str(type), "data": data})
