@@ -1,4 +1,4 @@
-#include "MatchManager.hpp"
+#include "MatchController.hpp"
 #include <Constants.hpp>
 #include <model/Ball.hpp>
 #include <model/Stroke.hpp>
@@ -10,7 +10,7 @@ using namespace net;
  * Method handling ball placement on the pitch
  * @param JSON::List : list of all the balls for a game
  */
-void MatchManager::treatBalls(JSON::List const & balls)
+void MatchController::treatBalls(JSON::List const & balls)
 {
 	Quaffle *q = new Quaffle(DICT(balls[0]));
 	_pitch.insert(q);
@@ -28,7 +28,7 @@ void MatchManager::treatBalls(JSON::List const & balls)
  * Method handling squad placement on the pitch depending on the user
  * @param JSON::List : list of the squads 
  */
-void MatchManager::treatSquads(JSON::List const & squads)
+void MatchController::treatSquads(JSON::List const & squads)
 {
 	Squad sq1(DICT(squads[0]));
 	Squad sq2(DICT(squads[1]));
@@ -57,7 +57,7 @@ void MatchManager::treatSquads(JSON::List const & squads)
  * Method handling movements on the pitch
  * @param JSON::List : list of all the movements to be treated 
  */
-void MatchManager::treatDeltas(JSON::List const & deltas)
+void MatchController::treatDeltas(JSON::List const & deltas)
 {
 	for (size_t i=0; i<deltas.len(); i++){
 		JSON::Dict const & delta = DICT(deltas[i]);
@@ -108,12 +108,12 @@ void MatchManager::treatDeltas(JSON::List const & deltas)
 	onPitchChange();
 }
 ///Constructor
-MatchManager::MatchManager(ClientController const & other) 
+MatchController::MatchController(ClientController const & other) 
 : ClientController(other), _state(CREATED), _quaffle(NULL)
 {}
 
 ///Destructor
-MatchManager::~MatchManager()
+MatchController::~MatchController()
 {
 	for (Pitch::iterator it=_pitch.begin(); it!=_pitch.end();){
 		Pitch::iterator next = it;
@@ -130,7 +130,7 @@ MatchManager::~MatchManager()
  * @param string : type of the query
  * @param JSON::Value : queries to be treated
  */
-void MatchManager::treatMessage(std::string const & type, JSON::Value const * data)
+void MatchController::treatMessage(std::string const & type, JSON::Value const * data)
 {
 	cout << "TREAT MESSAGE " << type << endl;
 
@@ -171,7 +171,7 @@ void MatchManager::treatMessage(std::string const & type, JSON::Value const * da
 /**
  * Method
  */
-void MatchManager::sendStroke(Stroke const & stroke)
+void MatchController::sendStroke(Stroke const & stroke)
 {
 	say(MSG::MATCH_STROKE, JSON::Dict(stroke));
 }
@@ -181,7 +181,7 @@ void MatchManager::sendStroke(Stroke const & stroke)
  * @param Player : target of the query
  * @param Displacement : query to send
  */
-void MatchManager::sendDisplacement(Player const & player, Displacement const & move)
+void MatchController::sendDisplacement(Player const & player, Displacement const & move)
 {
 	JSON::Dict msg = {
 		{"mid", JSON::Integer(player.getID())},
@@ -195,7 +195,7 @@ void MatchManager::sendDisplacement(Player const & player, Displacement const & 
  * @param Player : player whose ownership is checked
  * @return bool : ownership status of player
  */
-bool MatchManager::isMyPlayer(Player const & player) const
+bool MatchController::isMyPlayer(Player const & player) const
 {
 	for (int i=0; i<7; i++)
 		if (_mySquad.players[i] == &player)

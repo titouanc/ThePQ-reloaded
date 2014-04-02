@@ -1,16 +1,16 @@
-#include "CLIStadiumManager.hpp"
-#include <match/CLIMatchManager.hpp>
+#include "CLIStadiumView.hpp"
+#include <match/CLIMatchView.hpp>
 
 ///Constructor
-CLIStadiumManager::CLIStadiumManager(ClientController const & parent) : 
-StadiumManager(parent)
+CLIStadiumView::CLIStadiumView(ClientController const & parent) : 
+StadiumController(parent)
 {}
 
 /**
  * Method handling the stadium manager
  *all options are delegated to theyr respective handlers
  */
-void CLIStadiumManager::run()
+void CLIStadiumView::run()
 {
 	clScreen();
 	Menu _menu;
@@ -48,7 +48,7 @@ void CLIStadiumManager::run()
 /**
  * Method handling the display of a users installations
  */
-void CLIStadiumManager::printInstallationsList()
+void CLIStadiumView::printInstallationsList()
 {
 	clScreen();
 	cout << "You have " << user().funds << " $$$$" << endl;
@@ -70,7 +70,7 @@ void CLIStadiumManager::printInstallationsList()
 /**
  * Method handling the upgrade interface
  */
-void CLIStadiumManager::showUpgradeInstallation()
+void CLIStadiumView::showUpgradeInstallation()
 {
 	size_t choice;
 	cout << "Enter the number of the installation you want to upgrade" << endl;
@@ -90,7 +90,7 @@ void CLIStadiumManager::showUpgradeInstallation()
 /**
  * Method handling the downgrade interface for the installations
  */
-void CLIStadiumManager::showDowngradeInstallation()
+void CLIStadiumView::showDowngradeInstallation()
 {
 	size_t choice;
 	cout << "Enter the number of the installation you want to downgrade" << endl;
@@ -112,9 +112,9 @@ void CLIStadiumManager::showDowngradeInstallation()
  * @param string : type of the query
  * @param JSON::Value : the query
  */
-void CLIStadiumManager::treatMessage(std::string const & type, JSON::Value const * data)
+void CLIStadiumView::treatMessage(std::string const & type, JSON::Value const * data)
 {
-	StadiumManager::treatMessage(type, data);
+	StadiumController::treatMessage(type, data);
 	if (type != net::MSG::INSTALLATIONS_LIST)
 	{
 		_pending++;
@@ -125,8 +125,8 @@ void CLIStadiumManager::treatMessage(std::string const & type, JSON::Value const
 /**
  * Method handling the start of a game
  */
-void CLIStadiumManager::onMatchStart(){
-	CLIMatchManager match(*this); 
+void CLIStadiumView::onMatchStart(){
+	CLIMatchView match(*this); 
 	match.run();
 }
 

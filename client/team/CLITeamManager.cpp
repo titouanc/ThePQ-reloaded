@@ -1,5 +1,5 @@
 #include "CLITeamManager.hpp"
-#include <match/CLIMatchManager.hpp>
+#include <match/CLIMatchView.hpp>
 
 using namespace SQUAD;
 
@@ -126,6 +126,6 @@ void CLITeamManager::showSwapPlayer()
  * Method handling the match start
  */
 void CLITeamManager::onMatchStart(){
-	CLIMatchManager match(*this); 
+	CLIMatchView match(*this); 
 	match.run();
 }

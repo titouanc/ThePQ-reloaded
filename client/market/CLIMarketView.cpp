@@ -1,5 +1,5 @@
 #include "CLIMarketView.hpp"
-#include <match/CLIMatchManager.hpp>
+#include <match/CLIMatchView.hpp>
 
 ///Constructor
 CLIMarketView::CLIMarketView(ClientController const & parent) :
@@ -205,6 +205,6 @@ void CLIMarketView::onSalesUpdate()
  * Method handling the start of a match
  */
 void CLIMarketView::onMatchStart(){
-	CLIMatchManager match(*this); 
+	CLIMatchView match(*this); 
 	match.run();
 }

@@ -8,7 +8,7 @@
 #include <model/Displacement.hpp>
 #include <model/Stroke.hpp>
 
-class MatchManager : public ClientController {
+class MatchController : public ClientController {
 	public:
 		typedef enum {CREATED, READY, PROMPT, TIMEOUT, FINISHED} State;
 				
@@ -49,8 +49,8 @@ class MatchManager : public ClientController {
 
 	public:
 		using ClientController::ClientController;
-		MatchManager(ClientController const & other);
-		virtual ~MatchManager();
+		MatchController(ClientController const & other);
+		virtual ~MatchController();
 
 };
 

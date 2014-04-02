@@ -3,14 +3,14 @@
 
 #include <network/ClientConnectionManager.hpp>
 #include <graphics/GraphicManager.hpp>
-#include "StadiumManager.hpp"
+#include "StadiumController.hpp"
 #include <GUINotifier.hpp>
 
-class GraphicStadiumManager : public StadiumManager, public GUI::GraphicManager 
+class GraphicStadiumView : public StadiumController, public GUI::GraphicManager 
 {
 public:
-	GraphicStadiumManager(ClientController const & parent, GUI::MainController &controller);
-	~GraphicStadiumManager(){}
+	GraphicStadiumView(ClientController const & parent, GUI::MainController &controller);
+	~GraphicStadiumView(){}
 private:
 	void displayInstallations();
 

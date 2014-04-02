@@ -1,9 +1,9 @@
 #include "CLIFGameView.hpp"
 #include <cli/CLI.hpp>
-#include <match/CLIMatchManager.hpp>
+#include <match/CLIMatchView.hpp>
 
 #include "graphics/MainController.hpp"
-#include <match/GraphicMatchManager.hpp>
+#include <match/GraphicMatchView.hpp>
 
 #include <iostream>
 
@@ -120,6 +120,6 @@ void CLIFGameView::onUserNotFound(std::string const & name)
  * Method handling the start of a match
  */
 void CLIFGameView::onMatchStart(){
-	CLIMatchManager match(*this); 
+	CLIMatchView match(*this); 
 	match.run();
 }

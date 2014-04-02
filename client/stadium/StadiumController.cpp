@@ -1,13 +1,13 @@
-#include "StadiumManager.hpp"
+#include "StadiumController.hpp"
 
 ///Constructor
-StadiumManager::StadiumManager(ClientController const & parent) : ClientController(parent)
+StadiumController::StadiumController(ClientController const & parent) : ClientController(parent)
 {}
 
 /**
  * Method handling the queries to the server for the installations
  */
-void StadiumManager::loadInstallations()
+void StadiumController::loadInstallations()
 {
 	say(net::MSG::INSTALLATIONS_LIST, JSON::String(""));
 }
@@ -15,7 +15,7 @@ void StadiumManager::loadInstallations()
 /**
  * Method handling queries to the server for upgrades of installations
  */
-void StadiumManager::upgradeInstallation(size_t i)
+void StadiumController::upgradeInstallation(size_t i)
 {
 	say(net::MSG::INSTALLATION_UPGRADE, JSON::Integer(i));
 }
@@ -23,7 +23,7 @@ void StadiumManager::upgradeInstallation(size_t i)
 /**
  * Method handling queries to the server for downgrades of installations
  */
-void StadiumManager::downgradeInstallation(size_t i)
+void StadiumController::downgradeInstallation(size_t i)
 {
 	say(net::MSG::INSTALLATION_DOWNGRADE, JSON::Integer(i));
 }
@@ -33,7 +33,7 @@ void StadiumManager::downgradeInstallation(size_t i)
  * @param string : type of the query
  * @param JSON::Value : query from the server
  */
-void StadiumManager::treatMessage(std::string const & type, JSON::Value const * data)
+void StadiumController::treatMessage(std::string const & type, JSON::Value const * data)
 {
 	if (type == net::MSG::INSTALLATION_UPGRADE)
 	{
@@ -57,7 +57,7 @@ void StadiumManager::treatMessage(std::string const & type, JSON::Value const * 
 /**
  * Method handling upgrades of installations
  */
-void StadiumManager::onUpgradeInstallation(bool success)
+void StadiumController::onUpgradeInstallation(bool success)
 {
 	loadInstallations();
 }
@@ -65,7 +65,7 @@ void StadiumManager::onUpgradeInstallation(bool success)
 /**
  * Method handling downgrades of installations
  */
-void StadiumManager::onDowngradeInstallation()
+void StadiumController::onDowngradeInstallation()
 {
 	loadInstallations();
 }

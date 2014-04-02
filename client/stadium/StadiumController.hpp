@@ -6,7 +6,7 @@
 #include <cli/Menu.hpp>
 #include <model/Installation.hpp>
 
-class StadiumManager : public ClientController
+class StadiumController : public ClientController
 {
 protected:
 	/* attempt to upgrade an installation */
@@ -26,7 +26,7 @@ protected:
 	virtual void onInstallationsLoad(){}
 public:
 	using ClientController::ClientController;
-	StadiumManager(ClientController const & parent);
+	StadiumController(ClientController const & parent);
 };
 
 #endif // __STADIUM_MANAGER_HPP

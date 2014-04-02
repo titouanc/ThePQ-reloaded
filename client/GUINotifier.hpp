@@ -1,7 +1,7 @@
 #ifndef DEFINE_GUINOTIFIER_HELPER
 #define DEFINE_GUINOTIFIER_HELPER
 
-#include <match/GraphicMatchManager.hpp>
+#include <match/GraphicMatchView.hpp>
 #include <graphics/MessageBox.hpp>
 #include "graphics/Bank.hpp"
 
@@ -9,7 +9,7 @@
     incoming messages in main event loop */
 #define NOTIFIABLE \
 virtual void checkNotifications(){readMessages();handleNotification();}\
-virtual void launchMatch(){GraphicMatchManager match(*this, _controller);match.run();redrawCanvas();}\
+virtual void launchMatch(){GraphicMatchView match(*this, _controller);match.run();redrawCanvas();}\
 virtual void onOtherAccept(std::string const & user){sf::Sound sound(SOUNDS.get("invite_accept.wav")); sound.play(); launchMatch();}\
 virtual void onOtherDeny(std::string const & user){displayError(user + " doesn't want to play with you");}\
 virtual void onInvite(std::string const & otherUser){sf::Sound sound(SOUNDS.get("invite.wav")); sound.play(); std::string question = otherUser + " has invited you to play a friendly game.\nAccept ?";if (confirm(question)){acceptInvitationFromUser(otherUser);launchMatch();} else {denyInvitationFromUser(otherUser);}}\

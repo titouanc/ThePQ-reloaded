@@ -1,9 +1,9 @@
-#include "CLIMatchManager.hpp"
+#include "CLIMatchView.hpp"
 
 /**
  * Method handling the current player to move on the pitch
  */
-void CLIMatchManager::selectPlayer()
+void CLIMatchView::selectPlayer()
 {
 	cout << "Choose a player to move: " << endl;
 	Menu menu;
@@ -26,9 +26,9 @@ void CLIMatchManager::selectPlayer()
  * Method handling the match
  *built-in methods handle player and game specific actions
  */
-void CLIMatchManager::run()
+void CLIMatchView::run()
 {
-	cout << "CLIMatchManager started" << endl;
+	cout << "CLIMatchView started" << endl;
 	while (state() != READY)
 		readMessage();
 	while (state() != FINISHED){
@@ -36,14 +36,14 @@ void CLIMatchManager::run()
 		displayPitch();
 		selectPlayer();
 	}
-	cout << "CLIMatchManager ended" << endl;
+	cout << "CLIMatchView ended" << endl;
 }
 
 /**
  * Method handling the state of the match
  *it provides infos to the user regarding the current game(created,ready,timeout,finished)
  */
-void CLIMatchManager::onStateChange()
+void CLIMatchView::onStateChange()
 {
 	cout << "\t\033[35mMATCH STATE: ";
 	switch (state()){
@@ -61,7 +61,7 @@ void CLIMatchManager::onStateChange()
 /**
  * Method handling the update of the pitch (game surface)
  */
-void CLIMatchManager::onPitchChange()
+void CLIMatchView::onPitchChange()
 {
 	displayPitch();
 }
@@ -70,7 +70,7 @@ void CLIMatchManager::onPitchChange()
  * Method handling errors
  * @param string : error message
  */
-void CLIMatchManager::onError(std::string const & info)
+void CLIMatchView::onError(std::string const & info)
 {
 	cout << "\033[1m\033[31m" << info << "\033[0m" << endl;
 }
@@ -80,7 +80,7 @@ void CLIMatchManager::onError(std::string const & info)
  * @param Player : player whose color should be updated
  * @return string : ANSI color code corresponding to player type
  */
-std::string CLIMatchManager::colorPlayerLetter(Player const & player)
+std::string CLIMatchView::colorPlayerLetter(Player const & player)
 {
 	char res[7] = "\033[30mX";
 	if (player.isSeeker())
@@ -101,7 +101,7 @@ std::string CLIMatchManager::colorPlayerLetter(Player const & player)
  * @param Ball : ball whose color should be changed
  * @return string : ANSI color code coreespondig to ball type
  */
-std::string CLIMatchManager::colorBallLetter(Ball const & ball)
+std::string CLIMatchView::colorBallLetter(Ball const & ball)
 {
 	char res[7] = "\033[30m*";
 	if (ball.isGoldenSnitch())
@@ -116,7 +116,7 @@ std::string CLIMatchManager::colorBallLetter(Ball const & ball)
 /**
  * Method handling the display of the game surface
  */
-void CLIMatchManager::displayPitch()
+void CLIMatchView::displayPitch()
 {
 	Moveable *atPos = NULL;
 	for (int y=pitch().ymax()-1; y>=pitch().ymin(); y--){
@@ -165,7 +165,7 @@ void CLIMatchManager::displayPitch()
  * Method handling the next direction in which the selected player should move
  * @param Player : player whose direction should be treated 
  */
-void CLIMatchManager::selectDirectionForPlayer(Player *player)
+void CLIMatchView::selectDirectionForPlayer(Player *player)
 {
 	Displacement move;
 	Menu selectDirection;

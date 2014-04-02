@@ -1,5 +1,5 @@
 #include "CLIChampionshipView.hpp"
-#include <match/CLIMatchManager.hpp>
+#include <match/CLIMatchView.hpp>
 
 ///Constructor
 CLIChampionshipView::CLIChampionshipView(ClientController const & parent) : 
@@ -159,6 +159,6 @@ void CLIChampionshipView::onJoinedChampionship(){
  * Method starting a match in a championship
  */
 void CLIChampionshipView::onMatchStart(){
-	CLIMatchManager match(*this); 
+	CLIMatchView match(*this); 
 	match.run();
 }

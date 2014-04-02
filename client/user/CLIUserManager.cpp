@@ -1,11 +1,11 @@
 #include "CLIUserManager.hpp"
 #include <cli/Menu.hpp>
-#include <stadium/CLIStadiumManager.hpp>
+#include <stadium/CLIStadiumView.hpp>
 #include <team/CLITeamManager.hpp>
 #include <market/CLIMarketView.hpp>
 #include <fgame/CLIFGameView.hpp>
 #include <championship/CLIChampionshipView.hpp>
-#include <match/CLIMatchManager.hpp>
+#include <match/CLIMatchView.hpp>
 #include <iostream>
 #include <Constants.hpp>
 using namespace std;
@@ -153,7 +153,7 @@ void CLIUserManager::showMainMenu()
  */
 void CLIUserManager::showManagementMenu()
 {
-	CLIStadiumManager stadiumManager(*this);
+	CLIStadiumView stadiumManager(*this);
 	CLITeamManager teamManager(*this);
 	Menu _menu;
 	_menu.addToDisplay("   - manage your installations\n");
@@ -378,6 +378,6 @@ void CLIUserManager::onMessage(std::string const & message){
  * Method starting a match
  */
 void CLIUserManager::onMatchStart(){
-	CLIMatchManager match(*this); 
+	CLIMatchView match(*this); 
 	match.run();
 }

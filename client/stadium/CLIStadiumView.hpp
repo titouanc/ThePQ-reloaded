@@ -1,14 +1,14 @@
 #ifndef __CLI_STADIUM_MANAGER_HPP
 #define __CLI_STADIUM_MANAGER_HPP
 
-#include "StadiumManager.hpp"
+#include "StadiumController.hpp"
 #include <cli/CLI.hpp>
 
 
-class CLIStadiumManager : public StadiumManager, public CLI {
+class CLIStadiumView : public StadiumController, public CLI {
 public:
-	using StadiumManager::StadiumManager;
-	CLIStadiumManager(ClientController const & parent);
+	using StadiumController::StadiumController;
+	CLIStadiumView(ClientController const & parent);
 	virtual void run();
 
 private:

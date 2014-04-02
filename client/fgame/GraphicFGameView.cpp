@@ -1,5 +1,5 @@
 #include "GraphicFGameView.hpp"
-#include <match/GraphicMatchManager.hpp>
+#include <match/GraphicMatchView.hpp>
 
 using namespace std;
 using namespace GUI;

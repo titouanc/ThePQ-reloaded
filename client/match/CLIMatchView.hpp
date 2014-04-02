@@ -1,14 +1,14 @@
 #ifndef DEFINE_CLIMATCHMANAGER_HEADER
 #define DEFINE_CLIMATCHMANAGER_HEADER 
 
-#include "MatchManager.hpp"
+#include "MatchController.hpp"
 #include <cli/Menu.hpp>
 #include <model/Ball.hpp>
 
-class CLIMatchManager : public MatchManager {
+class CLIMatchView : public MatchController {
 	private:
 	public:
-		using MatchManager::MatchManager;
+		using MatchController::MatchController;
 
 		void selectPlayer();
 		void run();

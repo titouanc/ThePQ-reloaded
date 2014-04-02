@@ -1,15 +1,15 @@
-#include "GraphicStadiumManager.hpp"
-#include <match/GraphicMatchManager.hpp>
+#include "GraphicStadiumView.hpp"
+#include <match/GraphicMatchView.hpp>
 
 using namespace std;
 using namespace GUI;
 
 ///Constructor
-GraphicStadiumManager::GraphicStadiumManager(
+GraphicStadiumView::GraphicStadiumView(
 			ClientController const & parent, 
 			GUI::MainController &controller
 	) : 
-	StadiumManager(parent), 
+	StadiumController(parent), 
 	GraphicManager(controller)
 {
 	_canvas.setBackgroundImage("HexBack.png");
@@ -25,7 +25,7 @@ GraphicStadiumManager::GraphicStadiumManager(
 /**
  * Method handling installation interface
  */
-void GraphicStadiumManager::displayInstallations()
+void GraphicStadiumView::displayInstallations()
 {
 	
 	readMessages();
@@ -60,17 +60,17 @@ void GraphicStadiumManager::displayInstallations()
 		downgradeRefundsValue.setColor(BLUE_TEXT_COLOR);
 
 		if (user().installations[i]->getLevel() == 0){
-			current.addButton<GraphicStadiumManager, int>(
-				&GraphicStadiumManager::doUpgrade, i, this, "Buy", GREEN_BUTTON_BACKGROUND_COLOR
+			current.addButton<GraphicStadiumView, int>(
+				&GraphicStadiumView::doUpgrade, i, this, "Buy", GREEN_BUTTON_BACKGROUND_COLOR
 			).setPosition(10, 220);
 		}
 		else{
-			current.addButton<GraphicStadiumManager, int>(
-				&GraphicStadiumManager::doUpgrade, i, this, "Upgrade", GREEN_BUTTON_BACKGROUND_COLOR
+			current.addButton<GraphicStadiumView, int>(
+				&GraphicStadiumView::doUpgrade, i, this, "Upgrade", GREEN_BUTTON_BACKGROUND_COLOR
 			).setPosition(10, 220);
 
-			Button<GraphicStadiumManager, int> &downButton = current.addButton<GraphicStadiumManager, int>(
-				&GraphicStadiumManager::doDowngrade, i, this, "Downgrade",RED_BUTTON_BACKGROUND_COLOR);
+			Button<GraphicStadiumView, int> &downButton = current.addButton<GraphicStadiumView, int>(
+				&GraphicStadiumView::doDowngrade, i, this, "Downgrade",RED_BUTTON_BACKGROUND_COLOR);
 			downButton.setPosition(270-10-downButton.getWidth(), 220);
 		}
 	}
@@ -90,7 +90,7 @@ void GraphicStadiumManager::displayInstallations()
  * Method handling upgrades of an installation
  * @param int : id of the installation
  */
-void GraphicStadiumManager::doUpgrade(int installation){
+void GraphicStadiumView::doUpgrade(int installation){
 	upgradeInstallation(installation);
 	_wait = true;
 	while (_wait) 
@@ -101,7 +101,7 @@ void GraphicStadiumManager::doUpgrade(int installation){
  * Method handling the downgrade of an installations
  * @param int : id of the installation
  */
-void GraphicStadiumManager::doDowngrade(int installation){
+void GraphicStadiumView::doDowngrade(int installation){
 	downgradeInstallation(installation);
 	_wait = true;
 	while (_wait)
@@ -111,7 +111,7 @@ void GraphicStadiumManager::doDowngrade(int installation){
 /**
  * Method handling the interface for the installations
  */
-void GraphicStadiumManager::onInstallationsLoad()
+void GraphicStadiumView::onInstallationsLoad()
 {
 	_wait = false;
 	displayInstallations();

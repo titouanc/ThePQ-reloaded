@@ -3,11 +3,11 @@
 
 #include <graphics/UIMatch.hpp>
 #include <graphics/GraphicManager.hpp>
-#include <stadium/StadiumManager.hpp>
+#include <stadium/StadiumController.hpp>
 #include <model/Pitch.hpp>
-#include "MatchManager.hpp"
+#include "MatchController.hpp"
 
-class GraphicMatchManager : public MatchManager,  public GUI::GraphicManager {
+class GraphicMatchView : public MatchController,  public GUI::GraphicManager {
 private:
 	UIMatch _match;
 
@@ -23,8 +23,8 @@ private:
 	/* Return true if main loop should continue */
 	bool treatEvent(sf::Event const & ev);
 public:
-	GraphicMatchManager(ClientController const & parent, GUI::MainController & controller); 
-	virtual ~GraphicMatchManager();
+	GraphicMatchView(ClientController const & parent, GUI::MainController & controller); 
+	virtual ~GraphicMatchView();
 	
 	/* Redraw pitch on window */
 	void redraw();

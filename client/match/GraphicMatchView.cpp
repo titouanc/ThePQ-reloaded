@@ -1,9 +1,9 @@
-#include "GraphicMatchManager.hpp"
+#include "GraphicMatchView.hpp"
 #include <toolbox.hpp>
 
 ///Constructor
-GraphicMatchManager::GraphicMatchManager(ClientController const & parent, GUI::MainController & controller) :
-	MatchManager(parent),
+GraphicMatchView::GraphicMatchView(ClientController const & parent, GUI::MainController & controller) :
+	MatchController(parent),
 	GUI::GraphicManager(controller), 
 	_match(pitch(), mySquad()), 
 	_selectedPlayer(NULL), _throwBall(false), _tooltipped(NULL)
@@ -15,7 +15,7 @@ GraphicMatchManager::GraphicMatchManager(ClientController const & parent, GUI::M
 	}
 }
 
-GraphicMatchManager::~GraphicMatchManager()
+GraphicMatchView::~GraphicMatchView()
 {
 	_controller.mainMusic.stop();
 	if (_controller.mainMusic.openFromFile(soundPath("futura.ogg"))){
@@ -27,7 +27,7 @@ GraphicMatchManager::~GraphicMatchManager()
 /**
  *
  */
-void GraphicMatchManager::redraw()
+void GraphicMatchView::redraw()
 {
 	window().clear(sf::Color::White);
 	window().draw(_match);
@@ -37,7 +37,7 @@ void GraphicMatchManager::redraw()
 /**
  * Method
  */
-void GraphicMatchManager::treatClick(Position const & pos, bool regularClick)
+void GraphicMatchView::treatClick(Position const & pos, bool regularClick)
 {
 	_match.clear();
 	/* Hilight clicked pos */
@@ -112,7 +112,7 @@ void GraphicMatchManager::treatClick(Position const & pos, bool regularClick)
 /**
  * Method
  */
-void GraphicMatchManager::treatTooltip(Position const & pos)
+void GraphicMatchView::treatTooltip(Position const & pos)
 {
 	Moveable *atPos = pitch().getAt(pos);
 	if (atPos == _tooltipped)
@@ -144,7 +144,7 @@ void GraphicMatchManager::treatTooltip(Position const & pos)
 /**
  * Method
  */
-bool GraphicMatchManager::treatEvent(sf::Event const & ev)
+bool GraphicMatchView::treatEvent(sf::Event const & ev)
 {
 	if (ev.type == sf::Event::Closed)
 		return false;
@@ -175,9 +175,9 @@ bool GraphicMatchManager::treatEvent(sf::Event const & ev)
 /**
  * Method handling the gui for a match
  */
-void GraphicMatchManager::run()
+void GraphicMatchView::run()
 {
-	cout << "ENTER GraphicMatchManager::run" << endl;
+	cout << "ENTER GraphicMatchView::run" << endl;
 	redraw();
 	
 	bool running = true;
@@ -197,13 +197,13 @@ void GraphicMatchManager::run()
 			minisleep(0.01);
 	}
 
-	cout << "LEAVE GraphicMatchManager::run" << endl;
+	cout << "LEAVE GraphicMatchView::run" << endl;
 }
 
 /**
  * Method handling the squads placement / attack direction
  */
-void GraphicMatchManager::onSquadsInitialized()
+void GraphicMatchView::onSquadsInitialized()
 {
 	_match.setOwnSquadDirection();
 }
@@ -211,7 +211,7 @@ void GraphicMatchManager::onSquadsInitialized()
 /**
  * Method handling the refresh for the game surface
  */
-void GraphicMatchManager::onPitchChange()
+void GraphicMatchView::onPitchChange()
 {
 	redraw();
 }
@@ -219,7 +219,7 @@ void GraphicMatchManager::onPitchChange()
 /**
  * Method handling game states (provides shinny infos in the cli)
  */
-void GraphicMatchManager::onStateChange()
+void GraphicMatchView::onStateChange()
 {
 	cout << "CHANGE STATE: ";
 	switch (state()){

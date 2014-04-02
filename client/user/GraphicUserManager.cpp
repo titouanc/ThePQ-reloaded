@@ -1,5 +1,5 @@
 #include "GraphicUserManager.hpp"
-#include <stadium/GraphicStadiumManager.hpp>
+#include <stadium/GraphicStadiumView.hpp>
 #include <market/GraphicMarketView.hpp>
 #include <fgame/GraphicFGameView.hpp>
 #include <team/GraphicTeamManager.hpp>
@@ -213,7 +213,7 @@ void GraphicUserManager::submitTeamNameForm()
   */
 void GraphicUserManager::goToStadium()
 {
-	GraphicStadiumManager stadium(*this, _controller);
+	GraphicStadiumView stadium(*this, _controller);
 	stadium.run();
 	deleteCanvas();
 	displayMainMenu();
