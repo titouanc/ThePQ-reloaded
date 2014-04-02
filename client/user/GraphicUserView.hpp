@@ -44,7 +44,6 @@ private:
 
 	NOTIFIABLE
 
-	bool _wait;
 };
 
 #endif

@@ -32,7 +32,7 @@ private:
 	NOTIFIABLE
 	void onLoop();
 
-	bool _wait, _waitForBid;
+	bool _waitForBid;
 	time_t _lastUpdated;
 	bool _isSellingPlayer;
 };

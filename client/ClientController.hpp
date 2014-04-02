@@ -28,6 +28,8 @@ class ClientController {
 		
 		int _pending;
 
+		bool _wait;
+
 		/*! Shortcut to send {"type": "<type>", "data": <data>} */
 		void say(std::string const & type, JSON::Value const & data);
 

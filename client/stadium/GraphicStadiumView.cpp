@@ -15,7 +15,6 @@ GraphicStadiumView::GraphicStadiumView(
 	_canvas.setBackgroundImage("HexBack.png");
 	displayCanvas();
 	loadInstallations();
-	_wait = true;
 	while (_wait){
 		readMessages();
 		readEvent();

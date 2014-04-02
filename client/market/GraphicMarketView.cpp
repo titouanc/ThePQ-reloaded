@@ -9,7 +9,6 @@ using namespace GUI;
 GraphicMarketView::GraphicMarketView(ClientController const & parent, GUI::MainController &controller) : 
 	MarketController(parent), 
 	GraphicManager(controller),
-	_wait(false),
 	_lastUpdated(0), 
 	_isSellingPlayer(false)
 {

@@ -19,7 +19,7 @@ void CLIMarketView::run()
 	_menu.addToDisplay("   - see the players on sale\n");
 	_menu.addToDisplay("   - quit to main menu\n");
 	int option;
-	_pending = 0;
+	_wait = false;
 	do {
 		readMessages();
 		option = _menu.run();

@@ -17,7 +17,7 @@ void CLITeamView::run()
 	_menu.addToDisplay("	- Swap player at the selected position with another player");
 	_menu.addToDisplay("	- Quit to management menu\n");
 	int option;
-	_pending = 0;
+	_wait = false;
 	do
 	{
 		clScreen();
@@ -25,7 +25,7 @@ void CLITeamView::run()
 			minisleep(0.1);
 			readMessages();
 		}
-		while (_pending > 0);
+		while (_wait == true);
 		showPlayers();
 		showSquad();
 		option = _menu.run();

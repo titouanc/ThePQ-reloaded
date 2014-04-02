@@ -5,8 +5,7 @@ using namespace GUI;
 ///constructor
  GraphicChampionshipView::GraphicChampionshipView(ClientController const & parent, GUI::MainController & controller) :
 	ChampionshipController(parent),
-	GraphicManager(controller),
-	_wait(false)
+	GraphicManager(controller)
 {
 	displayCanvas();
 
