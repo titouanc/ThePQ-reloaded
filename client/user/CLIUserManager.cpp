@@ -1,7 +1,7 @@
 #include "CLIUserManager.hpp"
 #include <cli/Menu.hpp>
 #include <stadium/CLIStadiumView.hpp>
-#include <team/CLITeamManager.hpp>
+#include <team/CLITeamView.hpp>
 #include <market/CLIMarketView.hpp>
 #include <fgame/CLIFGameView.hpp>
 #include <championship/CLIChampionshipView.hpp>
@@ -154,7 +154,7 @@ void CLIUserManager::showMainMenu()
 void CLIUserManager::showManagementMenu()
 {
 	CLIStadiumView stadiumManager(*this);
-	CLITeamManager teamManager(*this);
+	CLITeamView teamManager(*this);
 	Menu _menu;
 	_menu.addToDisplay("   - manage your installations\n");
 	_menu.addToDisplay("   - manage your players\n");

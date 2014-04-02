@@ -1,7 +1,7 @@
-#include "TeamManager.hpp"
+#include "TeamController.hpp"
 
 /// Constructor
-TeamManager::TeamManager(ClientController const & parent) : ClientController(parent), _selectedPosition(-1) 
+TeamController::TeamController(ClientController const & parent) : ClientController(parent), _selectedPosition(-1) 
 {
 
 }
@@ -10,7 +10,7 @@ TeamManager::TeamManager(ClientController const & parent) : ClientController(par
  * Method handling position selection
  * @param int :  position to select
  */
-void TeamManager::selectPosition(int position){
+void TeamController::selectPosition(int position){
 	_selectedPosition = position;
 }
 
@@ -18,7 +18,7 @@ void TeamManager::selectPosition(int position){
  * Method handling position
  * @return int : position
  */
-int TeamManager::getSelectedPosition(){
+int TeamController::getSelectedPosition(){
 	return _selectedPosition;
 }
 
@@ -27,7 +27,7 @@ int TeamManager::getSelectedPosition(){
  * @param int : id of the player whose poisition to change
  * @param int : new position at which to place the player
  */
-void TeamManager::putPlayerAtPosition(int player_id, int position){
+void TeamController::putPlayerAtPosition(int player_id, int position){
 	JSON::Dict data = {
 		{ net::MSG::PLAYER_ID, JSON::Integer(player_id) },
 		{ net::MSG::SQUAD_POSITION, JSON::Integer(position) }
@@ -40,7 +40,7 @@ void TeamManager::putPlayerAtPosition(int player_id, int position){
  * @param int : id of the player to swap
  * @param int : position where to place the player
  */
-void TeamManager::swapPlayers(int player_id, int position){
+void TeamController::swapPlayers(int player_id, int position){
 	JSON::Dict data = {
 		{ net::MSG::PLAYER_ID, JSON::Integer(player_id) },
 		{ net::MSG::SQUAD_POSITION, JSON::Integer(position) }

@@ -2,7 +2,7 @@
 #include <stadium/GraphicStadiumView.hpp>
 #include <market/GraphicMarketView.hpp>
 #include <fgame/GraphicFGameView.hpp>
-#include <team/GraphicTeamManager.hpp>
+#include <team/GraphicTeamView.hpp>
 #include <championship/GraphicChampionshipView.hpp>
 
 using namespace std;
@@ -246,7 +246,7 @@ void GraphicUserManager::goToFriendlyGame()
   */
 void GraphicUserManager::goToPlayers()
 {
-	GraphicTeamManager market(*this, _controller);
+	GraphicTeamView market(*this, _controller);
 	market.run();
 	deleteCanvas();
 	displayMainMenu();

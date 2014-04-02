@@ -1,14 +1,14 @@
 #ifndef DEFINE_GRAPHICTEAMMANAGER_HEADER
 #define DEFINE_GRAPHICTEAMMANAGER_HEADER
 
-#include "TeamManager.hpp"
+#include "TeamController.hpp"
 #include <graphics/GraphicManager.hpp>
 #include <GUINotifier.hpp>
 
-class GraphicTeamManager : public TeamManager, public GUI::GraphicManager {
+class GraphicTeamView : public TeamController, public GUI::GraphicManager {
 public:
-	GraphicTeamManager(ClientController const & parent, GUI::MainController &controller);
-	~GraphicTeamManager();
+	GraphicTeamView(ClientController const & parent, GUI::MainController &controller);
+	~GraphicTeamView();
 private:
 	void displayPlayers();
 	void displaySquadLabels();

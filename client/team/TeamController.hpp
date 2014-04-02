@@ -6,11 +6,11 @@
 #include <cli/Menu.hpp>
 #include <ClientController.hpp>
 
-class TeamManager : public ClientController
+class TeamController : public ClientController
 {
 public:
 	using ClientController::ClientController;
-	TeamManager(ClientController const & parent);
+	TeamController(ClientController const & parent);
 	void selectPosition(int position);
 	int getSelectedPosition();
 protected:

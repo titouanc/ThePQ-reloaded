@@ -1,14 +1,14 @@
 #ifndef __CLI_TEAM_MANAGER_HPP
 #define __CLI_TEAM_MANAGER_HPP
 
-#include "TeamManager.hpp"
+#include "TeamController.hpp"
 #include <cli/CLI.hpp>
 
-class CLITeamManager : public TeamManager, public CLI
+class CLITeamView : public TeamController, public CLI
 {
 public:
-	using TeamManager::TeamManager;
-	CLITeamManager(ClientController const & parent);
+	using TeamController::TeamController;
+	CLITeamView(ClientController const & parent);
 	void run();
 	virtual void showPlayers();
 	virtual void showSquad();

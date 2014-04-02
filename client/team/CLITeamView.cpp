@@ -1,16 +1,16 @@
-#include "CLITeamManager.hpp"
+#include "CLITeamView.hpp"
 #include <match/CLIMatchView.hpp>
 
 using namespace SQUAD;
 
 /// Constructor
-CLITeamManager::CLITeamManager(ClientController const & parent) : TeamManager(parent)
+CLITeamView::CLITeamView(ClientController const & parent) : TeamController(parent)
 {}
 
 /**
  * Method handling the team management interface
  */
-void CLITeamManager::run()
+void CLITeamView::run()
 {
 	Menu _menu;
 	_menu.addToDisplay("	- Put player at the selected position");
@@ -47,7 +47,7 @@ void CLITeamManager::run()
 /**
  * Method displaying the teams players
  */
-void CLITeamManager::showPlayers(){
+void CLITeamView::showPlayers(){
 	cout << "\033[2J\033[1;1H";
 	cout << "		================ YOUR PLAYERS ================" << endl;
 	for(size_t i =0; i<user().players.size();++i){
@@ -59,7 +59,7 @@ void CLITeamManager::showPlayers(){
 /**
  * Method displaying the users squad
  */
-void CLITeamManager::showSquad()
+void CLITeamView::showSquad()
 {
 	cout << "\033[2J\033[1;1H";
 	cout << "================ YOUR SQUAD ==================" << endl;
@@ -76,7 +76,7 @@ void CLITeamManager::showSquad()
 /**
  * Method handling user input for a players position
  */
-void CLITeamManager::showSelectPosition()
+void CLITeamView::showSelectPosition()
 {
 	int position;
 	do
@@ -92,7 +92,7 @@ void CLITeamManager::showSelectPosition()
 /**
  * Method handling player position on pitch
  */
-void CLITeamManager::showSelectPlayer()
+void CLITeamView::showSelectPlayer()
 {
 	int player_id;
 	do
@@ -109,7 +109,7 @@ void CLITeamManager::showSelectPlayer()
 /**
  * Method handling a player swap (squad <-> team)
  */
-void CLITeamManager::showSwapPlayer()
+void CLITeamView::showSwapPlayer()
 {
 	int player_id;
 	do
@@ -125,7 +125,7 @@ void CLITeamManager::showSwapPlayer()
 /**
  * Method handling the match start
  */
-void CLITeamManager::onMatchStart(){
+void CLITeamView::onMatchStart(){
 	CLIMatchView match(*this); 
 	match.run();
 }
