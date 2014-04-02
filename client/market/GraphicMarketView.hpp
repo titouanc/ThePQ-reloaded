@@ -2,15 +2,15 @@
 #define GRAPHIC_MARKET_MANAGER_HPP
 
 #include <graphics/GraphicManager.hpp>
-#include "MarketManager.hpp"
+#include "MarketController.hpp"
 #include <GUINotifier.hpp>
 #include <ctime>
 
-class GraphicMarketManager : public MarketManager, public GUI::GraphicManager 
+class GraphicMarketView : public MarketController, public GUI::GraphicManager 
 {
 public:
-	GraphicMarketManager(ClientController const & parent, GUI::MainController &controller);
-	~GraphicMarketManager(){}
+	GraphicMarketView(ClientController const & parent, GUI::MainController &controller);
+	~GraphicMarketView(){}
 
 	void test(int data){
 		std::cout << "DATA: " << data << std::endl;

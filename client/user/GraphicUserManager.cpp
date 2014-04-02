@@ -1,6 +1,6 @@
 #include "GraphicUserManager.hpp"
 #include <stadium/GraphicStadiumManager.hpp>
-#include <market/GraphicMarketManager.hpp>
+#include <market/GraphicMarketView.hpp>
 #include <fgame/GraphicFGameView.hpp>
 #include <team/GraphicTeamManager.hpp>
 #include <championship/GraphicChampionshipView.hpp>
@@ -224,7 +224,7 @@ void GraphicUserManager::goToStadium()
   */
 void GraphicUserManager::goToMarket()
 {
-	GraphicMarketManager market(*this, _controller);
+	GraphicMarketView market(*this, _controller);
 	market.run();
 	deleteCanvas();
 	displayMainMenu();

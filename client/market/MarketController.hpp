@@ -7,7 +7,7 @@
 #include <cli/Menu.hpp>
 #include <Exception.hpp>
 
-class MarketManager : public ClientController
+class MarketController : public ClientController
 {
 private:
 	std::vector<Sale> _sales;
@@ -42,7 +42,7 @@ protected:
 	virtual void onAddPlayerError(std::string const & err){}
 public:
 	using ClientController::ClientController;
-	MarketManager(ClientController const & parent);
+	MarketController(ClientController const & parent);
 };
 
 #endif // __MARKET_MANAGER_HPP

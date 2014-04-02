@@ -1,4 +1,4 @@
-#include "GraphicMarketManager.hpp"
+#include "GraphicMarketView.hpp"
 #include <Constants.hpp>
 #include <stdlib.h> // stoi
 
@@ -6,8 +6,8 @@ using namespace std;
 using namespace GUI;
 
 ///Constructor
-GraphicMarketManager::GraphicMarketManager(ClientController const & parent, GUI::MainController &controller) : 
-	MarketManager(parent), 
+GraphicMarketView::GraphicMarketView(ClientController const & parent, GUI::MainController &controller) : 
+	MarketController(parent), 
 	GraphicManager(controller),
 	_wait(false),
 	_lastUpdated(0), 
@@ -23,9 +23,9 @@ GraphicMarketManager::GraphicMarketManager(ClientController const & parent, GUI:
 /**
  * Method handling the market update
  */
-void GraphicMarketManager::updateSales()
+void GraphicMarketView::updateSales()
 {
-	MarketManager::updateSales();
+	MarketController::updateSales();
 	_wait = true;
 	while (_wait){
 		readEvent();
@@ -37,7 +37,7 @@ void GraphicMarketManager::updateSales()
  * Method handling bidding on a player
  * @param int: id of the player to bid on
  */
-void GraphicMarketManager::placeBid(int playerID)
+void GraphicMarketView::placeBid(int playerID)
 {
 	_wait=true;
 	bidOnPlayer(playerID);
@@ -48,7 +48,7 @@ void GraphicMarketManager::placeBid(int playerID)
 /**
  * Method displaying the players available foor sale
  */
-void GraphicMarketManager::displaySellablePlayers()
+void GraphicMarketView::displaySellablePlayers()
 {
 	clear();
 	_isSellingPlayer = true;
@@ -93,8 +93,8 @@ void GraphicMarketManager::displaySellablePlayers()
 		maxPriceLabel.setPosition(400, BUTTON_TOP_PADDING);
 		maxPriceLabel.setColor(BUTTON_TEXT_COLOR);
 		
-		Button<GraphicMarketManager, Player*> & sellButton = playerCell.addButton<GraphicMarketManager, Player*>(
-			&GraphicMarketManager::askPriceForPlayer, player, this, "Sell");
+		Button<GraphicMarketView, Player*> & sellButton = playerCell.addButton<GraphicMarketView, Player*>(
+			&GraphicMarketView::askPriceForPlayer, player, this, "Sell");
 		sellButton.setPosition(600-sellButton.getWidth(), 0);
 		
 	}
@@ -108,12 +108,12 @@ void GraphicMarketManager::displaySellablePlayers()
  * Method handling the bidding on a player
  * @param Player: player to bid on
  */
-void GraphicMarketManager::askPriceForPlayer(Player *player){
+void GraphicMarketView::askPriceForPlayer(Player *player){
 	Textbox & priceTextbox = _canvas.addTextbox("Enter a price");
 	priceTextbox.setPosition(800, 350);
 
-	_canvas.addButton<GraphicMarketManager, Player*>(
-		&GraphicMarketManager::sellPlayer, player, this, "Confirm"
+	_canvas.addButton<GraphicMarketView, Player*>(
+		&GraphicMarketView::sellPlayer, player, this, "Confirm"
 	).setPosition(800, 400);
 
 	redrawCanvas();
@@ -123,7 +123,7 @@ void GraphicMarketManager::askPriceForPlayer(Player *player){
  * Method handling the sale of a player on the PlayerMarket
  * @param Player : player to sell 
  */
-void GraphicMarketManager::sellPlayer(Player *player){
+void GraphicMarketView::sellPlayer(Player *player){
 	pair<int, int> range = getBidValueRange(player);
 	std::string const & text = _canvas.textboxWithID("Enter a price").getText();
 
@@ -147,7 +147,7 @@ void GraphicMarketManager::sellPlayer(Player *player){
 /**
  * Method handling the update of the Marketplace
  */
-void GraphicMarketManager::onSalesUpdate()
+void GraphicMarketView::onSalesUpdate()
 {
 	_wait = false;
 	_lastUpdated = time(NULL);
@@ -246,15 +246,15 @@ void GraphicMarketManager::onSalesUpdate()
 		timeLabel.setPosition(900, BUTTON_TOP_PADDING);
 		timeLabel.setColor(BUTTON_TEXT_COLOR);
 
-		Button<GraphicMarketManager, int> & bidButton = player.addButton<GraphicMarketManager, int>(
-			&GraphicMarketManager::placeBid, sale.getPlayer().getMemberID(),
+		Button<GraphicMarketView, int> & bidButton = player.addButton<GraphicMarketView, int>(
+			&GraphicMarketView::placeBid, sale.getPlayer().getMemberID(),
 			this, "BID");
 		bidButton.setPosition(cellSize-bidButton.getWidth(), 0);
 	}
 	
 	addBackButton();
 
-	Button<GraphicMarketManager> & sellButton = _canvas.addButton<GraphicMarketManager>(&GraphicMarketManager::displaySellablePlayers, this, "Sell a player");
+	Button<GraphicMarketView> & sellButton = _canvas.addButton<GraphicMarketView>(&GraphicMarketView::displaySellablePlayers, this, "Sell a player");
 	sellButton.setPosition(window().getSize().x-_backButton->getWidth()-sellButton.getWidth() - 3*MARGIN, window().getSize().y-sellButton.getHeight()-MARGIN);
 
 
@@ -265,7 +265,7 @@ void GraphicMarketManager::onSalesUpdate()
 /**
  * Method handling a correct bid
  */
-void GraphicMarketManager::onBidOK()
+void GraphicMarketView::onBidOK()
 {
 	_wait = false;
 	updateSales();
@@ -275,7 +275,7 @@ void GraphicMarketManager::onBidOK()
  * Method handling an incorrect bid
  * @param string : error message 
  */
-void GraphicMarketManager::onBidError(std::string const & err)
+void GraphicMarketView::onBidError(std::string const & err)
 {
 	_wait = false;
 	displayError(err);
@@ -285,7 +285,7 @@ void GraphicMarketManager::onBidError(std::string const & err)
 /**
  * Method handling correct addition of player on the market
  */
-void GraphicMarketManager::onAddPlayerOK()
+void GraphicMarketView::onAddPlayerOK()
 {
 	updateSales();
 	while (_wait)
@@ -296,13 +296,13 @@ void GraphicMarketManager::onAddPlayerOK()
  * Method handling error on addition of player on the market
  * @param string: error message
  */
-void GraphicMarketManager::onAddPlayerError(std::string const & reason)
+void GraphicMarketView::onAddPlayerError(std::string const & reason)
 {
 	_wait = false;
 	displayError(reason);
 }
 
-void GraphicMarketManager::onLoop(){
+void GraphicMarketView::onLoop(){
 	if (!_isSellingPlayer)
 		if (abs(difftime(time(NULL), _lastUpdated)) > GUI::AUTOUPDATE_STALE_TIME)
 			updateSales();

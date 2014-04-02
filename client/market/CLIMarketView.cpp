@@ -1,15 +1,15 @@
-#include "CLIMarketManager.hpp"
+#include "CLIMarketView.hpp"
 #include <match/CLIMatchManager.hpp>
 
 ///Constructor
-CLIMarketManager::CLIMarketManager(ClientController const & parent) :
-MarketManager(parent), _waitForSales(false), _waitForBid(false)
+CLIMarketView::CLIMarketView(ClientController const & parent) :
+MarketController(parent), _waitForSales(false), _waitForBid(false)
 {}
 
 /**
  * Method starting the player market for the command line
  */
-void CLIMarketManager::run()
+void CLIMarketView::run()
 {
 	while (user().players.size() == 0){
 		readMessage();
@@ -41,7 +41,7 @@ void CLIMarketManager::run()
 /**
  * Method handling the sell of a player
  */
-void CLIMarketManager::sellPlayer()
+void CLIMarketView::sellPlayer()
 {
 	showPlayers();
 	int player_id, bidValue;
@@ -79,7 +79,7 @@ void CLIMarketManager::sellPlayer()
 /**
  * Method handling the listing of players for sale
  */
-void CLIMarketManager::displayPlayersOnSale()
+void CLIMarketView::displayPlayersOnSale()
 {
 	_waitForSales = true;
 	updateSales();
@@ -95,7 +95,7 @@ void CLIMarketManager::displayPlayersOnSale()
 /**
  * Method showing the bidding interface
  */
-void CLIMarketManager::showBidMenu()
+void CLIMarketView::showBidMenu()
 {
 	displayPlayersOnSale();
 	Menu _menu;
@@ -124,7 +124,7 @@ void CLIMarketManager::showBidMenu()
 /**
  * Method displaying current users players
  */
-void CLIMarketManager::showPlayers(){
+void CLIMarketView::showPlayers(){
 	cout << "================ YOUR PLAYERS ================" << endl;
 	for(size_t i =0; i<user().players.size();++i){
 		cout << user().players[i] << endl; //modif
@@ -135,7 +135,7 @@ void CLIMarketManager::showPlayers(){
 /**
  * Method handling bidding
  */
-void CLIMarketManager::placeBid()
+void CLIMarketView::placeBid()
 {
 	int player_id;
 	string response;
@@ -157,7 +157,7 @@ void CLIMarketManager::placeBid()
  * Method handling a correct bid
  *(send query to server)
  */
-void CLIMarketManager::onBidOK()
+void CLIMarketView::onBidOK()
 {
 	_waitForBid = false;
 	okMsg("Bid added");
@@ -168,7 +168,7 @@ void CLIMarketManager::onBidOK()
  *(send query to server)
  * @param string: error message
  */
-void CLIMarketManager::onBidError(std::string const & reason)
+void CLIMarketView::onBidError(std::string const & reason)
 {
 	_waitForBid = false;
 	errorMsg(reason);
@@ -177,7 +177,7 @@ void CLIMarketManager::onBidError(std::string const & reason)
 /**
  * Method handling the addition of a player on the PlayerMarket
  */
-void CLIMarketManager::onAddPlayerOK()
+void CLIMarketView::onAddPlayerOK()
 {
 	_waitForBid = false;
 	okMsg("Player put on market");
@@ -187,7 +187,7 @@ void CLIMarketManager::onAddPlayerOK()
  * Method handling an error in the addition of a player on the PlayerMarket
  * @param : string  error message to be sent to the server
  */
-void CLIMarketManager::onAddPlayerError(std::string const & reason)
+void CLIMarketView::onAddPlayerError(std::string const & reason)
 {
 	_waitForBid = false;
 	errorMsg(reason);
@@ -196,7 +196,7 @@ void CLIMarketManager::onAddPlayerError(std::string const & reason)
 /**
  * Method handling the update of the market
  */
-void CLIMarketManager::onSalesUpdate()
+void CLIMarketView::onSalesUpdate()
 {
 	_waitForSales = false;
 }
@@ -204,7 +204,7 @@ void CLIMarketManager::onSalesUpdate()
 /**
  * Method handling the start of a match
  */
-void CLIMarketManager::onMatchStart(){
+void CLIMarketView::onMatchStart(){
 	CLIMatchManager match(*this); 
 	match.run();
 }

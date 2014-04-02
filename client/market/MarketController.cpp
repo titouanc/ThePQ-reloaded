@@ -1,7 +1,7 @@
-#include "MarketManager.hpp"
+#include "MarketController.hpp"
 
 ///Constructor
-MarketManager::MarketManager(ClientController const & parent) :
+MarketController::MarketController(ClientController const & parent) :
 	ClientController(parent)
 {
 	updateSales();
@@ -13,7 +13,7 @@ MarketManager::MarketManager(ClientController const & parent) :
  * @param Player: the player whose value to be determined
  * @return (int,int) the lower and upper bounds of the value of a player
  */
-pair<int, int> MarketManager::getBidValueRange(Player *player){
+pair<int, int> MarketController::getBidValueRange(Player *player){
 	int allowedRangeFromEstimatedValue = 10000; //TODO : in Constants.hpp (should do that for many others variables !)
 	pair<int, int> range;
 	range.first = (player->estimatedValue() - (int) allowedRangeFromEstimatedValue/2);
@@ -25,7 +25,7 @@ pair<int, int> MarketManager::getBidValueRange(Player *player){
 /**
  * Method handling the update of the players bid values
  */
-void MarketManager::updateSales(){
+void MarketController::updateSales(){
 	say(net::MSG::PLAYERS_ON_MARKET_LIST, JSON::String(""));
 }
 
@@ -33,7 +33,7 @@ void MarketManager::updateSales(){
  * Method handling the bid on a player
  * @param int : the id of the player to bid on
 */
-void MarketManager::bidOnPlayer(int player_id){//modif
+void MarketController::bidOnPlayer(int player_id){//modif
 	std::cout << "GONNA BID ON " << player_id;
 	int value = getNextBidValue(player_id);
 	if (value == -1) throw PlayerNotFoundException();
@@ -51,7 +51,7 @@ void MarketManager::bidOnPlayer(int player_id){//modif
  * @param int : id of the player to be put on the market
  * @param int : value of hte player being put on the market
 */
-void MarketManager::addPlayerOnMarket(int player_id, int value){
+void MarketController::addPlayerOnMarket(int player_id, int value){
 	JSON::Dict data = {
 		{ net::MSG::USERNAME, JSON::String(user().username) },
 		{ net::MSG::PLAYER_ID, JSON::Integer(player_id) },
@@ -63,7 +63,7 @@ void MarketManager::addPlayerOnMarket(int player_id, int value){
 /**
  * Method for determining the next bid value of the player on sale 
  */
-int MarketManager::getNextBidValue(int player_id)
+int MarketController::getNextBidValue(int player_id)
 {
 	int value = -1;
 	for(size_t i = 0; i<_sales.size();++i){		//Getting the next bid value (which is in the JSON::Dict sent by server)
@@ -79,7 +79,7 @@ int MarketManager::getNextBidValue(int player_id)
  * @param string : type of the message to be handled (INT,STR..)
  * @param JSON::Value : data to be treated
  */
-void MarketManager::treatMessage(std::string const & type, JSON::Value const * data)
+void MarketController::treatMessage(std::string const & type, JSON::Value const * data)
 {
 	if (type == net::MSG::PLAYERS_ON_MARKET_LIST){
 		JSON::List const & sales = LIST(data);

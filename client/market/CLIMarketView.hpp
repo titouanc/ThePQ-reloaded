@@ -2,14 +2,14 @@
 #ifndef __CLI_MARKET_MANAGER_HPP
 #define __CLI_MARKET_MANAGER_HPP
 
-#include "MarketManager.hpp"
+#include "MarketController.hpp"
 #include <cli/CLI.hpp>
 
-class CLIMarketManager : public MarketManager, public CLI
+class CLIMarketView : public MarketController, public CLI
 {
 public:
-	using MarketManager::MarketManager;
-	CLIMarketManager(ClientController const & parent);
+	using MarketController::MarketController;
+	CLIMarketView(ClientController const & parent);
 	void run();
 private:
 	void placeBid();
