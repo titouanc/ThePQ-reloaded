@@ -210,6 +210,9 @@ void CLITeamManager::handleAbility(int id){
 	
 }
 
+/**
+ * Method handling the player ability upgrade interface
+ */
 void CLITeamManager::handlePlayerAbility(){
 	cout << endl << endl <<  "Enter the id of the player whose ability to Upgrade: ";
 	unsigned int idPlayer;
@@ -229,10 +232,17 @@ void CLITeamManager::handlePlayerAbility(){
 	}
 }
 
+/**
+ * Method displaying the player abilities
+ */
 void CLITeamManager::showPlayer(Player &player, int i){
 	cout << showStrength(player.getStrength()) << "	" << showVelocity(player.getVelocity()) << "	" << showPrecision(player.getPrecision()) 
 			<< "	" << showChance(player.getChance()) << "	" << i << "	 " <<player.getName()<<endl;
 }
+
+/**
+ * Method showing the abilities of the whole squad
+ */
 void CLITeamManager::showPlayerAttributes(){
 	cout << "\033[2J\033[1;1H";
 	cout << "========== Your players and their attributes =========="<<endl;
@@ -243,7 +253,6 @@ void CLITeamManager::showPlayerAttributes(){
 		showPlayer(player,i);
 		i++;
 	}
-	
 	Menu _menu;
 	_menu.addToDisplay(" - Upgrade a players ability ");
 	_menu.addToDisplay(" - Return to the previous menu");
@@ -261,6 +270,10 @@ void CLITeamManager::showPlayerAttributes(){
 	}
 }
 
+/**
+ * Method padding a value for 3 decimals
+ * @param value to be padded
+ */
 std::string CLITeamManager::paddValue(int value){
 	if (value < 10)
 		return std::to_string(value)+"  ";
@@ -269,6 +282,9 @@ std::string CLITeamManager::paddValue(int value){
 	else return std::to_string(value);
 }
 
+/**
+ * Method displaying the strength level and the upgraded level
+ */
 std::string CLITeamManager::showStrength(int value){
 	std::string toShow;
 	toShow+=paddValue(value);
@@ -285,6 +301,9 @@ std::string CLITeamManager::showStrength(int value){
 	return toShow;
 }
 
+/**
+ * Method displaying the precision level and the upgraded level
+ */
 std::string CLITeamManager::showPrecision(int value){
 	std::string toShow;
 	toShow+=paddValue(value);
@@ -301,6 +320,9 @@ std::string CLITeamManager::showPrecision(int value){
 	return toShow;
 }
 
+/**
+ * Method displaying the chance level and the upgraded level
+ */
 std::string CLITeamManager::showChance(int value){
 	std::string toShow;
 	toShow+=paddValue(value);
@@ -317,6 +339,9 @@ std::string CLITeamManager::showChance(int value){
 	return toShow;
 }
 
+/**
+ * Method displaying the velocity level and the upgraded lelvel
+ */
 std::string CLITeamManager::showVelocity(int value){
 	std::string toShow;
 	toShow+=paddValue(value);
