@@ -82,19 +82,7 @@ void MatchManager::_mainloop_out()
 		sendToAll(msg);
 	}
 
-	if (hasClient(_match.squad(0).client_id)){
-		_matchRes.setScore(100,0);
-		_matchRes.setTeams(_match.squad(0).squad_owner,_match.squad(1).squad_owner);
-		_matchRes.resolveFameDisconnection(_match.squad(0).squad_owner);
-		_matchRes.resolveMoneyDisconnection(_match.squad(0).squad_owner);
-	}
-
-	if (hasClient(_match.squad(1).client_id)){
-		_matchRes.setScore(100,0);
-		_matchRes.setTeams(_match.squad(1).squad_owner,_match.squad(0).squad_owner);
-		_matchRes.resolveFameDisconnection(_match.squad(1).squad_owner);
-		_matchRes.resolveMoneyDisconnection(_match.squad(1).squad_owner);
-	}
+	endMatch();
 
 	sendSignal(net::MSG::MATCH_END);
 	cout << "[" << this << "] \033[32mMatch finished\033[0m" << endl;
@@ -152,33 +140,42 @@ void MatchManager::sendMoveables(void)
 
 void MatchManager::endMatch(void)
 {
-	/*
-	int winner = (_score[0] > _score[1]) ? 0 : 1;
-	int looser = 1-winner;
+	// champ match -> random host
+	if (_champMatch == true)
+	{
+		int random = rand() % 2;
+		_matchRes.setHost(_match.squad(random).squad_owner);
+	}
+	// friendly game -> user who invites is the host
+	else
+	{
+		_matchRes.setHost(_match.squad(1).squad_owner);
+	}
 	
-	JSON::Dict winnerScore;
-	winnerScore.set("squad_id", _match.squad(winner).squad_id);
-	winnerScore.set("score", _score[winner]);
+	std::pair<std::string,unsigned int> winner = _match.getWinner();
+	std::pair<std::string,unsigned int> loser = _match.getLoser();
 
-	JSON::Dict looserScore;
-	looserScore.set("squad_id", _match.squad(looser).squad_id);
-	looserScore.set("score", _score[looser]);
-
-	JSON::Dict data;
-	data.set("winner", winnerScore);
-	data.set("looser", looserScore);
-	
-	JSON::Dict msg;
-	msg.set("type", net::MSG::MATCH_SCORES);
-	msg.set("data", data);
-	sendToAll(msg);
-	sendSignal(net::MSG::MATCH_END);
-
-	releaseClient(_match.squad(0).client_id);
-	releaseClient(_match.squad(1).client_id);
-
-	_matchRes.setTeams(_match.squad(winner).squad_owner,_match.squad(looser).squad_owner);
-	_matchRes.setScore(_score[winner], _score[looser]);
-	*/
+	// match ended normally : users are both connected
+	if (nClients() == 2) 
+	{
+		_matchRes.setTeams(winner.first,loser.first);
+		_matchRes.setScore(winner.second,loser.second);
+	}
+	// both clients disconnected
+	else if (nClients() == 0)
+	{
+		int w = rand() % 2, l = 1-w; // randoming winner, obviously loser is the other one
+		_matchRes.setScore(150, 0);
+		_matchRes.setTeams(_match.squad(w).squad_owner, _match.squad(l).squad_owner);
+	}
+	// client 0 disconnected
+	else if (! hasClient(_match.squad(0).client_id)){
+		_matchRes.setScore(150,0);
+		_matchRes.setTeams(_match.squad(1).squad_owner,_match.squad(0).squad_owner);
+	}
+	// client 1 disconnected
+	else if (! hasClient(_match.squad(1).client_id)){
+		_matchRes.setScore(150,0);
+		_matchRes.setTeams(_match.squad(0).squad_owner,_match.squad(1).squad_owner);
+	}
 }
-

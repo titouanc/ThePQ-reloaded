@@ -4,7 +4,7 @@
 /// Constructor
 GraphicClient::GraphicClient(NetConfig const &config) :
     _user(), _connection(config.host, config.port), _notifications(),
-    _controller(), _gUserManager(_connection, _user, _notifications, _controller) {
+    _controller(), _gUserController(_connection, _user, _notifications, _controller) {
 }
 
 /**
@@ -18,9 +18,9 @@ void GraphicClient::run() {
 			connected = true;
 		}
 		catch (...) {
-			_gUserManager.displayMessage("Could not connect to the server.", {"Retry"});
+			_gUserController.displayMessage("Could not connect to the server.", {"Retry"});
 		}
 	}
-    _gUserManager.run();
+    _gUserController.run();
     _connection.stop();
 }

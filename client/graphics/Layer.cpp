@@ -4,6 +4,7 @@
 #include <sstream>
 #include <iostream>
 #include <toolbox.hpp>
+#include "Bank.hpp"
 
 using namespace std;
 using namespace GUI;
@@ -13,10 +14,8 @@ GUI::Layer::~Layer(){
 }
 
 void GUI::Layer::clear(bool clearBackground){
-	if (clearBackground && _backgroundImage != NULL){
-		delete _backgroundImage;
-		_backgroundImage = NULL;
-	}
+	if (clearBackground)
+		deleteBackgroundImage();
 	for (size_t i=0; i<_panels.size(); ++i)
 		delete _panels[i];
 	std::map<std::string, GUI::Textbox*>::iterator it;
@@ -92,7 +91,6 @@ void GUI::Layer::renderAllAttributesTo(sf::RenderTarget &dest){
 		dest.draw(*(_overlayPanels[i]));
 		_overlayPanels[i]->setPosition(ox, oy); // resetting
 	}
-
 }
 
 bool GUI::Layer::handleClick(int x, int y){
@@ -160,11 +158,8 @@ void GUI::Layer::handleMouseMoved(sf::Event event){
 }
 
 void GUI::Layer::setBackgroundImage(string path){
-	if (_backgroundImage != NULL)
-		delete _backgroundImage;
-	_backgroundImage = new sf::Sprite();
-	_backgroundImageTexture.loadFromFile(path);
-	_backgroundImage->setTexture(_backgroundImageTexture, true);
+	deleteBackgroundImage();
+	_backgroundImage = new sf::Sprite(TEXTURES.get(path));
 }
 
 void GUI::Layer::setPosition(int x, int y){

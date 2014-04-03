@@ -4,8 +4,10 @@
 #include <iostream>
 #include <vector>
 #include <cstdlib>
+
 using namespace std;
-class Menu{
+
+class Menu {
 	private:
 		std::vector<string> _inBuffer;
 		int _option;
