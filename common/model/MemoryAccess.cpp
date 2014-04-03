@@ -13,15 +13,35 @@
 #include <model/Championship.hpp>
 #include <iostream>
 
+/**
+ * Method retrieving the users directory
+ * @param std::string : name of the user
+ * @return std::string : path to the users directory
+ */
 std::string MemoryAccess::getUserDirectory(std::string username){
 	return memory::USERS_DIR + username + "/";
 }
+/**
+ * Method retrieving the full users directory path
+ * @param std::string : name of the user
+ * @return std::string : full path to the users directory
+ */
 std::string MemoryAccess::getUserPath(std::string username){
     return getUserDirectory(username) + memory::USER_FILE + memory::FILE_FORMAT;
 }
+/**
+ * Method retrieving the player directory
+ * @param std::string : name of the user
+ * @return std::string : path to the  directory
+ */
 std::string MemoryAccess::getPlayersDirectory(std::string username){
 	return getUserDirectory(username) + memory::PLAYERS_DIR;
 }
+/**
+ * Method retrieving the player directory full path
+ * @param std::string : name of the user
+ * @return std::string : full path to the  players directory
+ */
 std::string MemoryAccess::getPlayerPath(std::string username, int id){
 	return getPlayersDirectory(username) + std::to_string(id) + memory::FILE_FORMAT;
 }
@@ -53,11 +73,20 @@ std::string MemoryAccess::getChampionshipPath(std::string name){
 	return memory::CHAMPIONSHIPS_DIR + name + memory::FILE_FORMAT;
 }
 
+/**
+ * Method saving the installations of a user
+ * @param Installation * : pointer to a users installations
+ */
 void MemoryAccess::save(Installation* install){
 	std::string path = getInstallationPath(install->getOwner(), install->getName());
 	JSON::Dict toSave = *install;
 	toSave.save(path.c_str());
 }
+
+/**
+ * Method saving all user adata
+ * @param User : users whose data shall be saved
+ */
 void MemoryAccess::save(User& user){
 	std::string username = user.getUsername();
 	mkdir(memory::USERS_DIR.c_str(), 0755);
@@ -68,27 +97,53 @@ void MemoryAccess::save(User& user){
 	JSON::Dict toSave = user;
 	toSave.save(path.c_str());
 }
+
+/**
+ * Method saving a players data
+ * @param Player : player whose data will be saved
+ */
 void MemoryAccess::save(Player& player){
 	std::string path = getPlayerPath(player.getOwner(), player.getMemberID());
 	JSON::Dict toSave = player;
 	toSave.save(path.c_str());
 }
+
+/**
+ * Method saving a sale
+ * @param Sale : sale whose data will be saved
+ */
 void MemoryAccess::save(Sale& sale){
 	std::string path = getSalePath(sale.getID());
 	JSON::Dict toSave = sale;
 	toSave.save(path.c_str());
 }
+
+/**
+ * Method saving a teams data
+ * @param Team : teams whose data will be saved
+ */
 void MemoryAccess::save(Team& team){
 	std::string path = getTeamInfosPath(team.getOwner());
 	JSON::Dict toSave = team;
 	toSave.save(path.c_str());
 }
+
+/**
+ * Method saving a championship data
+ * @param Championship : championship whose data will be saved
+ */
 void MemoryAccess::save(Championship& champ){
 	mkdir(memory::CHAMPIONSHIPS_DIR.c_str(), 0755);
 	std::string path = getChampionshipPath(champ.getName());
 	JSON::Dict toSave = champ;
 	toSave.save(path.c_str());
 }
+
+/**
+ * Method saving multiple items
+ * @param std::vector : items to be saved
+ * @param std::string : type of the items to be saved
+ */
 void MemoryAccess::save(std::vector<std::string> &toSave,std::string type){
 	std::string path = "";
 	if(type == memory::ALL_TEAM_NAMES){
@@ -104,12 +159,20 @@ void MemoryAccess::save(std::vector<std::string> &toSave,std::string type){
 	jsonToSave.save(path.c_str());
 }
 
+/**
+ * Method loading player data
+ * @param Player : player whose data will be loaded from the HDD
+ */
 void MemoryAccess::load(Player& player){
 	JSON::Value *loaded = JSON::load(getPlayerPath(player.getOwner(),player.getMemberID()).c_str());
 	player = DICT(loaded);
 	delete loaded;
 }
 
+/**
+ * Method loading user data
+ * @param User : user whose data will be loaded
+ */
 void MemoryAccess::load(User& user){
 	JSON::Value *loaded = JSON::load(getUserPath(user.getUsername()).c_str());
 	user = &DICT(loaded); //Constructor by pointer in User ... 
@@ -117,22 +180,41 @@ void MemoryAccess::load(User& user){
 
 }
 
+/**
+ * Method loading sale data
+ * @param Sale : sale whose data will be loaded from the HDD
+ */
 void MemoryAccess::load(Sale& sale){
 	JSON::Value *loaded = JSON::load(getSalePath(sale.getID()).c_str());
 	sale = DICT(loaded);
 	delete loaded;
 }
+
+/**
+ * Method loading installations data
+ * @param Installations : installations whose data will be loaded from the HDD
+ */
 void MemoryAccess::load(Installation* install){
 	JSON::Value *loaded = JSON::load(getInstallationPath(install->getOwner(),install->getName()).c_str());
 	JSON::Dict const & tmp = DICT(loaded);
 	install = Installation::CAST(tmp);
 	delete loaded;
 }
+
+/**
+ * Method loading team data
+ * @param Team : team whose data will be loaded from the HDD
+ */
 void MemoryAccess::load(Team& team){
 	JSON::Value *loaded = JSON::load(getTeamInfosPath(team.getOwner()).c_str());
 	team = DICT(loaded);
 	delete loaded;
 }
+
+/**
+ * Method loading championship data
+ * @param Championship : championship whose data  will be loaded from the HDD
+ */
 void MemoryAccess::load(Championship& champ){
 	JSON::Value *loaded = JSON::load(getChampionshipPath(champ.getName()).c_str());
 	champ = DICT(loaded);
@@ -140,6 +222,11 @@ void MemoryAccess::load(Championship& champ){
 }
 
 
+/**
+ * Method loading multiple data files in a vector
+ * @param std::string : directory from which to load the data
+ * @return JSON::List : json object containing the data loaded from the directory
+ */
 JSON::List MemoryAccess::loadFilesInVec(std::string directory){/*Check for memleaks*/
 	JSON::List ret = JSON::List();
 	DIR* dir = NULL;
@@ -165,6 +252,10 @@ JSON::List MemoryAccess::loadFilesInVec(std::string directory){/*Check for memle
 	return ret;
 }
 
+/**
+ * Method loading data for multiple users
+ * @param std::Vector : vector of users whose data will be loaded
+ */
 void MemoryAccess::load(std::vector<User> &toFill)
 {
 	vector<string> users;
@@ -177,6 +268,10 @@ void MemoryAccess::load(std::vector<User> &toFill)
 	}
 }
 
+/**
+ * Method loading multiple installations
+ * @param std::vector : vector containing  the installations of a user
+ */
 void MemoryAccess::load(std::vector<Installation*> &toFill,std::string username){
 	JSON::List installs = loadFilesInVec(getInstallationsDirectory(username));
 	for(size_t i=0;i<installs.len();++i){
@@ -184,6 +279,10 @@ void MemoryAccess::load(std::vector<Installation*> &toFill,std::string username)
 	}
 }
 
+/**
+ * Method loading multiple players
+ * @param std::vector : vector of players whose data will be loaded
+ */
 void MemoryAccess::load(std::vector<Player> &toFill,std::string username){
 	JSON::List players = loadFilesInVec(getPlayersDirectory(username));
 	for(size_t i=0;i<players.len();++i){
@@ -191,6 +290,10 @@ void MemoryAccess::load(std::vector<Player> &toFill,std::string username){
 	}
 }
 
+/**
+ * Method loading multiple sales
+ * @param std::vector : vector containing the sales whose data will be loaded
+ */
 void MemoryAccess::load(std::vector<Sale*> &toFill){
 	mkdir(memory::MARKET_PATH.c_str(), 0755);
 	JSON::List sales = loadFilesInVec(memory::MARKET_PATH);
@@ -199,6 +302,10 @@ void MemoryAccess::load(std::vector<Sale*> &toFill){
 	}
 }
 
+/**
+ * Method loading multiple championships
+ * @param std::deque : double ended que containing the championships whose data will be loaded
+ */
 void MemoryAccess::load(std::deque<Championship*>& toFill){
 	mkdir(memory::CHAMPIONSHIPS_DIR.c_str(), 0755);
 	JSON::List champs = loadFilesInVec(memory::CHAMPIONSHIPS_DIR);
@@ -207,6 +314,11 @@ void MemoryAccess::load(std::deque<Championship*>& toFill){
 	}
 }
 
+/**
+ * Method loading multiple items
+ * @param std::vector : vector containing items to be loaded
+ * @param std::string : string containing the type of the items to be loaded
+ */
 void MemoryAccess::load(std::vector<std::string> &toFill, std::string type){
 	std::string path = "";
 	if(type == memory::ALL_TEAM_NAMES){
@@ -256,6 +368,10 @@ void MemoryAccess::saveAdmin(User& admin){
 	toSave.save(path.c_str());
 }
 
+/**
+ * Method loading
+ * @param
+ */
 void MemoryAccess::loadAdmin(User& admin){
 	JSON::Value *loaded = JSON::load(getAdminPath(admin.getUsername()).c_str());
 	admin = &DICT(loaded); //Constructor by pointer in User ... 
