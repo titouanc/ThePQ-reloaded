@@ -5,6 +5,7 @@
 
 
 using namespace std;
+/// Overload of the ostream operator
 std::ostream& operator<< (std::ostream& out, const Schedule& sche)
     {
     	std::string status1, status2;
@@ -35,6 +36,7 @@ std::ostream& operator<< (std::ostream& out, const Schedule& sche)
 
     }
 
+/// Overload of the ostream operator
 std::ostream& operator<< (std::ostream& out, const Championship& champ){
 	out << champ._name << " : \033[1m" << champ._users.size() << "/" << champ._nbOfUsers << "\033[0m" 
 		<< " Cashprize(\033[32m" << champ._cashPrize << "\033[0m) Fame(\033[32m" << champ._fame << "\033[0m)";
@@ -47,6 +49,7 @@ std::ostream& operator<< (std::ostream& out, const Championship& champ){
 	return out;
 }
 
+/// Constructor
 Championship::Championship(size_t nbOfTurns,std::string name,int cashprize, int fame) : 
 _isStarted(false), _isEnded(false), _usersNotified(false), _name(name), _turn(1), _totalTurns(nbOfTurns), _nbOfUsers(2<<(nbOfTurns-1)),
 _cashPrize(cashprize), _fame(fame)
@@ -57,9 +60,11 @@ _cashPrize(cashprize), _fame(fame)
 	}
 }
 
+/// Destructor
 Championship::~Championship()
 {}
 
+///Constructor
 Championship::Championship(JSON::Dict const & json) : Championship()
 {
 	if (ISINT(json.get("nbOfUsers")))	{ _nbOfUsers = INT(json.get("nbOfUsers")); }
@@ -147,6 +152,10 @@ Championship::operator JSON::Dict()
 	return res;
 }
 
+/**
+ * Method adding a user to the championship
+ * @param User : user to be added to the championship
+ */
 void Championship::addUser(User & user)
 {
 	if (_isStarted == false && isUserIn(user.getUsername()) == false)
@@ -160,6 +169,10 @@ void Championship::addUser(User & user)
 	}
 }
 
+/**
+ * Method removing a user from the championship
+ * @param User : user to be removed from the championship
+ */
 void Championship::removeUser(User & user)
 {
 	if (_isStarted == false)
@@ -176,6 +189,10 @@ void Championship::removeUser(User & user)
 	}
 }
 
+
+/**
+ * Method starting a championship
+ */
 void Championship::start()
 {
 	// Create dates for first matches
@@ -194,11 +211,17 @@ void Championship::start()
 	_turnsResult.push_back(_users);
 	_isStarted = true;
 }
-
+/**
+ * Method clearing a championship schedule
+ */
 void Championship::clearSchedules(){
 	_schedules.clear();
 }
 
+/**
+ * Method handling the schedule for the next match
+ * @return Schedule : schedule of the next match
+*/
 Schedule* Championship::nextMatch()
 {
 	if (_isStarted == true)
@@ -216,6 +239,10 @@ Schedule* Championship::nextMatch()
 	return NULL;
 }
 
+/**
+ * Method handling the end of a match
+ * @return MatchResult : result of the match 
+ */
 void Championship::endMatch(MatchResult & result)
 {
 	// erase schedule
@@ -249,6 +276,11 @@ void Championship::endMatch(MatchResult & result)
 	}
 }
 
+/**
+ * Method checking if a user is in the championship
+ * @param std::string : username of the user to check
+ * @return bool : boolean representing if the user belongs to the championship or not
+*/
 bool Championship::isUserIn(std::string username)
 {
 	for (size_t i = 0; i < _users.size(); ++i)

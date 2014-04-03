@@ -1,6 +1,7 @@
 #include "Displacement.hpp"
 #include <cassert>
 
+/// Constructor
 Displacement::Displacement(double tbegin) :
  _tbeg(tbegin), _moves(), _totalLength(0)
 {}
@@ -13,16 +14,19 @@ Displacement::Displacement(JSON::List const & list) : Displacement()
     }
 }
 
+/**
+ * Method calculating the new position
+ * @param double : 
+ * @param size_t : speed of the player
+ * @return Position : new position 
+ */
 Position Displacement::position(double t, size_t speed) const 
 {
-    /* Method returning the calculated position*/
     assert(0 <= t && t <= 1);
-
     Position res;
     double begin=0, end=0;
     if (t < _tbeg)
         return res;
-
     t -= _tbeg;
 
     if (speed==0)
@@ -54,44 +58,63 @@ Position Displacement::position(double t, size_t speed) const
     return res;
 }
 
+/**
+ * Method returning the updated position based on the initial position
+ * @param double :
+ * @param Position : initial position
+ * @return Position : new position
+ */
 Position Displacement::position(double t, Position const & initial) const
 {
-    /* Method returning the updated position*/
+    
     return initial+position(t, length());
 }
 
+/**
+ * Method returning the updated position
+ */
 Position Displacement::position(double t, Moveable const & moveable) const 
-{
-    /* Method returning the updated position*/
+{    
     return moveable.getPosition()+position(t, moveable.getSpeed());
 }
 
+/**
+ * Method for adding a move to the move queue
+ * @param Position : new position to be added to the queue
+ */
 void Displacement::addMove(Position const & move) 
 {
-    /* Method for adding a move to the move queue*/
     if (! move.isDirection())
         throw NotADirection(((JSON::List)move).dumps());
     _moves.push_back(move);
     _totalLength += move.length();
 }
 
+/**
+ * Method returning the number of queued moves
+ * @return size_t : number of queued moves
+ */
 size_t Displacement::count(void) const 
 {
-    /* Method returning the number of queued moves*/
     return _moves.size();
 }
 
+/**
+ * Method for serializing Displacement to a JSON list
+ */
 Displacement::operator JSON::List(void) const 
 {
-    /* Method for serializing Displacement to a JSON list*/
     JSON::List res;
     for (size_t i=0; i<count(); i++)
         res.append((JSON::List)_moves[i]);
     return res;
 }
 
+/**
+ * Method for calculating the total distance of the moves
+ */
 unsigned int Displacement::length(void) const 
 {
-    /* Method for calculating the total distance of the moves*/
+  
     return _totalLength;
 }

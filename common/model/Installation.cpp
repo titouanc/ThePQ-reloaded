@@ -11,6 +11,7 @@ Installation* Installation::CAST(JSON::Dict const & json)
 	return NULL;
 }
 
+/// Constructor
 Installation::Installation(std::string owner, std::string name, int baseValue, int level, float refundRatio) :
 _name(name), _level(level), _baseValue(baseValue), _refundRatio(refundRatio), _owner(owner){}
 
@@ -34,6 +35,7 @@ Installation::operator JSON::Dict()
 	return json;
 }
 
+/// Destructor
 Installation::~Installation()
 {}
 
@@ -41,39 +43,52 @@ int Installation::getCurrentValue() const {
 	return getValueAtLevel(_level);
 }
 
+/** 
+ * Method returning an integer representing the value of the 
+ * installation at the next level
+ * @param int : level at which to get the cost level
+ * @return int : value at level
+ */
 int Installation::getValueAtLevel(int level) const {
-	/* Method returning an integer representing the value of the 
-	*installation at the next level
-	*/
 	return level ? (_baseValue * pow(2, level+1)) : 0;
 }
 
+/**
+ * Method returning an integer representing the cost of an upgrade to
+ * the next level. 
+ * @return int : cost of the upgrade
+ */
 int Installation::getUpgradeCost() const{
-	/* Method returning an integer representing the cost of an upgrade to
-	 *the next level. 
-	 */
 	return getValueAtLevel(_level+1) - getCurrentValue();
 }
 
+/**
+ * Method returning an integer representing the cost of a downgrade to
+ * the previous level. 
+ * @return int : cost of the downgrade
+ */
 int Installation::getDowngradeRefunds() const {
-	/* Method returning an integer representing the
-	 *funds that will be refunded when downgraded by 1 level. 
-	 */
 	int res = 0;
 	if (_level > 0)
 		res = ((float)(getCurrentValue() - getValueAtLevel(_level-1)))*_refundRatio;
 	return res;
 }
 
+/**
+ * Method upgrading the installation (level and currentValue)
+ */
 void Installation::upgrade(){
-	/* Method upgrading the installation (level and currentValue)*/
+	
 	if (_level < getMaxLevel()){
 		_level++;
 	}
 }
 
+/** 
+ *Method downgrading the installation (level and currentValue)
+ */
 void Installation::downgrade(){
-	/* Method downgrading the installation (level and currentValue)*/
+
 	if (_level > 0){
 		_level--;
 	}

@@ -18,7 +18,7 @@ public:
 };
 
 class GoldenSnitch : public Ball {
-/*Class creating the GoldenSnitch, inheriting from ball*/
+	/** Class creating the GoldenSnitch, inheriting from ball*/
 public:
 	using Ball::Ball;
 	bool isGoldenSnitch () const { return true; }
@@ -26,7 +26,7 @@ public:
 };
 
 class Bludger : public Ball {
-/*Class creating a Bludger, inheriting from ball*/
+	/** Class creating a Bludger, inheriting from ball*/
 public:
 	using Ball::Ball;
 	bool isBludger () const { return true; }
@@ -35,7 +35,7 @@ public:
 };
 
 class Quaffle : public Ball {
-/*Class creating Quaffle, inheriting from ball*/
+	/** Class creating Quaffle, inheriting from ball*/
 public:
 	using Ball::Ball;
 	bool isQuaffle () const { return true; }

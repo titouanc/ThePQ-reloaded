@@ -68,11 +68,12 @@ public:
 		}
 	}
 
+	/**
+	 * Method calculating the fame to be attributed to each player
+	 * based on the existing fame of the teams and the score difference
+	 */
 	void resolveFame(){
-		/*
-		 * Method calculating the fame to be attributed to each player
-		 * based on the existing fame of the teams and the score difference
-		 */
+		
 
 		int wFame = _winner.getFame();
 		int lFame = _loser.getFame();
