@@ -1,65 +1,47 @@
 from parse_constants  import parse_constants
 K = parse_constants("../common/Constants.hpp")
 
-class Installations:
+class Installation:
 
-	def __init__(self, client):
+	def __init__(self, client, attrs, index):
 		self.client = client
-		self.update()
+		self.name = attrs.get('name', '')
+		self.baseValue = attrs.get('baseValue', 0)
+		self.level = attrs.get('level', 0)
+		self.index = index
 
-	def update(self):
-		self.client.say(K['INSTALLATIONS_LIST'], "")
-		self.installations = self.client.waitFor(K['INSTALLATIONS_LIST'])['data']
+	def __repr__(self):
+		res = "\033[32m" + self.name + "\033[0m"
+		res += " | Level\033[33m "+str(self.level)+"\033[0m"
+		res += " | Upgrade cost : \033[31m"+str(self.getUpgradeCost())+"\033[0m\n"
+		return res
 
-	def show(self):
-		print("Your installations : ")
-		for installation in self.installations:
-			print("-\033[32m",installation['name'], "\033[0m")
-			print("  Level :", installation['level'], "| Upgrade cost :", self.getUpgradeCost(installation['name']))
+	def upgrade(self):
+		self.client.say(K['INSTALLATION_UPGRADE'], self.index)
+		msg = self.client.waitFor(K['INSTALLATION_UPGRADE'])
+		if msg['data'] == True:
+			self.level += 1
+			print("Upgraded", self.name, "successfully!")
+			return True
+		else:
+			print("Could not upgrade "+self.name+". Check your spelling or your budget.")
+			return False
 
-	def upgrade(self, toUpgrade):
-		for i in range(len(self.installations)):
-			if self.installations[i]['name'] == toUpgrade:
-				self.client.say(K['INSTALLATION_UPGRADE'], i)
-				msg = self.client.waitFor(K['INSTALLATION_UPGRADE'])
-				if msg['data'] == True:
-					self.update()
-					print("Upgraded", toUpgrade, "successfully!")
-					return True
-				else:
-					print("Could not upgrade "+toUpgrade+". Check your spelling or your budget.")
-					return False
+	def downgrade(self):
+		self.client.say(K['INSTALLATION_DOWNGRADE'], self.index)
+		msg = self.client.waitFor(K['INSTALLATION_DOWNGRADE'])
+		if msg['data'] == True:
+			self.level -= 1
+			print("Downgraded", self.name, "successfully!")
+			return True
+		else:
+			print("Could not downgrade "+self.name+".")
+			return False
 
-	def downgrade(self, toDowngrade):
-		for i in range(len(self.installations)):
-			if self.installations[i]['name'] == toDowngrade:
-				self.client.say(K['INSTALLATION_DOWNGRADE'], i)
-				msg = self.client.waitFor(K['INSTALLATION_DOWNGRADE'])
-				if msg['data'] == True:
-					self.update()
-					print("Downgraded", toDowngrade, "successfully!")
-					return True
-				else:
-					print("Could not downgrade "+toDowngrade+".")
-					return False
+	def getUpgradeCost(self):
+		return self.getValueAtLevel(self.level+1) - self.getValueAtLevel(self.level)
 
-	def getUpgradeCost(self, name):
-		return self.getValueAtLevel(name, self.getLevel(name)+1) - self.getValueAtLevel(name, self.getLevel(name))
-
-	def getValueAtLevel(self, name, level):
-		for installation in self.installations:
-			if installation['name'] == name:
-				if level:
-					return installation['baseValue']* (2**(level+1))
-				else:
-					return 0
-		print("Could not find", name)
-		return -1
-
-	def getLevel(self, name):
-		for installation in self.installations:
-			if installation['name'] == name:
-				return installation['level']
-		print("Could not find", name)
-		return -1
-
+	def getValueAtLevel(self, level):
+		if level:
+			return self.baseValue * (2**(level+1))
+		return 0

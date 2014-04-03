@@ -83,6 +83,11 @@ class Client(object):
         msg = self.waitFor(K['CONNECTED_USERS_LIST'])
         return msg['data']
 
+    def getInstallations(self):
+        self.say(K['INSTALLATIONS_LIST'], "")
+        msg = self.waitFor(K['INSTALLATIONS_LIST'])
+        return [Installation(self, msg['data'][i], i) for i in range(len(msg['data']))]
+
     def getFunds(self):
         if 'team' in self.session and 'funds' in self.session['team']:
             return self.session['team']['funds']
@@ -138,13 +143,15 @@ if __name__ == "__main__":
 
     print(c.getSquad())
     print(c.getPlayers())
-    i = Installations(c)
-    i.show()
-    i.upgrade("Food Stand")
+
+    installations = c.getInstallations()
+    for installation in installations : 
+        print(installation)
     print("Funds:", c.getFunds())
-    i.downgrade("Tribune")
+    installations[0].downgrade()
     print("Funds:", c.getFunds())
-    i.show()
+    installations[0].upgrade()
+    print("Funds:", c.getFunds())
 
     p = c.getPlayers()[-1]
-    print("Selling", p, " -> ", p.sell(21500))
+    #print("Selling", p, " -> ", p.sell(21500))
