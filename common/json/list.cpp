@@ -4,26 +4,28 @@
 
 using namespace JSON;
 
-List::List() : _content() //create empty list
+/// Create empty list
+List::List() : _content() 
 {}
 
+/// Destructor for List object*/
 List::~List() 
 {
-    /*Destructor for List object*/
+  
     for (size_t i=0; i<len(); i++)
         delete _content[i];
 }
 
+/// Copy constructor
 List::List(List const & other) : List()
 {
-    /*Copy constructor*/
     for (size_t i=0; i<other.len(); i++)
         appendPtr(other[i]->clone());
 }
 
+/// Asignment operator overload
 List & List::operator=(List const & other)
 {
-    /*Assignment operator*/
     for (size_t i=0; i<len(); i++)
         delete _content[i];
     _content.clear();
@@ -32,24 +34,34 @@ List & List::operator=(List const & other)
     return *this;
 }
 
+/**
+ * Method handling the type of the List object
+ * @return Type : type of the elements in the List object
+ */
 Type List::type(void) const 
 {
-    /* Method returning the type*/
     return List_t;
 }
 
+/**
+ * Method creating a deep copy of List
+ * @return Value : deep copy pointer of List
+ */
 Value * List::clone(void) const 
 {
-    /* Method creating a deep copy of List*/
     List *res = new List();
     for (size_t i=0; i<len(); i++)
         res->append(*(_content[i]));
     return res;
 }
 
+/**
+ * Method for writing to ofstream
+ * @param std::ostream : stream to which to write to
+ */
 void List::_writeTo(std::ostream & out) const
 {
-    /* Method for writing to ofstream*/
+    
     out << "[";
     for (size_t i=0; i<len(); i++){
         if (i > 0) out << ", ";
@@ -58,23 +70,34 @@ void List::_writeTo(std::ostream & out) const
     out << "]";
 }
 
+/**
+ * Method overloading the subscription operator
+ * @param size_t : index of the element to return
+ * @return Value : value of the element at position index
+ */
 const Value * List::operator[](size_t index)
-{
-    /* Method returning the value at <<index>> of List*/
+{   
     if (index >= len())
         throw KeyError("Index beyond list limits");
     return _content[index];
 }
 
+/**
+ * Method overloading the subscription operator
+ * @param size_t : index of the element to return
+ * @return Value : value of the element at position index
+ */
 const Value * List::operator[](size_t index) const
 {
-    /* Method returning a constant reference to the value at <<index>> of list*/
     return _content[index];
 }
 
+/**
+ * Method returning a pointer to a Value of item at <<index>> of List
+ */
 Value *List::steal(size_t index)
 {
-    /* Method returning a pointer to a Value of item at <<index>> of List*/
+    
     if (index >= len())
         throw KeyError("Index beyond list limits");
     Value *res = _content[index];
@@ -82,25 +105,38 @@ Value *List::steal(size_t index)
     return res;
 }
 
+/**
+ * Method used to append a Value to a List
+ * @param Value : value to be appended
+ */
 void List::appendPtr(Value *ptr)
 {
-    /* Method used to append a Value to a List*/
+    
     _content.push_back(ptr);
 }
 
+/** 
+ * Method used to append a Value to a List
+ * @param Value : value to be appended
+ */
 void List::append(Value const & obj)
 {
-    /* Method used to append a Value to a List*/
     appendPtr(obj.clone());
 }
 
+/**
+ * Method returning the size of List
+ * @return size_t : length of the list
+ */
 size_t List::len(void) const 
 {
-    /* Method returning the size of List*/
     return _content.size();
 }
 
-
+/** 
+ * Method used to append a Value to a List
+ * @param Value : value to be appended
+ */
 void List::append(double val)
 {
     if (round(val) == val)
@@ -109,6 +145,10 @@ void List::append(double val)
         append(Float(val));
 }
 
+/** 
+ * Method used to append a Value to a List
+ * @param Value : value to be appended
+ */
 void List::append(std::string const & val)
 {
     append(String(val));

@@ -8,25 +8,30 @@ String::String(std::string str) : _content(str)
 String::~String()//Destructor for String object
 {}
 
+/**
+ * Method returning the type of the object
+ */
 Type String::type(void) const 
 {
-	/* Method returning the type of the object*/
 	return String_t;
 }
 
+/**
+ * Method returning a pointer to the content of object String
+ */
 Value * String::clone(void) const 
 {
-	/* Method returning a pointer to the content of object String*/
+	
 	return new String(value());
 }
 
+/**
+ * Method for putting <<out>> to the ofstream buffer
+ * eg buff: "\ _content \" out<<buff
+ */
 void String::_writeTo(std::ostream & out) const 
 {
-	/* Method for putting <<out>> to the 
-	 *ofstream buffer
-	 *eg buff: "\ _content \"
-	 *out<<buff
-	 */
+	
 	out << "\"";
 	for (size_t i=0; i<_content.length(); i++){
 		switch (_content[i]){
@@ -47,8 +52,10 @@ void String::_writeTo(std::ostream & out) const
 	out << "\"";
 }
 
+/**
+ * Method returning a const reference of the value of String
+ */
 std::string const & String::value(void) const 
 {
-	/* Method returning a const reference du the value of String*/
 	return _content;
 }

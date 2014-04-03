@@ -15,17 +15,24 @@ extern "C" {
 
 using namespace JSON;
 
+/**
+ * Method for dumping to the ofstream
+ * @return std::string : string dump
+ */
 std::string Value::dumps(void) const
 {
-	/* Method for dumping to the ofstream*/
 	std::stringstream res;
 	this->_writeTo(res);
 	return res.str();
 }
 
+/**
+ * Method for saving to a file
+ * @param char : filename of the file in which the data will be saved
+ */
 void Value::save(const char *filename) const
 {
-	/* Method for saving to <<filename>>*/
+	
 	int fd;
 
 	fd = open(filename, O_WRONLY|O_CREAT|O_TRUNC, 0644);
@@ -61,8 +68,11 @@ void Value::save(const char *filename) const
 	close(fd);
 }
 
+/**
+ * Method for saving a dump to a file
+ * @param std::string filename of the file where the dump will be saved
+ */
 void Value::save(std::string const & filename) const 
-{
-	/* Method for saving a dump to <<filename>>*/
+{	
 	save(filename.c_str());
 }

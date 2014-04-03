@@ -19,18 +19,21 @@ extern "C" {
 
 using namespace std;
 
+/**
+ * Method used for padding the output
+ * Default is space, customisable with ASCII art
+ */
 static inline void indent(size_t n, const char *indenter="  ")
 {
-    /* Method used for padding the output
-     *Default is space, customisable with ASCII art
-     */
     while (n>0){
         cout << indenter; 
         n--;
     }
 }
 
-/* Recursive walk in JSON data */
+/**
+ * Method handling recursive walk in JSON data 
+ */
 static void exploreJSON(const JSON::Value *elem, size_t depth=0)
 {
     if (ISLIST(elem)){

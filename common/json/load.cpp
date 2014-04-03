@@ -13,11 +13,11 @@ extern "C" {
 }
 
 #include <string>
+#define BUFSIZE 4096
+
 using namespace JSON;
 
-#define BUFSIZE 4096
-Value *JSON::readFD(int fd)
-{
+Value *JSON::readFD(int fd){
 	char buffer[BUFSIZE];
 	int r = 0;
 	std::stringstream str;
@@ -44,6 +44,11 @@ void JSON::writeFD(int fd, JSON::Value const & json)
 	}
 }
 
+/**
+ * Method loading info from file
+ * @param char : name of the file from whom to load data
+ * @return Value : data loaded from the file
+ */
 Value *JSON::load(const char *filename){
 	int fd;
 
@@ -82,8 +87,12 @@ Value *JSON::load(const char *filename){
 	return res;
 }
 
+/**
+ * Method loading info from file
+ * @param char : name of the file from whom to load data
+ * @return Value : data loaded from the file
+ */
 Value *JSON::load(std::string filename){
-	/* Method used for reading from <<filename>>*/
 	return JSON::load(filename.c_str());
 }
 

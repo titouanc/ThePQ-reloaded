@@ -37,10 +37,12 @@ static Value *parseNumber(const char *str, char **endptr)
     return NULL;
 }
 
+/**
+ * Method preforming a conversion from hex to bytes
+ * @param char * : item to be converted
+ * @return char : byte representation of src
+ */
 static inline unsigned char hex2byte(const char *src){
-    /* Method returning the conversion from hex to
-     *byte of <<src>>
-     **/
     unsigned char res = 0;
     if (src[0] == '\0' || src[1] == '\0')
         throw ParseError("Unexpected end of string in hexadecimal escape seq");
@@ -61,9 +63,12 @@ static inline unsigned char hex2byte(const char *src){
     return res;
 }
 
+/**
+ * Method parsing a string
+ */
 static std::string parseString(const char *str, char **endptr)
 {
-    /* Method returning a string from <<str>>*/
+    
     assert(*str == '"');
     assert(endptr != NULL);
 
@@ -104,9 +109,12 @@ static std::string parseString(const char *str, char **endptr)
     return buffer.str();
 }
 
+/**
+ * Method returning a Dic pointer from <<str>> object
+ */
 static Dict *parseDict(const char *str, char **endptr)
 {
-    /* Method returning a Dic pointer from <<str>> object*/
+    
     assert(*str == '{');
     assert(endptr != NULL);
 
@@ -153,9 +161,12 @@ static Dict *parseDict(const char *str, char **endptr)
     return res;
 }
 
+/**
+ * Method returnin List pointer from <<str>> object
+ */
 static List *parseList(const char *str, char **endptr)
 {
-    /* Method returnin List pointer from <<str>> object*/
+    
     assert(*str == '[');
     assert(endptr != NULL);
     //work  list 
@@ -187,10 +198,13 @@ static List *parseList(const char *str, char **endptr)
     return res;
 }
 
+
+/**
+ * Method returning value pointer from <<str>> object
+ * <<str>> can define integer/Dict/List type
+ */
 Value *JSON::parse(const char *str, char **eptr)
 {
-    /* Method returning value pointer from <<str>> object
-     * <<str>> can define integer/Dict/List type*/
     char *endptr;
     if (eptr == NULL)
         eptr = &endptr;
