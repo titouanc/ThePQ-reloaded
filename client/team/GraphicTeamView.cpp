@@ -136,6 +136,12 @@ void GraphicTeamView::displayPlayers()
 	redrawCanvas();
 }
 
+/**
+ * Method handling the display of the upgrade buttons for the abilities
+ * @param int : x coordinate for the button
+ * @param int : y coordinate for the button
+ * @param int : ability to be controlled by the button
+ */
 void GraphicTeamView::drawUpgradeButton(int x, int y,int player,int ability){
 	switch (ability){
 	case 0: {
@@ -177,7 +183,7 @@ void GraphicTeamView::drawUpgradeButton(int x, int y,int player,int ability){
 }
 
 /**
- * Method
+ * Method handling the display of the squad labels
  */
 void GraphicTeamView::displaySquadLabels(){
 	_canvas.addPanel(515, 500, sf::Color(0x00, 0x00, 0x00, 0x77)
@@ -205,7 +211,7 @@ void GraphicTeamView::displaySquadLabels(){
 }
 
 /**
- * Method
+ * Method handling the display of the modifier buttons
  */
 void GraphicTeamView::displayChangeButtons(){
 	_canvas.addButton<GraphicTeamView, int>(
@@ -235,7 +241,8 @@ void GraphicTeamView::displayChangeButtons(){
 }
 
 /**
- * Method
+ * Method handling the player swap
+ * @param int : position of the player to be swapped
  */
 void GraphicTeamView::changePlayerAt(int position){
 	selectPosition(position); // storing it in an instance variable
@@ -245,7 +252,8 @@ void GraphicTeamView::changePlayerAt(int position){
 }
 
 /**
- * Method
+ * Method handling the display of the swap interface
+ * @param int : position of the player to be swapped
  */
 void GraphicTeamView::displaySwapWith(int position){
 	if (LEFT_CHASER != position)
