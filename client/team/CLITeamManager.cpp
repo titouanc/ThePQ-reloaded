@@ -135,16 +135,204 @@ void CLITeamManager::onMatchStart(){
 	match.run();
 }
 
+/**
+ * Method upgrading a players ability
+ * @param int : id of the players whose ability should be upgraded
+ */
+void CLITeamManager::handleAbility(int id){
+	cout << "   \033[36m 1     	    2            3      	   4" 
+		<< "		<<<id of the ability to modify\033[0m"<< endl;
+	cout << "Strength	Velocity	Precision	Chance		ID	 Name"<<endl;
+	showPlayer(user().players[id-1],id);
+	cout << "Enter the ability you wish to upgrade: ";
+	int idAbility;
+	Player &player = user().players[id-1];
+	int strength = player.getStrength();
+	int velocity = player.getVelocity();
+	int precision = player.getPrecision();
+	int chance = player.getChance();
+	for(;;){
+		if (cin >> idAbility){
+			if(idAbility < 1 || idAbility > 4 ){
+				cout << "Wrong option entered. Try again: ";
+				cin.clear();
+			}else{
+				switch(idAbility){
+					case 1:{
+						if (strength+1 < 100 && strength+1 < user().acPoints){
+							player.improveStrength(1);
+							upgradePlayerAbility(player.getMemberID(),0);
+						}else{
+							showPlayerAttributes();
+						}
+						break;
+					}
+					case 2:{
+						if (velocity+1 < 100 && velocity+1 < user().acPoints){
+							player.improveVelocity(1);
+							upgradePlayerAbility(player.getMemberID(),1);
+						}else{
+							showPlayerAttributes();
+						}
+						break;
+					}
+					case 3:{
+						if (precision+1 < 100 && precision+1 < user().acPoints){
+							player.improvePrecision(1);
+							upgradePlayerAbility(player.getMemberID(),2);
+						}else{
+							showPlayerAttributes();
+						}
+						break;
+					}
+					case 4:{
+						if (chance+1 < 100 && chance+1 < user().acPoints){
+							player.improveChance(1);
+							upgradePlayerAbility(player.getMemberID(),3);
+						}else{
+							showPlayerAttributes();
+						}
+						break;	
+					}
+					default:break;
+				}
+				onPlayersLoad();
+				showPlayers();
+				onTeamInfoChange();
+				showPlayerAttributes();
+			}
+
+		}else{
+			cout << "Wrong option entered. Try again: ";
+			cin.clear();
+		}
+	}
+	
+}
+
+void CLITeamManager::handlePlayerAbility(){
+	cout << endl << endl <<  "Enter the id of the player whose ability to Upgrade: ";
+	unsigned int idPlayer;
+	for(;;){
+		if (cin >> idPlayer){
+			if(idPlayer<1 || idPlayer > user().players.size()){
+				cout << "Wrong option entered. Try again: ";
+				cin.clear();
+			}else {
+				cout << "\033[2J\033[1;1H";
+				handleAbility(idPlayer);
+			}
+		}else{
+			cout << "Wrong option entered. Try again: ";
+			cin.clear();
+		}
+	}
+}
+
+void CLITeamManager::showPlayer(Player &player, int i){
+	cout << showStrength(player.getStrength()) << "	" << showVelocity(player.getVelocity()) << "	" << showPrecision(player.getPrecision()) 
+			<< "	" << showChance(player.getChance()) << "	" << i << "	 " <<player.getName()<<endl;
+}
 void CLITeamManager::showPlayerAttributes(){
 	cout << "\033[2J\033[1;1H";
-	cout << "**********Your players and their attributes**********"<<endl;
-	cout << endl << "Strength	"<<"Velocity	"<< "Precision	"<<"Chance	"<<"ID	"<<"Name"<<endl;
-	int i(0);
+	cout << "========== Your players and their attributes =========="<<endl;
+	cout << "************* Your Activity points: " << user().acPoints << " *****************" << endl;
+	cout << endl << "Strength	"<<"Velocity	"<< "Precision	"<<"Chance		"<<"ID	 "<<"Name"<<endl;
+	int i(1);
 	for(Player &player : user().players){
-		cout << player.getStrength() <<"  \033[33m" << player.getStrength()+1 << "\033[0m" << "		" << player.getVelocity() <<"		"
-			<< player.getPrecision() << "		" << player.getChance() << "	"
-			<< i << "	" <<player.getName()<<endl;
+		showPlayer(player,i);
 		i++;
 	}
-
+	
+	Menu _menu;
+	_menu.addToDisplay(" - Upgrade a players ability ");
+	_menu.addToDisplay(" - Return to the previous menu");
+	int option = _menu.run();
+	switch(option){
+		case 1 :
+			handlePlayerAbility();
+			break;
+		case 2 :
+			cout << "\033[2J\033[1;1H";	
+			break; 
+		default : 
+			cout << "\033[2J\033[1;1H";	
+			break;
+	}
 }
+
+std::string CLITeamManager::paddValue(int value){
+	if (value < 10)
+		return std::to_string(value)+"  ";
+	else if (value<100)
+		return std::to_string(value)+" ";
+	else return std::to_string(value);
+}
+
+std::string CLITeamManager::showStrength(int value){
+	std::string toShow;
+	toShow+=paddValue(value);
+	if(value < 100 && value+1 <= user().acPoints){
+		toShow+="  ";
+		toShow+="\033[33m";
+		toShow+=paddValue(value+1);
+		toShow+="\033[0m";
+		toShow+="  ";
+		return toShow;
+	}else{
+		toShow+="	";
+	}
+	return toShow;
+}
+
+std::string CLITeamManager::showPrecision(int value){
+	std::string toShow;
+	toShow+=paddValue(value);
+	if(value < 100 && value+1 <= user().acPoints){
+		toShow+="  ";
+		toShow+="\033[33m";
+		toShow+=paddValue(value+1);
+		toShow+="\033[0m";
+		toShow+="  ";
+		return toShow;
+	}else{
+		toShow+="	";
+	}
+	return toShow;
+}
+
+std::string CLITeamManager::showChance(int value){
+	std::string toShow;
+	toShow+=paddValue(value);
+	if(value < 100 && value+1 <= user().acPoints){
+		toShow+="  ";
+		toShow+="\033[33m";
+		toShow+=paddValue(value+1);
+		toShow+="\033[0m";
+		toShow+="  ";
+		return toShow;
+	}else{
+		toShow+="	";
+	}
+	return toShow;
+}
+
+std::string CLITeamManager::showVelocity(int value){
+	std::string toShow;
+	toShow+=paddValue(value);
+	if(value < 100 && value+1 <= user().acPoints){
+		toShow+="  ";
+		toShow+="\033[33m";
+		toShow+=paddValue(value+1);
+		toShow+="\033[0m";
+		toShow+="  ";
+		return toShow;
+	}else{
+		toShow+="	";
+	}
+	return toShow;
+}
+
+
+
+

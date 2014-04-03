@@ -17,6 +17,15 @@ public:
 	virtual void showSwapPlayer();
 	virtual void onMatchStart();
 	void showPlayerAttributes();
+	void handlePlayerAbility();
+	void showPlayer(Player &player, int i);
+	void handleAbility(int id);
+
+	std::string paddValue(int value);
+	std::string showStrength(int value);
+	std::string showPrecision(int value);
+	std::string showChance(int value);
+	std::string showVelocity(int value);
 	bool isPlayerInTeam(int player_id)
 	{
 		for (size_t i = 0; i < user().players.size(); ++i)

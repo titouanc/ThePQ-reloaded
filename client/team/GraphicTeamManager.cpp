@@ -34,7 +34,6 @@ GraphicTeamManager::GraphicTeamManager(
  */
 void GraphicTeamManager::incVelocity(int player){
 	user().players[player].improveVelocity(1);
-	cout<< "new velocity: "<<user().players[player].getVelocity()<<endl;
 	upgradePlayerAbility(user().players[player].getMemberID(),1);
 	onPlayersLoad();
 	onTeamInfoChange();
@@ -47,7 +46,7 @@ void GraphicTeamManager::incVelocity(int player){
  */
 void GraphicTeamManager::incStrength(int  player){
 	user().players[player].improveStrength(1);
-	upgradePlayerAbility(user().players[player].getMemberID(),1);
+	upgradePlayerAbility(user().players[player].getMemberID(),0);
 	onPlayersLoad();
 	onTeamInfoChange();
 	redrawCanvas();
@@ -59,7 +58,7 @@ void GraphicTeamManager::incStrength(int  player){
  */
 void GraphicTeamManager::incChance(int  player){
 	user().players[player].improveChance(1);
-	upgradePlayerAbility(user().players[player].getMemberID(),1);
+	upgradePlayerAbility(user().players[player].getMemberID(),3);
 	onPlayersLoad();
 	onTeamInfoChange();
 	redrawCanvas();
@@ -71,7 +70,7 @@ void GraphicTeamManager::incChance(int  player){
  */
 void GraphicTeamManager::incPrecision(int player){
 	user().players[player].improvePrecision(1);
-	upgradePlayerAbility(user().players[player].getMemberID(),1);
+	upgradePlayerAbility(user().players[player].getMemberID(),2);
 	onPlayersLoad();
 	onTeamInfoChange();
 	redrawCanvas();
