@@ -11,7 +11,7 @@ from struct import pack, unpack
 from sys import version
 import json
 
-from Installations import *
+from installations import *
 
 class Client(object):
     DEFAULT_HOST, DEFAULT_PORT = "localhost", 32123
