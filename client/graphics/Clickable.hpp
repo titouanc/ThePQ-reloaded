@@ -17,7 +17,7 @@ namespace GUI{
 		void enable() {_enabled = true;}
 		void disable() {_enabled = false;}
 		bool isEnabled() { return _enabled; }
-		virtual void onMouseMoved(int x, int y) = 0;
+		virtual bool onMouseMoved(int x, int y) = 0;
 	private:
 		bool _enabled;
 	};
@@ -59,7 +59,7 @@ namespace GUI{
 		}
 		virtual bool isInBounds(int x, int y) const = 0;
 		virtual void renderTo(sf::RenderTarget& dest) = 0;
-		virtual void onMouseMoved(int x, int y) = 0;
+		virtual bool onMouseMoved(int x, int y) = 0;
 	private:
 		Callback _callback;
 		CallbackWithParam _callbackWithParam;
