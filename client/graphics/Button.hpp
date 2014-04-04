@@ -19,7 +19,7 @@ namespace GUI {
 			std::string text="Button",
 			sf::Color color=BUTTON_BACKGROUND_COLOR
 		):
-			Clickable<T>(callback, target)
+			Clickable<T>(callback, target), _hovered(false)
 		{
 			this->_h = BUTTON_HEIGHT; 
 			this->_hidden = false;
@@ -44,7 +44,7 @@ namespace GUI {
 			std::string text="Button",
 			sf::Color color=BUTTON_BACKGROUND_COLOR
 		):
-			Clickable<T, P>(callback, target, param)
+			Clickable<T, P>(callback, target, param), _hovered(false)
 		{
 			this->_h = BUTTON_HEIGHT; 
 			this->_hidden = false;
@@ -106,14 +106,25 @@ namespace GUI {
 			_highlightRect.setSize(sf::Vector2f(this->_w, this->_h));
 		} 
 
-		void onMouseMoved(int x, int y){
-			if (isInBounds(x, y) && this->isEnabled())
-				_highlightRect.setFillColor(sf::Color(0xff, 0xff, 0xff, 0x44));
-			else
-				_highlightRect.setFillColor(sf::Color(0xff, 0xff, 0xff, 0x00));
+		bool onMouseMoved(int x, int y){
+			if (! this->isEnabled()) /* Nothing to do */
+				return false;
 
+			bool inBounds = isInBounds(x, y);
+			if (inBounds && ! _hovered){
+				_highlightRect.setFillColor(sf::Color(0xff, 0xff, 0xff, 0x44));
+				_hovered = true;
+			} else if (! inBounds && _hovered){
+				_highlightRect.setFillColor(sf::Color(0xff, 0xff, 0xff, 0x00));
+				_hovered = false;
+			} else {
+				/* State didn't change */
+				return false;
+			}
+			return true;
 		}
 	private:
+		bool _hovered;
 		sf::Text _text;
 		sf::RectangleShape _backgroundRect;
 		sf::RectangleShape _highlightRect;

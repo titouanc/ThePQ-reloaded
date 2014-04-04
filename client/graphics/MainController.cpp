@@ -87,7 +87,6 @@ void GUI::MainController::handleTextEntered(sf::Event e)
 
 void GUI::MainController::handleMouseMoved(sf::Event e)
 {
-	if (_layers.size() != 0)
-		_layers.top()->handleMouseMoved(e);
-	renderTopLayer();
+	if (_layers.size() != 0 && _layers.top()->handleMouseMoved(e))
+		renderTopLayer();
 }

@@ -152,9 +152,12 @@ void GUI::Layer::handleTextEntered(sf::Event event){
 		_focusedTextbox->updateText(event);
 }
 
-void GUI::Layer::handleMouseMoved(sf::Event event){
-	for (unsigned int i=0; i<_clickables.size(); ++i)
-		_clickables[i]->onMouseMoved(event.mouseMove.x, event.mouseMove.y);
+bool GUI::Layer::handleMouseMoved(sf::Event event){
+	for (unsigned int i=0; i<_clickables.size(); ++i){
+		if (_clickables[i]->onMouseMoved(event.mouseMove.x, event.mouseMove.y))
+			return true;
+	}
+	return false;
 }
 
 void GUI::Layer::setBackgroundImage(string path){
