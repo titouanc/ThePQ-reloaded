@@ -15,7 +15,7 @@ enum ActionType {
 enum DeltaType {
 	DELTA_MOVE=1,  //!< Regular delta (move)
 	DELTA_CATCH=2, //!< Quaffle catched 
-	DELTA_APPEAR=3 //!< Ball reappear (was throwed)
+	DELTA_APPEAR=3, //!< Ball reappear (was throwed)
 };
 
 struct Stroke {

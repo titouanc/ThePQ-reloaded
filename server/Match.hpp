@@ -86,6 +86,9 @@ private:
 	/*! A sseker catch the golden snitch */
 	bool seekerCatchGS(Collision & collide);
 
+	/*! A beater can throw the budger to some direction */
+	bool beaterThrowBudger(Collision & collide);
+
 public:
 	Match(Squad const & squad1, Squad const & squad2);
 	~Match();
