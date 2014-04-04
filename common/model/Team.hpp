@@ -126,6 +126,32 @@ public:
 		pthread_mutex_unlock(&_changes);
 	}
 
+	int upgradePlayerAbility(int id, int ability){
+		//Player &player = getPlayer(id);
+		switch(ability){
+            case 0:{
+                getPlayer(id).improveStrength(1);
+                return getPlayer(id).getStrength();
+            }
+            case 1:{
+                getPlayer(id).improveVelocity(1);
+                return getPlayer(id).getVelocity();
+            }
+            case 2:{
+                getPlayer(id).improvePrecision(1);
+                return getPlayer(id).getPrecision();
+            }
+            case 3:{
+                getPlayer(id).improveChance(1);
+                return getPlayer(id).getChance();
+            }
+            default:{
+                return -1;
+            }
+        }
+	}
+
+
 	std::vector<Player>& getPlayers(){return _players;}
 	std::vector<Installation*>& getInstallations(){return _installations;}
 	Squad& getSquad() { return _squad; }
@@ -144,7 +170,7 @@ public:
 
 	bool removePlayer(int id);
 	void addPlayer(Player &player);
-	Player getPlayer(int id);
+	Player& getPlayer(int id);
 
 	void generateStartingTeam();
 	void initFame();

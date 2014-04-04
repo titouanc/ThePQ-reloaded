@@ -102,7 +102,7 @@ void Team::addPlayer(Player &player){
 	_players.push_back(player);
 	pthread_mutex_unlock(&_changes);
 }
-Player Team::getPlayer(int id){
+Player& Team::getPlayer(int id){
 	for(size_t i=0;i<_players.size();++i){
 		if(_players[i].getMemberID() == id){
 			return _players[i];

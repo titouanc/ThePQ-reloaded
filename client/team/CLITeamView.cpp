@@ -1,6 +1,6 @@
 #include "CLITeamView.hpp"
 #include <match/CLIMatchView.hpp>
-
+#include <user/CLIUserView.hpp>
 using namespace SQUAD;
 
 /// Constructor
@@ -28,7 +28,7 @@ void CLITeamView::run()
 		}
 		while (_wait == true);
 		showPlayers();
-		showSquad();
+		//showSquad();
 		option = _menu.run();
 		switch(option)
 		{
@@ -39,13 +39,12 @@ void CLITeamView::run()
 				showSwapPlayer();
 			case 3:
 				showPlayerAttributes();
-				break;
 			default:
 				cout << "\033[2J\033[1;1H";			
 				break;
 		}
 	}
-	while (option != 3);
+	while (option != 4);
 }
 
 /**
@@ -194,8 +193,8 @@ void CLITeamView::handleAbility(int id){
 					default:break;
 				}
 				onPlayersLoad();
-				showPlayers();
 				onTeamInfoChange();
+				showPlayers();
 				showPlayerAttributes();
 			}
 
@@ -259,7 +258,8 @@ void CLITeamView::showPlayerAttributes(){
 			handlePlayerAbility();
 			break;
 		case 2 :
-			cout << "\033[2J\033[1;1H";	
+			cout << "\033[2J\033[1;1H";
+			run();
 			break; 
 		default : 
 			cout << "\033[2J\033[1;1H";	
