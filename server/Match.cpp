@@ -559,7 +559,6 @@ bool Match::beaterThrowBudger(Collision & collide)
 	if (! atPos)
 		return false;
 
-	/* If it is a seeker and it arrives on the GoldenSnitch */
 	if (atPos->isBall()){
 		Ball & ball = (Ball &) *atPos;
 		if (! ball.isBludger())
@@ -580,9 +579,9 @@ bool Match::beaterThrowBudger(Collision & collide)
 		_turn.push_back(ballStroke);
 
 		Position qPos = collide.conflict + stroke.actionVec.normalize();
-		atPos->setPosition(qPos);
 
 		_deltas.append(mkDelta(*atPos, qPos));
+		atPos->setPosition(qPos);
 		return true;
 	}
 	

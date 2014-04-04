@@ -69,6 +69,8 @@ void MatchController::treatDeltas(JSON::List const & deltas)
 
 			if (from != to){
 				Moveable *toMove = _pitch.getAt(from);
+				cout << "REAL MOVE " << toMove << " " 
+			    	 << JSON::List(from) << " -> " << JSON::List(to) << endl;
 				_pitch.setAt(to, toMove);
 				_pitch.setAt(from, NULL);
 				toMove->setPosition(to);
