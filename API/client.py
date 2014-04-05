@@ -3,7 +3,7 @@ Python API for the Pro Quidditch Manager
 http://xkcd.com/353/
 """
 
-from parse_constants  import K
+from parse_constants  import K, REVERSE_K
 from player import Player
 from sale import Sale
 from installations import *
@@ -15,6 +15,12 @@ import json
 
 class Client(object):
     DEFAULT_HOST, DEFAULT_PORT = "localhost", 32123
+
+    class LoginError(Exception):
+        pass
+
+    class RegisterError(Exception):
+        pass
 
     @classmethod
     def connect(klass, username, password, host=DEFAULT_HOST, port=DEFAULT_PORT):
@@ -99,7 +105,7 @@ class Client(object):
         self.say(K['LOGIN'], {K['USERNAME']: str(username), K['PASSWORD']: str(password)})
         msg = self.waitFor(K['LOGIN'])
         if msg['data'] != K['USER_LOGIN']:
-            return False
+            raise self.LoginError(REVERSE_K[msg['data']])
         self.session['username'] = str(username)
         return self.__waitTeamInfos()
 
@@ -111,13 +117,13 @@ class Client(object):
         self.say(K['REGISTER'], {K['USERNAME']: str(username), K['PASSWORD']: str(password)})
         msg = self.waitFor(K['REGISTER'])
         if msg['data'] != K['USER_REGISTERED']:
-            return False
+            raise self.RegisterError(REVERSE_K[msg['data']])
 
         # Register team name
         self.say(K['LOGIN'], {K['USERNAME']: str(username), K['PASSWORD']: str(password)})
         msg = self.waitFor(K['LOGIN'])
         if msg['data'] != K['USER_CHOOSE_TEAMNAME']:
-            return False
+            raise self.RegisterError(REVERSE_K[msg['data']])
 
         self.session['username'] = str(username)
         self.say(K['USER_CHOOSE_TEAMNAME'], {K['TEAMNAME']: str(teamname), K['USERNAME']: str(username)})
