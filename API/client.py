@@ -47,7 +47,10 @@ class Client(object):
     def __recv(self):
         lbytes = self.sock.recv(4)
         l = ntohl(unpack('I', lbytes)[0])
-        dumped = self.sock.recv(l)
+        dumped = bytes()
+        while l > 0:
+            dumped += self.sock.recv(l)
+            l -= len(dumped)
         if version[0] == '2':
             return json.loads(str(dumped))
         else:
