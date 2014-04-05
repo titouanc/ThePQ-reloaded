@@ -22,6 +22,7 @@ def parse_constants(filename):
 	return res
 
 K = parse_constants("../common/Constants.hpp")
+REVERSE_K = {K[v] : v for v in K}
 
 if __name__ == "__main__":
 	assert PATTERNS[str].search('static const std::string A = "B";') != None
