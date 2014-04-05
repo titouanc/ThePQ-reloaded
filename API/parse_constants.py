@@ -22,3 +22,10 @@ def parse_constants(filename):
 	return res
 
 K = parse_constants("../common/Constants.hpp")
+
+if __name__ == "__main__":
+	assert PATTERNS[str].search('static const std::string A = "B";') != None
+	assert PATTERNS[int].search('static const unsigned int THE_ANSWER = 42;') != None
+	assert PATTERNS[int].search('static const int THE_ANSWER = 42;') != None
+	assert PATTERNS[float].search('static const float PI = 3.14;') != None
+	assert PATTERNS[float].search('static const double PI = 3.14;') != None
