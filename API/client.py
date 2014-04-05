@@ -136,27 +136,3 @@ class Client(object):
     @property
     def username(self):
         return self.session['username']
-
-if __name__ == "__main__":
-    from time import time
-
-    c = Client("localhost", 32123)
-    print(c.login("a", "a"))
-    print(c.session)
-    print("Funds:", c.getFunds())
-    print(c.connectedUsers())
-
-    print(c.getSquad())
-    print(c.getPlayers())
-
-    installations = c.getInstallations()
-    for installation in installations : 
-        print(installation)
-    print("Funds:", c.getFunds())
-    installations[0].downgrade()
-    print("Funds:", c.getFunds())
-    installations[0].upgrade()
-    print("Funds:", c.getFunds())
-
-    p = c.getPlayers()[-1]
-    #print("Selling", p, " -> ", p.sell(21500))
