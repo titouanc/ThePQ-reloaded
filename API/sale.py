@@ -17,12 +17,15 @@ class Sale(object):
 		self.time_left = attrs[K['BID_TIMER']]
 		self.value = attrs[K['BID_VALUE']]
 		self.ended = attrs[K['SALE_STATUS']]
+		if self.owner == K['GENERATED_BY_MARKET']:
+			self.owner = 'World'
 
 	def __repr__(self):
-		return "(Sale %s for %d$ for %ds)"%(
+		return "(Sale %s for %d$ for %ds. Owner: %s)"%(
 			repr(self.player), 
 			self.nextBidValue(), 
-			self.remainingTime()
+			self.remainingTime(),
+			self.owner
 		)
 
 	def nextBidValue(self):
