@@ -5,13 +5,13 @@ http://xkcd.com/353/
 
 from parse_constants  import K
 from player import Player
+from sale import Sale
+from installations import *
 
 from socket import *
 from struct import pack, unpack
 from sys import version
 import json
-
-from installations import *
 
 class Client(object):
     DEFAULT_HOST, DEFAULT_PORT = "localhost", 32123
@@ -127,6 +127,11 @@ class Client(object):
             'seeker': Player(self, self.session['team']['squad']['seeker']),
             'keeper': Player(self, self.session['team']['squad']['keeper']),
         }
+
+    def getSales(self):
+        self.say(K['PLAYERS_ON_MARKET_LIST'], "")
+        msg = self.waitFor(K['PLAYERS_ON_MARKET_LIST'])
+        return [Sale(self, p) for p in msg['data']]
 
     @property
     def username(self):

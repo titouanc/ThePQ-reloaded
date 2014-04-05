@@ -1,4 +1,4 @@
-from parse_constants import K
+from parse_constants import K, REVERSE_K
 
 class Player(object):
     class SellException(Exception):
@@ -25,7 +25,6 @@ class Player(object):
         })
         msg = self.client.waitFor(K['ADD_PLAYER_ON_MARKET_QUERY'])
 
-        for err in ['PLAYER_ALREADY_ON_MARKET', 'NOT_ENOUGH_PLAYERS']:
-            if msg['data'] in K[err]:
-                raise self.SellException(err)
+        if msg['data'] != K['PLAYER_ADDED_ON_MARKET']:
+            raise self.SellException(REVERSE_K[msg['data']])
         return True
