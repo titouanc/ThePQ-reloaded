@@ -67,7 +67,6 @@ void GraphicMatchView::treatClick(Position const & pos, bool regularClick)
 			if (regularClick){
 				/* Left-Click on last reached position: finish and send move */
 				sendDisplacement(*_selectedPlayer, _currentMove);
-				cout << "SENT MOVE " << JSON::List(_currentMove) << endl;
 				_selectedPlayer = NULL;
 				_currentMove = Displacement();
 				_match.clear();
@@ -83,7 +82,7 @@ void GraphicMatchView::treatClick(Position const & pos, bool regularClick)
 			}
 		}
 
-		else if (_currentAction != ACT_NONE && delta.isDirection()){
+		else if (_currentAction != ACT_NONE && delta.isDirection() && delta != Position(0, 0)){
 			sendStroke(Stroke(
 				*_selectedPlayer, _currentMove, _currentAction, lastPos, delta));
 			_selectedPlayer = NULL;
