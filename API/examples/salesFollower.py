@@ -4,12 +4,8 @@ Data is refreshed every 5 seconds
 """
 
 import argparse
-import os
-parentdir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-os.sys.path.insert(0,parentdir) 
-
 from time import sleep
-from client import Client
+from api import Client
 
 USERNAME = 'sales_follower'
 

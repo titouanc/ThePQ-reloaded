@@ -14,10 +14,14 @@ class Player(object):
         self.precision = attrs.get('precision', 0)
         self.strength = attrs.get('strength', 0)
         self.velocity = attrs.get('velocity', 0)
+        self.hasQuaffle = attrs.get('Q?', False)
+        self.position = tuple(attrs.get('position', [0, 0]))
+        self.mid = attrs.get('ID', 0)
         self.attrs = attrs
 
     def __repr__(self):
-        return "<#%d %s>"%(self.memberID, self.name)
+        id = self.memberID if self.mid == 0 else self.mid
+        return "<#%d %s>"%(id, self.name)
 
     def upgrade_ability(self, name):
         if name not in self.ABILITIES:
@@ -42,3 +46,5 @@ class Player(object):
         if msg['data'] != K['PLAYER_ADDED_ON_MARKET']:
             raise self.SellException(REVERSE_K[msg['data']])
         return True
+
+Ball = Player

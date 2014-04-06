@@ -1,4 +1,5 @@
 import re
+from os import path
 
 PATTERNS = {
 	str : re.compile(r'static +const +std::string +(?P<name>\w[\w\d_]*) *= *"(?P<val>[^"]+)"'),
@@ -21,7 +22,8 @@ def parse_constants(filename):
 					res[match.group('name')] = typ(match.group('val'))
 	return res
 
-K = parse_constants("../common/Constants.hpp")
+K_FILE = path.join(path.dirname(path.dirname(path.abspath(__file__))), 'common', 'Constants.hpp')
+K = parse_constants(K_FILE)
 REVERSE_K = {K[v] : v for v in K}
 
 if __name__ == "__main__":

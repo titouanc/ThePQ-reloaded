@@ -7,6 +7,8 @@ from parse_constants  import K, REVERSE_K
 from player import Player
 from sale import Sale
 from installations import *
+from match import Match
+from squad import Squad
 
 from socket import *
 from struct import pack, unpack
@@ -32,6 +34,7 @@ class Client(object):
         self.sock = socket(AF_INET, SOCK_STREAM)
         self.sock.connect((host, port))
         self.session = {}
+        self.match_requests = []
 
     def __enter__(self):
         return self
@@ -62,17 +65,40 @@ class Client(object):
         else:
             return json.loads(str(dumped, 'utf-8'))
 
-    def waitFor(self, type):
+    def waitFor(self, msg_type):
         while True:
             msg = self.__recv()
             if 'type' in msg:
-                if msg['type'] == str(type):
+                if msg['type'] == str(msg_type):
                     return msg
+
+                elif msg['type'] == K['FRIENDLY_GAME_INVITATION']:
+                    self.match_requests.append(msg['data'])
+
+                #Update team infos automatically
                 elif msg['type'] == K['TEAM_INFOS']:
                     if 'team' in self.session:
                         self.session['team'].update(msg['data'])
                     else:
                         self.session['team'] = msg['data']
+                if msg_type == '*':
+                    return msg
+
+    def invite(self, username):
+        """Invite another user to play a friendly game"""
+        self.say(K['FRIENDLY_GAME_USERNAME'], username)
+        msg = self.waitFor(K['FRIENDLY_GAME_INVITATION_RESPONSE'])
+        if msg['data']['answer'] == K['FRIENDLY_GAME_INVITATION_ACCEPT']:
+            return Match(self)
+
+    def answer_invitation(self, username, accept=True):
+        answer = 'FRIENDLY_GAME_INVITATION_ACCEPT' if accept else 'FRIENDLY_GAME_INVITATION_DENY'
+        self.say(K['FRIENDLY_GAME_INVITATION_RESPONSE'], {
+            'username': username,
+            'answer': K[answer]
+        })
+        if accept:
+            return Match(self)
 
     def say(self, type, data):
         self.__send({"type": str(type), "data": data})
