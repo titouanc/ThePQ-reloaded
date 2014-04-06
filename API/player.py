@@ -1,6 +1,8 @@
 from parse_constants import K, REVERSE_K
 
 class Player(object):
+    ABILITIES = ['strength', 'velocity', 'precision', 'chance']
+
     class SellException(Exception):
         pass
 
@@ -16,6 +18,18 @@ class Player(object):
 
     def __repr__(self):
         return "<#%d %s>"%(self.memberID, self.name)
+
+    def upgrade_ability(self, name):
+        if name not in self.ABILITIES:
+            raise ValueError(name)
+        self.client.say(K['UPGRADE_PLAYER_ABILITY'], {
+            K['PLAYER_ID']: self.memberID,
+            K['ABILITY']  : self.ABILITIES.index(name)
+        })
+        players_updated = self.client.getPlayers()
+        for p in players_updated:
+            if p.memberID == self.memberID:
+                return p
 
     def sell(self, value):
         self.client.say(K['ADD_PLAYER_ON_MARKET_QUERY'], {

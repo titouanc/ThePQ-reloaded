@@ -101,6 +101,10 @@ class Client(object):
         if 'team' in self.session and 'funds' in self.session['team']:
             return self.session['team']['funds']
 
+    def getAP(self):
+        if 'team' in self.session and 'activity_points' in self.session['team']:
+            return self.session['team']['activity_points']
+
     def login(self, username, password):
         self.say(K['LOGIN'], {K['USERNAME']: str(username), K['PASSWORD']: str(password)})
         msg = self.waitFor(K['LOGIN'])
