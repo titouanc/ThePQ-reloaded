@@ -6,7 +6,17 @@ using namespace SQUAD;
 /// Constructor
 CLITeamView::CLITeamView(ClientController const & parent) : TeamController(parent)
 {}
-
+std::string CLITeamView::paddName(std::string name){
+    std::string newName="";
+    if (name.length()>35) return name;
+    else{
+        newName+=name;
+        for(unsigned int i(0);i<35-name.length();i++){
+            newName+=" ";
+        }
+        return newName;
+    }
+}
 /**
  * Method handling the team management interface
  */
@@ -40,7 +50,7 @@ void CLITeamView::run()
 			case 3:
 				showPlayerAttributes();
 			default:
-				cout << "\033[2J\033[1;1H";			
+				clScreen();
 				break;
 		}
 	}
@@ -51,11 +61,11 @@ void CLITeamView::run()
  * Method displaying the teams players
  */
 void CLITeamView::showPlayers(){
-	cout << "		================ YOUR PLAYERS ================" << endl;
+	cout << "================================================ YOUR PLAYERS =======================================" << endl;
 	for(size_t i =0; i<user().players.size();++i){
-		cout <<"	"<< user().players[i] << endl;
+		cout << user().players[i] << endl; //modif
 	}
-	cout << "		==============================================" << endl;
+	cout << "=====================================================================================================" << endl;
 }
 
 /**
@@ -63,15 +73,15 @@ void CLITeamView::showPlayers(){
  */
 void CLITeamView::showSquad()
 {
-	cout << "================ YOUR SQUAD ==================" << endl;
-	cout << LEFT_CHASER << " - \033[34mLeft Chaser\033[0m : 		" << user().squad.players[LEFT_CHASER]->getName() << " - ID: " << user().squad.players[LEFT_CHASER]->getMemberID() << endl;
-	cout << CENTER_CHASER << " - \033[34mCenter Chaser\033[0m : 		" << user().squad.players[CENTER_CHASER]->getName() << " - ID: " << user().squad.players[CENTER_CHASER]->getMemberID() << endl;
-	cout << RIGHT_CHASER << " - \033[34mRight Chaser\033[0m : 		" << user().squad.players[RIGHT_CHASER]->getName() << " - ID: " << user().squad.players[RIGHT_CHASER]->getMemberID() << endl;
-	cout << LEFT_BEATER << " - \033[34mLeft Beater\033[0m : 		" << user().squad.players[LEFT_BEATER]->getName() << " - ID: " << user().squad.players[LEFT_BEATER]->getMemberID() << endl;
-	cout << RIGHT_BEATER << " - \033[34mRight Beater\033[0m : 		" << user().squad.players[RIGHT_BEATER]->getName() << " - ID: " << user().squad.players[RIGHT_BEATER]->getMemberID() << endl;
-	cout << SEEKER << " - \033[34mSeeker\033[0m : 			" << user().squad.players[SEEKER]->getName() << " - ID: " << user().squad.players[SEEKER]->getMemberID() << endl;
-	cout << KEEPER << " - \033[34mKeeper\033[0m : 			" << user().squad.players[KEEPER]->getName() << " - ID: " << user().squad.players[KEEPER]->getMemberID() << endl;
-	cout << "==============================================" << endl;
+	cout << "================================================= YOUR SQUAD ========================================" << endl;
+	cout << LEFT_CHASER << " - \033[34mLeft Chaser\033[0m : 		" << paddName(user().squad.players[LEFT_CHASER]->getName()) << " - ID: " << user().squad.players[LEFT_CHASER]->getMemberID() << endl;
+	cout << CENTER_CHASER << " - \033[34mCenter Chaser\033[0m : 		" << paddName(user().squad.players[CENTER_CHASER]->getName()) << " - ID: " << user().squad.players[CENTER_CHASER]->getMemberID() << endl;
+	cout << RIGHT_CHASER << " - \033[34mRight Chaser\033[0m : 		" << paddName(user().squad.players[RIGHT_CHASER]->getName()) << " - ID: " << user().squad.players[RIGHT_CHASER]->getMemberID() << endl;
+	cout << LEFT_BEATER << " - \033[34mLeft Beater\033[0m : 		" << paddName(user().squad.players[LEFT_BEATER]->getName()) << " - ID: " << user().squad.players[LEFT_BEATER]->getMemberID() << endl;
+	cout << RIGHT_BEATER << " - \033[34mRight Beater\033[0m : 		" << paddName(user().squad.players[RIGHT_BEATER]->getName()) << " - ID: " << user().squad.players[RIGHT_BEATER]->getMemberID() << endl;
+	cout << SEEKER << " - \033[34mSeeker\033[0m : 			" << paddName(user().squad.players[SEEKER]->getName()) << " - ID: " << user().squad.players[SEEKER]->getMemberID() << endl;
+	cout << KEEPER << " - \033[34mKeeper\033[0m : 			" << paddName(user().squad.players[KEEPER]->getName()) << " - ID: " << user().squad.players[KEEPER]->getMemberID() << endl;
+	cout << "=====================================================================================================" << endl;
 }
 
 /**
@@ -218,7 +228,7 @@ void CLITeamView::handlePlayerAbility(){
 				cout << "Wrong option entered. Try again: ";
 				cin.clear();
 			}else {
-				cout << "\033[2J\033[1;1H";
+				clScreen();
 				handleAbility(idPlayer);
 			}
 		}else{
@@ -258,11 +268,11 @@ void CLITeamView::showPlayerAttributes(){
 			handlePlayerAbility();
 			break;
 		case 2 :
-			cout << "\033[2J\033[1;1H";
+			clScreen();
 			run();
 			break; 
 		default : 
-			cout << "\033[2J\033[1;1H";	
+			clScreen();	
 			break;
 	}
 }

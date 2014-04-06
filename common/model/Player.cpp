@@ -1,18 +1,41 @@
 #include "Player.hpp"
 #include <model/MemoryAccess.hpp>
 #include <cmath>
+#include <iostream>
+#include <iomanip>
+
+std::string paddName(std::string name){
+    std::string newName="";
+    if (name.length()>35) return name;
+    else{
+        newName+=name;
+        for(unsigned int i(0);i<35-name.length();i++){
+            newName+=" ";
+        }
+        return newName;
+    }
+}
+
+std::string paddValue(int value){
+    if (value < 10)
+        return std::to_string(value)+"  ";
+    else if (value<100)
+        return std::to_string(value)+" ";
+    else return std::to_string(value);
+}
 
 std::ostream& operator<< (std::ostream& out, const Player& player)
     {
-        out << "\033[35m#" << player._memberID << "\033[0m "
-            << player._name <<" "
-            << "Strength(\033[33m" << player._strength 
-            << "\033[0m) Velocity(\033[33m" << player._velocity 
-            << "\033[0m) Precision(\033[33m" << player._precision 
-            << "\033[0m) Chance (\033[33m" << player._chance << "\033[0m)";
+        out << "        "
+            << "\033[35m#" << player._memberID << "\033[0m "
+            << paddName(player._name) 
+            << "Strength(\033[33m" << paddValue(player._strength)
+            << "\033[0m) Velocity(\033[33m" << paddValue(player._velocity) 
+            << "\033[0m) Precision(\033[33m" << paddValue(player._precision)
+            << "\033[0m) Chance (\033[33m" << paddValue(player._chance) << "\033[0m)";
         return out;
     }
-    
+
 Player::Player(JSON::Dict const & json) : 
     Member(json), Moveable(json), 
      _broomstick(NULL), _jersey(NULL), 

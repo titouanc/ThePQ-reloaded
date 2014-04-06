@@ -6,8 +6,8 @@
 #include <functional>
 #include "Position.hpp"
 
-/* 
-    Define hash method for Position (needed for O(1) acces in PosMatrix)
+/** 
+ *   Define hash method for Position (needed for O(1) acces in PosMatrix)
  */
 namespace std {
     template <>
@@ -26,10 +26,10 @@ namespace std {
 }
 
 
-/* 
-    PosMatrix efficiently manages sparse matrices of any size that could fit
-    in a Position.
-*/
+/** 
+ *   PosMatrix efficiently manages sparse matrices of any size that could fit
+ *  in a Position.
+ */
 template <typename T>
 class PosMatrix : public std::unordered_map<Position, T*> {
     public:

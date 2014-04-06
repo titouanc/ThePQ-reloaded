@@ -42,7 +42,7 @@ public:
 		return res;
 	}
 
-protected://modif
+protected:
 	unsigned int _uniqueID;
 	double _speed;
 	Position _position;

@@ -117,17 +117,19 @@ vector<Position> Pitch::freePositionsAround(Position &position){
 		res.push_back(position+SouthWest);
 	return res;
 }
-
+/// Method assigning a position on the pitch
 void Pitch::setAt(int x, int y, Moveable *moveable)
 {
 	setAt(Position(x, y), moveable);
 }
 
+/**
+ * Method checking position is correct insisde the pitch
+ * and setting at position <<<x,y>>> if position is valid
+ */
 bool Pitch::insert(Moveable *moveable)
 {
-	/* Method checking position is correct insisde the pitch
-	 * and setting at position <<<x,y>>> if position is valid
-	 */
+	
 	Position const & pos = moveable->getPosition();
 	if (isValid(pos) && inEllipsis(pos)){
 		setAt(pos, moveable);

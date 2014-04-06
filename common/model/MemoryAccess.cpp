@@ -46,6 +46,12 @@ std::string MemoryAccess::getPlayersDirectory(std::string username){
 std::string MemoryAccess::getPlayerPath(std::string username, int id){
 	return getPlayersDirectory(username) + std::to_string(id) + memory::FILE_FORMAT;
 }
+
+/**
+ * Method retrieving path to installations directory
+ * @param std::string : username of user whose Installations path should be returned
+ * @return std::string : path to the users intallations
+ */
 std::string MemoryAccess::getInstallationsDirectory(std::string username){
 	return getUserDirectory(username) + memory::INSTALLATIONS_DIR;
 }

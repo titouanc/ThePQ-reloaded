@@ -3,6 +3,7 @@
 #include <Exception.hpp>
 #include <model/MemoryAccess.hpp>
 	
+/// Method handling the end of a step in the sale process	
 void Sale::resolveEndOfTurn(){
 	++_turn;
 	_canBidTeams = _turnTeams;
@@ -12,10 +13,12 @@ void Sale::resolveEndOfTurn(){
 	save();
 }
 
+/// Copy constructor
 Sale::Sale() : _turnTeams(), _canBidTeams(), _bidValue(0),_bidRatio(gameconfig::BID_RATIO),
 _turn(1),_currentBidder(""),_owner(""),_timeLeft(gameconfig::SALE_FIRST_TURN_TIME), _saleID(0), 
 _player(Player()), _ended(false) {}
 
+/// Constructor
 Sale::Sale(int bidValue, std::string owner, int id, const Player & player) : Sale()
 {
 	_bidValue = bidValue;
@@ -24,6 +27,7 @@ Sale::Sale(int bidValue, std::string owner, int id, const Player & player) : Sal
 	_player = player;
 }
 
+/// Copy constructor
 Sale::Sale(JSON::Dict const & json): Sale() 
 {
 	if(json.hasKey(net::MSG::PLAYER)) 			{_player=Player(DICT(json.get(net::MSG::PLAYER)));}
@@ -50,8 +54,10 @@ Sale::Sale(JSON::Dict const & json): Sale()
 	}
 }
 
+/// Copy constructor
 Sale::Sale(const JSON::Dict & json, const Player & player): Sale(json) {_player = player;}
 
+/// Copy constructor
 Sale::Sale(const Sale & other): _turnTeams(other._turnTeams), _canBidTeams(other._canBidTeams), 
 _bidValue(other._bidValue),_bidRatio(other._bidRatio),_turn(other._turn),
 _currentBidder(other._currentBidder),_owner(other._owner),_timeLeft(other._timeLeft),
@@ -93,11 +99,11 @@ std::pair<std::string, int> Sale::placeBid(std::string username, int bid_value){
 	_bidValue = bid_value;
 	return res;
 }
-
+/// Method saving a sale in the server
 void Sale::save(){
 	MemoryAccess::save(*this);
 }
-
+/// Method loading a sale from the server
 void Sale::load(){
 	MemoryAccess::load(*this);
 }
@@ -123,7 +129,7 @@ Sale::operator JSON::Dict(){
 	ret.set(net::MSG::SALE_STATUS, _ended);
 	return ret;
 }
-
+/// Ostream operator overload
 std::ostream& operator<< (std::ostream& out, const Sale& sale){
 	out << sale._player;
 	out << " Time(\033[32m" 	<< 	sale._timeLeft << "\033[0m) Value(\033[32m" <<	sale._bidValue <<"\033[0m -> \033[32m"
