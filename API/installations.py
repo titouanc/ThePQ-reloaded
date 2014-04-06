@@ -1,7 +1,8 @@
-from parse_constants  import parse_constants
-K = parse_constants("../common/Constants.hpp")
+from parse_constants  import K
 
 class Installation:
+	class UpgradeError(Exception):
+		pass
 
 	def __init__(self, client, attrs, index):
 		self.client = client
@@ -21,22 +22,18 @@ class Installation:
 		msg = self.client.waitFor(K['INSTALLATION_UPGRADE'])
 		if msg['data'] == True:
 			self.level += 1
-			print("Upgraded", self.name, "successfully!")
 			return True
 		else:
-			print("Could not upgrade "+self.name+". Check your spelling or your budget.")
-			return False
+			raise self.UpgradeError(msg['data'])
 
 	def downgrade(self):
 		self.client.say(K['INSTALLATION_DOWNGRADE'], self.index)
 		msg = self.client.waitFor(K['INSTALLATION_DOWNGRADE'])
 		if msg['data'] == True:
 			self.level -= 1
-			print("Downgraded", self.name, "successfully!")
 			return True
 		else:
-			print("Could not downgrade "+self.name+".")
-			return False
+			raise self.UpgradeError(msg['data'])
 
 	def getUpgradeCost(self):
 		return self.getValueAtLevel(self.level+1) - self.getValueAtLevel(self.level)
