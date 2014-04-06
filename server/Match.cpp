@@ -582,6 +582,8 @@ bool Match::beaterThrowBudger(Collision & collide)
 
 		_deltas.append(mkDelta(*atPos, qPos));
 		atPos->setPosition(qPos);
+		_pitch.setAt(collide.conflict, &player);
+		_pitch.setAt(collide.fromPos, NULL);
 		return true;
 	}
 	
