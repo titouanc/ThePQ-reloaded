@@ -127,27 +127,26 @@ public:
 	}
 
 	int upgradePlayerAbility(int id, int ability){
-		//Player &player = getPlayer(id);
+		Player &player = getPlayer(id);
 		switch(ability){
-            case 0:{
-                getPlayer(id).improveStrength(1);
-                return getPlayer(id).getStrength();
-            }
-            case 1:{
-                getPlayer(id).improveVelocity(1);
-                return getPlayer(id).getVelocity();
-            }
-            case 2:{
-                getPlayer(id).improvePrecision(1);
-                return getPlayer(id).getPrecision();
-            }
-            case 3:{
-                getPlayer(id).improveChance(1);
-                return getPlayer(id).getChance();
-            }
-            default:{
+            case 0:
+                player.improveStrength(1);
+                return player.getStrength();
+            
+            case 1:
+                player.improveVelocity(1);
+                return player.getVelocity();
+            
+            case 2:
+                player.improvePrecision(1);
+                return player.getPrecision();
+            
+            case 3:
+                player.improveChance(1);
+                return player.getChance();
+            
+            default:
                 return -1;
-            }
         }
 	}
 
