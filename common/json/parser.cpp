@@ -19,9 +19,12 @@ static inline const char *lstrip(const char *str, const char *junk=STRIP_JUNK){
     return str;
 }
 
+/**
+ * Method returning a parsed number as Value
+ */
 static Value *parseNumber(const char *str, char **endptr)
 {
-    /* Method returning a parsed number as Value*/
+    
     assert(('0' <= *str && *str <= '9') || *str == '-');
     assert(endptr != NULL);
 

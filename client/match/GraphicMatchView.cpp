@@ -6,7 +6,7 @@ GraphicMatchView::GraphicMatchView(ClientController const & parent, GUI::MainCon
 	MatchController(parent),
 	GUI::GraphicManager(controller), 
 	_match(pitch(), mySquad()), 
-	_selectedPlayer(NULL), _throwBall(false), _tooltipped(NULL)
+	_selectedPlayer(NULL), _currentAction(ACT_NONE), _tooltipped(NULL)
 {
 	controller.mainMusic.stop();
 	if (controller.mainMusic.openFromFile(soundPath("MarvelousSpaceAdventures.ogg"))){
@@ -55,15 +55,15 @@ void GraphicMatchView::treatClick(Position const & pos, bool regularClick)
 		/* Cancel move: click on player */
 		_selectedPlayer = NULL;
 		_currentMove = Displacement();
-		_throwBall = false;
-	} 
+		_currentAction = ACT_NONE;
+	}
 
 	else if (_selectedPlayer) {
 		Position lastPos = _currentMove.position() + _selectedPlayer->getPosition();
 		Position delta = pos - lastPos;
 		size_t l = delta.length()+_currentMove.length();
 
-		if (delta == Position(0, 0)){
+		if (delta == Position(0, 0)) {
 			if (regularClick){
 				/* Left-Click on last reached position: finish and send move */
 				sendDisplacement(*_selectedPlayer, _currentMove);
@@ -76,26 +76,34 @@ void GraphicMatchView::treatClick(Position const & pos, bool regularClick)
 				if (_selectedPlayer->canQuaffle()){
 					PlayerQuaffle & pq = (PlayerQuaffle &) *_selectedPlayer;
 					if (pq.hasQuaffle()){
-						_throwBall = true;
+						_currentAction = ACT_THROW;
 						_match.hilightAccessibles(pos, 5, &UIMatch::hilightBlue);
 					}
 				}
 			}
 		}
 
-		else if (_throwBall && delta.isDirection()){
+		else if (_currentAction != ACT_NONE && delta.isDirection()){
 			sendStroke(Stroke(
-				*_selectedPlayer, _currentMove, ACT_THROW, lastPos, delta));
+				*_selectedPlayer, _currentMove, _currentAction, lastPos, delta));
 			_selectedPlayer = NULL;
 			_currentMove = Displacement();
-			_throwBall = false;
+			_currentAction = ACT_NONE;
 		}
-
 		else if (delta.isDirection() && l <= _selectedPlayer->getSpeed()){
 			size_t rest = _selectedPlayer->getSpeed() - l;
 			_currentMove.addMove(delta);
 			_match.clear(); /* clear hilights */
 			
+			if (_selectedPlayer->isBeater() && atPos && atPos->isBall()) {
+				Ball & ball = (Ball &) *atPos;
+				if (ball.isBludger())
+				{
+					_match.hilightAccessibles(pos, 5, &UIMatch::hilightBlue);
+					_currentAction = ACT_BAT;
+				}
+			}
+
 			if (_currentMove.length() < _selectedPlayer->getSpeed()){
 				_match.hilightAccessibles(pos, rest);
 			}
@@ -103,7 +111,7 @@ void GraphicMatchView::treatClick(Position const & pos, bool regularClick)
 		} else {
 			_selectedPlayer = NULL;
 			_currentMove = Displacement();
-			_throwBall = false;
+			_currentAction = ACT_NONE;
 		}
 	}
 	redraw();

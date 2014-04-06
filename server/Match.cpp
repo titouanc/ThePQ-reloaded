@@ -263,6 +263,7 @@ JSON::List Match::playStrokes()
 				playerCatchQuaffle(collide) ||
 				seekerCatchGS(collide) ||
 				scoreGoal(collide) || 
+				beaterThrowBudger(collide) ||
 				simpleCollision(collide)
 			)){
 				/* If no rule has stopped this stroke; set it to its new position */
@@ -549,4 +550,41 @@ bool Match::seekerCatchGS(Collision & collide)
 	}
 	
 	return false;
+}
+
+bool Match::beaterThrowBudger(Collision & collide)
+{
+	Moveable *atPos = _pitch.getAt(collide.conflict);
+	Stroke & stroke = collide.stroke;
+	if (! atPos)
+		return false;
+
+	if (atPos->isBall()){
+		Ball & ball = (Ball &) *atPos;
+		if (! ball.isBludger())
+			return false;
+		if (! collide.stroke.moveable.isPlayer())
+			return false;
+		Player & player = (Player &) collide.stroke.moveable;
+		if (! player.isBeater())
+			return false;
+		// move bluger to direction
+		if (stroke.actionVec == Position(0, 0))
+			return false;
+
+		Displacement ballMove(_t);
+		ballMove.addMove(stroke.actionVec);
+
+		Stroke ballStroke = Stroke(*atPos, ballMove);
+		_turn.push_back(ballStroke);
+
+		Position qPos = collide.conflict + stroke.actionVec.normalize();
+
+		_deltas.append(mkDelta(*atPos, qPos));
+		atPos->setPosition(qPos);
+		return true;
+	}
+	
+	return false;
+
 }

@@ -93,63 +93,104 @@ void Installation::downgrade(){
 		_level--;
 	}
 }
-
+/// Constructor
 FanShop::FanShop(std::string owner) : Installation(owner, memory::FANSHOP, 10000)
 {}
 
+/**
+ * Method handling the maintenance cost of an installation
+ * @return int : cost of maintanance for the installation
+ */
 int FanShop::getMaintenanceCost() const
 {
 	return getCurrentValue()/50;
 }
 
+/**
+ * Method handling the income from an installation
+ * @return int : income of installation
+ */
 int FanShop::getIncome() const
 {
 	return (getCurrentValue()*gameconfig::TICKS_BEFORE_STADIUM)/(50*gameconfig::TICKS_BEFORE_RESET); // CAN'T TOUCH THIS MC HAMMER
 }
 
+/**
+ * Method handling the income from a match
+ * @return int : income from a match
+ */
 int FanShop::getMatchIncome(int nbOfSpectators)
 {
 	return nbOfSpectators*gameconfig::GOODIES_PRICE;
 }
 	
+/// Constructor
 FoodStand::FoodStand(std::string owner) : Installation(owner, memory::FOOD_STAND, 10000)
 {}
 
+/**
+ * Method handling the maintenance cost
+ * @return int : maintenance cost for the food stand
+ */
 int FoodStand::getMaintenanceCost() const
 {
 	// EXAMPLE ==> TODO
 	return getCurrentValue()/50;	
 }
 
+/**
+ * Method handling the income from the food stand
+ * @return int : income from the food stand
+ */
 int FoodStand::getIncome() const
 {
 	return 0;
 }
 
+/**
+ * Method handling the incom from a match
+ * @return int : income of a food stand after a match
+ */
 int FoodStand::getMatchIncome(int nbOfSpectators)
 {
 	return nbOfSpectators*gameconfig::FOOD_PRICE;
 }
 
+/// Constructor
 Tribune::Tribune(std::string owner) : Installation(owner, memory::TRIBUNE, 20000, 1)
 {}
 
+/**
+ * Method
+ */
 int Tribune::getMaxSpectators()
 {
 	return _level*gameconfig::TRIBUNE_SPECTATORS;
 }
 
+/**
+ * Method handling the maintenance of a tribune
+ * @return int : maintenance cost for a tribune
+ */
 int Tribune::getMaintenanceCost() const
 {
 	// EXAMPLE ==> TODO
 	return getCurrentValue()/50;	
 }
 
+/**
+ * Method handling the income of the tribune
+ * @return int : income for a tribune
+ */
 int Tribune::getIncome() const
 {
 	return 0;
 }
 
+/**
+ * Method handling the match income for a tribune
+ * @return int : income for a tribune after a match
+ */
 int Tribune::getMatchIncome(int nbOfSpectators)
 {
 	return nbOfSpectators*gameconfig::TICKET_PRICE;
