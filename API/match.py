@@ -15,20 +15,28 @@ class Match(object):
 		self.ended = False
 		self.pitch = {}
 		self.squad = None
+		self.quaffle = None
 
 	def __treat_delta_move(self, delta):
 		_from, to = tuple(delta['from']), tuple(delta['to'])
 		if _from in self.pitch and _from != to:
 			moveable = self.pitch.pop(_from)
 			moveable.position = to
-			print("Move", _from, " -> ", to)
 			self.pitch[to] = moveable
 
 	def __treat_delta_catch(self, delta):
-		pass
+		pos = self.posForID(delta['mid'])
+		if pos:
+			self.quaffle = self.pitch.pop(pos)
 
 	def __treat_delta_throw(self, delta):
-		pass
+		self.pitch[tuple(delta['from'])] = self.quaffle
+		self.quaffle = None
+
+	def posForID(self, pid):
+		for pos in self.pitch:
+			if self.pitch[pos].mid == pid:
+				return pos
 
 	def read_msg(self):
 		message = self.client.waitFor('*')
@@ -57,10 +65,7 @@ class Match(object):
 		pass
 
 	def __iter__(self):
-		print(self.client)
 		self.waitFor(K['MATCH_MOVEABLES'])
-		print(self.pitch, self.squad)
-		#self.client.waitFor(K['MATCH_START'])
 		return self
 
 	def next(self):
