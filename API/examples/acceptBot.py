@@ -16,4 +16,5 @@ with Client() as client:
 		print("Invite from", other)
 		match = client.answer_invitation(other, accept=True)
 		for turn in match:
-			print("Match turn")
+			pass
+		print("Match ended")
