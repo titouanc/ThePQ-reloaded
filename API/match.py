@@ -18,10 +18,11 @@ class Match(object):
 
 	def __treat_delta_move(self, delta):
 		_from, to = tuple(delta['from']), tuple(delta['to'])
-		if _from in self.pitch:
-			self.pitch[to] = self.pitch[_from]
-			self.pitch.pop(_from)
-			self.pitch[to].position = to
+		if _from in self.pitch and _from != to:
+			moveable = self.pitch.pop(_from)
+			moveable.position = to
+			print("Move", _from, " -> ", to)
+			self.pitch[to] = moveable
 
 	def __treat_delta_catch(self, delta):
 		pass
