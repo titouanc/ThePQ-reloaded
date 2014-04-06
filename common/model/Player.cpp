@@ -4,12 +4,12 @@
 
 std::ostream& operator<< (std::ostream& out, const Player& player)
     {
-        out << "\033[35m#" << player._memberID
-            << " \033[1m" << player._name 
-            << ") Strength(\033[32m" << player._strength 
-            << "\033[0m) Velocity(\033[32m" << player._velocity 
-            << "\033[0m) Precision(\033[32m" << player._precision 
-            << "\033[0m) Chance (\033[32m" << player._chance << ")\033[0m";
+        out << "\033[35m#" << player._memberID << "\033[0m "
+            << player._name <<" "
+            << "Strength(\033[33m" << player._strength 
+            << "\033[0m) Velocity(\033[33m" << player._velocity 
+            << "\033[0m) Precision(\033[33m" << player._precision 
+            << "\033[0m) Chance (\033[33m" << player._chance << "\033[0m)";
         return out;
     }
     
@@ -40,7 +40,7 @@ Player::operator JSON::Dict() const {
     res.set("strength", _strength);
     res.set("velocity", _velocity);
     res.set("precision", _precision);
-    res.set("chance", _precision);
+    res.set("chance", _chance);
     res.set("name", _name);
     return res;
 }

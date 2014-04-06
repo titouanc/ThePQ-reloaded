@@ -64,7 +64,7 @@ _cashPrize(cashprize), _fame(fame)
 Championship::~Championship()
 {}
 
-///Constructor
+/// Constructor
 Championship::Championship(JSON::Dict const & json) : Championship()
 {
 	if (ISINT(json.get("nbOfUsers")))	{ _nbOfUsers = INT(json.get("nbOfUsers")); }
@@ -211,6 +211,7 @@ void Championship::start()
 	_turnsResult.push_back(_users);
 	_isStarted = true;
 }
+
 /**
  * Method clearing a championship schedule
  */

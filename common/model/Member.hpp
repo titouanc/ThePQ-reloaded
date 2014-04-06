@@ -12,10 +12,12 @@ using namespace std;
 class Member
 {
 public:
-	// TODO set random name in constructor-<<<<load first/last name from playerNames.txt
+	/// Constructor
     Member() : _memberID(-1), _name("Lasty Cotter"), _salary(5000), _price(25000), _owner(""){}
+    /// Constructor
     Member(int memberID,string name,int salary,int price,string owner) : _memberID(memberID), _name(name), _salary(salary), 
-    _price(price), _owner(owner){}//modif
+    _price(price), _owner(owner){}
+    /// Copy constructor
     Member(JSON::Dict const& json): Member() {
 		if (ISINT(json.get("memberID"))) _memberID = INT(json.get("memberID"));
     	if (ISSTR(json.get("name"))) _name = STR(json.get("name")).value();
@@ -50,7 +52,7 @@ public:
     void setMemberID(int id) {_memberID = id;}
 	
 	
-protected://modif
+protected:
 	int _memberID;
     string _name;
 	int _salary;
@@ -73,12 +75,10 @@ protected://modif
 			}
 		}
 		++_staticMemberID;
-		//cout << "MEMBER ID: " << _staticMemberID << endl;
 		JSON::Integer i(_staticMemberID);
 		i.save(path);
 		return _staticMemberID;
 	}
 	
-	//Team * _owner; // TODO
 };
 #endif

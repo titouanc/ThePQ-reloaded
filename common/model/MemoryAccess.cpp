@@ -37,6 +37,7 @@ std::string MemoryAccess::getUserPath(std::string username){
 std::string MemoryAccess::getPlayersDirectory(std::string username){
 	return getUserDirectory(username) + memory::PLAYERS_DIR;
 }
+
 /**
  * Method retrieving the player directory full path
  * @param std::string : name of the user
@@ -51,24 +52,58 @@ std::string MemoryAccess::getInstallationsDirectory(std::string username){
 std::string MemoryAccess::getInstallationPath(std::string username, std::string type){
 	return getInstallationsDirectory(username) + type + memory::FILE_FORMAT;
 }
+
+/**
+ * Method retrieving the path to the folder containing the sales
+ * @param int : id of the sale whose path will be retrieved
+ * @return std::string : path of the file containing the sale (with the provided id)
+ */
 std::string MemoryAccess::getSalePath(int id){
 	return memory::MARKET_PATH + std::to_string(id) + memory::SALE_FILE + memory::FILE_FORMAT;
 }
+
+/**
+ * Method retrieving the path to the folder containing the team attributes
+ * @param std::string : name of the teams owner
+ * @return std::string : full path for the team attributes folder
+ */
 std::string MemoryAccess::getTeamInfosPath(std::string username){
 	return getUserDirectory(username) + memory::TEAM_INFOS_FILE + memory::FILE_FORMAT;
 }
 std::string MemoryAccess::getSkelPath(std::string file){
 	return memory::SKEL_DIR + file + memory::FILE_FORMAT;
 }
+
+/**
+ * Method retrieving the path to the teamnames
+ * @return std::string : path to the file containing names of the teams
+ */
 std::string MemoryAccess::getTeamNamesPath(){
 	return memory::GLOBAL_DATA_DIR + memory::TEAMNAMES_FILE + memory::FILE_FORMAT;
 }
+
+/**
+ * Method retrieving the path of the admin user
+ * @param std::string : name of the admin
+ * @return std::string : full path to the admin
+ */
 std::string MemoryAccess::getAdminPath(std::string adminname){
 	return memory::ADMIN_DIR + adminname + "/" + memory::ADMIN_FILE + memory::FILE_FORMAT;
 }
+
+/**
+ * Method retrieving the path of all the usernames
+ * @return std::string : full path to the usernames
+ */
 std::string MemoryAccess::getUserNamesPath(){
 	return memory::GLOBAL_DATA_DIR + memory::USERNAMES_FILE + memory::FILE_FORMAT;
 }
+
+/**
+ * Method retrieving the path of championship data
+ * @param std::string : name of the championship
+ * @return std::string : path of the championship data
+ */
 std::string MemoryAccess::getChampionshipPath(std::string name){
 	return memory::CHAMPIONSHIPS_DIR + name + memory::FILE_FORMAT;
 }
@@ -369,8 +404,8 @@ void MemoryAccess::saveAdmin(User& admin){
 }
 
 /**
- * Method loading
- * @param
+ * Method loading admin credentials from server db
+ * @param User : user whose credentials have to be loaded
  */
 void MemoryAccess::loadAdmin(User& admin){
 	JSON::Value *loaded = JSON::load(getAdminPath(admin.getUsername()).c_str());
