@@ -69,13 +69,9 @@ void MatchController::treatDeltas(JSON::List const & deltas)
 
 			if (from != to){
 				Moveable *toMove = _pitch.getAt(from);
-				cout << "REAL MOVE " << toMove << " " 
-			    	 << JSON::List(from) << " -> " << JSON::List(to) << endl;
 				_pitch.setAt(to, toMove);
 				_pitch.setAt(from, NULL);
 				toMove->setPosition(to);
-				cout << "MOVE " << toMove->getName() << " " 
-			    	 << JSON::List(from) << " -> " << JSON::List(to) << endl;
 			}
 		} 
 
@@ -89,7 +85,6 @@ void MatchController::treatDeltas(JSON::List const & deltas)
 				if (it.second->getID() == INT(delta.get("mid"))){
 					PlayerQuaffle *pq = (PlayerQuaffle *) it.second;
 					pq->releaseQuaffle();
-					cout << pq->getName() << " THROW QUAFFLE" << endl;
 					break;
 				}
 			}
@@ -101,7 +96,6 @@ void MatchController::treatDeltas(JSON::List const & deltas)
 				if (it.second->getID() == INT(delta.get("mid"))){
 					PlayerQuaffle *pq = (PlayerQuaffle *) it.second;
 					pq->retainQuaffle();
-					cout << pq->getName() << " CATCH QUAFFLE" << endl;
 				}
 			}
 			_pitch.setAt(_quaffle->getPosition(), NULL);
@@ -134,8 +128,6 @@ MatchController::~MatchController()
  */
 void MatchController::treatMessage(std::string const & type, JSON::Value const * data)
 {
-	cout << "TREAT MESSAGE " << type << endl;
-
 	/* unwrap MSTATUS messages */
 	if (type == MSG::MATCH_STATUS){
 		/* TODO: remove MSTATUS wrapper message !!! */
