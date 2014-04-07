@@ -3,6 +3,8 @@
 #include <vector>
 #include <model/Installation.hpp>
 
+/// Method sending the installations and their attributes stored on 
+/// the server to the user
 void StadiumManager::sendInstallationsList(int peer_id)
 {
 	JSON::List jsonInst;
@@ -16,6 +18,7 @@ void StadiumManager::sendInstallationsList(int peer_id)
 	_outbox.push(Message(peer_id, msg.clone()));
 }
 
+/// Method handling the upgrades of a users installations
 void StadiumManager::upgradeInstallation(int peer_id, size_t i)
 {
 	bool res = _users[peer_id]->getTeam().upgradeInstallation(i);
@@ -28,6 +31,7 @@ void StadiumManager::upgradeInstallation(int peer_id, size_t i)
 	sendTeamInfos(cache,peer_id);
 }
 
+/// Method handling the downgrades of a users installations
 void StadiumManager::downgradeInstallation(int peer_id, size_t i)
 {
 	bool res = _users[peer_id]->getTeam().downgradeInstallation(i);
