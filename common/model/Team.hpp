@@ -128,28 +128,38 @@ public:
 
 	/// Method handling the upgrade of a players ability
 	int upgradePlayerAbility(int id, int ability){
+		Player p=getPlayer(id);
+		removePlayer(id);
 		switch(ability){
             case 0://strength
-                getPlayer(id).improveStrength(1);
-                return getPlayer(id).getStrength();
+            	{
+                p.improveStrength(1);
+                addPlayer(p);                
+                return p.getStrength();
+               	}
             
             case 1://velocity
-                getPlayer(id).improveVelocity(1);
-                return getPlayer(id).getVelocity();
-            
+                {
+                p.improveVelocity(1);
+                addPlayer(p);
+                return p.getVelocity();
+            	}
             case 2://precision
-                getPlayer(id).improvePrecision(1);
-                return getPlayer(id).getPrecision();
-            
+                {
+                p.improvePrecision(1);
+                addPlayer(p);                
+                return p.getPrecision();
+            	}
             case 3://chance
-                getPlayer(id).improveChance(1);
-                return getPlayer(id).getChance();
-            
+                {
+                p.improveChance(1);
+                addPlayer(p);
+                return p.getChance();
+            	}
             default:
                 return -1;
-        }
+		}
 	}
-
 
 	std::vector<Player>& getPlayers(){return _players;}
 	std::vector<Installation*>& getInstallations(){return _installations;}
@@ -169,7 +179,7 @@ public:
 
 	bool removePlayer(int id);
 	void addPlayer(Player &player);
-	Player& getPlayer(int id);
+	Player getPlayer(int id);
 
 	void generateStartingTeam();
 	void initFame();

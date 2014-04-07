@@ -150,7 +150,7 @@ void GraphicUserView::displayCredits()
 	displayMessage(
 		"The Pro Quidditch Manager\n"
 		"Anthony Caccia, Antoine Carpentier, Titouan Christophe,\n"
-		"Jerome Hellinckx, Florentin Hennecker, Mircea Mudura\n"
+		"Jerome Hellinckx, Florentin Hennecker, Mircea Mudura\n\n"
 		"Music: \n"
 		"   Quidditch Futura by MattendrizZ\n"
 		"   Marvelous Space Adventures by jANUS",
