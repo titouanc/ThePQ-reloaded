@@ -165,7 +165,6 @@ void MemoryAccess::save(Sale& sale){
  */
 void MemoryAccess::save(Team& team){
 	std::string path = getTeamInfosPath(team.getOwner());
-	cout<<"*********Saving team with path: "<<path<<endl;
 	JSON::Dict toSave = team;
 	toSave.save(path.c_str());
 }
