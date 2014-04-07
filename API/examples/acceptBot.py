@@ -10,8 +10,7 @@ with Client() as client:
 	while True:
 		print("Waiting for invitation")
 		while len(client.match_requests) == 0:
-			sleep(5)
-			client.getPlayers()
+			client.waitFor('*')
 		other = client.match_requests.pop()
 		print("Invite from", other)
 		match = client.answer_invitation(other, accept=True)
