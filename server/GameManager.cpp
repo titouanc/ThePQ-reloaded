@@ -32,8 +32,6 @@ void GameManager::sendConnectedUsersList(int peer_id)
 void GameManager::sendInvitationToPlayer(string const& userTo, int peer_id){
 	map<int, User*>::iterator findUser = _users.find(peer_id);
 	std::string userFrom = findUser->second->getUsername();
-	cout << "from: " << userFrom;
-	cout << "to: " << userTo;
 	map<int, User*>::iterator it = _users.begin();
 	bool found = false;
 	if (userFrom != userTo)

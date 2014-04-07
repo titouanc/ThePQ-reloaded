@@ -202,9 +202,6 @@ void Match::throwBall(Collision & collide)
 				_turn.push_back(ballStroke);
 
 				/* Put the Quaffle 1 position further in its direction */
-				cout << "ACTIONVEC:" << JSON::List(stroke.actionVec) << "  "
-				     << "NORMALIZED: " << JSON::List(stroke.actionVec.normalize()) << " "
-				     << "frompos:" << JSON::List(collide.fromPos) << endl;
 				Position qPos = collide.conflict + stroke.actionVec.normalize();
 				_quaffle.setPosition(qPos);
 				_pitch.insert(&_quaffle);
@@ -262,8 +259,6 @@ JSON::List Match::playStrokes()
 			Position curPos  = stroke.move.position(tLast, stroke.moveable);
 			Position nextPos = stroke.move.position(_t, stroke.moveable);
 
-			cout << "Move " << stroke.moveable.getID() << " ("<<tLast<<".."<<_t<<")"<<endl;
-
 			if (curPos == nextPos && stroke.move.length() > 0){
 				/* If the moveable Position doesn't change during this
 				   time interval, just skip */
@@ -284,8 +279,6 @@ JSON::List Match::playStrokes()
 				/* If no rule has stopped this stroke; set it to its new position */
 				_pitch.setAt(nextPos, &(stroke.moveable));
 				_pitch.setAt(curPos, NULL);
-				cout << " &&& Regular move" << stroke.moveable.getID() << " "
-					 << JSON::List(curPos) << " -> " << JSON::List(nextPos) << endl;
 			}
 
 			/* Handle throw ball strokes */
@@ -342,8 +335,6 @@ bool Match::stayInEllipsis(Collision & collide)
 	if (_pitch.inEllipsis(collide.conflict))
 		return false;
 
-	cout << collide.stroke.moveable.getName() << " GETS OUT !!!" << endl;
-
 	collide.stroke.active = false;
 	_deltas.append(mkDelta(collide.stroke.moveable, collide.fromPos));
 	return true;
@@ -359,8 +350,6 @@ bool Match::keeperInZone(Collision & collide)
 	/* If it isn't a keeper, or still in keeper zone, do nothing */
 	if (! player.isKeeper() || _pitch.isInKeeperZone(collide.conflict))
 		return false;
-
-	cout << collide.stroke.moveable.getName() << " IN KEEPER ZONE !!!" << endl;
 
 	/* Otherwise stop the move */
 	collide.stroke.active = false;
@@ -454,7 +443,6 @@ bool Match::playerCatchQuaffle(Collision & collide)
 
 		/* And remove the Quaffle from the pitch */
 		_pitch.setAt(collide.fromPos, NULL);
-		cout << "#" << pq.getID() << " catch the quaffle !!!" << endl;
 		JSON::Dict delta = {
 			{"type", JSON::Integer(DELTA_CATCH)},
 			{"mid", JSON::Integer(player.getID())}
@@ -484,8 +472,7 @@ bool Match::playerCatchQuaffle(Collision & collide)
 
 		/* Put the player on the position of the Quaffle */
 		_pitch.setAt(collide.conflict, &pq);
-		_pitch.setAt(collide.fromPos, NULL);
-		cout << "#" << pq.getID() << " catch the quaffle !!!" << endl;
+		_pitch.setAt(collide.fromPos, NULL);		
 		JSON::Dict delta = {
 			{"type", JSON::Integer(DELTA_CATCH)},
 			{"mid", JSON::Integer(player.getID())}
