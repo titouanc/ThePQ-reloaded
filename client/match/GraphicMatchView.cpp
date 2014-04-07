@@ -184,7 +184,6 @@ bool GraphicMatchView::treatEvent(sf::Event const & ev)
  */
 void GraphicMatchView::run()
 {
-	cout << "ENTER GraphicMatchView::run" << endl;
 	redraw();
 	
 	bool running = true;
@@ -203,8 +202,6 @@ void GraphicMatchView::run()
 		if (! hasReceived)
 			minisleep(0.01);
 	}
-
-	cout << "LEAVE GraphicMatchView::run" << endl;
 }
 
 /**
@@ -227,14 +224,4 @@ void GraphicMatchView::onPitchChange()
  * Method handling game states (provides shinny infos in the cli)
  */
 void GraphicMatchView::onStateChange()
-{
-	cout << "CHANGE STATE: ";
-	switch (state()){
-		case CREATED:  cout << "created" << endl; break;
-		case PROMPT:   cout << "waiting for moves" << endl; break;
-		case TIMEOUT:  cout << "processing moves" << endl; break;
-		case FINISHED: 
-		default:
-			cout << "finished" << endl; break;
-	}
-}
+{}

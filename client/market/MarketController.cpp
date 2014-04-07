@@ -33,8 +33,7 @@ void MarketController::updateSales(){
  * Method handling the bid on a player
  * @param int : the id of the player to bid on
 */
-void MarketController::bidOnPlayer(int player_id){//modif
-	std::cout << "GONNA BID ON " << player_id;
+void MarketController::bidOnPlayer(int player_id){
 	int value = getNextBidValue(player_id);
 	if (value == -1) throw PlayerNotFoundException();
 	JSON::Dict data = {
@@ -43,7 +42,6 @@ void MarketController::bidOnPlayer(int player_id){//modif
 		{ net::MSG::BID_VALUE, JSON::Integer(value) }
 	};
 	say(net::MSG::BID_ON_PLAYER_QUERY, data);
-	std::cout << "BID: " << data << endl;
 }
 
 /**
