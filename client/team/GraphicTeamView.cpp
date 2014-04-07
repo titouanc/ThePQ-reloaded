@@ -105,22 +105,22 @@ void GraphicTeamView::displayPlayers()
 		playerCell.setBackgroundColor(sf::Color(0x00, 0x00, 0x00, 0x77));
 		playerCell.addLabel(player.getName(), sf::Color::White
 			).setPosition(25, 10);
-		playerCell.addLabel(player.getStrength(), sf::Color::White
+		playerCell.addLabel(std::to_string(player.getStrength()), sf::Color::White
 			).setPosition(245, 10);
 		playerCell.addLabel(std::to_string(player.getStrength()+1), sf::Color::Yellow
 			).setPosition(280, 10);
 		if(acPoints>player.getStrength()+1 && player.getStrength()<100)	drawUpgradeButton(350,height,cter,0);
-		playerCell.addLabel(player.getVelocity(), sf::Color::White
+		playerCell.addLabel(std::to_string(player.getVelocity()), sf::Color::White
 			).setPosition(382, 10);
 		playerCell.addLabel(std::to_string(player.getVelocity()+1), sf::Color::Yellow
 			).setPosition(417, 10);
 		if(acPoints>player.getVelocity()+1 && player.getVelocity()<100)	drawUpgradeButton(487,height,cter,1);
-		playerCell.addLabel(player.getPrecision(), sf::Color::White
+		playerCell.addLabel(std::to_string(player.getPrecision()), sf::Color::White
 			).setPosition(495,10);
 		playerCell.addLabel(std::to_string(player.getPrecision()+1), sf::Color::Yellow
 			).setPosition(528, 10);
 		if(acPoints>player.getPrecision()+1 && player.getPrecision()<100)	drawUpgradeButton(598,height,cter,2);
-		playerCell.addLabel(player.getChance(), sf::Color::White
+		playerCell.addLabel(std::to_string(player.getChance()), sf::Color::White
 			).setPosition(595,10);
 		playerCell.addLabel(std::to_string(player.getChance()+1), sf::Color::Yellow
 			).setPosition(628, 10);
