@@ -1,3 +1,7 @@
+"""
+A script that always accept friendly match invitations; but does nothing more
+"""
+
 from api import Client
 from time import sleep
 
