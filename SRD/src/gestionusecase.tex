@@ -540,7 +540,7 @@ L'utilisateur clique sur l'icône "Aller aux Transferts", et a ensuite la possib
 %\item{La liste de membres (joueur ou coach rappelons-le) est actualisée pour correspondre au filtre et ordre voulus.}
 %\end{list}
 
-\subsubsection{Acheter/mettre une offre sur un joueur (buy/put a bid on player)}
+\subsubsection{Acheter/mettre une offre sur un joueur (buy/put a bid on a player)}
 \label{UC:buyPlayer}
 \paragraph{Relations avec d'autres cas d'utilisations}
 Étend \ref{UC:seeMarket}.
@@ -550,14 +550,13 @@ L'utilisateur clique sur l'icône "Aller aux Transferts", et a ensuite la possib
 \item{Un joueur est sélectionné.}
 \item{L'équipe de l'utilisateur ne possède pas déjà le nombre maximal de joueurs que peut posséder une équipe.}
 \item{L'équipe de l'utilisateur possède les fonds nécessaires.}
-\item{Si enchère : l'utilisateur rentre l'enchère désirée qui doit être plus élevée que l'actuelle.}
 \end{list}
 \paragraph{Cas général}
 En recherchant des joueurs dans le marché des transferts des joueurs, l'utilisateur peut acheter ou mettre une enchère sur un joueur, dépendant du type d'achat dont il s'agit (type déterminé par l'équipe vendeuse lors de la mise en vente, voir \ref{UC:putPlayerOnSale}). Si l'achat est un succès, le joueur est retiré du marché des transferts et ajouté à l'équipe de l'utilisateur. Si l'enchère est un succès, l'utilisateur remporte le joueur jusqu'à nouvelle enchère mise sur le joueur (notons que l'utilisateur ne peut enchérir sur un joueur sur lequel il a déjà enchéri). 
 \paragraph{Post-conditions}
 \begin{list}{\labelitemi}{\leftmargin=1.5em}
 \item{Si achat direct : l'équipe de l'utilisateur est constituée d'un joueur supplémentaire.}
-\item{Si vente "à l'enchère" : le nom de l'équipe de l'utilisateur est indiquée sur le joueur dans la liste du marché des transferts, signalant qu'il s'agit de l'équipe la plus offrante actuellement, et qui "remportera" le joueur si aucune autre enchère n'est mise avant la date d'expiration.}
+\item{Si vente "à l'enchère" : le nom de l'équipe de l'utilisateur est indiqué sur le joueur dans la liste du marché des transferts, signalant qu'il s'agit de l'équipe la plus offrante actuellement, et qui "remportera" le joueur si aucune autre enchère n'est mise avant la date d'expiration.}
 \end{list}
 
 \subsubsection{Mettre un joueur en vente (put player on sale)}
@@ -568,8 +567,7 @@ En recherchant des joueurs dans le marché des transferts des joueurs, l'utilisa
 \begin{list}{\labelitemi}{\leftmargin=1.5em}
 \item{L'utilisateur se situe sur le marché des transferts.}
 \item{L'utilisateur sélectionne un joueur.}
-\item{L'utilisateur choisit le type de transfert : enchère ou vente directe.}
-\item{Dans les deux cas l'utilisateur indique le prix (de base/de vente).}
+\item{L'utilisateur indique le prix (de base/de vente).}
 \item{L'utilisateur a au moins 7 joueurs dans son équipe qui ne sont pas en vente.}
 \end{list}
 \paragraph{Cas général}
@@ -627,7 +625,6 @@ L'utilisateur, situé dans le marché de transferts des joueurs, choisit l'optio
 %
 %\subsubsection{Aller au Sponsor Management (goto sponsor management)}
 %\label{UC:gotoSponsor}
-%(Fonctionnalité non implémentée)
 %\paragraph{Relations avec d'autres cas d'utilisations}
 %Étend \ref{UC:gotoManagement}.\\
 %Étendu par \ref{UC:getNewSponsor}.

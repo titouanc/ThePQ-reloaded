@@ -8,7 +8,6 @@
 
 %-----
 \subsubsection{Inscription à un championnat (championship entry)}
-(Fonctionnalité non implémentée)
 \paragraph{Précondition}
 L'utilisateur n'est pas inscrit à un autre championnat et  le niveau de l'équipe de l'utilisateur est inclus entre les bornes de niveau définies par le championnat.
 \paragraph{Cas général} L'utilisateur s'inscrit dans un championnat spécifique.
@@ -61,11 +60,6 @@ L'utilisateur n'est pas inscrit à un autre championnat et  le niveau de l'équi
 \paragraph{Cas général} L'utilisateur peut entrer le nom d'un autre utilisateur et lancer sa recherche parmi tous les utilisateurs du jeu, connectés ou non.
 \paragraph{Postcondition} Une liste des utilisateurs pouvant correspondre à la recherche est affichée.
 
-%-----
-\subsubsection{Trouver un utilisateur aléatoire (find random user)}
-\paragraph{Cas général} L'utilisateur demande un autre utilisateur aléatoire, qui a plus ou moins son niveau et qui est connecté au jeu.
-\paragraph{Postcondition} Un utilisateur aléatoire connecté, s'il y en a, est affiché.
-
 \subsubsection{Inviter un utilisateur (invite user)}
 
 \paragraph{Cas général} L'utilisateur envoie une invitation à jouer un match amical à un autre utilisateur.
@@ -75,6 +69,14 @@ L'utilisateur n'est pas inscrit à un autre championnat et  le niveau de l'équi
 
 \paragraph{Précondition} Un autre utilisateur a invité l'utilisateur courant à jouer, et cet utilisateur est en ligne.
 \paragraph{Cas général} L'utilisateur accepte cette invitation.
+
+\subsubsection{Refuser une invitation (deny invite)}
+
+\paragraph{Précondition} Un autre utilisateur a invité l’utilisateur courant à jouer et, cet utilisateur est en ligne.
+
+\paragraph{Cas général} L’utilisateur refuse cette invitation.
+
+\paragraph{Postcondition} L’utilisateur est renovyé au menu précedent.
 
 \subsubsection{Jouer une partie (play game)}
 
