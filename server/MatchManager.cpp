@@ -4,7 +4,7 @@
 #include <cstdlib>
 
 /* TODO: read from config file */
-#define STROKES_TIMEOUT_SECONDS 10
+#define STROKES_TIMEOUT_SECONDS 1
 
 MatchManager::MatchManager(
 	BaseConnectionManager & connections, 
