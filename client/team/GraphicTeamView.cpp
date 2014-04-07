@@ -85,7 +85,6 @@ void GraphicTeamView::displayPlayers()
 {
 	clear();
 	addTopBar(user());
-	//_canvas.addLabel()
 	TableView & playerList = _canvas.addTableView();
 	playerList.setPosition(30, 100);
 	playerList.setElementsNumberPerPage(9);
