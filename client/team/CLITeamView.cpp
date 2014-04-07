@@ -168,7 +168,7 @@ void CLITeamView::handleAbility(int id){
 	do {
 		if (cin >> idAbility){
 			if(idAbility < 1 || idAbility > 4 ){
-				cout << "Wrong option entered. Try again: moron";
+				cout << "Wrong option entered. Try again: ";
 				c = false;
 				cin.clear();
 				cin.ignore(100,'\n');
@@ -218,15 +218,14 @@ void CLITeamView::handleAbility(int id){
 					}
 					default:break;
 				}
-				cout<<"*****check"<<endl;
+				
 				onPlayersLoad();
-				//onTeamInfoChange();
-				showPlayers();
-				showPlayerAttributes();
+				onTeamInfoChange();
+				run();
 			}
 		}else{
 			c=false;
-			cout << "Wrong option entered. Try again: fucker";
+			cout << "Wrong option entered. Try again: ";
 			cin.clear();
 			cin.ignore(100,'\n');
 		}
