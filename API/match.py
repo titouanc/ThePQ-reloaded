@@ -62,7 +62,13 @@ class Match(object):
 		return msg
 
 	def move(self, player, displacement):
-		pass
+		for x, y in displacement:
+			if not (abs(x) == abs(y) or (x%2 == 0 and y == 0)):
+				raise ValueError(str((x, y))+" is not a valid displacement")
+		self.client.say(K['MATCH_STROKE'], {
+			'mid': player.mid,
+			'move': displacement
+		})
 
 	def __iter__(self):
 		self.waitFor(K['MATCH_MOVEABLES'])
