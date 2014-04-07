@@ -1,5 +1,5 @@
 #include "Server.hpp"
-
+/// Main loop handling the server start
 int main(int argc, char const *argv[])
 {
 	bool has_chdir = false;
