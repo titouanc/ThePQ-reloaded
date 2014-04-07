@@ -19,8 +19,7 @@
 \end{list}
 \paragraph{Cas général}
 L'utilisateur décide d'obtenir un rapide aperçu de son effectif, et clique sur l'icône correspondant à "gestion d'équipe", ce qui a pour effet d'afficher une liste de membres de l'équipe, avec laquelle il peut interagir pour obtenir des informations concernant lesdits membres.
-\paragraph{Postconditions} Une liste de membres de l'équipe, englobant ainsi 
-les joueurs et les coaches, est affichée.
+\paragraph{Postconditions} La liste des joueurs est affichée.
 
 %\subsubsection{Sélectionner un membre (select member)}
 %\label{UC:selectMember}
@@ -55,37 +54,37 @@ les joueurs et les coaches, est affichée.
 %\item{De plus amples informations sont affichées concernant le coach sélectionné (âge, nom, salaire).}
 %\item{Nouvelles actions disponibles.}
 %\end{list}
+%
+%\subsubsection{Sélectionner un joueur (select player)}
+%\label{UC:selectPlayer}
+%\paragraph{Relations avec d'autres cas d'utilisations}
+%Spécialise \ref{UC:selectMember}.\\
+%Étendu par \ref{UC:seeAptitudes}, \ref{UC:fire} et \ref{UC:choosePosition}. 
+%\paragraph{Pré-conditions}
+%\begin{list}{\labelitemi}{\leftmargin=1.5em}
+%\item{L'utilisateur a sélectionné un membre, il s'agit d'un joueur.}
+%\end{list}
+%\paragraph{Cas général}
+%Voir cas d'utilisations \ref{UC:selectMember}.
+%\paragraph{Post-conditions}
+%\begin{list}{\labelitemi}{\leftmargin=1.5em}
+%\item{De plus amples informations sont affichées concernant le joueur sélectionné (âge, nom salaire).}
+%\item{Nouvelles actions disponibles.}
+%\end{list}
 
-\subsubsection{Sélectionner un joueur (select player)}
-\label{UC:selectPlayer}
-\paragraph{Relations avec d'autres cas d'utilisations}
-Spécialise \ref{UC:selectMember}.\\
-Étendu par \ref{UC:seeAptitudes}, \ref{UC:fire} et \ref{UC:choosePosition}. 
-\paragraph{Pré-conditions}
-\begin{list}{\labelitemi}{\leftmargin=1.5em}
-\item{L'utilisateur a sélectionné un membre, il s'agit d'un joueur.}
-\end{list}
-\paragraph{Cas général}
-Voir cas d'utilisations \ref{UC:selectMember}.
-\paragraph{Post-conditions}
-\begin{list}{\labelitemi}{\leftmargin=1.5em}
-\item{De plus amples informations sont affichées concernant le joueur sélectionné (âge, nom salaire).}
-\item{Nouvelles actions disponibles.}
-\end{list}
-
-\subsubsection{Voir les aptitudes (see aptitudes)}
+\subsubsection{Améliorer les aptitudes (upgrade aptitudes)}
 \label{UC:seeAptitudes}
 \paragraph{Relations avec d'autres cas d'utilisations}
-Étend \ref{UC:selectCoach} et \ref{UC:selectPlayer}.
+Étend \ref{UC:selectPlayer}.
 \paragraph{Pré-conditions}
 \begin{list}{\labelitemi}{\leftmargin=1.5em}
-\item{L'utilisateur a sélectionné un membre.}
+\item{L'utilisateur a des points d'action en quantité suffisante.}
 \end{list}
 \paragraph{Cas général}
-Après avoir sélectionné un membre, l'utilisateur choisit d'afficher les aptitudes concernant ledit membre, en cliquant simplement sur une icône.
+Après avoir sélectionné un membre, l'utilisateur choisit d'améliorer les aptitudes concernant ledit membre, en cliquant simplement sur une icône.
 \paragraph{Post-conditions}
 \begin{list}{\labelitemi}{\leftmargin=1.5em}
-\item{Les aptitudes spécifiques au membre sélectionné sont affichées.}
+\item{Les aptitudes spécifiques au membre sélectionné sont améliorées.}
 \end{list} 
 
 \subsubsection{Choisir la position pour le prochain match (set position…)}
