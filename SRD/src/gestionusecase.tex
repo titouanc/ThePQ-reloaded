@@ -12,7 +12,7 @@
 \subsubsection{Gestion d'équipe (overview sguad)}
 \label{UC:squadView}
 \paragraph{Relations avec d'autres \gls{cas d'utilisation}s}
-Étendu par \ref{UC:selectMember}.
+Étendu par \ref{UC:seeAptitudes}.
 \paragraph{Pré-conditions}
 \begin{list}{\labelitemi}{\leftmargin=1.5em}
 \item{L'\gls{utilisateur} est authentifié.}
@@ -75,7 +75,7 @@ L'utilisateur décide d'obtenir un rapide aperçu de son effectif, et clique sur
 \subsubsection{Améliorer les aptitudes (upgrade aptitudes)}
 \label{UC:seeAptitudes}
 \paragraph{Relations avec d'autres cas d'utilisations}
-Étend \ref{UC:selectPlayer}.
+Étend \ref{UC:squadView}.
 \paragraph{Pré-conditions}
 \begin{list}{\labelitemi}{\leftmargin=1.5em}
 \item{L'utilisateur a des points d'action en quantité suffisante.}
@@ -90,7 +90,7 @@ Après avoir sélectionné un membre, l'utilisateur choisit d'améliorer les apt
 \subsubsection{Choisir la position pour le prochain match (set position…)}
 \label{UC:choosePosition}
 \paragraph{Relations avec d'autres cas d'utilisations}
-Étend \ref{UC:selectPlayer}.
+Étend \ref{UC:squadView}.
 \paragraph{Pré-conditions}
 L'utilisateur a sélectionné un joueur.
 \paragraph{Cas général}
@@ -409,15 +409,15 @@ Diminue le niveau de l'installation de 1 (équipe gagne un pourcentage des fonds
    \caption{\label{fig:UC:gotoTransfers} Cas d'utilisation: aller aux transferts}
 \end{figure}
 
-\label{UC:gotoTransfers}
+\label{UC:seeMarket}
 \paragraph{Relations avec d'autres cas d'utilisations}
-Étendu par \ref{UC:transfersHistory} et \ref{UC:seeMarket}.
+Étendu par \ref{UC:buyPlayer} et \ref{UC:putPlayerOnSale}.
 \paragraph{Pré-conditions}
 \begin{list}{\labelitemi}{\leftmargin=1.5em}
 \item{L'utilisateur est authentifié.}
 \end{list}
 \paragraph{Cas général}
-L'utilisateur clique sur l'icône "Aller aux Transferts", et a ensuite la possibilité de voir son historique de transferts ou de voir le marché des transferts.
+L'utilisateur clique sur l'icône "Aller aux Transferts", et a ensuite la possibilité  de voir le marché des transferts.
 
 %\subsubsection{Voir l'historique des transferts (see transfer history)}
 %\label{UC:transfersHistory}
@@ -543,6 +543,7 @@ L'utilisateur clique sur l'icône "Aller aux Transferts", et a ensuite la possib
 \subsubsection{Acheter/mettre une offre sur un joueur (buy/put a bid on player)}
 \label{UC:buyPlayer}
 \paragraph{Relations avec d'autres cas d'utilisations}
+Étend \ref{UC:seeMarket}.
 \paragraph{Pré-conditions}
 \begin{list}{\labelitemi}{\leftmargin=1.5em}
 \item{L'utilisateur se situe dans le marché des transferts des joueurs.}
@@ -562,7 +563,7 @@ En recherchant des joueurs dans le marché des transferts des joueurs, l'utilisa
 \subsubsection{Mettre un joueur en vente (put player on sale)}
 \label{UC:putPlayerOnSale}
 \paragraph{Relations avec d'autres cas d'utilisations}
-Étend \ref{UC:seePlayerMarket}.
+Étend \ref{UC:seeMarket}.
 \paragraph{Pré-conditions}
 \begin{list}{\labelitemi}{\leftmargin=1.5em}
 \item{L'utilisateur se situe sur le marché des transferts.}
