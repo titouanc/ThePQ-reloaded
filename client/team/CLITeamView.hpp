@@ -20,7 +20,7 @@ public:
 	void handlePlayerAbility();
 	void showPlayer(Player &player, int i);
 	void handleAbility(int id);
-
+	std::string paddName(std::string);
 	std::string paddValue(int value);
 	std::string showStrength(int value);
 	std::string showPrecision(int value);

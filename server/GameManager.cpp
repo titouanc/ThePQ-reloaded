@@ -1,7 +1,10 @@
 #include "GameManager.hpp"
 
 
-
+/**
+ * Method sending a list of the connected users 
+ * @param int : destinatary of the message
+ */
 void GameManager::sendConnectedUsersList(int peer_id)
 {
 	JSON::List list;
@@ -21,6 +24,11 @@ void GameManager::sendConnectedUsersList(int peer_id)
 	_outbox.push(Message(peer_id, usersList.clone()));
 }
 
+/**
+ * Method sending an invitation to the player to start a game
+ * @param string : name of the user to whom to send the invite 
+ * @param int : id of the player sending the invitation
+ */
 void GameManager::sendInvitationToPlayer(string const& userTo, int peer_id){
 	map<int, User*>::iterator findUser = _users.find(peer_id);
 	std::string userFrom = findUser->second->getUsername();
@@ -54,6 +62,11 @@ void GameManager::sendInvitationToPlayer(string const& userTo, int peer_id){
 	}
 }
 
+/**
+ * Method handling the response to an invitation
+ * @param JSON::Dict : content of the invitation
+ * @param int : id of the user who sent the invitation 
+ */
 void GameManager::sendInvitationResponseToPlayer(const JSON::Dict &response, int peer_id){
 	string username;
 	if (ISSTR(response.get("username"))) 
@@ -79,6 +92,12 @@ void GameManager::sendInvitationResponseToPlayer(const JSON::Dict &response, int
 	}
 }
 
+/**
+ * Method handling the start of the match
+ * @param int : id of the first user
+ * @param int : id of the second user
+ * @param bool : champ match or not
+ */
 void GameManager::startMatch(int client_idA, int client_idB, bool champMatch)
 {
 	if (_users.find(client_idA) == _users.end() || 

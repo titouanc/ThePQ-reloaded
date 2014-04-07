@@ -6,9 +6,9 @@ représentation du terrain de jeu, doit pouvoir y sélectionner un joueur et lui
 ordonner des actions comme un déplacement, un lancement de balle ou un lancement 
 de sort. Lors de chaque tour, la vue du terrain est rafraîchie pour refléter 
 l'état courant du match, les joueurs choisissent chacun simultanément les coups
-à jouer pour chacun de leurs joueurs, dans une limite de temps impartie, et 
+à effectuer pour chacun de leurs joueurs, dans une limite de temps impartie, et 
 chaque joueur ne pouvant se déplacer que de la distance qu'il peut parcourir en
-un tour. Quand le joueur a terminé de jouer, ou que le temps est dépassé, les
+un tour. Quand le joueur a terminé  son tour, ou que le temps est dépassé, les
 coups à jouer sont envoyés au serveur, qui va calculer les déplacements, les 
 points gagnés et les collisions qui interviennent durant ce tour.
 
@@ -59,12 +59,12 @@ points gagnés et les collisions qui interviennent durant ce tour.
 
 \subsubsection{Attraper le vif d'or (catch golden snitch)}
     \paragraph{Précondition} L'attrapeur est assez proche du vif d'or pour le voir et l'attraper (selon ses caractéristiques).
-    \paragraph{Cas général} Se déroule comme au cas d'utilisation \ref{UC:castSpell}.
-    \paragraph{Postcondition} Lorsque le tour est joué: si le sort réussit le match s'arrête et l'\gls{equipe} du joueur remporte 150 points.
+    \paragraph{Cas général} L'utilisateur clique sur le vif d'or. Si l'action nécessite une direction, continue selon le cas d'utilisation \ref{UC:selectDirection}. Sinon, une icône s'ajoute (comme au cas d'utilisation précité).
+    \paragraph{Postcondition} Lorsque le tour est joué: si l'action réussit le match s'arrête et l'\gls{equipe} du joueur remporte 150 points.
 
-\subsubsection{Terminer son tour volontairement (end turn)}
-    \paragraph{Précondition} Le temps de jeu pour ce tour n'est pas dépassé.
-    \paragraph{Cas général} L'utilisateur clique sur le bouton "terminer le tour". Continue selon le cas d'utilisation \ref{UC:endTurn}.
+%\subsubsection{Terminer son tour volontairement (end turn)}
+%    \paragraph{Précondition} Le temps de jeu pour ce tour n'est pas dépassé.
+%    \paragraph{Cas général} L'utilisateur clique sur le bouton "terminer le tour". Continue selon le cas d'utilisation \ref{UC:endTurn}.
 
 \subsubsection{Fin de temps de jeu}
     \paragraph{Précondition} Le temps de jeu imparti pour ce tour est dépassé.

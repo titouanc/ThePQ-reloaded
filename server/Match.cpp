@@ -4,7 +4,7 @@
 
 using namespace std;
 
-
+/// Constructor
 Match::Match(Squad const & squadA, Squad const & squadB) : 
 	_turn(), _finished(false), _hasStroke(20)
 {
@@ -14,15 +14,18 @@ Match::Match(Squad const & squadA, Squad const & squadB) :
 	initState();
 }
 
+/// Destructor
 Match::~Match()
 {}
 
+/// Retrieve the squad based on the id of the user
 Squad const & Match::squad(int id)
 {
 	assert(id==0 || id==1);
 	return _squads[id];
 }
 
+/// Method initialising the the state of the players
 void Match::initState()
 {
 	for (size_t i=0; i<_hasStroke.size(); i++)
@@ -31,6 +34,7 @@ void Match::initState()
 	_deltas = JSON::List();
 }
 
+/// Method initialising the moveables (players/quaffle/goldensnitch)
 void Match::initMoveables()
 {
 	_quaffle.setID(101);
@@ -68,6 +72,7 @@ void Match::initMoveables()
 	_pitch.insert(&_snitch);
 }
 
+/// Method handling the distance covered by a player over a time increment
 size_t Match::timesteps() const
 {
 	size_t res = 0;/*
@@ -82,6 +87,7 @@ size_t Match::timesteps() const
 	return res;
 }
 
+/// Method converting an id to a moveable
 Moveable *Match::id2Moveable(int mid)
 {
 	Squad *inSquad = id2Squad(mid);
@@ -96,6 +102,7 @@ Moveable *Match::id2Moveable(int mid)
 	return NULL;
 }
 
+/// Method retrieving a squad from an id
 Squad *Match::id2Squad(int mid)
 {
 	if (1 <= mid && mid <= 7)
@@ -105,6 +112,7 @@ Squad *Match::id2Squad(int mid)
 	return NULL;
 }
 
+/// Method retrieving the winner (<name,score>)
 std::pair<std::string, unsigned int> Match::getWinner() const
 {
 	if (_points[0] > _points[1])
@@ -112,6 +120,7 @@ std::pair<std::string, unsigned int> Match::getWinner() const
 	return std::pair<string, unsigned int>(_squads[1].squad_owner, _points[1]);
 }
 
+/// Method retrieving the loser (<name,score>)
 std::pair<std::string, unsigned int> Match::getLoser() const
 {
 	if (_points[0] <= _points[1])
@@ -119,6 +128,7 @@ std::pair<std::string, unsigned int> Match::getLoser() const
 	return std::pair<string, unsigned int>(_squads[1].squad_owner, _points[1]);
 }
 
+/// Method retrieving the list of strokes
 std::list<Stroke>::iterator Match::getStrokeFor(Moveable const & moveable)
 {
 	std::list<Stroke>::iterator res;
@@ -129,6 +139,7 @@ std::list<Stroke>::iterator Match::getStrokeFor(Moveable const & moveable)
 	return res;
 }
 
+/// Method adding a stroke to the list of strokes
 bool Match::addStroke(Stroke const & stroke)
 {
 	if (! id2Moveable(stroke.moveable.getID()))
@@ -137,6 +148,7 @@ bool Match::addStroke(Stroke const & stroke)
 	return true;
 }
 
+/// Method adding a stroke to the list of strokes
 bool Match::addStroke(
 	int mid, 
 	Displacement const & d, 
@@ -151,6 +163,7 @@ bool Match::addStroke(
 	return true;
 }
 
+/// Method adding a stroke to the list of strokes
 bool Match::addStroke(JSON::Dict const & stroke){
 	if (ISINT(stroke.get("mid"))){
 		Moveable *moving = id2Moveable(INT(stroke.get("mid")));
@@ -160,7 +173,7 @@ bool Match::addStroke(JSON::Dict const & stroke){
 	return false;
 }
 
-/* Helper function to quickly create DELTA_MOVE JSON objects */
+/** Helper function to quickly create DELTA_MOVE JSON objects */
 static JSON::Dict mkDelta(Moveable const & moveable, Position destPos)
 {
 	JSON::Dict res = {
@@ -172,6 +185,7 @@ static JSON::Dict mkDelta(Moveable const & moveable, Position destPos)
 	return res;
 }
 
+/// Method handling the ball throwing 
 void Match::throwBall(Collision & collide)
 {
 	Stroke & stroke = collide.stroke;
@@ -222,12 +236,13 @@ void Match::mkSnitchStroke(void)
 	addStroke(Stroke(_snitch, move));
 }
 
+/**
+ * Method processing moveables moves, in regular time intervals. The
+ * Moveable are moved on the pitch structure, and their positions attributes
+ *  are updated at the end. 
+ */
 JSON::List Match::playStrokes()
 {
-	/* This method process moveables moves, in regular time intervals. The
-	   Moveable are moved on the pitch structure, and their positions attributes
-	   are updated at the end. */
-
 	size_t n_steps = timesteps();
 	if (n_steps == 0)
 		n_steps = 1;
@@ -298,11 +313,13 @@ JSON::List Match::playStrokes()
 	return res;
 }
 
+/// Method checking for a finished match
 bool Match::isFinished() const
 {
 	return _finished;
 }
 
+/// Method retrieving moveables
 JSON::Dict Match::getMoveables() const
 {
 	JSON::List squads = JSON::List();
@@ -332,6 +349,7 @@ bool Match::stayInEllipsis(Collision & collide)
 	return true;
 }
 
+/// Method checking for a correct positionment of the keeper
 bool Match::keeperInZone(Collision & collide)
 {
 	if (! collide.stroke.moveable.isPlayer())
@@ -350,6 +368,7 @@ bool Match::keeperInZone(Collision & collide)
 	return true;
 }
 
+/// Method checking for a goal and atributing points accordingly
 bool Match::scoreGoal(Collision & collide)
 {
 	if (! _pitch.isGoal(collide.conflict))
@@ -412,7 +431,7 @@ bool Match::scoreGoal(Collision & collide)
 	return true;
 }
 
-/* This rule give the Quaffle to a chaser||keeper */
+/** This rule gives the Quaffle to a chaser||keeper */
 bool Match::playerCatchQuaffle(Collision & collide)
 {
 	Moveable *atPos = _pitch.getAt(collide.conflict);
@@ -479,6 +498,7 @@ bool Match::playerCatchQuaffle(Collision & collide)
 	return false;
 }
 
+/// Method handling a collision
 bool Match::simpleCollision(Collision & collide)
 {
 
@@ -507,6 +527,7 @@ bool Match::simpleCollision(Collision & collide)
 	return true;
 }
 
+/// Method treating the case when the golden snitch is caught
 bool Match::seekerCatchGS(Collision & collide)
 {
 	Moveable *atPos = _pitch.getAt(collide.conflict);
@@ -552,6 +573,7 @@ bool Match::seekerCatchGS(Collision & collide)
 	return false;
 }
 
+/// Method handling the throw of a budger 
 bool Match::beaterThrowBudger(Collision & collide)
 {
 	Moveable *atPos = _pitch.getAt(collide.conflict);

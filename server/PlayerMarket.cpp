@@ -9,17 +9,25 @@
 #include <model/RandomNameGenerator.hpp>
 #include <utility>
 
-
+/// Constructor
 PlayerMarket::PlayerMarket(const ServerManager & parent): ServerManager(parent), _sales(), _locker(PTHREAD_MUTEX_INITIALIZER) {
 	MemoryAccess::load(_sales);
 }
 
+/// Destructor
 PlayerMarket::~PlayerMarket(){
 	for(size_t i=0;i<_sales.size();++i){
 		delete _sales[i];
 	}
 }
 
+/**
+ * Method creating a sale
+ * @param int : id of the player to be put on sale
+ * @param int : value of the  player to be put on sale
+ * @param Player : player to be put on sale
+ * @param std::string : user whose player will be put on sales 
+ */
 void PlayerMarket::createSale(int player_id, int value, Player& player, std::string username){
 	if(pthread_mutex_lock(&_locker) != 0)
 		throw "Couldn't acquire lock for PlayerMarket";
@@ -29,6 +37,14 @@ void PlayerMarket::createSale(int player_id, int value, Player& player, std::str
 	pthread_mutex_unlock(&_locker);
 }
 
+/**
+ * Method handling the transfer of the player after a sale 
+ * @param std::string : name of the user who sold the player
+ * @param std::string : name of the user who won the player
+ * @param int : id of the player
+ * @param int : value of the winning bid
+ * @param Sale : contents of the sale
+ */
 void PlayerMarket::transfert(std::string fromName, std::string toName, int id, int bidValue, Sale* sale){
 	User* from = getUserByName(fromName);
 	Player toTransfert;
@@ -68,6 +84,11 @@ void PlayerMarket::transfert(std::string fromName, std::string toName, int id, i
 	}
 
 }
+
+/**
+ * Method handle end of a sale
+ * @param Sale : sale contents 
+ */
 void PlayerMarket::resolveEndOfSale(Sale * sale){
 	if(sale->getCurrentBidder().empty() and sale->getOwner() != net::MSG::GENERATED_BY_MARKET){//Player not sold
 		JSON::Dict toOwner;
@@ -96,6 +117,7 @@ void PlayerMarket::resolveEndOfSale(Sale * sale){
 	}
 }
 
+/// Method retrieving the sale content based on the id of the player
 Sale * PlayerMarket::getSale(int id){
 	for(size_t i = 0; i<_sales.size();++i){
 		if(_sales[i]->getID() == id){return _sales[i];}
@@ -103,6 +125,7 @@ Sale * PlayerMarket::getSale(int id){
 	return NULL;
 }
 
+/// Method retrieving all the sales performed
 JSON::Dict PlayerMarket::allSales() {
 	JSON::Dict response;
 	response.set("type", net::MSG::PLAYERS_ON_MARKET_LIST);
@@ -117,6 +140,7 @@ JSON::Dict PlayerMarket::allSales() {
 	return response;
 }
 
+/// Method adding a player on the market
 JSON::Dict PlayerMarket::addPlayer(const JSON::Dict &json){
 	JSON::Dict response = JSON::Dict();
 	response.set("type", net::MSG::ADD_PLAYER_ON_MARKET_QUERY);
@@ -138,6 +162,7 @@ JSON::Dict PlayerMarket::addPlayer(const JSON::Dict &json){
 	return response;
 }
 
+/// Method handling the bid on a player
 JSON::Dict PlayerMarket::bidOn(const JSON::Dict &json){
 	JSON::Dict response = JSON::Dict();
 	response.set("type", net::MSG::BID_ON_PLAYER_QUERY);
@@ -180,6 +205,7 @@ JSON::Dict PlayerMarket::bidOn(const JSON::Dict &json){
 	return response;
 }
 
+/// Method handling a new bid on a player
 void PlayerMarket::handleNewBid(std::string previousBidder, std::string currentBidder, int previousAmount, int currentAmount){
 	Team & currentTeam = getUserByName(currentBidder)->getTeam();
 	currentTeam.buy(currentAmount);
@@ -208,10 +234,12 @@ void PlayerMarket::handleNewBid(std::string previousBidder, std::string currentB
 	}
 }
 
+/// Method sending a message to the user
 void PlayerMarket::sendMessageToUser(std::string username, const JSON::Dict & message){
 	sendMarketMessage(username, message);
 }
 
+/// Method computing the number of sales for a user
 int PlayerMarket::ownedSales(std::string username){
 	int res=0;
 	for(size_t i=0;i<_sales.size();++i){
@@ -222,6 +250,7 @@ int PlayerMarket::ownedSales(std::string username){
 	return res;
 }
 
+/// Method computing the number of sales won by the usre
 int PlayerMarket::winningSales(std::string username){
 	int res=0;
 
@@ -232,21 +261,26 @@ int PlayerMarket::winningSales(std::string username){
 	}
 	return res;
 }
+
+/// Method handling the addition of a player on the market
 void PlayerMarket::addPlayerOnMarket(const JSON::Dict &sale, int peer_id){
 	Message status(peer_id, addPlayer(sale).clone());
 	_outbox.push(status);
 }
 
+/// Method sending the players for sale
 void PlayerMarket::sendPlayersOnMarketList(int peer_id){
 	Message status(peer_id, allSales().clone());
 	_outbox.push(status);
 }
 
+///Method handling the bid on a player
 void PlayerMarket::placeBidOnPlayer(const JSON::Dict &bid, int peer_id){
 	Message status(peer_id, bidOn(bid).clone());
 	_outbox.push(status);
 }
 
+/// Method handling the transmission of messages to the market
 void PlayerMarket::sendMarketMessage(std::string const &username, const JSON::Dict &message){
 	JSON::Dict toSend;
 	toSend.set("type",net::MSG::MARKET_MESSAGE);
@@ -266,6 +300,7 @@ void PlayerMarket::sendMarketMessage(std::string const &username, const JSON::Di
 	}
 }
 
+/// Method handling the update refreshrate for the market
 void PlayerMarket::timeUpdate()
 {
 	if(pthread_mutex_lock(&_locker) != 0)
@@ -286,6 +321,7 @@ void PlayerMarket::timeUpdate()
 	pthread_mutex_unlock(&_locker);
 }
 
+/// Method handling the time initialisation for a auction
 void PlayerMarket::timeCreateSale()
 {
 	RandomNameGenerator gen;

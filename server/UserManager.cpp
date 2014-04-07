@@ -1,5 +1,6 @@
 #include "UserManager.hpp"
 
+/// Method handling the user registration steps
 void UserManager::registerUser(const JSON::Dict &credentials, int peer_id)
 {
 	if (ISSTR(credentials.get(MSG::USERNAME)) && ISSTR(credentials.get(MSG::PASSWORD))){
@@ -27,6 +28,7 @@ void UserManager::registerUser(const JSON::Dict &credentials, int peer_id)
 	}
 }
 
+/// Method handling the server-side login for a user
 User *UserManager::logUserIn(const JSON::Dict &credentials, int peer_id)
 {
 	User *res = NULL;
@@ -69,6 +71,7 @@ User *UserManager::logUserIn(const JSON::Dict &credentials, int peer_id)
 	return res;
 }
 
+/// Method handling the initial team-naming
 void UserManager::checkTeamName(const JSON::Dict &data, int peer_id){
 	std::vector<std::string> teamNames;
 	std::string teamname = STR(data.get(net::MSG::TEAMNAME)).value();

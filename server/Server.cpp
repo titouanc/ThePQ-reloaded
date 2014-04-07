@@ -16,6 +16,7 @@ std::string humanExcName(const char *name)
 	return res;	
 }
 
+/// Method handling the time loop for time conscious features
 static void* runTimeLoop(void* args)
 {
 	Server* server = (Server*) args;
@@ -24,6 +25,7 @@ static void* runTimeLoop(void* args)
 	return NULL;
 }
 
+/// Method handlign the auction interface
 void * runSaleManager(void * args){
 	Server* server = (Server*) args;
 	server->saleManager();
@@ -31,6 +33,7 @@ void * runSaleManager(void * args){
 	return NULL;
 }
 
+/// Method handling the generic auction generation
 void * runSaleGenerator(void * args){
 	Server* server = (Server*) args;
 	server->saleGenerator();
@@ -38,6 +41,7 @@ void * runSaleGenerator(void * args){
 	return NULL;
 }
 
+/// Method handling the sale time frame
 void Server::saleManager()
 {
 	while(_connectionManager.isRunning() == true){
@@ -46,6 +50,7 @@ void Server::saleManager()
 	}
 }
 
+/// Method handling the creation of generic auctions
 void Server::saleGenerator()
 {
 	while(_connectionManager.isRunning() == true){
@@ -54,6 +59,7 @@ void Server::saleGenerator()
 	}
 }
 
+/// Very beautiful constructor
 Server::Server(NetConfig const & config) : 
 	_inbox(), _outbox(), _users(),
 	_connectionManager(_inbox, _outbox, config.ip.c_str(), config.port, config.maxClients),
@@ -69,6 +75,7 @@ Server::Server(NetConfig const & config) :
 	cout << "Launched server on " << _connectionManager.ip() << ":" << _connectionManager.port() << endl;
 }
 
+/// Destructor, note the careful memory control
 Server::~Server()
 {
 	std::deque<MatchManager*>::iterator it;
@@ -79,6 +86,7 @@ Server::~Server()
 	_matches.clear();
 }
 
+/// Method creating default accounts for fast access to this beautiful game
 void Server::initDefaultAccounts()
 {
 	std::vector<User> users;
@@ -96,6 +104,7 @@ void Server::initDefaultAccounts()
 	}
 }
 
+/// Method handling the server activity
 void Server::run()
 {
 	initDefaultAccounts();
@@ -136,6 +145,7 @@ void Server::run()
 	}
 }
 
+/// Method collecting all the results for finished matches
 void Server::collectFinishedMatches(void)
 {
 	std::deque<MatchManager*>::iterator it, next;
@@ -188,6 +198,7 @@ void Server::collectFinishedMatches(void)
 	}
 }
 
+/// Method handling all messages received by the server
 void Server::treatMessage(
 	int peer_id, 
 	std::string const & messageType, 
@@ -287,6 +298,7 @@ void Server::treatMessage(
 	}
 }
 
+/// Method computing the rewards at match end
 void Server::endOfMatchTeamInfosUpdate(std::string username, int money, int fame, int ap)
 {
 	int peer_id = _serverMgr.getPeerID(username);
@@ -307,6 +319,7 @@ void Server::endOfMatchTeamInfosUpdate(std::string username, int money, int fame
 	}
 }
 
+/// Method handling the virtual time for time sensitive interfaces
 void Server::timeLoop()
 {
 	time_t timeStart = time(NULL);
@@ -345,6 +358,7 @@ void Server::timeLoop()
 	}
 }
 
+/// Method updating team earnings/losses based on time index
 void Server::timeUpdateStadium()
 {
 	vector<User> users;
@@ -380,6 +394,7 @@ void Server::timeUpdateStadium()
 	}
 }
 
+/// Method handling time dependent events in a championship (schedules/matches..)
 void Server::timeUpdateChampionship()
 {
 	for (size_t i = 0; i < _championships.size(); ++i)
@@ -424,6 +439,7 @@ void Server::timeUpdateChampionship()
 	pthread_mutex_unlock(&_champsMutex);
 }
 
+/// Method handling the addition of a championship to the championship interface
 void Server::addChampionship(const Championship& champ){
 	pthread_mutex_lock(&_champsMutex);
 	Championship* newChamp = new Championship(champ);

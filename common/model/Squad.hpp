@@ -102,7 +102,7 @@ struct Squad {
         return res;
     }
 
-    /* Gives address of each beater, chaser, keeper and seeker to players[7] */
+    /** Gives address of each beater, chaser, keeper and seeker to players[7] */
     void setVectorOfPlayers(){
         size_t i = 0;
         for(size_t j = 0; j < 3; ++j){

@@ -7,13 +7,13 @@ AdminManager::AdminManager(BaseConnectionManager & connections, Server* serv) :
 	makeDefaultAdmin();
 }
 
-/* Creates an admin account */
+/** Creates an admin account */
 void AdminManager::makeDefaultAdmin(){
 	User admin(ADMIN_USERNAME,ADMIN_PASSWORD);
 	MemoryAccess::saveAdmin(admin);
 }
 
-/* Login handlers */
+/** Login handlers */
 void AdminManager::loginAdmin(const JSON::Dict& data, int peer_id){
 	JSON::Dict response;
 	if (ISSTR(data.get(net::MSG::USERNAME)) && ISSTR(data.get(net::MSG::PASSWORD))){

@@ -1,6 +1,7 @@
 #include "TeamManager.hpp"
 #include "Constants.hpp"
 
+/// Method handling the change of role in the squad of a player
 void TeamManager::putPlayerOnSquadPosition(const JSON::Dict &response, int peer_id){
 	int position = 0;
 	int member_id = 0;
@@ -13,6 +14,7 @@ void TeamManager::putPlayerOnSquadPosition(const JSON::Dict &response, int peer_
 	MemoryAccess::save(_users[peer_id]->getTeam());
 }
 
+/// Method handling the swap of positions of 2 players in a squad
 void TeamManager::swapPlayersOfSquad(const JSON::Dict &response, int peer_id){
 	int position = 0;
 	int member_id = 0;
@@ -25,6 +27,7 @@ void TeamManager::swapPlayersOfSquad(const JSON::Dict &response, int peer_id){
 	MemoryAccess::save(_users[peer_id]->getTeam());
 }
 
+/// Method upgrading the ability of a player
 void TeamManager::upgradePlayerAbility(const JSON::Dict &response, int peer_id){
 	int member_id = 0;
 	int ability = 0;
@@ -37,6 +40,5 @@ void TeamManager::upgradePlayerAbility(const JSON::Dict &response, int peer_id){
 	
 	sendTeamInfos(_users[peer_id]->getTeam(), peer_id);
 	MemoryAccess::save(_users[peer_id]->getTeam());
-	cout<<"######################"<<endl;
-
+	cout<<"******* Upgraded a players ability *******"<<endl;
 }

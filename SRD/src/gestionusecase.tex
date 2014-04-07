@@ -12,15 +12,14 @@
 \subsubsection{Gestion d'équipe (overview sguad)}
 \label{UC:squadView}
 \paragraph{Relations avec d'autres \gls{cas d'utilisation}s}
-Étendu par \ref{UC:selectMember}.
+Étendu par \ref{UC:seeAptitudes}.
 \paragraph{Pré-conditions}
 \begin{list}{\labelitemi}{\leftmargin=1.5em}
 \item{L'\gls{utilisateur} est authentifié.}
 \end{list}
 \paragraph{Cas général}
 L'utilisateur décide d'obtenir un rapide aperçu de son effectif, et clique sur l'icône correspondant à "gestion d'équipe", ce qui a pour effet d'afficher une liste de membres de l'équipe, avec laquelle il peut interagir pour obtenir des informations concernant lesdits membres.
-\paragraph{Postconditions} Une liste de membres de l'équipe, englobant ainsi 
-les joueurs et les coaches, est affichée.
+\paragraph{Postconditions} La liste des joueurs est affichée.
 
 %\subsubsection{Sélectionner un membre (select member)}
 %\label{UC:selectMember}
@@ -55,43 +54,43 @@ les joueurs et les coaches, est affichée.
 %\item{De plus amples informations sont affichées concernant le coach sélectionné (âge, nom, salaire).}
 %\item{Nouvelles actions disponibles.}
 %\end{list}
+%
+%\subsubsection{Sélectionner un joueur (select player)}
+%\label{UC:selectPlayer}
+%\paragraph{Relations avec d'autres cas d'utilisations}
+%Spécialise \ref{UC:selectMember}.\\
+%Étendu par \ref{UC:seeAptitudes}, \ref{UC:fire} et \ref{UC:choosePosition}. 
+%\paragraph{Pré-conditions}
+%\begin{list}{\labelitemi}{\leftmargin=1.5em}
+%\item{L'utilisateur a sélectionné un membre, il s'agit d'un joueur.}
+%\end{list}
+%\paragraph{Cas général}
+%Voir cas d'utilisations \ref{UC:selectMember}.
+%\paragraph{Post-conditions}
+%\begin{list}{\labelitemi}{\leftmargin=1.5em}
+%\item{De plus amples informations sont affichées concernant le joueur sélectionné (âge, nom salaire).}
+%\item{Nouvelles actions disponibles.}
+%\end{list}
 
-\subsubsection{Sélectionner un joueur (select player)}
-\label{UC:selectPlayer}
-\paragraph{Relations avec d'autres cas d'utilisations}
-Spécialise \ref{UC:selectMember}.\\
-Étendu par \ref{UC:seeAptitudes}, \ref{UC:fire} et \ref{UC:choosePosition}. 
-\paragraph{Pré-conditions}
-\begin{list}{\labelitemi}{\leftmargin=1.5em}
-\item{L'utilisateur a sélectionné un membre, il s'agit d'un joueur.}
-\end{list}
-\paragraph{Cas général}
-Voir cas d'utilisations \ref{UC:selectMember}.
-\paragraph{Post-conditions}
-\begin{list}{\labelitemi}{\leftmargin=1.5em}
-\item{De plus amples informations sont affichées concernant le joueur sélectionné (âge, nom salaire).}
-\item{Nouvelles actions disponibles.}
-\end{list}
-
-\subsubsection{Voir les aptitudes (see aptitudes)}
+\subsubsection{Améliorer les aptitudes (upgrade aptitudes)}
 \label{UC:seeAptitudes}
 \paragraph{Relations avec d'autres cas d'utilisations}
-Étend \ref{UC:selectCoach} et \ref{UC:selectPlayer}.
+Étend \ref{UC:squadView}.
 \paragraph{Pré-conditions}
 \begin{list}{\labelitemi}{\leftmargin=1.5em}
-\item{L'utilisateur a sélectionné un membre.}
+\item{L'utilisateur a des points d'action en quantité suffisante.}
 \end{list}
 \paragraph{Cas général}
-Après avoir sélectionné un membre, l'utilisateur choisit d'afficher les aptitudes concernant ledit membre, en cliquant simplement sur une icône.
+Après avoir sélectionné un membre, l'utilisateur choisit d'améliorer les aptitudes concernant ledit membre, en cliquant simplement sur une icône.
 \paragraph{Post-conditions}
 \begin{list}{\labelitemi}{\leftmargin=1.5em}
-\item{Les aptitudes spécifiques au membre sélectionné sont affichées.}
+\item{Les aptitudes spécifiques au membre sélectionné sont améliorées.}
 \end{list} 
 
 \subsubsection{Choisir la position pour le prochain match (set position…)}
 \label{UC:choosePosition}
 \paragraph{Relations avec d'autres cas d'utilisations}
-Étend \ref{UC:selectPlayer}.
+Étend \ref{UC:squadView}.
 \paragraph{Pré-conditions}
 L'utilisateur a sélectionné un joueur.
 \paragraph{Cas général}
@@ -124,7 +123,7 @@ Le joueur sélectionné est mis à la position choisie par l'utilisateur pour le
 \subsubsection{Gestion du stade (overview stadium)}
 \label{UC:stadiumView}
 \paragraph{Relations avec d'autres cas d'utilisations}
-Étendu par \ref{UC:selectSpot}.
+Étendu par \ref{UC:upgrade}.
 \paragraph{Pré-conditions}
 \begin{list}{\labelitemi}{\leftmargin=1.5em}
 \item{Le joueur est authentifié.}
@@ -161,25 +160,24 @@ L'utilisateur clique sur l'icône "gestion du stade", ce qui affiche une liste d
 \subsubsection{Améliorer / monter d'un niveau (upgrade)}
 \label{UC:upgrade}
 \paragraph{Relations avec d'autres cas d'utilisations}
-Étend \ref{UC:selectSpot}.
+Étend \ref{UC:stadiumView}.
 \paragraph{Pré-conditions}
 \begin{list}{\labelitemi}{\leftmargin=1.5em}
 \item{Un endroit est sélectionné (peu importe lequel).}
-\item{Le niveau maximum de l'installation relative à l'endroit n'est pas atteint (à déterminer).}
+\item{Le niveau maximum de l'installation relative à l'endroit n'est pas atteint.}
 \item{L'équipe possède les fonds nécessaires.}
 \end{list}
 \paragraph{Cas général}
-L'utilisateur souhaite améliorer une installation, après avoir sélectionné l'endroit relatif à cette installation, il clique alors sur une icône "améliorer" ce qui augmente le niveau de l'installation de 1, et augmente ses bienfaits (argent gagné pour les services d'alimentations, fanshop; nombre de places pour les tribunes; soins prodigués pour le centre médical).
+L'utilisateur souhaite améliorer une installation, après avoir sélectionné l'endroit relatif à cette installation, il clique alors sur une icône "améliorer" ce qui augmente le niveau de l'installation de 1, et augmente ses bienfaits (argent gagné pour les services d'alimentations, fanshop; nombre de places pour les tribunes).
 \paragraph{Post-conditions}
 \begin{list}{\labelitemi}{\leftmargin=1.5em}
-\item{L'installation gagne un niveau (meilleures stats mais coûts d'entretiens plus élevés).}
+\item{L'installation gagne un niveau (meilleures stats).}
 \end{list}
 
 \subsubsection{Diminuer d'un niveau (downgrade)}
 \label{UC:downgrade}
-(Fonctionnalité non implémentée)
 \paragraph{Relations avec d'autres cas d'utilisations}
-Étend \ref{UC:selectSpot}.
+Étend \ref{UC:stadiumView}.
 \paragraph{Pré-conditions}
 \begin{list}{\labelitemi}{\leftmargin=1.5em}
 \item{Un endroit est sélectionné.}
@@ -188,7 +186,7 @@ L'utilisateur souhaite améliorer une installation, après avoir sélectionné l
 \paragraph{Cas général}
 L'utilisateur souhaite diminuer le niveau de son installation (pour mauvaise situation financière par exemple), il clique alors sur l'icône "dégrader", ce qui diminue le niveau de l'installation de 1. 
 \paragraph{Post-conditions}
-Diminue le niveau de l'installation de 1 (équipe gagne un pourcentage des fonds déversés pour avoir atteint ce niveau, les coûts d'entretien diminuent, mais les stats baissent).
+Diminue le niveau de l'installation de 1 (équipe gagne un pourcentage des fonds déversés pour avoir atteint ce niveau).
 
 
 %\subsubsection{Choisir le prix des articles (set article price)}
@@ -411,15 +409,15 @@ Diminue le niveau de l'installation de 1 (équipe gagne un pourcentage des fonds
    \caption{\label{fig:UC:gotoTransfers} Cas d'utilisation: aller aux transferts}
 \end{figure}
 
-\label{UC:gotoTransfers}
+\label{UC:seeMarket}
 \paragraph{Relations avec d'autres cas d'utilisations}
-Étendu par \ref{UC:transfersHistory} et \ref{UC:seeMarket}.
+Étendu par \ref{UC:buyPlayer} et \ref{UC:putPlayerOnSale}.
 \paragraph{Pré-conditions}
 \begin{list}{\labelitemi}{\leftmargin=1.5em}
 \item{L'utilisateur est authentifié.}
 \end{list}
 \paragraph{Cas général}
-L'utilisateur clique sur l'icône "Aller aux Transferts", et a ensuite la possibilité de voir son historique de transferts ou de voir le marché des transferts.
+L'utilisateur clique sur l'icône "Aller aux Transferts", et a ensuite la possibilité  de voir le marché des transferts.
 
 %\subsubsection{Voir l'historique des transferts (see transfer history)}
 %\label{UC:transfersHistory}
@@ -542,35 +540,34 @@ L'utilisateur clique sur l'icône "Aller aux Transferts", et a ensuite la possib
 %\item{La liste de membres (joueur ou coach rappelons-le) est actualisée pour correspondre au filtre et ordre voulus.}
 %\end{list}
 
-\subsubsection{Acheter/mettre une offre sur un joueur (buy/put a bid on player)}
+\subsubsection{Acheter/mettre une offre sur un joueur (buy/put a bid on a player)}
 \label{UC:buyPlayer}
 \paragraph{Relations avec d'autres cas d'utilisations}
+Étend \ref{UC:seeMarket}.
 \paragraph{Pré-conditions}
 \begin{list}{\labelitemi}{\leftmargin=1.5em}
 \item{L'utilisateur se situe dans le marché des transferts des joueurs.}
 \item{Un joueur est sélectionné.}
 \item{L'équipe de l'utilisateur ne possède pas déjà le nombre maximal de joueurs que peut posséder une équipe.}
 \item{L'équipe de l'utilisateur possède les fonds nécessaires.}
-\item{Si enchère : l'utilisateur rentre l'enchère désirée qui doit être plus élevée que l'actuelle.}
 \end{list}
 \paragraph{Cas général}
 En recherchant des joueurs dans le marché des transferts des joueurs, l'utilisateur peut acheter ou mettre une enchère sur un joueur, dépendant du type d'achat dont il s'agit (type déterminé par l'équipe vendeuse lors de la mise en vente, voir \ref{UC:putPlayerOnSale}). Si l'achat est un succès, le joueur est retiré du marché des transferts et ajouté à l'équipe de l'utilisateur. Si l'enchère est un succès, l'utilisateur remporte le joueur jusqu'à nouvelle enchère mise sur le joueur (notons que l'utilisateur ne peut enchérir sur un joueur sur lequel il a déjà enchéri). 
 \paragraph{Post-conditions}
 \begin{list}{\labelitemi}{\leftmargin=1.5em}
 \item{Si achat direct : l'équipe de l'utilisateur est constituée d'un joueur supplémentaire.}
-\item{Si vente "à l'enchère" : le nom de l'équipe de l'utilisateur est indiquée sur le joueur dans la liste du marché des transferts, signalant qu'il s'agit de l'équipe la plus offrante actuellement, et qui "remportera" le joueur si aucune autre enchère n'est mise avant la date d'expiration.}
+\item{Si vente "à l'enchère" : le nom de l'équipe de l'utilisateur est indiqué sur le joueur dans la liste du marché des transferts, signalant qu'il s'agit de l'équipe la plus offrante actuellement, et qui "remportera" le joueur si aucune autre enchère n'est mise avant la date d'expiration.}
 \end{list}
 
 \subsubsection{Mettre un joueur en vente (put player on sale)}
 \label{UC:putPlayerOnSale}
 \paragraph{Relations avec d'autres cas d'utilisations}
-Étend \ref{UC:seePlayerMarket}.
+Étend \ref{UC:seeMarket}.
 \paragraph{Pré-conditions}
 \begin{list}{\labelitemi}{\leftmargin=1.5em}
 \item{L'utilisateur se situe sur le marché des transferts.}
 \item{L'utilisateur sélectionne un joueur.}
-\item{L'utilisateur choisit le type de transfert : enchère ou vente directe.}
-\item{Dans les deux cas l'utilisateur indique le prix (de base/de vente).}
+\item{L'utilisateur indique le prix (de base/de vente).}
 \item{L'utilisateur a au moins 7 joueurs dans son équipe qui ne sont pas en vente.}
 \end{list}
 \paragraph{Cas général}
@@ -628,7 +625,6 @@ L'utilisateur, situé dans le marché de transferts des joueurs, choisit l'optio
 %
 %\subsubsection{Aller au Sponsor Management (goto sponsor management)}
 %\label{UC:gotoSponsor}
-%(Fonctionnalité non implémentée)
 %\paragraph{Relations avec d'autres cas d'utilisations}
 %Étend \ref{UC:gotoManagement}.\\
 %Étendu par \ref{UC:getNewSponsor}.

@@ -50,7 +50,7 @@ public:
 	int getFame() const {return _fame;}
 	int getAcPoints() const {return _acpoints;}
 	bool fundsAvailble(int amount) { return amount <= _funds;}
-
+	/// Method handling the loss of fame
 	void loseFame(int amount){
 		if (pthread_mutex_lock(&_changes) != 0)
 		{
@@ -62,7 +62,7 @@ public:
 			_fame-=amount;
 		pthread_mutex_unlock(&_changes);
 	}
-
+	/// Method handling the loss of funds
 	int loseFunds(int amount){
 		if (pthread_mutex_lock(&_changes) != 0)
 		{
@@ -77,7 +77,7 @@ public:
 		pthread_mutex_unlock(&_changes);
 		return amount;
 	}
-	
+	/// Method handling the earning of fame
 	void earnFame(int amount){ 
 		if (pthread_mutex_lock(&_changes) != 0)
 		{
@@ -86,7 +86,7 @@ public:
 		_fame+=amount;
 		pthread_mutex_unlock(&_changes);
 	}
-
+	/// Method handling the purchase of an item
 	void buy(int amount){
 		if (pthread_mutex_lock(&_changes) != 0)
 		{
@@ -95,7 +95,7 @@ public:
 		_funds-=amount;
 		pthread_mutex_unlock(&_changes);
 	}
-	
+	/// Method handling the earning of funds
 	void getPayed(int amount){
 		if (pthread_mutex_lock(&_changes) != 0)
 		{
@@ -104,7 +104,7 @@ public:
 		_funds+=amount;
 		pthread_mutex_unlock(&_changes);
 	}
-
+	/// Method handling the earning of activity points
 	void earnAcPoints(int ap) {
 		if (pthread_mutex_lock(&_changes) != 0)
 		{
@@ -113,7 +113,7 @@ public:
 		_acpoints += ap;
 		pthread_mutex_unlock(&_changes);
 	}
-
+	/// Method handling the loss of activity points
 	void loseAcPoints(int ap) {
 		if (pthread_mutex_lock(&_changes) != 0)
 		{
@@ -126,30 +126,40 @@ public:
 		pthread_mutex_unlock(&_changes);
 	}
 
+	/// Method handling the upgrade of a players ability
 	int upgradePlayerAbility(int id, int ability){
-		Player &player = getPlayer(id);
+		Player p=getPlayer(id);
+		removePlayer(id);
 		switch(ability){
-            case 0:
-                player.improveStrength(1);
-                return player.getStrength();
+            case 0://strength
+            	{
+                p.improveStrength(1);
+                addPlayer(p);                
+                return p.getStrength();
+               	}
             
-            case 1:
-                player.improveVelocity(1);
-                return player.getVelocity();
-            
-            case 2:
-                player.improvePrecision(1);
-                return player.getPrecision();
-            
-            case 3:
-                player.improveChance(1);
-                return player.getChance();
-            
+            case 1://velocity
+                {
+                p.improveVelocity(1);
+                addPlayer(p);
+                return p.getVelocity();
+            	}
+            case 2://precision
+                {
+                p.improvePrecision(1);
+                addPlayer(p);                
+                return p.getPrecision();
+            	}
+            case 3://chance
+                {
+                p.improveChance(1);
+                addPlayer(p);
+                return p.getChance();
+            	}
             default:
                 return -1;
-        }
+		}
 	}
-
 
 	std::vector<Player>& getPlayers(){return _players;}
 	std::vector<Installation*>& getInstallations(){return _installations;}
@@ -169,7 +179,7 @@ public:
 
 	bool removePlayer(int id);
 	void addPlayer(Player &player);
-	Player& getPlayer(int id);
+	Player getPlayer(int id);
 
 	void generateStartingTeam();
 	void initFame();

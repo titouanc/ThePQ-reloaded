@@ -10,7 +10,7 @@ User *ServerManager::getUserByName(std::string username)
 	return NULL;
 }
 
-
+/// Method sending the team attributes stored on the server to the user
 void ServerManager::sendTeamInfos(const JSON::Dict &data, int peer_id)
 {
 	JSON::Dict response;
@@ -19,6 +19,7 @@ void ServerManager::sendTeamInfos(const JSON::Dict &data, int peer_id)
 	_outbox.push(Message(peer_id, response.clone()));
 }
 
+/// Method sending the player attributes stored on the server to the user
 void ServerManager::sendPlayersList(int peer_id){
 	std::vector<Player> & players = _users[peer_id]->getTeam().getPlayers();
 	JSON::List jsonPlayers;
@@ -32,7 +33,7 @@ void ServerManager::sendPlayersList(int peer_id){
 	_outbox.push(status);
 }
 
-
+/// Method retrieving the id of the user based on the username
 int ServerManager::getPeerID(std::string const &username){
 	for (map<int, User*>::iterator it=_users.begin(); it!=_users.end(); it++){
 		if (it->second->getUsername() == username){
@@ -42,6 +43,7 @@ int ServerManager::getPeerID(std::string const &username){
 	return -1;
 }
 
+/// Method sending notifications from the server to the user
 void ServerManager::sendNotification(std::string username, const JSON::Dict & toSend){
 	int to_peer = getPeerID(username);
 	if (to_peer >= 0){

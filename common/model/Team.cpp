@@ -1,7 +1,7 @@
 #include "Team.hpp"
 #include <cmath>
 
-
+/// Constructor
 Team::Team(std::string owner, std::string teamname, int funds, int fame, int acpoints): 
 	_owner(owner), 
 	_name(teamname), 
@@ -14,6 +14,7 @@ Team::Team(std::string owner, std::string teamname, int funds, int fame, int acp
 	pthread_mutex_init(&_changes, NULL);
 }
 
+/// Copy constructor
 Team::Team(const Team& other) : 
 	_owner(other._owner), 
 	_name(other._name), 
@@ -27,6 +28,7 @@ Team::Team(const Team& other) :
 	pthread_mutex_init(&_changes, NULL);
 }
 
+/// Copy constructor
 Team::Team(const JSON::Dict &json): Team() {
 	if(ISSTR(json.get(net::MSG::USERNAME)))
 		_owner = STR(json.get(net::MSG::USERNAME)).value();
@@ -42,6 +44,7 @@ Team::Team(const JSON::Dict &json): Team() {
 		_squad = DICT(json.get(memory::SQUAD));
 }
 
+/// Destructor
 Team::~Team()
 {
 	for (size_t i = 0; i < _installations.size(); ++i){
@@ -66,9 +69,11 @@ void Team::load(){
 	MemoryAccess::load(_installations,_owner);
 	MemoryAccess::load(_players,_owner);
 }
+
+/// Method handling  the save of a teams attributes
 void Team::save(){
 	/* saves infos such as owner, funds, etc. and data vectors<> */
-	saveInfos(); //Same as loads : only funds, owner, etc.
+	saveInfos(); 
 	for(size_t i = 0; i<_players.size();++i){
 		MemoryAccess::save(_players[i]);
 	}
@@ -97,12 +102,14 @@ void Team::addPlayer(Player &player){
 	{
 		return;
 	}
+	cout<<endl;
+	cout<<"!*!*!*!*!*saving player: "<< player<<endl;
 	player.setOwner(getOwner());
 	MemoryAccess::save(player);
 	_players.push_back(player);
 	pthread_mutex_unlock(&_changes);
 }
-Player& Team::getPlayer(int id){
+Player Team::getPlayer(int id){
 	for(size_t i=0;i<_players.size();++i){
 		if(_players[i].getMemberID() == id){
 			return _players[i];
