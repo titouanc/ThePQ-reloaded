@@ -123,7 +123,7 @@ Le joueur sélectionné est mis à la position choisie par l'utilisateur pour le
 \subsubsection{Gestion du stade (overview stadium)}
 \label{UC:stadiumView}
 \paragraph{Relations avec d'autres cas d'utilisations}
-Étendu par \ref{UC:selectSpot}.
+Étendu par \ref{UC:upgrade}.
 \paragraph{Pré-conditions}
 \begin{list}{\labelitemi}{\leftmargin=1.5em}
 \item{Le joueur est authentifié.}
@@ -160,25 +160,24 @@ L'utilisateur clique sur l'icône "gestion du stade", ce qui affiche une liste d
 \subsubsection{Améliorer / monter d'un niveau (upgrade)}
 \label{UC:upgrade}
 \paragraph{Relations avec d'autres cas d'utilisations}
-Étend \ref{UC:selectSpot}.
+Étend \ref{UC:stadiumView}.
 \paragraph{Pré-conditions}
 \begin{list}{\labelitemi}{\leftmargin=1.5em}
 \item{Un endroit est sélectionné (peu importe lequel).}
-\item{Le niveau maximum de l'installation relative à l'endroit n'est pas atteint (à déterminer).}
+\item{Le niveau maximum de l'installation relative à l'endroit n'est pas atteint.}
 \item{L'équipe possède les fonds nécessaires.}
 \end{list}
 \paragraph{Cas général}
-L'utilisateur souhaite améliorer une installation, après avoir sélectionné l'endroit relatif à cette installation, il clique alors sur une icône "améliorer" ce qui augmente le niveau de l'installation de 1, et augmente ses bienfaits (argent gagné pour les services d'alimentations, fanshop; nombre de places pour les tribunes; soins prodigués pour le centre médical).
+L'utilisateur souhaite améliorer une installation, après avoir sélectionné l'endroit relatif à cette installation, il clique alors sur une icône "améliorer" ce qui augmente le niveau de l'installation de 1, et augmente ses bienfaits (argent gagné pour les services d'alimentations, fanshop; nombre de places pour les tribunes).
 \paragraph{Post-conditions}
 \begin{list}{\labelitemi}{\leftmargin=1.5em}
-\item{L'installation gagne un niveau (meilleures stats mais coûts d'entretiens plus élevés).}
+\item{L'installation gagne un niveau (meilleures stats).}
 \end{list}
 
 \subsubsection{Diminuer d'un niveau (downgrade)}
 \label{UC:downgrade}
-(Fonctionnalité non implémentée)
 \paragraph{Relations avec d'autres cas d'utilisations}
-Étend \ref{UC:selectSpot}.
+Étend \ref{UC:stadiumView}.
 \paragraph{Pré-conditions}
 \begin{list}{\labelitemi}{\leftmargin=1.5em}
 \item{Un endroit est sélectionné.}
@@ -187,7 +186,7 @@ L'utilisateur souhaite améliorer une installation, après avoir sélectionné l
 \paragraph{Cas général}
 L'utilisateur souhaite diminuer le niveau de son installation (pour mauvaise situation financière par exemple), il clique alors sur l'icône "dégrader", ce qui diminue le niveau de l'installation de 1. 
 \paragraph{Post-conditions}
-Diminue le niveau de l'installation de 1 (équipe gagne un pourcentage des fonds déversés pour avoir atteint ce niveau, les coûts d'entretien diminuent, mais les stats baissent).
+Diminue le niveau de l'installation de 1 (équipe gagne un pourcentage des fonds déversés pour avoir atteint ce niveau).
 
 
 %\subsubsection{Choisir le prix des articles (set article price)}
