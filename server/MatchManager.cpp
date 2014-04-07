@@ -3,9 +3,9 @@
 #include <ctime>
 #include <cstdlib>
 
-/* TODO: read from config file */
 #define STROKES_TIMEOUT_SECONDS 1
 
+/// Constructor
 MatchManager::MatchManager(
 	BaseConnectionManager & connections, 
 	Squad const & squadA, Squad const & squadB,
@@ -21,17 +21,20 @@ MatchManager::MatchManager(
 	cout << "[" << this << "] \033[1m\033[32mMatch created\033[0m" << endl;
 }
 
+/// Destructor
 MatchManager::~MatchManager()
 {
 	cout << "[" << this << "] \033[1m\033[32mMatch destroyed\033[0m" << endl;
 }
 
+/// Method processing a Stroke
 void MatchManager::processStroke(Message const & msg, JSON::Dict const & data)
 {
 	if (_match.addStroke(data))
 		reply(msg, net::MSG::MATCH_ACK, data);
 }
 
+/// Method handling the messages received
 void MatchManager::processMessage(Message const & msg)
 {
 	JSON::Dict const & data = DICT(msg.data);
@@ -44,6 +47,7 @@ void MatchManager::processMessage(Message const & msg)
 	}
 }
 
+/// Method handling the gameplay
 void MatchManager::_mainloop_out()
 {
 	sendMoveables();
@@ -91,20 +95,24 @@ void MatchManager::_mainloop_out()
 		releaseClient(_match.squad(i).client_id);
 }
 
+/// Method checking if it is a championship match
 bool MatchManager::isChampMatch() const {
 	return _champMatch;
 }
 
+/// Method retrieving the match results
 MatchResult MatchManager::getResult() const {
 	return _matchRes;
 }
 
+/// Method sending a message to all the clients
 void MatchManager::sendToAll(JSON::Value const & data)
 {
 	for (int i=0; i<2; i++)
 		_doWrite(_match.squad(i).client_id, &data);
 }
 
+/// Method sending message to all the clients
 void MatchManager::sendSignal(std::string const & sig)
 {
 	JSON::Dict msg;
@@ -113,6 +121,7 @@ void MatchManager::sendSignal(std::string const & sig)
 	sendToAll(msg);
 }
 
+/// Method replying to a client (message addressant/type of message/data)
 void MatchManager::reply(Message const & msg, std::string type, JSON::Value const & data)
 {
 	JSON::Dict response = JSON::Dict();
@@ -124,11 +133,13 @@ void MatchManager::reply(Message const & msg, std::string type, JSON::Value cons
 	_doWrite(msg.peer_id, &response);
 }
 
+/// Method replying to a client (message addressant/type of message/data)
 void MatchManager::reply(Message const & msg, std::string type, const char *text)
 {
 	reply(msg, type, JSON::String(text));
 }
 
+/// Method sending all the moveables to the clients
 void MatchManager::sendMoveables(void)
 {
 	JSON::Dict msg = {
@@ -138,6 +149,7 @@ void MatchManager::sendMoveables(void)
 	sendToAll(msg);
 }
 
+/// Method handling the end of the match
 void MatchManager::endMatch(void)
 {
 	// champ match -> random host
