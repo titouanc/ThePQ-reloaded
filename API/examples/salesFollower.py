@@ -12,7 +12,7 @@ USERNAME = 'sales_follower'
 optparser = argparse.ArgumentParser(description="Monitor The Pro Quidditch Market")
 optparser.add_argument(
     '-H', '--host', type=str,
-    action='store', dest='host', default='thepq.partou.se',
+    action='store', dest='host', default='localhost',
     help='The Pro Quidditch Server address'
 )
 optparser.add_argument(
